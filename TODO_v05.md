@@ -13,7 +13,7 @@
 > - Compatibility invariant remains mandatory: protobuf minor evolution is additive-only.
 > - Breaking protocol behavior requires major-path governance evidence: new multistream IDs, downgrade negotiation, AEP process, and multi-implementation validation.
 > - Open decisions remain unresolved unless source documentation explicitly resolves them.
-> - v0.6+ capability is not promoted into v0.5 by implication, convenience, or integration adjacency.
+> - v0.6+ hardening/scaling capability is not promoted into v0.5 by implication, convenience, or integration adjacency.
 
 ---
 
@@ -77,9 +77,9 @@ No additional capability outside these eight bullets is promoted into v0.5 in th
 To preserve roadmap integrity, the following remain out of scope for v0.5:
 
 ### 3.1 Deferred to v0.6+
-- Public directory and discovery flows including DHT discovery records, global search, Explore tab, and server preview.
-- Identity proof-of-work issuance controls, global anti-spam scoring, and trust/reputation systems.
-- User blocking and reporting platform expansions beyond existing baseline moderation semantics.
+- Discovery and public-visibility **hardening/scaling** expansions over the v0.3 baseline (directory publishing/browse, invite/request-to-join, optional non-authoritative indexer).
+- Moderation and anti-abuse reliability expansions over v0.2/v0.4 baselines (PoW issuance controls, anti-spam scoring, trust/reputation, and reporting robustness).
+- Search/explore reliability and abuse-resilience tuning over earlier baseline functionality.
 
 ### 3.2 Deferred to v0.7+
 - Deep history, archival architecture, long-retention relay roles, full-text search system, and push relay expansion.
@@ -113,16 +113,19 @@ v0.5 planning assumes prior-version contract outputs are available as dependenci
 ### 4.2 v0.2 prerequisite baseline
 - Mention parsing and notification baseline exists and is required for slash command and webhook message-context semantics.
 - Presence and social graph baseline exists for event-domain references where bot workflows require user presence context.
+- Baseline RBAC/moderation and slow-mode semantics exist and constrain bot authorization/command enforcement surfaces.
 - Prior validation and evidence discipline is available as template input for v0.5 gates.
 
 ### 4.3 v0.3 prerequisite baseline
+- Directory publishing/browse baseline and invite/request-to-join workflows exist and constrain bot/webhook interactions with join/discovery surfaces.
+- Optional community-run, non-authoritative indexer baseline and signed-response verification posture exist as dependency context (not v0.5 scope additions).
 - Media and attachment transport baseline exists and informs emoji asset-handling envelope constraints.
 - Screen/file rendering baseline informs picker-display and message-surface interoperability assumptions.
-- Relay and topology contracts from v0.3 remain constraints, not scope additions.
+- v0.3 dependency outputs are treated as completed inputs and are not re-opened in v0.5.
 
 ### 4.4 v0.4 prerequisite baseline
 - Permission bitmask and role model are required for bot command authorization and emoji-management permissions.
-- Moderation and audit contracts are required for deterministic denial semantics and auditable bot/webhook actions.
+- Advanced moderation governance baseline (policy versioning/auto-mod hooks) and audit contracts are required for deterministic denial semantics and auditable bot/webhook actions.
 - Invite and visibility semantics remain baseline context and are not expanded by v0.5 scope.
 
 ### 4.5 Carry-back dependency rule
@@ -793,7 +796,7 @@ Validation artifact IDs used below:
     - [ ] **P6-T1-ST1 Define end-to-end scenario suite covering all 8 scope bullets**
       - **Objective:** Ensure complete positive-path coverage with deterministic expected outcomes.
       - **Concrete actions:** Build scenario catalog spanning bot event consumption, slash invocation, shim translation paths, emoji and reaction operations, and webhook posting.
-      - **Dependencies/prerequisites:** Completion of Phases 1 through 5 contracts.
+      - **Dependencies/prerequisites:** P1-T1 through P5-T4.
       - **Deliverables/artifacts:** Integrated positive-path scenario specification.
       - **Acceptance criteria:** Every scope bullet appears in at least one end-to-end scenario with expected result criteria.
       - **Suggested priority/order:** P0, Order 24.1.

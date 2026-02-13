@@ -23,6 +23,9 @@ Deliver **v0.2 Connections** as a protocol-first increment over v0.1 by adding:
 - Friends list with online/offline/pending segmentation
 - In-app notifications and unread counters
 - Mention semantics for `@user`, `@role`, `@everyone`, `@here`
+- Basic RBAC baseline: Owner/Admin/Moderator/Member
+- Baseline moderation protocol events and decentralized enforcement semantics for redaction/delete, timeout, and ban
+- Channel slow mode with deterministic per-channel enforcement
 
 ### 1.2 Success Outcomes (verifiable)
 1. 1:1 DM cryptographic sessions are negotiable, persistent, recoverable, and test-verified.
@@ -35,6 +38,9 @@ Deliver **v0.2 Connections** as a protocol-first increment over v0.1 by adding:
 8. Friends list UI contract supports online/offline/pending views with synchronization rules.
 9. Notification and unread counters are consistent across DM, group DM, and server contexts.
 10. Mention parsing, resolution, authorization, and rendering behaviors are deterministic.
+11. Baseline RBAC contract defines Owner/Admin/Moderator/Member role hierarchy and permission boundaries without importing custom-role CRUD.
+12. Baseline moderation actions (redaction/delete, timeout, ban) are signed protocol events with deterministic actor-target constraints, reason/failure taxonomy, and auditable outcomes.
+13. Slow mode behavior is deterministic under reconnect/replay conditions and compatible with decentralized client-side enforcement rules.
 
 ---
 
@@ -51,8 +57,11 @@ The following roadmap bullets in `aether-v3.md` define v0.2 scope:
 - Friends list UI with online/offline/pending tabs
 - Notification system (in-app badges, unread counts)
 - Mentions: `@user`, `@role`, `@everyone`, `@here`
+- Basic RBAC baseline: Owner/Admin/Moderator/Member
+- Baseline moderation protocol events + enforcement: redaction/delete, timeout, ban
+- Channel slow mode (deterministic per-channel enforcement)
 
-No additional v0.3+ capability is promoted into v0.2 scope in this plan.
+No additional v0.3+ capability is promoted into v0.2 scope in this plan beyond these thirteen bullets.
 
 ---
 
@@ -60,12 +69,12 @@ No additional v0.3+ capability is promoted into v0.2 scope in this plan.
 
 To prevent overlap and preserve roadmap integrity, the following remain deferred:
 - RNNoise, adaptive voice pipeline expansions, screen share, file transfer (v0.3)
-- RBAC role CRUD and full moderation framework (v0.4)
+- Advanced RBAC/governance expansion (custom roles, channel overrides hardening, moderation policy versioning, auto-moderation hooks) (v0.4)
 - Bot API, Discord shim, emoji/reactions (v0.5)
-- Public discovery and anti-spam platform expansions (v0.6)
+- Discovery/anti-abuse hardening and scaling expansions beyond v0.3-v0.4 baselines (v0.6)
 - Deep history/search/push relay features (v0.7)
 
-Note on `@role` mentions in v0.2: implement only the minimum mention resolution and authorization contract needed for existing role identifiers; do not pull RBAC management scope into v0.2.
+Note on `@role` mentions in v0.2: authorization checks must use the v0.2 baseline Owner/Admin/Moderator/Member contract; full custom-role management remains deferred.
 
 ---
 
@@ -93,8 +102,8 @@ If any prerequisite is missing during execution, it becomes a blocking dependenc
 | V2-G1 | 1:1 DM crypto contract freeze | V2-G0 complete | X3DH + Double Ratchet protocol and tests specified |
 | V2-G2 | DM transport baseline | V2-G1 complete | Prekeys, direct DM path, and offline path contract complete |
 | V2-G3 | Social graph baseline | V2-G2 complete | Group DMs + friends lifecycle specified and validated |
-| V2-G4 | Presence and attention baseline | V2-G3 complete | Presence, status, notifications, mentions integrated and validated |
-| V2-G5 | Release readiness | V2-G4 complete | Compatibility/governance conformance + docs + handoff complete |
+| V2-G4 | Presence, attention, and baseline governance | V2-G3 complete | Presence/status/notifications/mentions plus baseline RBAC/moderation/slow-mode contracts integrated and validated |
+| V2-G5 | Release readiness | V2-G4 complete | Compatibility/governance conformance + decentralized moderation enforcement checks + docs + handoff complete |
 
 ### 5.2 Gate Flow Diagram
 
@@ -128,7 +137,7 @@ Priority legend used below:
       - **Concrete actions:** Build a trace table from v0.2 bullets to task IDs and acceptance tests.
       - **Dependencies/prerequisites:** v0.2 scope extraction complete.
       - **Deliverables/artifacts:** Scope traceability matrix.
-      - **Acceptance criteria:** All ten v0.2 bullets mapped exactly once; no unmapped scope item.
+      - **Acceptance criteria:** All thirteen v0.2 bullets mapped exactly once; no unmapped scope item.
       - **Suggested priority/order:** P0, Order 01.1.
       - **Risks/notes:** Missing mapping causes silent scope gaps.
     - [ ] **P0-T1-ST2 Define v0.2 explicit non-goals and overlap boundaries**
@@ -492,7 +501,7 @@ Priority legend used below:
     - [ ] **P4-T3-ST1 Define friends list data projections and tab segmentation rules**
       - **Objective:** Keep list categorization deterministic across clients.
       - **Concrete actions:** Specify status-to-tab mapping and tie-break ordering behavior.
-      - **Dependencies/prerequisites:** P4-T2, P5-T1 draft assumptions.
+      - **Dependencies/prerequisites:** P4-T2.
       - **Deliverables/artifacts:** Friends list projection specification.
       - **Acceptance criteria:** Same source graph always produces same list segmentation.
       - **Suggested priority/order:** P1, Order 15.1.
@@ -505,7 +514,7 @@ Priority legend used below:
       - **Acceptance criteria:** No UI state is undefined for common failure paths.
       - **Suggested priority/order:** P1, Order 15.2.
       - **Risks/notes:** Undefined empty/error states reduce usability and supportability.
-  - **Dependencies/prerequisites:** P4-T2, P5-T1.
+  - **Dependencies/prerequisites:** P4-T2.
   - **Deliverables/artifacts:** Friends list sync and UI contract.
   - **Acceptance criteria:** Friends list tabs are test-defined and stable under presence updates.
   - **Suggested priority/order:** P1, Order 15.
@@ -625,7 +634,7 @@ Priority legend used below:
     - [ ] **P6-T2-ST1 Define parser rules for `@user`, `@role`, `@everyone`, `@here`**
       - **Objective:** Ensure consistent mention detection across clients.
       - **Concrete actions:** Specify lexical boundaries, escaping behavior, and ambiguous-token handling.
-      - **Dependencies/prerequisites:** P1-T1 schema baseline.
+      - **Dependencies/prerequisites:** P1-T1.
       - **Deliverables/artifacts:** Mention parser specification.
       - **Acceptance criteria:** Parser rules include positive and negative examples for each mention type.
       - **Suggested priority/order:** P0, Order 20.1.
@@ -648,8 +657,8 @@ Priority legend used below:
   - **Objective:** Prevent mass-mention abuse and present clear attention cues.
   - **Concrete actions:**
     - [ ] **P6-T3-ST1 Define authorization checks for `@role`, `@everyone`, `@here` in v0.2**
-      - **Objective:** Apply minimum safe controls without introducing v0.4 RBAC management scope.
-      - **Concrete actions:** Define interim authorization rules and explicit constraints until full RBAC arrives.
+      - **Objective:** Apply baseline RBAC controls without importing v0.4 custom-role governance scope.
+      - **Concrete actions:** Define authorization rules based on Owner/Admin/Moderator/Member and explicit constraints for out-of-scope role management.
       - **Dependencies/prerequisites:** P6-T2.
       - **Deliverables/artifacts:** Mention authorization policy for v0.2.
       - **Acceptance criteria:** Unauthorized mass mentions are rejected with deterministic reason codes.
@@ -665,9 +674,59 @@ Priority legend used below:
       - **Risks/notes:** UI inconsistency can mask critical mention events.
   - **Dependencies/prerequisites:** P6-T1, P6-T2, P4-T3.
   - **Deliverables/artifacts:** Mention authorization and attention-surface contract.
-  - **Acceptance criteria:** v0.2 mention feature is complete without importing full moderation/RBAC scope.
+  - **Acceptance criteria:** v0.2 mention feature is complete using baseline RBAC without importing v0.4 advanced governance scope.
   - **Suggested priority/order:** P1, Order 21.
-  - **Risks/notes:** Keep explicit forward-compatibility hooks for v0.4 permissions.
+  - **Risks/notes:** Keep explicit forward-compatibility hooks for v0.4 custom-role and override model.
+
+- [ ] **[P0][Order 21.5] P6-T4 Define baseline RBAC contract for Owner/Admin/Moderator/Member**
+  - **Objective:** Specify deterministic role hierarchy and permission boundaries required by v0.2 moderation/mention controls.
+  - **Concrete actions:**
+    - [ ] **P6-T4-ST1 Define baseline role hierarchy and actor-target authority matrix**
+      - **Objective:** Remove ambiguity in who can perform moderation or mass-mention actions.
+      - **Concrete actions:** Define role ordering, escalation constraints, and forbidden actor-target combinations.
+      - **Dependencies/prerequisites:** P6-T2, P6-T3.
+      - **Deliverables/artifacts:** Baseline RBAC hierarchy and authority matrix.
+      - **Acceptance criteria:** Equivalent actor-target requests produce deterministic allow/deny outcomes.
+      - **Suggested priority/order:** P0, Order 21.5.1.
+      - **Risks/notes:** Ambiguous hierarchy semantics create privilege-escalation risk.
+    - [ ] **P6-T4-ST2 Define role-resolution behavior for reconnect/stale-state conditions**
+      - **Objective:** Ensure authorization decisions converge under decentralized state propagation.
+      - **Concrete actions:** Define stale-role detection, fallback behavior, and deterministic rejection semantics.
+      - **Dependencies/prerequisites:** P6-T4-ST1.
+      - **Deliverables/artifacts:** RBAC convergence and stale-state handling contract.
+      - **Acceptance criteria:** Stale-role scenarios converge to one deterministic enforcement outcome.
+      - **Suggested priority/order:** P0, Order 21.5.2.
+      - **Risks/notes:** Divergent role state can produce inconsistent enforcement across clients.
+  - **Dependencies/prerequisites:** P6-T2, P6-T3.
+  - **Deliverables/artifacts:** v0.2 baseline RBAC contract.
+  - **Acceptance criteria:** Owner/Admin/Moderator/Member behavior is fully specified and test-mapped.
+  - **Suggested priority/order:** P0, Order 21.5.
+  - **Risks/notes:** Must remain baseline-only; custom roles and channel overrides stay deferred to v0.4.
+
+- [ ] **[P0][Order 21.6] P6-T5 Define baseline moderation protocol events and slow-mode enforcement semantics**
+  - **Objective:** Specify deterministic redaction/delete, timeout, ban, and slow-mode contracts in a decentralized enforcement model.
+  - **Concrete actions:**
+    - [ ] **P6-T5-ST1 Define signed moderation-event schema and decentralized enforcement requirements**
+      - **Objective:** Make moderation behavior protocol-native and auditable rather than UI-only.
+      - **Concrete actions:** Define event fields, signer requirements, actor-target preconditions, and official-client enforcement obligations with explicit non-compliance signaling.
+      - **Dependencies/prerequisites:** P6-T4.
+      - **Deliverables/artifacts:** Baseline moderation-event contract.
+      - **Acceptance criteria:** Redaction/delete, timeout, and ban events have deterministic success/failure semantics and signed verification rules.
+      - **Suggested priority/order:** P0, Order 21.6.1.
+      - **Risks/notes:** Ambiguous enforcement semantics can fragment moderation outcomes.
+    - [ ] **P6-T5-ST2 Define channel slow-mode timing semantics and replay/rejoin behavior**
+      - **Objective:** Ensure slow mode remains deterministic under network interruptions and event replay.
+      - **Concrete actions:** Define timer scope, bypass conditions by baseline role, rejection reason codes, and replay reconciliation behavior.
+      - **Dependencies/prerequisites:** P6-T5-ST1.
+      - **Deliverables/artifacts:** Slow-mode enforcement and reconciliation policy.
+      - **Acceptance criteria:** Equivalent message streams under slow mode yield deterministic accept/reject outcomes across reconnect/replay paths.
+      - **Suggested priority/order:** P0, Order 21.6.2.
+      - **Risks/notes:** Timer drift can create fairness and trust issues.
+  - **Dependencies/prerequisites:** P6-T4.
+  - **Deliverables/artifacts:** Baseline moderation + slow-mode contract.
+  - **Acceptance criteria:** v0.2 moderation/slow-mode behavior is protocol-defined, signed, and testable without authoritative-node assumptions.
+  - **Suggested priority/order:** P0, Order 21.6.
+  - **Risks/notes:** Enforcement remains decentralized and client-compliance dependent by design.
 
 ---
 
@@ -676,10 +735,10 @@ Priority legend used below:
 - [ ] **[P0][Order 22] P7-T1 Define and execute v0.2 end-to-end scenario validation pack**
   - **Objective:** Verify core user journeys across all v0.2 capabilities.
   - **Concrete actions:**
-    - [ ] **P7-T1-ST1 Build scenario pack for DM, Group DM, friends, presence, notifications, mentions**
+    - [ ] **P7-T1-ST1 Build scenario pack for DM, Group DM, friends, presence, notifications, mentions, baseline RBAC, moderation, and slow mode**
       - **Objective:** Cover all critical interactions in realistic flow sequences.
       - **Concrete actions:** Define baseline scenarios including online and offline transitions.
-      - **Dependencies/prerequisites:** P2-T3, P3-T3, P4-T3, P5-T3, P6-T3.
+      - **Dependencies/prerequisites:** P2-T3, P3-T3, P4-T3, P5-T3, P6-T5.
       - **Deliverables/artifacts:** v0.2 scenario test specification.
       - **Acceptance criteria:** Every v0.2 scope bullet appears in at least one end-to-end scenario.
       - **Suggested priority/order:** P0, Order 22.1.
@@ -692,7 +751,7 @@ Priority legend used below:
       - **Acceptance criteria:** Recovery paths are deterministic and produce actionable outcomes.
       - **Suggested priority/order:** P0, Order 22.2.
       - **Risks/notes:** Recovery behavior is often under-specified until late stages.
-  - **Dependencies/prerequisites:** Completion of Phases 1-6.
+  - **Dependencies/prerequisites:** P1-T1 through P6-T5.
   - **Deliverables/artifacts:** End-to-end validation evidence bundle.
   - **Acceptance criteria:** V2-G4 to V2-G5 transition backed by scenario evidence.
   - **Suggested priority/order:** P0, Order 22.

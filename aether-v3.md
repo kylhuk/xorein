@@ -685,6 +685,41 @@ The aesthetic is: **terminal meets glass**. Think if Hyper Terminal and Discord 
 
 ## Part III: Revised Version Roadmap
 
+### Addendum A Merge: QoL Reliability and Discovery/Moderation Pull-Forward
+
+This section merges Addendum A into roadmap planning. It is a planning-level override only, not an implementation claim.
+
+#### A) Quality ship gates (release blockers)
+- Login-to-ready SLO: warm start ≤3s, cold start ≤8s.
+- Delivery SLO: ≥99.9% of messages delivered within 5s on normal networks, with explicit degraded-state UX.
+- Call setup SLO: ringing within ≤2s (p50), ≤4s (p95).
+- Recovery SLO: Wi‑Fi↔LTE network switch recovers active calls within ≤2s (p95) without user action.
+- Stability gates: crash-free sessions ≥99.5% on supported devices; no release if call setup p95 regresses >10% versus previous stable.
+
+#### B) Connectivity subsystems now explicit
+- **Connectivity Orchestrator (CO):** continuous reachability management, path selection/fallback, recovery, and deterministic reason-coded diagnostics.
+- **Aether Tunnel:** opportunistic QUIC-based encrypted overlay session for unstable/failed NAT scenarios, with migration + multiplexed streams.
+
+#### C) Discovery contracts: `DirectoryEntry` + indexer trust model
+- Public discovery uses signed `DirectoryEntry` records (opt-in only), published via deterministic DHT keys.
+- Keyword search uses optional, community-run indexers; indexers are non-authoritative and must return verifiable signed records.
+- Clients support multi-indexer querying and local de-duplication; no special authoritative node class is introduced.
+
+#### D) Moderation protocol events + enforcement semantics
+- Moderation is a protocol contract (not UI-only): signed events for redaction/delete, timeout, ban, and slow mode.
+- Official clients must enforce signed moderation events and expose enforcement state; auditability remains append-only and signed.
+
+#### E) Pull-forward roadmap overrides (scope timing)
+- **v0.2:** basic RBAC + baseline moderation + slow mode.
+- **v0.3:** directory/explore/indexer + invite/request-to-join.
+- **v0.4:** advanced moderation (policy versioning + auto-mod) and full custom role/override model.
+- **v0.6:** hardening/scaling of discovery, moderation reliability, and anti-abuse systems.
+
+#### F) Guardrails unchanged
+- Protocol-first framing remains mandatory: protocol/spec contract is the product.
+- Compatibility/governance remains unchanged: protobuf minor updates are additive-only; major changes require new multistream IDs + downgrade negotiation + AEP process + multi-implementation validation.
+- Open decisions remain open, including mobile-notification wake centralization risk.
+
 ### v0.1.0 — "First Light" (MVP)
 **Duration: 6–8 weeks**
 
@@ -765,6 +800,9 @@ The aesthetic is: **terminal meets glass**. Think if Hyper Terminal and Discord 
 - [ ] Friends list UI with online/offline/pending tabs
 - [ ] Notification system (in-app badges, unread counts)
 - [ ] @mentions: `@user`, `@role`, `@everyone`, `@here`
+- [ ] Basic RBAC baseline: Owner/Admin/Moderator/Member
+- [ ] Baseline moderation protocol events + enforcement: redaction/delete, timeout, ban
+- [ ] Channel slow mode (deterministic per-channel enforcement)
 
 ---
 
@@ -784,6 +822,10 @@ The aesthetic is: **terminal meets glass**. Think if Hyper Terminal and Discord 
 - [ ] Screen share viewer: fullscreen, PiP, zoom/pan
 - [ ] P2P file transfer (inline in chat, up to 25MB, chunked)
 - [ ] Image inline preview, file attachment cards
+- [ ] Public `DirectoryEntry` publication (opt-in) + DHT retrieval contract
+- [ ] Explore/Discover browsing + server preview for public listings
+- [ ] Invite system + request-to-join flow
+- [ ] Initial community-run indexer reference (`cmd/indexer`, Docker) + signed/verifiable search responses
 
 ---
 
@@ -795,10 +837,10 @@ The aesthetic is: **terminal meets glass**. Think if Hyper Terminal and Discord 
 - [ ] Role properties: name, color, icon, permissions, hoisted, mentionable
 - [ ] Channel categories (collapsible groups)
 - [ ] Channel types: text, voice, announcement, stage
-- [ ] Moderation: kick, ban, timeout/mute, delete message, slow mode
-- [ ] Audit log (signed entries, viewable by authorized roles)
-- [ ] Invite system: `aether://join/<id>/<code>` with max uses + expiry
-- [ ] Server visibility: public / hidden / password-protected
+- [ ] Full custom roles + deterministic channel permission overrides
+- [ ] Advanced moderation policy: versioning, migration rules, and rollback semantics
+- [ ] Auto-moderation hooks (rate limits, keyword filters, extensible policy pipeline)
+- [ ] Audit log expansion (signed entries + policy traceability for authorized roles)
 
 ---
 
@@ -820,19 +862,18 @@ The aesthetic is: **terminal meets glass**. Think if Hyper Terminal and Discord 
 
 ---
 
-### v0.6.0 — "Sentinel" (Discovery, Safety, Anti-Spam)
+### v0.6.0 — "Sentinel" (Hardening, Safety, Anti-Spam)
 **Duration: 4–5 weeks**
 
-- [ ] Server directory via DHT (public servers publish discovery records)
-- [ ] Global search: keyword, category, language, member count
-- [ ] Explore/Discover tab in UI
-- [ ] Server preview before joining
+- [ ] Discovery/indexer hardening: freshness validation, poisoning resistance, deterministic dedupe/merge
+- [ ] Multi-indexer query strategy hardening (privacy-preserving query options, fallback behavior)
+- [ ] Moderation reliability hardening under partition/rejoin with deterministic event replay
 - [ ] Proof-of-Work on identity creation (~5s computation, Hashcash-style)
 - [ ] Per-user rate limiting (5 msgs/5s, enforced locally)
 - [ ] GossipSub peer scoring (flood protection, penalize misbehavior)
 - [ ] Web-of-trust reputation system
 - [ ] Block user (local mute), report to server moderators
-- [ ] Optional per-server content filters (keyword/regex, on-device ML image classification)
+- [ ] Optional per-server content filters hardening (keyword/regex, on-device ML image classification)
 
 ---
 

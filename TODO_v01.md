@@ -27,7 +27,8 @@ All criteria must pass before v0.1 is considered done:
 5. **Voice baseline:** Voice sessions with up to eight peers are stable with full mesh topology and essential controls.
 6. **Relay baseline:** Headless relay mode provides DHT bootstrap and Circuit Relay v2; basic encrypted store-and-forward is functional.
 7. **Engineering foundation:** CI lint and test gates, protobuf generation and compatibility checks, config generation, and reproducible build scaffolding are in place.
-8. **Scope integrity:** Deferred v0.2+ features remain explicitly out of v0.1 implementation scope.
+8. **Diagnostics groundwork:** Connectivity reason-code/event taxonomy, privacy-preserving local diagnostic ring-buffer export hooks, and baseline measurement scaffolding are specified as groundwork for later quality diagnostics without importing later-version hardening scope.
+9. **Scope integrity:** Deferred v0.2+ features remain explicitly out of v0.1 implementation scope.
 
 ---
 
@@ -310,6 +311,7 @@ graph LR
   - Deliverables:
     - Test matrix mapping tests to risks and gates
     - Minimum coverage expectations by package criticality
+    - Baseline measurement scaffold template for first-launch and connectivity outcomes
   - Dependencies: P2-T1, P2-T2.
   - Acceptance Criteria:
     - Unit, property, fuzz, and integration layers are represented.
@@ -318,6 +320,7 @@ graph LR
     - [ ] Define crypto and protocol test strictness.
     - [ ] Define integration scenarios for LAN and relay fallback.
     - [ ] Define failure triage policy for flaky tests.
+    - [ ] Define baseline KPI capture template (connectivity outcomes, fallback frequency, reconnect success) with privacy-preserving local storage boundaries.
 
 - [ ] `[Research][P0][Effort:M][Owner:Storage Engineer]` **P2-T10 Research SQLCipher integration and portability risks**
   - Description: Resolve implementation strategy for encrypted local storage and migration behavior.
@@ -503,6 +506,7 @@ graph LR
     - [ ] Define traversal state machine.
     - [ ] Define relay reservation lifecycle.
     - [ ] Define fallback timeout policy.
+    - [ ] Define standardized connectivity reason codes and lifecycle events for traversal, relay fallback, and recovery transitions.
 
 - [ ] `[Build][P0][Effort:M][Owner:Storage Engineer]` **P4-T6 Implement local peer cache persistence**
   - Description: Persist successful peer addresses and prioritize them at startup.
@@ -539,7 +543,7 @@ graph LR
   - Dependencies: P4-T2, P4-T3, P4-T4, P4-T6.
   - Acceptance Criteria:
     - Test passes repeated runs with clean state.
-    - Failure modes include actionable diagnostics.
+    - Failure modes include actionable diagnostics with normalized reason-code/event evidence.
   - Sub-Tasks:
     - [ ] Run same-subnet clean-start tests.
     - [ ] Run restart and reconnect tests using peer cache.
@@ -1098,6 +1102,7 @@ graph LR
   - Deliverables:
     - Settings UI for profile and audio
     - Basic network diagnostics view
+    - Local diagnostic ring-buffer export hook with privacy-preserving redaction policy and explicit user-trigger controls
   - Dependencies: P5-T1, P8-T5, P4-T8.
   - Acceptance Criteria:
     - User can inspect and adjust key settings without leaving app flow.
@@ -1105,6 +1110,7 @@ graph LR
   - Sub-Tasks:
     - [ ] Define settings persistence flow.
     - [ ] Define diagnostics data surfaces and redaction rules.
+    - [ ] Define ring-buffer export trigger, export format envelope, and local retention bounds.
 
 - [ ] `[Validation][P0][Effort:M][Owner:QA Engineer]` **P10-T6 Validate end-user shell flows for first-launch journey**
   - Description: Validate all UI steps required by five-minute first contact scenario.
@@ -1147,6 +1153,7 @@ graph LR
     - [ ] Run baseline scenario multiple times.
     - [ ] Capture timing and failure points.
     - [ ] Publish run summary and pass rate.
+    - [ ] Export baseline measurement scaffold outputs (reason-code/event counts and fallback frequencies) for future-version comparison.
 
 - [ ] `[Validation][P0][Effort:M][Owner:QA Engineer]` **P11-T2 Run integrated regression suite across core pillars**
   - Description: Validate no regressions across identity, join, text, voice, and relay paths.
@@ -1291,7 +1298,8 @@ v0.1 is done only when all conditions below are true:
 6. **Engineering baseline:** Lint, tests, protobuf checks, and security scans are integrated into CI for merge gating.
 7. **Compatibility and governance:** Protocol and schema changes respect documented compatibility and governance constraints.
 8. **Documentation baseline:** User quickstart, operator guide, and known limitations are published.
-9. **Scope discipline:** Deferred v0.2+ features remain unimplemented in v0.1 and are documented as deferred.
+9. **Diagnostics groundwork baseline:** Connectivity reason codes/events, local privacy-preserving diagnostic ring-buffer export hooks, and baseline measurement scaffolding exist as planning-level groundwork only.
+10. **Scope discipline:** Deferred v0.2+ features remain unimplemented in v0.1 and are documented as deferred.
 
 ---
 
