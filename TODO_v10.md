@@ -18,6 +18,15 @@
 
 ---
 
+## Stack Alignment Constraints (Parent Recommendation, Planning-Level)
+
+- This section is recommendation-only planning guidance and does not claim implementation completion.
+- Control plane default: libp2p secure channels use Noise_XX_25519_ChaChaPoly_SHA256 as the single supported suite; QUIC is preferred for reliable multiplexed streams, and this plan must not imply TCP-only operation.
+- Media plane default: ICE (STUN/TURN), SRTP hop-by-hop, SFrame true media E2EE, and browser encoded-transform/insertable-streams integration where browser media clients apply.
+- Key-management baseline carried forward: X3DH + Double Ratchet for DMs; MLS for group key agreement; any inherited Sender Keys mentions remain compatibility/migration context only.
+- Crypto defaults carried forward: SFrame AES-GCM full-tag default (for example AES_128_GCM_SHA256_128 intent), avoid short tags unless explicitly justified; messaging AEAD baseline ChaCha20-Poly1305 with optional AES-GCM negotiation; Noise suite fixed as above; SRTP baseline unchanged.
+- Latency/resilience baseline carried forward for dependent realtime behavior: race direct ICE and relay/TURN in parallel, continuous path probing with seamless migration, RTT-aware multi-region relay/SFU selection with warm standby, dynamic topology switching (P2P 1:1, mesh small groups, SFU larger groups) with no SFU transcoding, and background resilience controls.
+
 ## A. Status and Source-of-Truth Framing
 
 ### A.1 Planning-only status
@@ -63,6 +72,14 @@ Deliver **v1.0 Genesis** as a protocol-first public-release planning artifact th
 10. Integrated validation covers positive, adverse, degraded, and recovery pathways across all eight v1.0 bullets.
 11. Go/no-go governance criteria are deterministic with explicit pass/fail and evidence-link requirements.
 12. Final release-conformance and handoff dossier is complete with explicit deferral mapping to post-v1 roadmap bands.
+
+### B.3 QoL integration contract for v1.0 public-release readiness (planning-level)
+
+- **Journey-based acceptance gates and per-wave QoL scorecards are mandatory release evidence:** `V10-G10` cannot exit without consolidated scorecards from each wave covering no-limbo behavior, recovery clarity, deterministic reason coverage, attention coherence, and continuity correctness.
+  - **Acceptance criterion:** every release-critical journey has pass/fail outcome with linked artifacts, and unresolved QoL regressions block go/no-go.
+  - **Verification evidence:** `V10-G10` dossier contains scorecard index with trace links to prior-wave gate artifacts and current-release validation records.
+- **Global no-limbo invariant at launch readiness:** public-release flows (first-run, reconnect, message attention resume, call recovery, cross-device resume) must expose deterministic state, reason class, and next action.
+  - **Verification evidence:** integrated go/no-go matrix proves zero ambiguous terminal states across launch-critical journeys.
 
 ---
 

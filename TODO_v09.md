@@ -18,6 +18,15 @@
 
 ---
 
+## Stack Alignment Constraints (Parent Recommendation, Planning-Level)
+
+- This section is recommendation-only planning guidance and does not claim implementation completion.
+- Control plane default: libp2p secure channels use Noise_XX_25519_ChaChaPoly_SHA256 as the single supported suite; QUIC is preferred for reliable multiplexed streams, and this plan must not imply TCP-only operation.
+- Media plane default: ICE (STUN/TURN), SRTP hop-by-hop, SFrame true media E2EE, and browser encoded-transform/insertable-streams integration where browser media clients apply.
+- Key-management baseline carried forward: X3DH + Double Ratchet for DMs; MLS for group key agreement; any inherited Sender Keys mentions remain compatibility/migration context only.
+- Crypto defaults carried forward: SFrame AES-GCM full-tag default (for example AES_128_GCM_SHA256_128 intent), avoid short tags unless explicitly justified; messaging AEAD baseline ChaCha20-Poly1305 with optional AES-GCM negotiation; Noise suite fixed as above; SRTP baseline unchanged.
+- Latency/resilience baseline carried forward for dependent realtime behavior: race direct ICE and relay/TURN in parallel, continuous path probing with seamless migration, RTT-aware multi-region relay/SFU selection with warm standby, dynamic topology switching (P2P 1:1, mesh small groups, SFU larger groups) with no SFU transcoding, and background resilience controls.
+
 ## A. Status and Source-of-Truth Framing
 
 ### A.1 Planning-only status
@@ -59,6 +68,16 @@ Deliver **v0.9 Forge** as a protocol-first planning artifact that defines perfor
 8. Compatibility/governance controls and evidence model are complete and gate-auditable.
 9. Integrated validation phase covers positive, adverse, saturation, and recovery pathways across all seven v0.9 bullets.
 10. Release/handoff package provides complete traceability, explicit deferrals, and planning-only language integrity.
+
+### B.3 QoL integration contract for v0.9 scale-performance journeys (planning-level)
+
+- **Unified health and deterministic next action at scale:** high-load and saturation states in large-server, SFU, relay, and battery-sensitive flows must preserve explicit user state and recovery guidance.
+  - **Acceptance criterion:** stress scenarios expose deterministic state/reason/action outcomes for throttling, saturation, and degradation conditions.
+  - **Verification evidence:** `V9-G8` contains scale QoL score rows tied to `VA-S*`, `VA-R*`, and `VA-B*` artifacts.
+- **Recovery-first call continuity at 200+ participant targets:** cascading-SFU degradation paths prioritize rejoin/switch-path/switch-device guidance and avoid ambiguous terminal outcomes.
+  - **Verification evidence:** `V9-G3` and integrated validation include explicit recovery-path evidence with deterministic pass/fail criteria.
+- **Cross-device continuity under performance constraints:** attention resume, read continuity, and interaction handoff remain deterministic despite profiling-driven optimizations.
+  - **Verification evidence:** battery/perf optimization gates include continuity-regression checks with explicit fail conditions.
 
 ---
 

@@ -16,6 +16,15 @@
 
 ---
 
+## Stack Alignment Constraints (Parent Recommendation, Planning-Level)
+
+- This section is recommendation-only planning guidance and does not claim implementation completion.
+- Control plane default: libp2p secure channels use `Noise_XX_25519_ChaChaPoly_SHA256` as the single supported suite; QUIC is preferred for reliable multiplexed streams, and this plan must not imply TCP-only operation.
+- Media plane default: ICE (STUN/TURN), SRTP hop-by-hop, SFrame true media E2EE, and browser encoded-transform/insertable-streams integration where browser media clients apply.
+- Key-management baseline carried forward: X3DH + Double Ratchet for DMs; MLS for group key agreement; historical Sender Keys references are compatibility/migration context only.
+- Crypto defaults carried forward: SFrame AES-GCM full-tag default (for example `AES_128_GCM_SHA256_128` intent), avoid short tags unless explicitly justified; messaging AEAD baseline `ChaCha20-Poly1305` with optional AES-GCM negotiation; Noise suite fixed as above; SRTP baseline unchanged.
+- Latency/resilience guidance carried forward for dependent realtime behavior: race direct ICE and relay/TURN in parallel, continuous path probing with seamless migration, RTT-aware multi-region relay/SFU selection with warm standby, dynamic topology switching (P2P 1:1, mesh small groups, SFU larger groups) with no SFU transcoding, and background resilience controls.
+
 ## 1. v0.4 Objective and Measurable Success Outcomes
 
 ### 1.1 Objective
@@ -35,6 +44,14 @@ Deliver **v0.4 Dominion** as a protocol-first execution plan focused on **advanc
 6. Moderation semantics remain compatible with decentralized enforcement (signed events honored by compliant clients; no authoritative moderator node assumptions).
 7. Compatibility/governance conformance controls and evidence schema are complete and gate-auditable.
 8. Release handoff package preserves planned-only wording and explicit deferrals.
+
+### 1.3 QoL integration contract for v0.4 governance surfaces (planning-level)
+
+- **Deterministic reason taxonomy hardening:** moderation-policy, permission, and enforcement outcomes exposed to users map to stable reason classes shared with audit and diagnostics.
+  - **Acceptance criterion:** equivalent deny/enforce/failure classes produce consistent reason-class outputs across role, policy, and auto-mod paths.
+  - **Verification evidence:** `V4-G5` conformance bundle includes reason-taxonomy coverage table linked to `VA-M*` and `VA-A*` artifacts.
+- **No-limbo enforcement for governance actions:** moderation and policy workflows that affect user-visible state must always present current state and next permitted action.
+  - **Verification evidence:** cross-feature scenarios include denied-action and appeal/recovery pathways with deterministic state transitions.
 
 ---
 
@@ -200,4 +217,3 @@ Handling rule: open decisions remain `Open` and are not presented as settled arc
 ## 10. Definition of Done for v0.4 Planning Artifact
 
 This artifact is complete when it captures advanced moderation/governance scope exactly, preserves protocol-first constraints, and provides gate-testable contracts and handoff evidence without implementation claims.
-

@@ -17,6 +17,15 @@
 
 ---
 
+## Stack Alignment Constraints (Parent Recommendation, Planning-Level)
+
+- This section is recommendation-only planning guidance and does not claim implementation completion.
+- Control plane default: libp2p secure channels use `Noise_XX_25519_ChaChaPoly_SHA256` as the single supported suite; QUIC is preferred for reliable multiplexed streams, and this plan must not imply TCP-only operation.
+- Media plane default: ICE (STUN/TURN), SRTP hop-by-hop, SFrame true media E2EE, and browser encoded-transform/insertable-streams integration where browser media clients apply.
+- Key-management baseline carried forward: X3DH + Double Ratchet for DMs; MLS for group key agreement; Sender Keys mentions are compatibility/migration context only.
+- Crypto defaults carried forward: SFrame AES-GCM full-tag default (for example `AES_128_GCM_SHA256_128` intent), avoid short tags unless explicitly justified; messaging AEAD baseline `ChaCha20-Poly1305` with optional AES-GCM negotiation; Noise suite fixed as above; SRTP baseline unchanged.
+- Latency/resilience baseline carried forward for dependent realtime behavior: parallel direct ICE and relay/TURN racing, continuous path probing and seamless migration, RTT-aware multi-region relay/SFU selection with warm standby, dynamic topology switching (P2P 1:1, mesh small groups, SFU larger groups) with no SFU transcoding, and background resilience controls.
+
 ## 1. v0.5 Objective and Measurable Success Outcomes
 
 ### 1.1 Objective
@@ -48,6 +57,16 @@ Deliver **v0.5 Pulse** as a protocol-first execution plan that adds bot extensib
 15. Incoming webhook endpoint, auth controls, idempotency, retry semantics, and channel routing behaviors are deterministic and auditable.
 16. Validation artifact model and scope-to-task traceability are complete and gate-auditable.
 17. Release-conformance and handoff package is complete with explicit planning-only language and explicit deferrals beyond v0.5.
+
+### 1.3 QoL integration contract for v0.5 extensibility and message-surface flows (planning-level)
+
+- **Unread/mention/notification coherence carry-forward:** bot, webhook, emoji, reaction, and slash-command side effects must preserve deterministic attention-state coherence inherited from v0.2.
+  - **Acceptance criterion:** equivalent event classes from user and automation sources produce coherent unread/mention/notification outcomes.
+  - **Verification evidence:** `V5-G6` integrated scenarios include cross-origin coherence matrix with pass/fail mapping.
+- **Deterministic reason taxonomy continuity:** command, webhook, and shim failure outcomes exposed to users/admins map to stable reason classes compatible with prior-wave taxonomy.
+  - **Verification evidence:** reason-taxonomy coverage table links `VA-B*`, `VA-D*`, and `VA-W*` artifacts.
+- **No-limbo automation UX invariant:** interactive automation flows (slash invoke, webhook post, shim action) must not end in ambiguous pending states.
+  - **Verification evidence:** gate evidence includes explicit timeout/fallback/next-action outcomes for automation failures.
 
 ---
 

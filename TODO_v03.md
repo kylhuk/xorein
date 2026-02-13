@@ -19,6 +19,15 @@
 
 ---
 
+## Stack Alignment Constraints (Parent Recommendation, Planning-Level)
+
+- This section is recommendation-only planning guidance and does not claim implementation completion.
+- Control plane default: libp2p secure channels use `Noise_XX_25519_ChaChaPoly_SHA256` as the single supported suite; QUIC is preferred for reliable multiplexed streams, and this plan must not imply TCP-only operation.
+- Media plane default: ICE (STUN/TURN) path establishment, SRTP hop-by-hop, SFrame for true media E2EE, and browser encoded-transform/insertable-streams integration where browser clients apply.
+- Key management baseline for cross-version consistency: X3DH + Double Ratchet for DMs; MLS for group key agreement; Sender Keys references in inherited materials are compatibility/migration context only.
+- Crypto defaults: SFrame AES-GCM full-tag profile by default (for example `AES_128_GCM_SHA256_128` intent), avoid short tags unless explicitly justified; messaging AEAD baseline `ChaCha20-Poly1305` with optional negotiated AES-GCM; Noise suite fixed as above; SRTP baseline unchanged.
+- Latency/resilience strategy baseline: race direct ICE and relay/TURN in parallel; continuous path probing and seamless migration; RTT-aware multi-region relay/SFU selection with warm standby; dynamic topology switching (P2P 1:1, mesh small groups, SFU larger groups) without SFU transcoding; audio-first tuning (Opus 10ms, DTX/FEC, adaptive jitter), simulcast/SVC for screen share with hardware encode preference, and background resilience (keepalives, fast network-change handling, ICE restarts/path migration, key pre-provisioning).
+
 ## 1. v0.3 Objective and Measurable Success Outcomes
 
 ### 1.1 Objective
@@ -45,6 +54,15 @@ Deliver **v0.3 "Clarity"** as a protocol-first execution plan that aligns exactl
 12. Release-conformance and execution-handoff evidence package is complete and planning-only.
 
 ---
+
+### 1.3 QoL integration contract for v0.3 discovery and media journeys (planning-level)
+
+- **Journey-level no-limbo enforcement:** discovery/admission and media-start journeys must terminate in explicit user state with next-step recovery guidance.
+  - **Acceptance criterion:** `V3-G4` and `V3-G6` evidence include deterministic state/reason/action mapping for preview, join, screen-share start, and file-transfer start failures.
+- **Unified health and recovery language extension:** v0.3 discovery and media contracts must reuse canonical health-state vocabulary from earlier waves.
+  - **Verification evidence:** contract artifacts include shared health-state dictionary references and mismatch checks.
+- **Recovery-first call-adjacent UX continuity:** voice and screen-share disruptions specify rejoin, path-switch, and device-switch guidance before terminal failure outcomes.
+  - **Verification evidence:** degraded and recovery scenarios in `V3-G1` and `V3-G2` include explicit user-action pathways.
 
 ## 2. Scope Derivation from `aether-v3.md` (v0.3 In-Scope Only)
 

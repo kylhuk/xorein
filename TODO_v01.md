@@ -8,13 +8,22 @@
 
 ---
 
+## Stack Alignment Constraints (Parent Recommendation, Planning-Level)
+
+- This section is a planning recommendation baseline and does not claim implementation completion.
+- Control plane default: libp2p secure channels standardize on `Noise_XX_25519_ChaChaPoly_SHA256`; QUIC is preferred for reliable multiplexed streams, and this plan must not imply TCP-only operation.
+- Media plane default: ICE (STUN/TURN) for path establishment, SRTP hop-by-hop, SFrame for true media E2EE, and browser encoded-transform/insertable-streams integration where browser clients apply.
+- Key-management default: X3DH + Double Ratchet for 1:1 DMs; MLS is the target group key-agreement system. Any Sender Keys references in this file are compatibility/migration context only (including SFrame key-management interoperability notes), not long-term default guidance.
+- Crypto defaults: SFrame AES-GCM full-tag profile by default (for example `AES_128_GCM_SHA256_128` intent), no short tags unless explicitly justified; messaging AEAD baseline `ChaCha20-Poly1305` with optional negotiated AES-GCM; Noise suite fixed as above; SRTP baseline unchanged.
+- Latency/resilience strategy baseline: race direct ICE and relay/TURN in parallel; continuous path probing and seamless migration; RTT-aware multi-region relay/SFU selection with warm standby; dynamic topology switching (P2P 1:1, mesh for small groups, SFU for larger groups) with no SFU transcoding; audio-first tuning (Opus 10ms, DTX/FEC, adaptive jitter), simulcast/SVC for screen share with hardware encode preference, plus background resilience (keepalives, rapid network-change handling, ICE restarts/path migration, key pre-provisioning).
+
 ## 1. v0.1 Objective and Success Criteria
 
 ### 1.1 Objective
 Deliver the v0.1 First Light MVP where two users on the same LAN can go from first launch to secure communication quickly and reliably:
 - Create identity
 - Create and join a server
-- Exchange text chat using Sender Keys E2EE
+- Exchange text chat using MLS-based group E2EE (with Sender Keys compatibility bridge only where migration/interoperability requires it)
 - Join voice chat using full mesh for small groups
 - Use a headless relay MVP for baseline connectivity support
 
@@ -23,12 +32,22 @@ All criteria must pass before v0.1 is considered done:
 1. **First-launch usability:** Two fresh clients on same LAN complete first contact flow in under five minutes in repeated test runs.
 2. **Identity lifecycle:** Identity creation and local persistence are stable; profile signing and verification operate consistently.
 3. **Server bootstrap:** Server manifest can be created, published, resolved, and joined via deeplink.
-4. **Text security:** Channel messages are encrypted end to end with Sender Keys and validated with protocol tests.
+4. **Text security:** Channel messages are encrypted end to end with MLS-based group keying (Sender Keys compatibility bridge only where required) and validated with protocol tests.
 5. **Voice baseline:** Voice sessions with up to eight peers are stable with full mesh topology and essential controls.
 6. **Relay baseline:** Headless relay mode provides DHT bootstrap and Circuit Relay v2; basic encrypted store-and-forward is functional.
 7. **Engineering foundation:** CI lint and test gates, protobuf generation and compatibility checks, config generation, and reproducible build scaffolding are in place.
 8. **Diagnostics groundwork:** Connectivity reason-code/event taxonomy, privacy-preserving local diagnostic ring-buffer export hooks, and baseline measurement scaffolding are specified as groundwork for later quality diagnostics without importing later-version hardening scope.
 9. **Scope integrity:** Deferred v0.2+ features remain explicitly out of v0.1 implementation scope.
+
+### 1.3 QoL integration contract for v0.1 (planning-level)
+
+- **Global no-limbo invariant (enforceable):** first-contact journeys (identity create, server join, first message, first voice join) must not end in ambiguous waiting.
+  - **Acceptance criterion:** each degraded or failure step exposes current user state, deterministic reason class, and next recovery action.
+  - **Verification evidence:** `G6` bundle includes a journey matrix with explicit state/reason/action rows and zero unresolved-limbo entries.
+- **Deterministic reason taxonomy foundation:** connectivity, identity, join, messaging, and media-setup outcomes use stable reason classes suitable for protocol diagnostics and user-facing copy.
+  - **Verification evidence:** reason-class map is referenced by acceptance-charter negative-path checks.
+- **Journey-based QoL gate evidence:** `G6` release readiness includes a per-wave QoL scorecard for login-to-ready and five-minute first-contact journeys.
+  - **Verification evidence:** scorecard provides pass/fail results with artifact links, not narrative-only signoff.
 
 ---
 
@@ -38,7 +57,7 @@ All criteria must pass before v0.1 is considered done:
 - P2P core connectivity: libp2p host setup, DHT, GossipSub, mDNS, peer cache, bootstrap path.
 - Identity lifecycle: key generation, profile, local encrypted storage, recovery flow.
 - Server creation and join path: signed manifest and deeplink.
-- Text chat MVP: encrypted channels with Sender Keys E2EE.
+- Text chat MVP: encrypted channels with MLS-based group E2EE (Sender Keys compatibility bridge where required).
 - Voice MVP: full mesh voice for small groups.
 - Headless relay MVP: DHT bootstrap + Circuit Relay v2 + basic encrypted store-forward.
 - Gio client shell sufficient for core user journeys.
@@ -105,7 +124,7 @@ No time estimates are used; relative complexity only:
 | G1 | Foundation Ready | G0 passed | Build/lint/test/proto/config pipelines defined and executable |
 | G2 | Protocol Contract Freeze | G1 passed | v0.1 protobuf and multistream contracts frozen for implementation |
 | G3 | Connectivity Baseline | G2 passed | Two peers can discover and connect on LAN with resilient fallback path |
-| G4 | Secure Messaging Baseline | G3 passed | Identity + server join + Sender Keys text path validated |
+| G4 | Secure Messaging Baseline | G3 passed | Identity + server join + MLS text path validated (Sender Keys compatibility bridge where required) |
 | G5 | Real-time Communication Baseline | G4 passed | Voice mesh and relay baseline validated with client shell |
 | G6 | Release Readiness | G5 passed | DoD checklist, risk burn-down minimum, and go-no-go approval complete |
 
@@ -406,10 +425,10 @@ graph LR
     - [ ] Define prohibited schema changes.
     - [ ] Define protocol major-bump trigger conditions.
 
-- [ ] `[Research][P0][Effort:L][Owner:Crypto Lead]` **P3-T6 Research Sender Keys protocol profile for v0.1**
-  - Description: Select concrete Sender Keys operational profile and message-key lifecycle rules.
+- [ ] `[Research][P0][Effort:L][Owner:Crypto Lead]` **P3-T6 Research v0.1 group-key profile (MLS target + Sender Keys compatibility bridge)**
+  - Description: Select concrete MLS operational profile and any required Sender Keys compatibility bridge behavior for message-key lifecycle rules.
   - Deliverables:
-    - Sender Keys design decision record
+    - Group-key design decision record (MLS target, Sender Keys compatibility bridge)
     - Threat model notes for v0.1 text channels
   - Dependencies: P3-T2.
   - Acceptance Criteria:
@@ -746,7 +765,7 @@ graph LR
 
 ---
 
-## Phase 7 - Text Chat with Sender Keys E2EE
+## Phase 7 - Text Chat with MLS-Based Group E2EE
 
 - [ ] `[Build][P0][Effort:M][Owner:Protocol Engineer]` **P7-T1 Implement channel model and topic binding**
   - Description: Bind server channels to GossipSub topics and channel metadata state.
@@ -761,10 +780,10 @@ graph LR
     - [ ] Define channel identifiers and metadata schema.
     - [ ] Define subscription lifecycle hooks.
 
-- [ ] `[Build][P0][Effort:L][Owner:Crypto Engineer]` **P7-T2 Implement Sender Keys bootstrap and rotation flow**
-  - Description: Build channel Sender Keys lifecycle for encrypted text messaging.
+- [ ] `[Build][P0][Effort:L][Owner:Crypto Engineer]` **P7-T2 Implement MLS bootstrap and rotation flow (with Sender Keys compatibility bridge)**
+  - Description: Build channel MLS lifecycle for encrypted text messaging and define compatibility bridge behavior where migration/interoperability requires it.
   - Deliverables:
-    - Sender Keys session manager
+    - MLS session manager
     - Rekey and membership-change policy implementation plan
   - Dependencies: P3-T6, P7-T1, P5-T1.
   - Acceptance Criteria:
@@ -831,7 +850,7 @@ graph LR
     - [ ] Run out-of-order and duplicate message tests.
 
 - [ ] `[Research][P1][Effort:M][Owner:Crypto Engineer]` **P7-T7 Research key storage hardening for channel secrets**
-  - Description: Document secure storage and memory handling controls for Sender Keys artifacts.
+  - Description: Document secure storage and memory handling controls for MLS artifacts (and Sender Keys compatibility-bridge artifacts where required).
   - Deliverables:
     - Key material handling guidelines
     - Residual risk list for v0.1
@@ -1250,7 +1269,7 @@ Research tasks are mandatory de-risking activities and must be completed before 
 - P7-T7 channel key storage hardening
 
 ### Track R-B - Cryptography and E2EE Protocol Profile
-- P3-T6 Sender Keys profile selection
+- P3-T6 MLS profile selection plus Sender Keys compatibility-bridge boundaries
 - P7-T2 dependent implementation strategy
 - P8-T7 SFrame feasibility and fallback boundaries
 
@@ -1276,7 +1295,7 @@ A research task is complete only when:
 | Risk ID | Risk Description | Severity | Early Warning Signals | Mitigation Tasks | Exit Condition |
 |---|---|---|---|---|---|
 | R1 | NAT traversal fails in real-world networks | High | Frequent connection fallback failures, high relay dependency | P4-T5, P4-T8, P4-T9, P9-T6 | LAN baseline stable and relay fallback deterministic |
-| R2 | Sender Keys implementation complexity causes insecure edge behavior | High | Decryption mismatch, replay handling defects, unstable rekey behavior | P3-T6, P7-T2, P7-T3, P7-T6, P7-T7 | E2EE test suite passes including negative paths |
+| R2 | Group-key implementation complexity (MLS plus compatibility bridge) causes insecure edge behavior | High | Decryption mismatch, replay handling defects, unstable rekey behavior | P3-T6, P7-T2, P7-T3, P7-T6, P7-T7 | E2EE test suite passes including negative paths |
 | R3 | Voice mesh stability degrades near participant cap | High | Connection churn, audio dropouts, control desync | P8-T1, P8-T3, P8-T5, P8-T6 | Voice sessions stable up to eight participants in acceptance tests |
 | R4 | Gio UX constraints affect first-launch usability | Medium | Input glitches, navigation dead ends, high setup friction | P10-T3, P10-T6, P10-T7 | Five-minute scenario consistently passes on target environments |
 | R5 | SQLCipher integration portability blocks builds | Medium | Build failures across environments, migration instability | P2-T10, P5-T4, P5-T5 | Encrypted storage tests pass in CI and target run environments |
@@ -1291,7 +1310,7 @@ A research task is complete only when:
 v0.1 is done only when all conditions below are true:
 
 1. **User journey proof:** Clean clients on same LAN can complete identity creation, server create/join, text chat, and voice chat within five-minute acceptance window.
-2. **Security baseline:** Text chat uses Sender Keys E2EE with passing crypto and protocol validation tests.
+2. **Security baseline:** Text chat uses MLS-based group E2EE (Sender Keys compatibility bridge only where required) with passing crypto and protocol validation tests.
 3. **Connectivity baseline:** Discovery and connection pathways work with mDNS and peer-cache-first behavior; relay fallback is validated.
 4. **Relay baseline:** Headless relay mode supports DHT bootstrap and Circuit Relay v2; basic encrypted store-and-forward behavior passes validation.
 5. **Client shell baseline:** Gio shell supports all critical path flows without blocking UX defects.

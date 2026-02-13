@@ -16,6 +16,15 @@
 
 ---
 
+## Stack Alignment Constraints (Parent Recommendation, Planning-Level)
+
+- This section is recommendation-only planning guidance and does not claim implementation completion.
+- Control plane default: libp2p secure channels use Noise_XX_25519_ChaChaPoly_SHA256 as the single supported suite; QUIC is preferred for reliable multiplexed streams, and this plan must not imply TCP-only operation.
+- Media plane default: ICE (STUN/TURN), SRTP hop-by-hop, SFrame true media E2EE, and browser encoded-transform/insertable-streams integration where browser media clients apply.
+- Key-management baseline carried forward: X3DH + Double Ratchet for DMs; MLS for group key agreement; any inherited Sender Keys mentions are compatibility/migration context only.
+- Crypto defaults carried forward: SFrame AES-GCM full-tag default (for example AES_128_GCM_SHA256_128 intent), avoid short tags unless explicitly justified; messaging AEAD baseline ChaCha20-Poly1305 with optional AES-GCM negotiation; Noise suite fixed as above; SRTP baseline unchanged.
+- Latency/resilience baseline carried forward for dependent realtime behavior: race direct ICE and relay/TURN in parallel, continuous path probing with seamless migration, RTT-aware multi-region relay/SFU selection with warm standby, dynamic topology switching (P2P 1:1, mesh small groups, SFU larger groups) with no SFU transcoding, and background resilience controls.
+
 ## 1. v0.6 Objective and Measurable Success Outcomes
 
 ### 1.1 Objective
@@ -33,6 +42,14 @@ Deliver **v0.6 Sentinel** as a protocol-first **hardening/scaling/reliability** 
 5. Optional filter contracts remain optional, local-policy bounded, and non-authoritative.
 6. Hardening contracts preserve decentralized enforcement assumptions and avoid privileged authority-node semantics.
 7. Compatibility/governance and open-decision conformance are complete and gate-auditable.
+
+### 1.3 QoL integration contract for v0.6 hardening journeys (planning-level)
+
+- **Unified health/recovery clarity under stress:** discovery/search/preview and anti-abuse hardening paths must expose deterministic user state plus next-action guidance when throttled, delayed, or partially degraded.
+  - **Acceptance criterion:** degraded hardening scenarios document state, reason class, and recommended recovery action without ambiguous limbo states.
+  - **Verification evidence:** `V6-G5` scenario bundle includes stress/degradation state-transition proofs tied to `VA-S*` and `VA-A*` artifacts.
+- **Reason taxonomy continuity under abuse controls:** PoW, limiter, scoring, reputation, and report-routing user-visible outcomes remain mapped to stable reason classes.
+  - **Verification evidence:** taxonomy coverage table is included in integrated conformance audit and release checklist.
 
 ---
 

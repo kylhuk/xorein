@@ -10,6 +10,8 @@ This addendum extends **“Aether Protocol & Platform — Revised Implementation
 
 These are release-blockers (no “we’ll fix it later”):
 
+Planning note: this addendum defines planned targets and contracts only. It does not claim completed implementation in the current repository snapshot.
+
 1) Reliability
 - Login-to-ready: ≤ 3s on warm start, ≤ 8s on cold start.
 - Message send: ≥ 99.9% delivered within 5s (normal network), with clear UI states otherwise.
@@ -24,6 +26,18 @@ These are release-blockers (no “we’ll fix it later”):
 3) Background + multi-device
 - Background delivery: DMs and mentions wake reliably on iOS/Android.
 - Seamless device switching: join call from phone while desktop is active; switch audio output without renegotiation when possible.
+
+### A1.1a Planned QoL invariants for user-visible journeys
+
+The following are explicit planning contracts that govern UX behavior across official clients:
+
+- **Global no-limbo UX invariant:** user-visible flows must always expose current state, deterministic reason class, and next recovery action.
+- **Unified connection health/recovery clarity:** startup, chat send/receive, sync, and call states share one canonical health language and recovery progression model.
+- **Recovery-first call experience:** transient disruptions prioritize automatic path healing and rejoin before terminal failure states.
+- **Deterministic reason taxonomy:** all degraded/error states map to stable reason classes suitable for protocol/runtime diagnostics and user-facing messaging.
+- **Unread/mention/notification coherence:** unread counters, mention badges, push/local notifications, and read markers converge as one first-class contract.
+- **Cross-device continuity:** draft persistence, read-position continuity, and call handoff semantics are defined as conflict-safe and deterministic.
+- **Hidden-delight micro-interactions:** auto-heal transitions, context-aware device-switch prompts, and exact attention resume are planned product requirements.
 
 ### A1.2 Connectivity architecture: Connectivity Orchestrator (CO)
 
@@ -104,6 +118,11 @@ Multi-device QoL
 - Session handoff: continue reading/call state on another device.
 - Consistent keyboard shortcuts (desktop) and gestures (mobile).
 
+Implementation-planning guidance for this bundle
+- All QoL items above are roadmap guidance and require explicit validation artifacts before release claims.
+- Any protocol-surface additions needed to realize these UX contracts must preserve additive-only minor evolution.
+- Any incompatible behavior change required by QoL objectives must follow major-path governance: new multistream IDs, downgrade negotiation, AEP process, and multi-implementation validation.
+
 ### A1.6 Quality engineering program (how this becomes “perfect”)
 
 Test matrix (must run in CI/nightly)
@@ -123,6 +142,11 @@ Release gates
 Diagnostics (privacy-preserving)
 - Local ring-buffer logs with explicit export.
 - Optional opt-in anonymous metrics with k-anonymity buckets.
+
+Journey-based acceptance gates and QoL scorecards
+- Release planning must include journey gates for: login-to-ready, message send during degradation, call setup, in-call network switch recovery, wake-from-mention, and cross-device attention resume.
+- Each journey gate must produce a QoL scorecard with pass/fail evidence for: no-limbo behavior, recovery-first outcomes, deterministic reason coverage, unread/mention/notification coherence, and continuity correctness.
+- Scorecards are planning artifacts in this addendum and not evidence of shipped implementation.
 
 ---
 
@@ -232,37 +256,37 @@ v0.4.x
 
 ### A2.7 Definition of done (server discovery + moderation)
 
-Discovery DoD
-- A server can be made public and appears in at least two independent indexers.
-- Client can search by keyword and tag; results are verifiable from signatures.
-- Join flows cover invite-only, request-to-join, open.
+Discovery DoD (planning acceptance targets)
+- [ ] Public-listing behavior is specified so a server can be marked public and be eligible for appearance in at least two independent community-run indexers.
+- [ ] Client search acceptance criteria are defined for keyword and tag queries, with verifiable signed results.
+- [ ] Join-flow acceptance criteria are defined for invite-only, request-to-join, and open admission paths.
 
-Moderation DoD
-- Moderator can redact messages, timeout, ban; actions replicate reliably and appear in audit log.
-- Slow mode works under partition/rejoin.
-- Official client enforces moderation events and clearly indicates enforcement status.
+Moderation DoD (planning acceptance targets)
+- [ ] Moderator-action contracts are defined for redaction, timeout, and ban, including replication and audit-log visibility expectations.
+- [ ] Slow-mode behavior is defined with partition/rejoin acceptance checks.
+- [ ] Official-client enforcement and user-visible enforcement-status signaling are defined as release-gate acceptance checks.
 
 ---
 
-## A3) Deliverables (engineering)
+## A3) Deliverables (engineering, planned future artifacts)
 
-1) Connectivity Orchestrator package
-- `pkg/net/co`: path selection, tunnel management, recovery.
-- Metrics/events: `ConnectivityState` with reason codes.
+1) Connectivity Orchestrator package (planned)
+- Planned package target: `pkg/net/co` for path selection, tunnel management, and recovery.
+- Planned metrics/events contract: `ConnectivityState` with reason codes.
 
-2) Aether Tunnel
-- QUIC tunnel daemon embedded in client.
-- Session migration and keepalive policy.
+2) Aether Tunnel (planned)
+- Planned QUIC tunnel daemon embedded in client.
+- Planned session-migration and keepalive policy.
 
-3) Directory + Indexer spec and reference
-- Protobuf: `DirectoryEntry`, `SearchRequest/Response`.
-- `cmd/indexer`: crawler + search API + signed responses.
+3) Directory + Indexer spec and reference (planned)
+- Planned protobuf contracts: `DirectoryEntry`, `SearchRequest/Response`.
+- Optional external reference artifact: `cmd/indexer` for crawler + search API + signed responses.
+- Indexers are explicitly non-authoritative discovery helpers and do not create a privileged protocol node class.
 
-4) Moderation protocol events
-- Protobuf: `Redaction`, `Timeout`, `Ban`, `AuditLogEntry`.
-- Client enforcement rules.
+4) Moderation protocol events (planned)
+- Planned protobuf contracts: `Redaction`, `Timeout`, `Ban`, `AuditLogEntry`.
+- Planned client enforcement rules.
 
-5) Test and release gates
-- NAT/network matrix tests in nightly.
-- Canary call infrastructure.
-
+5) Test and release gates (planned)
+- Planned NAT/network matrix validation in nightly workflows, once CI workflows exist.
+- Planned canary call infrastructure.

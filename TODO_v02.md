@@ -10,6 +10,15 @@
 
 ---
 
+## Stack Alignment Constraints (Parent Recommendation, Planning-Level)
+
+- This section is recommendation-only planning guidance and does not claim implementation completion.
+- Control plane default: libp2p secure channels use `Noise_XX_25519_ChaChaPoly_SHA256` as the single supported suite; QUIC is preferred for reliable multiplexed streams, with no TCP-only framing implied.
+- Media plane default (cross-version invariant): ICE (STUN/TURN), SRTP hop-by-hop, SFrame for true media E2EE, and browser encoded-transform/insertable-streams integration where browser media clients apply.
+- Key management default: X3DH + Double Ratchet for DMs; MLS for group key agreement. Any Sender Keys references in this file are retained only as compatibility/migration context for interoperability and SFrame key-management transition notes.
+- Crypto defaults: SFrame AES-GCM full-tag profile by default (for example `AES_128_GCM_SHA256_128` intent), avoid short tags unless explicitly justified; messaging AEAD baseline `ChaCha20-Poly1305` with optional AES-GCM negotiation; Noise transport suite fixed as above; SRTP baseline unchanged.
+- Latency/resilience defaults for dependent realtime pathways: parallel race of direct ICE and relay/TURN, continuous path probing with seamless migration, RTT-aware multi-region relay/SFU selection with warm standby, topology switching (P2P 1:1, mesh small groups, SFU larger groups) without SFU transcoding, and background resilience (keepalives, fast network-change handling, ICE restarts/path migration, key pre-provisioning).
+
 ## 1. v0.2 Objective and Success Outcomes
 
 ### 1.1 Objective
@@ -17,7 +26,7 @@ Deliver **v0.2 Connections** as a protocol-first increment over v0.1 by adding:
 - 1:1 DMs using X3DH + Double Ratchet
 - Prekey distribution through DHT
 - DM transport with direct and offline store-and-forward paths
-- Group DMs (up to 50) using Sender Keys
+- Group DMs (up to 50) using MLS, with Sender Keys compatibility bridge where migration/interoperability is required
 - Friend requests via public key, QR, and `aether://` link
 - Presence states and custom status
 - Friends list with online/offline/pending segmentation
@@ -42,6 +51,20 @@ Deliver **v0.2 Connections** as a protocol-first increment over v0.1 by adding:
 12. Baseline moderation actions (redaction/delete, timeout, ban) are signed protocol events with deterministic actor-target constraints, reason/failure taxonomy, and auditable outcomes.
 13. Slow mode behavior is deterministic under reconnect/replay conditions and compatible with decentralized client-side enforcement rules.
 
+### 1.3 QoL integration contract for v0.2 attention and connection surfaces (planning-level)
+
+- **Unified connection health/recovery clarity:** DM setup, send/receive, presence sync, and baseline call-entry dependencies expose one canonical health surface and deterministic user state.
+  - **Acceptance criterion:** for each degraded state, user-visible contract includes current state, reason class, and next action.
+  - **Verification evidence:** `V2-G4` package contains a health-state matrix with deterministic transitions and recovery action mapping.
+- **Recovery-first call UX baseline handoff:** where v0.2 contracts influence call readiness (identity, presence, notifications, device context), disruption outcomes prioritize rejoin/switch-path/switch-device guidance rather than terminal ambiguity.
+  - **Verification evidence:** `V2-G4` scenario set includes rejoin and device-path fallback evidence links.
+- **Deterministic reason taxonomy for user-visible outcomes:** notification, mention, moderation, and slow-mode user outcomes map to stable reason classes shared with diagnostics.
+  - **Verification evidence:** reason taxonomy table is referenced by negative/degraded test cases in `V2-G4` and release checklist closure.
+- **Unread/mention/notification coherence contract:** unread counters, mention badges, and notification triggers must converge deterministically across DM, group DM, and server contexts.
+  - **Verification evidence:** coherence matrix includes increment/reset/suppress cases and cross-surface equivalence checks.
+- **Cross-device continuity baseline:** draft persistence and read-position continuity are defined as conflict-safe contracts for v0.2 attention surfaces.
+  - **Verification evidence:** continuity evidence includes multi-device conflict scenarios with deterministic resolution outcomes.
+
 ---
 
 ## 2. Scope Derivation from `aether-v3.md` for v0.2 Only
@@ -50,7 +73,7 @@ The following roadmap bullets in `aether-v3.md` define v0.2 scope:
 - X3DH key agreement + Double Ratchet for 1:1 DMs
 - Prekey bundles published to DHT
 - DM transport: direct stream or store-and-forward via DHT
-- Group DMs (Sender Keys, up to 50 members)
+- Group DMs (up to 50 members) with MLS target profile and Sender Keys compatibility bridge notes
 - Friend requests via public key / QR code / `aether://` link
 - Presence system: online, idle (10min auto), DND, invisible
 - Custom status text
@@ -84,7 +107,7 @@ v0.2 starts from v0.1 outputs being available:
 - libp2p host baseline, DHT, mDNS, and peer connectivity flows
 - Identity model and key material lifecycle
 - Signed manifest/deeplink baseline and encrypted local storage baseline
-- Sender Keys baseline for channel messaging
+- MLS-based baseline for channel messaging (with Sender Keys compatibility bridge where migration/interoperability requires it)
 - Relay/store-forward baseline and Gio client shell baseline
 - CI/test/protobuf/config governance scaffolding baseline
 
@@ -364,7 +387,7 @@ Priority legend used below:
 
 ---
 
-## Phase 3 - Group DM Baseline (Sender Keys, Up to 50 Members)
+## Phase 3 - Group DM Baseline (MLS Target, Up to 50 Members)
 
 - [ ] **[P0][Order 10] P3-T1 Define Group DM domain model and membership lifecycle**
   - **Objective:** Standardize Group DM creation, membership, and state transitions.
@@ -391,7 +414,7 @@ Priority legend used below:
   - **Suggested priority/order:** P0, Order 10.
   - **Risks/notes:** Membership model must be locked before rekey logic is finalized.
 
-- [ ] **[P0][Order 11] P3-T2 Define Group DM Sender Keys distribution and rotation rules**
+- [ ] **[P0][Order 11] P3-T2 Define Group DM MLS distribution and rotation rules (with Sender Keys compatibility bridge)**
   - **Objective:** Preserve confidentiality and forward secrecy behavior in group contexts.
   - **Concrete actions:**
     - [ ] **P3-T2-ST1 Define initial Sender Key distribution and secure handoff**
@@ -414,7 +437,7 @@ Priority legend used below:
   - **Deliverables/artifacts:** Group DM key lifecycle specification.
   - **Acceptance criteria:** Key lifecycle is deterministic and included in validation matrix.
   - **Suggested priority/order:** P0, Order 11.
-  - **Risks/notes:** Must remain consistent with existing Sender Keys architecture assumptions.
+  - **Risks/notes:** Must remain consistent with MLS target architecture and any explicitly bounded Sender Keys compatibility bridge assumptions.
 
 - [ ] **[P0][Order 12] P3-T3 Define Group DM transport, history behavior, and member-cap enforcement**
   - **Objective:** Provide stable message flow and bounded scale for Group DMs.

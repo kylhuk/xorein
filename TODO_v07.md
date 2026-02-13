@@ -18,6 +18,15 @@
 
 ---
 
+## Stack Alignment Constraints (Parent Recommendation, Planning-Level)
+
+- This section is recommendation-only planning guidance and does not claim implementation completion.
+- Control plane default: libp2p secure channels use Noise_XX_25519_ChaChaPoly_SHA256 as the single supported suite; QUIC is preferred for reliable multiplexed streams, and this plan must not imply TCP-only operation.
+- Media plane default: ICE (STUN/TURN), SRTP hop-by-hop, SFrame true media E2EE, and browser encoded-transform/insertable-streams integration where browser media clients apply.
+- Key-management baseline carried forward: X3DH + Double Ratchet for DMs; MLS for group key agreement; any inherited Sender Keys mentions remain compatibility/migration context only.
+- Crypto defaults carried forward: SFrame AES-GCM full-tag default (for example AES_128_GCM_SHA256_128 intent), avoid short tags unless explicitly justified; messaging AEAD baseline ChaCha20-Poly1305 with optional AES-GCM negotiation; Noise suite fixed as above; SRTP baseline unchanged.
+- Latency/resilience baseline carried forward for dependent realtime behavior: race direct ICE and relay/TURN in parallel, continuous path probing with seamless migration, RTT-aware multi-region relay/SFU selection with warm standby, dynamic topology switching (P2P 1:1, mesh small groups, SFU larger groups) with no SFU transcoding, and background resilience controls.
+
 ## 1. v0.7 Objective and Measurable Success Outcomes
 
 ### 1.1 Objective
@@ -46,6 +55,16 @@ Deliver **v0.7 Archive** as a protocol-first planning artifact that defines dete
 12. Compatibility/governance controls, gate evidence schema, and scope-to-task traceability are complete and gate-auditable.
 13. Integrated validation package covers positive, negative, degraded, and recovery paths for all eight in-scope bullets.
 14. Release-conformance and execution-handoff package is complete with explicit planning-only wording and explicit deferrals to v0.8+, v0.9+, v1.0+, and post-v1 roadmap bands.
+
+### 1.3 QoL integration contract for v0.7 archive and attention continuity (planning-level)
+
+- **Unread/mention/notification coherence at history scale:** archive sync, push relay, and desktop-native notification contracts must preserve deterministic attention-state convergence across resumed history.
+  - **Acceptance criterion:** resumed-history and delayed-delivery scenarios produce coherent unread, mention, and notification outcomes across local and relay-assisted paths.
+  - **Verification evidence:** `V7-G5` includes coherence score rows with pass/fail evidence links to `VA-S*` and `VA-P*` artifacts.
+- **Cross-device continuity hardening:** draft/read position and notification attention resume across devices must remain deterministic during retention and sync recovery.
+  - **Verification evidence:** cross-device resume scenarios show deterministic conflict resolution and explicit user-visible state.
+- **No-limbo recovery for history and push flows:** replay, sync mismatch, relay delay, and desktop action failures must always expose state, reason class, and next action.
+  - **Verification evidence:** recovery-path matrix in integrated validation demonstrates zero ambiguous terminal states.
 
 ---
 

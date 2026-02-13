@@ -18,6 +18,15 @@
 
 ---
 
+## Stack Alignment Constraints (Parent Recommendation, Planning-Level)
+
+- This section is recommendation-only planning guidance and does not claim implementation completion.
+- Control plane default: libp2p secure channels use Noise_XX_25519_ChaChaPoly_SHA256 as the single supported suite; QUIC is preferred for reliable multiplexed streams, and this plan must not imply TCP-only operation.
+- Media plane default: ICE (STUN/TURN), SRTP hop-by-hop, SFrame true media E2EE, and browser encoded-transform/insertable-streams integration where browser media clients apply.
+- Key-management baseline carried forward: X3DH + Double Ratchet for DMs; MLS for group key agreement; any inherited Sender Keys mentions remain compatibility/migration context only.
+- Crypto defaults carried forward: SFrame AES-GCM full-tag default (for example AES_128_GCM_SHA256_128 intent), avoid short tags unless explicitly justified; messaging AEAD baseline ChaCha20-Poly1305 with optional AES-GCM negotiation; Noise suite fixed as above; SRTP baseline unchanged.
+- Latency/resilience baseline carried forward for dependent realtime behavior: race direct ICE and relay/TURN in parallel, continuous path probing with seamless migration, RTT-aware multi-region relay/SFU selection with warm standby, dynamic topology switching (P2P 1:1, mesh small groups, SFU larger groups) with no SFU transcoding, and background resilience controls.
+
 ## A. Status and Source-of-Truth Framing
 
 ### A.1 Planning-only status
@@ -59,6 +68,16 @@ Deliver **v0.8 Echo** as a protocol-first planning artifact that defines convers
 8. Compatibility/governance controls, evidence model, and scope traceability are complete and gate-auditable.
 9. Integrated validation package covers positive, negative, degraded, and recovery scenarios across all seven in-scope bullets.
 10. Release-conformance and execution-handoff package is complete with explicit planning-only wording and explicit deferrals to v0.9+, v1.0+, and post-v1 roadmap bands.
+
+### B.3 QoL integration contract for v0.8 polish wave (planning-level)
+
+- **Hidden-delight micro-interactions as release-level QoL contract:** auto-heal toasts, smart device prompts, and exact attention resume are planned acceptance requirements within v0.8 in-scope surfaces.
+  - **Acceptance criterion:** each micro-interaction has deterministic trigger/suppress rules and fallback behavior; none may imply undefined state.
+  - **Verification evidence:** `V8-G7` includes a micro-interaction scorecard with pass/fail evidence links.
+- **Recovery-first call-adjacent polish continuity:** DTLN migration and thread/link interactions that intersect active call context preserve rejoin/switch-path/switch-device guidance.
+  - **Verification evidence:** integrated degraded scenarios include explicit recovery guidance validation.
+- **No-limbo and reason-taxonomy continuity for polished surfaces:** threads, previews, bookmarks, theming, accessibility, and i18n error/degraded states map to deterministic reason classes with next actions.
+  - **Verification evidence:** per-surface reason/state/action matrix attached to `V8-G8` release-conformance dossier.
 
 ---
 

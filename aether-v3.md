@@ -141,26 +141,29 @@ config/
 **Reproducible container images:**
 - Multi-stage Docker builds with pinned base images (digest, not tag): `FROM golang:1.23.4@sha256:<digest> AS builder`.
 - `ko` (Google's Go container builder) for minimal, distroless Go images — no shell, no package manager, no attack surface.
-- Images are built in CI, never locally. The Dockerfile and build context are deterministic.
+- Target-state intent: images are built in CI (not locally) once CI exists in a future implementation. The Dockerfile and build context are intended to be deterministic.
 - Every image includes an SBOM (Software Bill of Materials) in SPDX format and SLSA provenance metadata.
 
 ---
 
-### 0.4 CI/CD/CS Pipeline: One Command to Rule Them All
+### 0.4 CI/CD/CS Pipeline: One Command to Rule Them All (Target-State Blueprint)
 
-The entire build, test, scan, and deploy pipeline is invoked with a single command:
+> Repository snapshot note: this section documents planned target-state pipeline behavior. Commands shown below are placeholders and are not executable in this documentation-only checkout.
+
+In the planned implementation, the entire build, test, scan, and deploy pipeline is intended to be invoked with a single command entrypoint:
 
 ```bash
-make all    # or: task all (using Taskfile.yml)
+make all    # planned target-state command placeholder
+# or: task all (planned Taskfile.yml command placeholder)
 ```
 
-This runs the complete pipeline locally. In CI (GitHub Actions), the same `Makefile`/`Taskfile.yml` is used — there is no difference between local and CI builds.
+In the planned toolchain, this would run the complete pipeline locally. In planned CI (GitHub Actions), the same `Makefile`/`Taskfile.yml` would be used — target state is no difference between local and CI builds.
 
 **Pipeline stages (in order, each blocks on the previous):**
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         make all                                         │
+│            planned entrypoint: make all (placeholder)                    │
 │                                                                         │
 │  Stage 1: GENERATE                                                      │
 │  ├─ dhall-to-toml: Generate all config files from Dhall sources         │
@@ -205,13 +208,13 @@ This runs the complete pipeline locally. In CI (GitHub Actions), the same `Makef
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-**CI-specific extras (nightly/weekly):**
+**Planned CI-specific extras (nightly/weekly, once CI workflows exist):**
 - Extended fuzz testing (1 hour per target, nightly).
 - Full network simulation (testground, 20+ nodes, various NAT configurations).
 - Dependency update check (`go list -m -u all` + automated PR creation).
 - License compliance scan (Trivy license mode).
 
-**GitHub Actions workflow structure:**
+**Planned GitHub Actions workflow structure (target state):**
 ```
 .github/workflows/
 ├── ci.yml              # Runs on every push/PR: stages 1-5
@@ -220,11 +223,11 @@ This runs the complete pipeline locally. In CI (GitHub Actions), the same `Makef
 └── security-audit.yml  # Weekly: full Trivy + govulncheck + dependency audit
 ```
 
-**Local developer experience:**
-- `make check` — fast feedback loop: lint + unit tests (~30 seconds).
-- `make test` — full test suite including integration tests (~5 minutes).
-- `make all` — full pipeline identical to CI (~10 minutes).
-- Pre-commit hooks (via `pre-commit` framework): `gofmt`, `golangci-lint`, `go vet` on staged files only (~5 seconds).
+**Planned local developer experience (once tooling exists):**
+- `make check` — intended fast feedback loop: lint + unit tests.
+- `make test` — intended full test suite including integration tests.
+- `make all` — intended full pipeline parity with CI.
+- Planned pre-commit hooks (via `pre-commit` framework): `gofmt`, `golangci-lint`, `go vet` on staged files only.
 
 ---
 
@@ -715,7 +718,22 @@ This section merges Addendum A into roadmap planning. It is a planning-level ove
 - **v0.4:** advanced moderation (policy versioning + auto-mod) and full custom role/override model.
 - **v0.6:** hardening/scaling of discovery, moderation reliability, and anti-abuse systems.
 
-#### F) Guardrails unchanged
+#### F) Planned QoL experience invariants (planning contract, not implementation claim)
+- **Global no-limbo UX invariant:** no critical user journey may end in ambiguous waiting; users must always see current state, deterministic reason, and next recovery action.
+- **Unified connection health/recovery clarity:** startup, messaging, sync, and calls use one canonical health model and recovery progression language.
+- **Recovery-first call experience:** transient failures prioritize automatic recovery and rejoin paths before hard-fail outcomes.
+- **Deterministic reason taxonomy for user-visible states:** official clients map protocol/runtime conditions to stable reason classes and consistent user-facing explanations.
+- **Unread/mention/notification coherence as a first-class contract:** unread badges, mention state, push/local notifications, and read markers converge deterministically.
+- **Cross-device continuity contract:** draft state, read position, and call handoff behavior are explicitly specified as conflict-safe continuity semantics.
+- **Hidden-delight micro-interactions are planned requirements:** auto-heal path transitions, smart device-switch prompts, and exact attention resume are roadmap-level UX contracts.
+
+#### G) Planned roadmap guidance: journey gates and QoL scorecards
+- Planning gates must evaluate end-to-end user journeys (login-to-ready, message send under degradation, call join/rejoin, network switch mid-call, wake-and-open from mention, and cross-device resume).
+- Each journey gate must include a QoL scorecard with deterministic pass/fail evidence for limbo avoidance, recovery success, reason-taxonomy coverage, coherence of unread/mention/notification state, and continuity correctness.
+- This guidance remains planning-only in this document and does not claim delivered behavior.
+- Any protocol-surface evolution introduced for QoL objectives remains bound by additive-only minor evolution and major-path governance requirements.
+
+#### H) Guardrails unchanged
 - Protocol-first framing remains mandatory: protocol/spec contract is the product.
 - Compatibility/governance remains unchanged: protobuf minor updates are additive-only; major changes require new multistream IDs + downgrade negotiation + AEP process + multi-implementation validation.
 - Open decisions remain open, including mobile-notification wake centralization risk.
@@ -985,10 +1003,12 @@ This section merges Addendum A into roadmap planning. It is a planning-level ove
 
 ## Open Decisions
 
+All items below remain unresolved candidate options and must not be treated as finalized architecture until explicit governance ratification.
+
 1. **Project name** — "Aether" is a working title. Must be trademarkable and have an available `.chat` or `.app` domain.
 2. **Relay incentive model** — Start with reputation-based (no tokens). Revisit if relay supply is insufficient.
 3. **Maximum tested server size** — Needs load testing. Architectural target: 10,000 members. Voice target: 200 simultaneous in one channel.
-4. **Governance** — Protocol governance via nonprofit foundation (similar to Let's Encrypt for ACME). Bootstrap/relay infrastructure funded by community + grants (e.g., NLnet, NGI).
+4. **Governance** — Candidate model (not finalized): protocol governance could be handled via a nonprofit foundation (similar to Let's Encrypt for ACME). Bootstrap/relay infrastructure funding remains open, with community support and grants (e.g., NLnet, NGI) as candidate paths.
 5. **Mobile notification relay** — Must be carefully designed to avoid becoming a centralization point. Open-source relay software, easy to self-host, community-run default instances.
 
 **Funding & Licensing:** Aether is fully open source — no premium features, no paywalled tiers, no monetization. The project sustains through community contributions, grants from organizations that fund open-source privacy/P2P infrastructure (NLnet, NGI, Open Technology Fund), and donations. All code is licensed permissively (MIT or similar). The protocol specification is CC-BY-SA to prevent proprietary incompatible forks.
