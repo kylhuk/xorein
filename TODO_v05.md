@@ -15,6 +15,14 @@
 > - Open decisions remain unresolved unless source documentation explicitly resolves them.
 > - v0.6+ hardening/scaling capability is not promoted into v0.5 by implication, convenience, or integration adjacency.
 
+## Sprint Guidelines Alignment
+
+- This plan adopts `SPRINT_GUIDELINES.md` as the governing sprint policy baseline.
+- Sprint model rule: one sprint maps to one minor version planning band and this document stays scoped to v0.5.
+- Mandatory QoL target: this sprint must evidence at least one priority-journey improvement that achieves **10% less user effort**.
+- Required closure gates: quality evidence, QA strategy traceability, review sign-off, and documentation plus release-note updates.
+- Governance and status discipline remain mandatory: planned-vs-implemented separation stays explicit, and unresolved protocol decisions remain open unless authoritative sources resolve them.
+
 ---
 
 ## Stack Alignment Constraints (Parent Recommendation, Planning-Level)
