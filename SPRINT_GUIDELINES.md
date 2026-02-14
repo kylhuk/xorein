@@ -2,7 +2,7 @@
 
 > Status: Governance and planning policy for sprint execution.
 >
-> Repository posture: implementation in progress. This guideline defines required planning and delivery behavior and does not claim implemented completion.
+> Repository posture: documentation-only snapshot. This guideline defines required planning and delivery behavior and does not claim implemented completion.
 
 ---
 
