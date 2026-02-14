@@ -160,7 +160,8 @@ graph LR
 
 ## Phase 1 - Scope Lock and Program Setup
 
-- [ ] `[Docs][P0][Effort:S][Owner:Tech Lead]` **P1-T1 Freeze v0.1 scope contract**
+- [x] `[Docs][P0][Effort:S][Owner:Tech Lead]` **P1-T1 Freeze v0.1 scope contract**
+  - Status: Complete. Scope contract + traceability + exclusions verified via Podman evidence in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
   - Description: Create the canonical v0.1 scope boundary document aligned with this plan.
   - Deliverables:
     - Scope contract document listing in-scope outcomes and deferred features.
@@ -170,11 +171,15 @@ graph LR
     - Scope contract explicitly states what is excluded from v0.1.
     - No deferred feature is represented as committed v0.1 implementation.
   - Sub-Tasks:
-    - [ ] Document v0.1 must-have user outcomes.
-    - [ ] Document v0.1 non-goals list.
-    - [ ] Link each success criterion to at least one execution task.
+    - [x] Document v0.1 must-have user outcomes.
+      - Status: Complete in [`docs/v0.1/phase1/scope-contract.md:1`](docs/v0.1/phase1/scope-contract.md:1), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
+    - [x] Document v0.1 non-goals list.
+      - Status: Complete in [`docs/v0.1/phase1/scope-contract.md:17`](docs/v0.1/phase1/scope-contract.md:17), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
+    - [x] Link each success criterion to at least one execution task.
+      - Status: Complete in [`docs/v0.1/phase1/scope-contract.md:25`](docs/v0.1/phase1/scope-contract.md:25), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
 
-- [ ] `[Docs][P0][Effort:S][Owner:Protocol Lead]` **P1-T2 Build protocol constraints checklist**
+- [x] `[Docs][P0][Effort:S][Owner:Protocol Lead]` **P1-T2 Build protocol constraints checklist**
+  - Status: Complete. Protocol/compatibility/governance checklists and review-template linkage verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
   - Description: Encode immutable architecture constraints into a checklist used in design and review.
   - Deliverables:
     - Protocol-first checklist
@@ -185,12 +190,17 @@ graph LR
     - Checklist items map directly to architecture constraints from baseline docs.
     - Review template references this checklist.
   - Sub-Tasks:
-    - [ ] Add single-binary mode invariant.
-    - [ ] Add protobuf additive-only minor-version rule.
-    - [ ] Add multistream major-version evolution rule.
-    - [ ] Add AEP and multi-implementation validation requirement for breaking changes.
+    - [x] Add single-binary mode invariant.
+      - Status: Complete in [`docs/v0.1/phase1/protocol-constraints.md:4`](docs/v0.1/phase1/protocol-constraints.md:4), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
+    - [x] Add protobuf additive-only minor-version rule.
+      - Status: Complete in [`docs/v0.1/phase1/protocol-constraints.md:9`](docs/v0.1/phase1/protocol-constraints.md:9), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
+    - [x] Add multistream major-version evolution rule.
+      - Status: Complete in [`docs/v0.1/phase1/protocol-constraints.md:13`](docs/v0.1/phase1/protocol-constraints.md:13), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
+    - [x] Add AEP and multi-implementation validation requirement for breaking changes.
+      - Status: Complete in [`docs/v0.1/phase1/protocol-constraints.md:18`](docs/v0.1/phase1/protocol-constraints.md:18), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
 
-- [ ] `[Ops][P0][Effort:S][Owner:Engineering Manager]` **P1-T3 Define ownership and decision cadence**
+- [x] `[Ops][P0][Effort:S][Owner:Engineering Manager]` **P1-T3 Define ownership and decision cadence**
+  - Status: Complete. Ownership matrix, P0 owner map, cadence/escalation path, and ADR template verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
   - Description: Assign role ownership for each phase and establish decision logging.
   - Deliverables:
     - Owner matrix by task group
@@ -200,11 +210,15 @@ graph LR
     - Every P0 task has a primary role owner and backup role.
     - Decision log process is explicit and lightweight.
   - Sub-Tasks:
-    - [ ] Assign role owners for protocol, networking, crypto, UI, ops, QA.
-    - [ ] Define escalation path for blocking decisions.
-    - [ ] Define merge and review policy for critical path changes.
+    - [x] Assign role owners for protocol, networking, crypto, UI, ops, QA.
+      - Status: Complete in [`docs/v0.1/phase1/ownership-adr.md:4`](docs/v0.1/phase1/ownership-adr.md:4), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
+    - [x] Define escalation path for blocking decisions.
+      - Status: Complete in [`docs/v0.1/phase1/ownership-adr.md:22`](docs/v0.1/phase1/ownership-adr.md:22), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
+    - [x] Define merge and review policy for critical path changes.
+      - Status: Complete in [`docs/v0.1/phase1/ownership-adr.md:25`](docs/v0.1/phase1/ownership-adr.md:25), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
 
-- [ ] `[Validation][P0][Effort:S][Owner:QA Lead]` **P1-T4 Define acceptance test charter for five-minute first contact**
+- [x] `[Validation][P0][Effort:S][Owner:QA Lead]` **P1-T4 Define acceptance test charter for five-minute first contact**
+  - Status: Complete. Preconditions, steps, expected outcomes, evidence capture format, and repeatability checklist verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
   - Description: Specify the canonical user-journey test script and pass criteria.
   - Deliverables:
     - End-to-end test charter document
@@ -214,9 +228,12 @@ graph LR
     - Test charter includes preconditions, steps, and expected outcomes.
     - Script can be reused as final DoD validation artifact.
   - Sub-Tasks:
-    - [ ] Define device and network prerequisites.
-    - [ ] Define data reset method between runs.
-    - [ ] Define evidence capture format.
+    - [x] Define device and network prerequisites.
+      - Status: Complete in [`docs/v0.1/phase1/acceptance-test-charter.md:3`](docs/v0.1/phase1/acceptance-test-charter.md:3), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
+    - [x] Define data reset method between runs.
+      - Status: Complete in [`docs/v0.1/phase1/acceptance-test-charter.md:7`](docs/v0.1/phase1/acceptance-test-charter.md:7), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
+    - [x] Define evidence capture format.
+      - Status: Complete in [`docs/v0.1/phase1/acceptance-test-charter.md:22`](docs/v0.1/phase1/acceptance-test-charter.md:22), verified in [`docs/v0.1/phase1/evidence-phase1.md:1`](docs/v0.1/phase1/evidence-phase1.md:1).
 
 ---
 
