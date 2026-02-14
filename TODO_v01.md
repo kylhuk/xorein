@@ -239,7 +239,8 @@ graph LR
 
 ## Phase 2 - Engineering Foundation and Execution Scaffolding
 
-- [ ] `[Build][P0][Effort:M][Owner:Platform Engineer]` **P2-T1 Define monorepo scaffold and package boundaries**
+- [x] `[Build][P0][Effort:M][Owner:Platform Engineer]` **P2-T1 Define monorepo scaffold and package boundaries**
+  - Status: Complete. Scaffold and boundary artifacts were added and verified in Podman-backed checks in [`docs/v0.1/phase2/evidence-phase2.md`](docs/v0.1/phase2/evidence-phase2.md), including [`cmd/aether/main.go`](cmd/aether/main.go), [`pkg/app/seams.go`](pkg/app/seams.go), package docs under `pkg/*`, and [`docs/v0.1/phase2/scaffold-boundaries.md`](docs/v0.1/phase2/scaffold-boundaries.md).
   - Description: Establish target project structure for client, relay, and shared packages.
   - Deliverables:
     - Scaffold specification for `cmd` and `pkg` domains
@@ -249,11 +250,12 @@ graph LR
     - Structure supports single-binary mode philosophy.
     - Package boundaries separate protocol, transport, crypto, and UI concerns.
   - Sub-Tasks:
-    - [ ] Define `cmd/aether` and relay entrypoint ownership boundaries.
-    - [ ] Define `pkg/protocol`, `pkg/network`, `pkg/crypto`, `pkg/storage`, `pkg/ui` partitions.
-    - [ ] Define interface seams for testability.
+    - [x] Define `cmd/aether` and relay entrypoint ownership boundaries.
+    - [x] Define `pkg/protocol`, `pkg/network`, `pkg/crypto`, `pkg/storage`, `pkg/ui` partitions.
+    - [x] Define interface seams for testability.
 
-- [ ] `[Build][P0][Effort:M][Owner:DevOps Engineer]` **P2-T2 Define unified build orchestration pipeline**
+- [x] `[Build][P0][Effort:M][Owner:DevOps Engineer]` **P2-T2 Define unified build orchestration pipeline**
+  - Status: Complete. Stage ordering/contracts and local/CI command matrix are defined in [`Makefile`](Makefile) and CI workflows, with successful host execution evidence for `make check-fast`, `make check-full`, and `make pipeline` captured in [`docs/v0.1/phase2/evidence-phase2.md`](docs/v0.1/phase2/evidence-phase2.md).
   - Description: Plan one-command local and CI orchestration sequence.
   - Deliverables:
     - Pipeline stage definition and ordering
@@ -263,11 +265,13 @@ graph LR
     - Pipeline stages include generate, compile, lint, test, scan, build.
     - Same stage order is used for local and CI execution.
   - Sub-Tasks:
-    - [ ] Define stage contracts and fail-fast behavior.
-    - [ ] Define stage output artifacts.
-    - [ ] Define required environment invariants for reproducibility.
+    - [x] Define stage contracts and fail-fast behavior.
+    - [x] Define stage output artifacts.
+    - [x] Define required environment invariants for reproducibility.
+      - Status: Environment invariants are now evidenced via Podman-backed stage execution in `make check-fast`, `make check-full`, and `make pipeline`.
 
 - [ ] `[Build][P0][Effort:M][Owner:Platform Engineer]` **P2-T3 Define lint and static analysis baseline**
+  - Status: Partial. Baseline artifacts exist in [`.golangci.yml`](.golangci.yml) and [`docs/v0.1/phase2/lint-suppression-governance.md`](docs/v0.1/phase2/lint-suppression-governance.md), but runtime lint execution is still SKIP in current Podman verification context because `golangci-lint` is unavailable there.
   - Description: Configure quality gates and policy severities.
   - Deliverables:
     - Linter policy baseline
@@ -277,11 +281,12 @@ graph LR
     - Critical static checks are mandatory for merge.
     - Suppression process requires explicit rationale.
   - Sub-Tasks:
-    - [ ] Define mandatory linter set.
-    - [ ] Define severity levels and merge-blocking thresholds.
-    - [ ] Define review process for false-positive exceptions.
+    - [x] Define mandatory linter set.
+    - [x] Define severity levels and merge-blocking thresholds.
+    - [x] Define review process for false-positive exceptions.
 
-- [ ] `[Ops][P0][Effort:M][Owner:DevOps Engineer]` **P2-T4 Define CI workflow set and trigger policy**
+- [x] `[Ops][P0][Effort:M][Owner:DevOps Engineer]` **P2-T4 Define CI workflow set and trigger policy**
+  - Status: Complete. Workflow set and trigger matrix are defined in [`.github/workflows/`](.github/workflows/ci.yml:1) and [`docs/v0.1/phase2/p2-t4-trigger-matrix.md`](docs/v0.1/phase2/p2-t4-trigger-matrix.md), with Podman-backed existence/content checks captured in [`docs/v0.1/phase2/evidence-phase2.md`](docs/v0.1/phase2/evidence-phase2.md).
   - Description: Plan CI workflows for push, release, nightly, and security audit.
   - Deliverables:
     - Workflow matrix and trigger map
@@ -291,11 +296,12 @@ graph LR
     - Workflow responsibilities are non-overlapping and complete.
     - Security and nightly checks are explicitly represented.
   - Sub-Tasks:
-    - [ ] Define CI checks for every PR.
-    - [ ] Define release workflow for signed artifacts.
-    - [ ] Define nightly extended validation workflow.
+    - [x] Define CI checks for every PR.
+    - [x] Define release workflow for signed artifacts.
+    - [x] Define nightly extended validation workflow.
 
-- [ ] `[Build][P0][Effort:S][Owner:Developer Experience Engineer]` **P2-T5 Define pre-commit quality hooks**
+- [x] `[Build][P0][Effort:S][Owner:Developer Experience Engineer]` **P2-T5 Define pre-commit quality hooks**
+  - Status: Complete. Hook definition and onboarding/bypass governance are documented in [`.pre-commit-config.yaml`](.pre-commit-config.yaml) and [`docs/v0.1/phase2/pre-commit-onboarding.md`](docs/v0.1/phase2/pre-commit-onboarding.md), with policy-content verification captured in [`docs/v0.1/phase2/evidence-phase2.md`](docs/v0.1/phase2/evidence-phase2.md).
   - Description: Create local guardrails that mirror CI essentials.
   - Deliverables:
     - Hook definition plan
@@ -305,10 +311,12 @@ graph LR
     - Hook set covers formatting and critical static checks.
     - Hook failures are actionable and deterministic.
   - Sub-Tasks:
-    - [ ] Define staged-file checks.
-    - [ ] Define bypass policy and review requirements.
+    - [x] Define staged-file checks.
+    - [x] Define bypass policy and review requirements.
+      - Status: Bypass policy, exception conditions, reviewer acknowledgment, and merge-blocking rule are explicitly documented.
 
 - [ ] `[Build][P0][Effort:M][Owner:Protocol Engineer]` **P2-T6 Define protobuf and buf workflow**
+  - Status: Partial. Proto/buf layouts and reservation policy exist in [`proto/aether.proto`](proto/aether.proto), [`buf.yaml`](buf.yaml), [`buf.gen.yaml`](buf.gen.yaml), and [`docs/v0.1/phase2/proto-reservation-policy.md`](docs/v0.1/phase2/proto-reservation-policy.md); Podman `buf lint/breaking/generate` were executed and all fail due invalid `buf.yaml` (`build.roots` incompatible with `version: v1`) as recorded in [`docs/v0.1/phase2/evidence-phase2.md`](docs/v0.1/phase2/evidence-phase2.md).
   - Description: Plan schema directory, generation, linting, and breaking-change checks.
   - Deliverables:
     - Protobuf layout specification
@@ -318,11 +326,13 @@ graph LR
     - Schema evolution policy is enforceable by configured checks.
     - Generated code ownership and update process are explicit.
   - Sub-Tasks:
-    - [ ] Define proto package namespace strategy.
-    - [ ] Define field-number reservation practice.
+    - [x] Define proto package namespace strategy.
+    - [x] Define field-number reservation practice.
     - [ ] Define automated compatibility checks.
+      - Status: Compatibility commands now run in Podman, but remain failing until `buf.yaml` is corrected and clean outputs are recorded.
 
-- [ ] `[Build][P1][Effort:M][Owner:Config Engineer]` **P2-T7 Define Dhall configuration source model**
+- [x] `[Build][P1][Effort:M][Owner:Config Engineer]` **P2-T7 Define Dhall configuration source model**
+  - Status: Complete. Dhall model scaffolds and generation/verification stage definition are present in [`config/dhall/types.dhall`](config/dhall/types.dhall), [`config/dhall/default.dhall`](config/dhall/default.dhall), [`config/dhall/env.dhall`](config/dhall/env.dhall), [`scripts/dhall-verify.sh`](scripts/dhall-verify.sh), and [`docs/v0.1/phase2/dhall-ops.md`](docs/v0.1/phase2/dhall-ops.md), with successful stage execution evidence in [`docs/v0.1/phase2/evidence-phase2.md`](docs/v0.1/phase2/evidence-phase2.md).
   - Description: Plan deterministic configuration generation for environments and node roles.
   - Deliverables:
     - Dhall type and environment model
@@ -332,11 +342,13 @@ graph LR
     - Configuration source is single source of truth.
     - Generated config artifacts are reproducible.
   - Sub-Tasks:
-    - [ ] Define typed config schema.
-    - [ ] Define environment override strategy.
-    - [ ] Define generation and verification stage.
+    - [x] Define typed config schema.
+    - [x] Define environment override strategy.
+    - [x] Define generation and verification stage.
+      - Status: Verification stage is implemented and successfully exercised via `make check-full`/`make pipeline` evidence.
 
 - [ ] `[Ops][P1][Effort:M][Owner:Release Engineer]` **P2-T8 Define reproducible build and artifact provenance policy**
+  - Status: Partial. Reproducibility policy/tooling docs and checksum scaffold exist in [`docs/v0.1/phase2/repro-policy.md`](docs/v0.1/phase2/repro-policy.md), [`docs/v0.1/phase2/repro-tools.md`](docs/v0.1/phase2/repro-tools.md), and [`scripts/repro-checksums.sh`](scripts/repro-checksums.sh); pipeline reproducibility stages are exercised in evidence, but signature/SBOM workflows remain policy-level scaffolds only.
   - Description: Plan deterministic build flags, checksums, signing, and SBOM generation.
   - Deliverables:
     - Build reproducibility checklist
@@ -346,11 +358,14 @@ graph LR
     - Rebuild of same commit produces deterministic verification evidence.
     - Artifact provenance and checksum publication paths are documented.
   - Sub-Tasks:
-    - [ ] Define pinned dependency and image policy.
+    - [x] Define pinned dependency and image policy.
     - [ ] Define checksum and signature verification workflow.
-    - [ ] Define SBOM output location and validation.
+      - Status: Checksum workflow is scaffolded and exercised; signature workflow remains planned (not implemented).
+    - [x] Define SBOM output location and validation.
+      - Status: SBOM output path and validation expectations are explicitly documented in repro policy/tooling notes.
 
 - [ ] `[Validation][P0][Effort:M][Owner:QA Lead]` **P2-T9 Define layered test strategy for v0.1 execution**
+  - Status: Partial. Layered test strategy and KPI scaffold document exists in [`docs/v0.1/phase2/p2-t9-test-strategy-matrix.md`](docs/v0.1/phase2/p2-t9-test-strategy-matrix.md); strictness criteria, integration scenario catalog, and flaky triage policy are now documented, but acceptance remains open because full P0 feature mapping to positive/failure-path tests is still incomplete.
   - Description: Convert architecture test philosophy into concrete v0.1 plan.
   - Deliverables:
     - Test matrix mapping tests to risks and gates
@@ -361,12 +376,16 @@ graph LR
     - Unit, property, fuzz, and integration layers are represented.
     - Every P0 feature has at least one positive and one failure-path test.
   - Sub-Tasks:
-    - [ ] Define crypto and protocol test strictness.
-    - [ ] Define integration scenarios for LAN and relay fallback.
-    - [ ] Define failure triage policy for flaky tests.
-    - [ ] Define baseline KPI capture template (connectivity outcomes, fallback frequency, reconnect success) with privacy-preserving local storage boundaries.
+    - [x] Define crypto and protocol test strictness.
+      - Status: Strictness expectations and merge policy are explicitly documented in the strategy matrix.
+    - [x] Define integration scenarios for LAN and relay fallback.
+      - Status: Scenario catalog (I1-I4) is explicitly documented.
+    - [x] Define failure triage policy for flaky tests.
+      - Status: Flaky-test quarantine/expiry/owner process is explicitly documented.
+    - [x] Define baseline KPI capture template (connectivity outcomes, fallback frequency, reconnect success) with privacy-preserving local storage boundaries.
 
 - [ ] `[Research][P0][Effort:M][Owner:Storage Engineer]` **P2-T10 Research SQLCipher integration and portability risks**
+  - Status: Partial. Research artifact with candidate comparison and portability risk matrix exists in [`docs/v0.1/phase2/p2-t10-sqlcipher-decision.md`](docs/v0.1/phase2/p2-t10-sqlcipher-decision.md); migration/key-management expectations and CI validation policy are now documented, but the decision remains draft with no selected approach finalized.
   - Description: Resolve implementation strategy for encrypted local storage and migration behavior.
   - Deliverables:
     - Decision record on SQLCipher driver approach
@@ -376,9 +395,11 @@ graph LR
     - Selected approach includes build portability constraints and fallback options.
     - Risk mitigations are linked to concrete build and test tasks.
   - Sub-Tasks:
-    - [ ] Compare candidate integration approaches.
-    - [ ] Define migration and key management expectations.
-    - [ ] Define CI validation for encrypted DB operations.
+    - [x] Compare candidate integration approaches.
+    - [x] Define migration and key management expectations.
+      - Status: Migration/key management expectations are explicitly documented in the research artifact.
+    - [x] Define CI validation for encrypted DB operations.
+      - Status: CI validation checklist is explicitly documented in the research artifact.
 
 ---
 

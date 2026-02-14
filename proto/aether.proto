@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package aether;
+
+// Reserved numbers ensure additive-safe expansion as specified in docs/v0.1/phase2/proto-reservation-policy.md
+reserved 100;
+reserved "legacy_port";
+
+message AetherPlaceholder {
+  string placeholder_message = 1;
+}
