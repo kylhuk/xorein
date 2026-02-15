@@ -171,6 +171,24 @@ func (m *ChannelModel) Members(channelID ChannelID) ([]ParticipantID, error) {
 	return members, nil
 }
 
+func (m *ChannelModel) HasMember(participant ParticipantID, channelID ChannelID) (bool, error) {
+	normalizedID, err := normalizeIdentifier(string(channelID))
+	if err != nil {
+		return false, ErrInvalidChannelID
+	}
+	id := ChannelID(normalizedID)
+
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	state, ok := m.channels[id]
+	if !ok {
+		return false, ErrUnknownChannel
+	}
+	_, exists := state.members[participant]
+	return exists, nil
+}
+
 func (m *ChannelModel) subscriptionTopicsLocked(participant ParticipantID) []string {
 	channels, ok := m.subscriptions[participant]
 	if !ok || len(channels) == 0 {

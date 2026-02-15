@@ -79,11 +79,14 @@ func (CapabilityFlag) EnumDescriptor() ([]byte, []int) {
 type PayloadType int32
 
 const (
-	PayloadType_PAYLOAD_TYPE_UNSPECIFIED     PayloadType = 0
-	PayloadType_PAYLOAD_TYPE_IDENTITY        PayloadType = 1
-	PayloadType_PAYLOAD_TYPE_SERVER_MANIFEST PayloadType = 2
-	PayloadType_PAYLOAD_TYPE_CHAT_MESSAGE    PayloadType = 3
-	PayloadType_PAYLOAD_TYPE_VOICE_STATE     PayloadType = 4
+	PayloadType_PAYLOAD_TYPE_UNSPECIFIED                PayloadType = 0
+	PayloadType_PAYLOAD_TYPE_IDENTITY                   PayloadType = 1
+	PayloadType_PAYLOAD_TYPE_SERVER_MANIFEST            PayloadType = 2
+	PayloadType_PAYLOAD_TYPE_CHAT_MESSAGE               PayloadType = 3
+	PayloadType_PAYLOAD_TYPE_VOICE_STATE                PayloadType = 4
+	PayloadType_PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE    PayloadType = 5
+	PayloadType_PAYLOAD_TYPE_VOICE_SIGNAL_FRAME         PayloadType = 6
+	PayloadType_PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE PayloadType = 7
 )
 
 // Enum value maps for PayloadType.
@@ -94,13 +97,19 @@ var (
 		2: "PAYLOAD_TYPE_SERVER_MANIFEST",
 		3: "PAYLOAD_TYPE_CHAT_MESSAGE",
 		4: "PAYLOAD_TYPE_VOICE_STATE",
+		5: "PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE",
+		6: "PAYLOAD_TYPE_VOICE_SIGNAL_FRAME",
+		7: "PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE",
 	}
 	PayloadType_value = map[string]int32{
-		"PAYLOAD_TYPE_UNSPECIFIED":     0,
-		"PAYLOAD_TYPE_IDENTITY":        1,
-		"PAYLOAD_TYPE_SERVER_MANIFEST": 2,
-		"PAYLOAD_TYPE_CHAT_MESSAGE":    3,
-		"PAYLOAD_TYPE_VOICE_STATE":     4,
+		"PAYLOAD_TYPE_UNSPECIFIED":                0,
+		"PAYLOAD_TYPE_IDENTITY":                   1,
+		"PAYLOAD_TYPE_SERVER_MANIFEST":            2,
+		"PAYLOAD_TYPE_CHAT_MESSAGE":               3,
+		"PAYLOAD_TYPE_VOICE_STATE":                4,
+		"PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE":    5,
+		"PAYLOAD_TYPE_VOICE_SIGNAL_FRAME":         6,
+		"PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE": 7,
 	}
 )
 
@@ -129,6 +138,306 @@ func (x PayloadType) Number() protoreflect.EnumNumber {
 // Deprecated: Use PayloadType.Descriptor instead.
 func (PayloadType) EnumDescriptor() ([]byte, []int) {
 	return file_proto_aether_proto_rawDescGZIP(), []int{1}
+}
+
+// VoiceCodec enumerates codec families allowed for v0.1 voice baseline.
+type VoiceCodec int32
+
+const (
+	VoiceCodec_VOICE_CODEC_UNSPECIFIED VoiceCodec = 0
+	VoiceCodec_VOICE_CODEC_OPUS        VoiceCodec = 1
+)
+
+// Enum value maps for VoiceCodec.
+var (
+	VoiceCodec_name = map[int32]string{
+		0: "VOICE_CODEC_UNSPECIFIED",
+		1: "VOICE_CODEC_OPUS",
+	}
+	VoiceCodec_value = map[string]int32{
+		"VOICE_CODEC_UNSPECIFIED": 0,
+		"VOICE_CODEC_OPUS":        1,
+	}
+)
+
+func (x VoiceCodec) Enum() *VoiceCodec {
+	p := new(VoiceCodec)
+	*p = x
+	return p
+}
+
+func (x VoiceCodec) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (VoiceCodec) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[2].Descriptor()
+}
+
+func (VoiceCodec) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[2]
+}
+
+func (x VoiceCodec) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use VoiceCodec.Descriptor instead.
+func (VoiceCodec) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{2}
+}
+
+// VoiceLifecycleState captures peer-connection lifecycle checkpoints.
+type VoiceLifecycleState int32
+
+const (
+	VoiceLifecycleState_VOICE_LIFECYCLE_STATE_UNSPECIFIED  VoiceLifecycleState = 0
+	VoiceLifecycleState_VOICE_LIFECYCLE_STATE_INITIALIZING VoiceLifecycleState = 1
+	VoiceLifecycleState_VOICE_LIFECYCLE_STATE_READY        VoiceLifecycleState = 2
+	VoiceLifecycleState_VOICE_LIFECYCLE_STATE_DEGRADING    VoiceLifecycleState = 3
+	VoiceLifecycleState_VOICE_LIFECYCLE_STATE_RECONNECTING VoiceLifecycleState = 4
+	VoiceLifecycleState_VOICE_LIFECYCLE_STATE_CLOSED       VoiceLifecycleState = 5
+)
+
+// Enum value maps for VoiceLifecycleState.
+var (
+	VoiceLifecycleState_name = map[int32]string{
+		0: "VOICE_LIFECYCLE_STATE_UNSPECIFIED",
+		1: "VOICE_LIFECYCLE_STATE_INITIALIZING",
+		2: "VOICE_LIFECYCLE_STATE_READY",
+		3: "VOICE_LIFECYCLE_STATE_DEGRADING",
+		4: "VOICE_LIFECYCLE_STATE_RECONNECTING",
+		5: "VOICE_LIFECYCLE_STATE_CLOSED",
+	}
+	VoiceLifecycleState_value = map[string]int32{
+		"VOICE_LIFECYCLE_STATE_UNSPECIFIED":  0,
+		"VOICE_LIFECYCLE_STATE_INITIALIZING": 1,
+		"VOICE_LIFECYCLE_STATE_READY":        2,
+		"VOICE_LIFECYCLE_STATE_DEGRADING":    3,
+		"VOICE_LIFECYCLE_STATE_RECONNECTING": 4,
+		"VOICE_LIFECYCLE_STATE_CLOSED":       5,
+	}
+)
+
+func (x VoiceLifecycleState) Enum() *VoiceLifecycleState {
+	p := new(VoiceLifecycleState)
+	*p = x
+	return p
+}
+
+func (x VoiceLifecycleState) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (VoiceLifecycleState) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[3].Descriptor()
+}
+
+func (VoiceLifecycleState) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[3]
+}
+
+func (x VoiceLifecycleState) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use VoiceLifecycleState.Descriptor instead.
+func (VoiceLifecycleState) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{3}
+}
+
+// VoiceReconnectClass classifies deterministic reconnect/error behaviors.
+type VoiceReconnectClass int32
+
+const (
+	VoiceReconnectClass_VOICE_RECONNECT_CLASS_UNSPECIFIED            VoiceReconnectClass = 0
+	VoiceReconnectClass_VOICE_RECONNECT_CLASS_ICE_DISCONNECTED       VoiceReconnectClass = 1
+	VoiceReconnectClass_VOICE_RECONNECT_CLASS_TRANSPORT_FAILURE      VoiceReconnectClass = 2
+	VoiceReconnectClass_VOICE_RECONNECT_CLASS_REMOTE_RESTART         VoiceReconnectClass = 3
+	VoiceReconnectClass_VOICE_RECONNECT_CLASS_LOCAL_DEVICE_CHANGE    VoiceReconnectClass = 4
+	VoiceReconnectClass_VOICE_RECONNECT_CLASS_AUTHENTICATION_FAILURE VoiceReconnectClass = 5
+)
+
+// Enum value maps for VoiceReconnectClass.
+var (
+	VoiceReconnectClass_name = map[int32]string{
+		0: "VOICE_RECONNECT_CLASS_UNSPECIFIED",
+		1: "VOICE_RECONNECT_CLASS_ICE_DISCONNECTED",
+		2: "VOICE_RECONNECT_CLASS_TRANSPORT_FAILURE",
+		3: "VOICE_RECONNECT_CLASS_REMOTE_RESTART",
+		4: "VOICE_RECONNECT_CLASS_LOCAL_DEVICE_CHANGE",
+		5: "VOICE_RECONNECT_CLASS_AUTHENTICATION_FAILURE",
+	}
+	VoiceReconnectClass_value = map[string]int32{
+		"VOICE_RECONNECT_CLASS_UNSPECIFIED":            0,
+		"VOICE_RECONNECT_CLASS_ICE_DISCONNECTED":       1,
+		"VOICE_RECONNECT_CLASS_TRANSPORT_FAILURE":      2,
+		"VOICE_RECONNECT_CLASS_REMOTE_RESTART":         3,
+		"VOICE_RECONNECT_CLASS_LOCAL_DEVICE_CHANGE":    4,
+		"VOICE_RECONNECT_CLASS_AUTHENTICATION_FAILURE": 5,
+	}
+)
+
+func (x VoiceReconnectClass) Enum() *VoiceReconnectClass {
+	p := new(VoiceReconnectClass)
+	*p = x
+	return p
+}
+
+func (x VoiceReconnectClass) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (VoiceReconnectClass) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[4].Descriptor()
+}
+
+func (VoiceReconnectClass) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[4]
+}
+
+func (x VoiceReconnectClass) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use VoiceReconnectClass.Descriptor instead.
+func (VoiceReconnectClass) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{4}
+}
+
+// VoiceSignalType classifies encrypted signaling messages exchanged over
+// GossipSub channels for voice setup and maintenance.
+type VoiceSignalType int32
+
+const (
+	VoiceSignalType_VOICE_SIGNAL_TYPE_UNSPECIFIED   VoiceSignalType = 0
+	VoiceSignalType_VOICE_SIGNAL_TYPE_OFFER         VoiceSignalType = 1
+	VoiceSignalType_VOICE_SIGNAL_TYPE_ANSWER        VoiceSignalType = 2
+	VoiceSignalType_VOICE_SIGNAL_TYPE_ICE_CANDIDATE VoiceSignalType = 3
+	VoiceSignalType_VOICE_SIGNAL_TYPE_ICE_COMPLETE  VoiceSignalType = 4
+	VoiceSignalType_VOICE_SIGNAL_TYPE_RESTART       VoiceSignalType = 5
+	VoiceSignalType_VOICE_SIGNAL_TYPE_TERMINATE     VoiceSignalType = 6
+)
+
+// Enum value maps for VoiceSignalType.
+var (
+	VoiceSignalType_name = map[int32]string{
+		0: "VOICE_SIGNAL_TYPE_UNSPECIFIED",
+		1: "VOICE_SIGNAL_TYPE_OFFER",
+		2: "VOICE_SIGNAL_TYPE_ANSWER",
+		3: "VOICE_SIGNAL_TYPE_ICE_CANDIDATE",
+		4: "VOICE_SIGNAL_TYPE_ICE_COMPLETE",
+		5: "VOICE_SIGNAL_TYPE_RESTART",
+		6: "VOICE_SIGNAL_TYPE_TERMINATE",
+	}
+	VoiceSignalType_value = map[string]int32{
+		"VOICE_SIGNAL_TYPE_UNSPECIFIED":   0,
+		"VOICE_SIGNAL_TYPE_OFFER":         1,
+		"VOICE_SIGNAL_TYPE_ANSWER":        2,
+		"VOICE_SIGNAL_TYPE_ICE_CANDIDATE": 3,
+		"VOICE_SIGNAL_TYPE_ICE_COMPLETE":  4,
+		"VOICE_SIGNAL_TYPE_RESTART":       5,
+		"VOICE_SIGNAL_TYPE_TERMINATE":     6,
+	}
+)
+
+func (x VoiceSignalType) Enum() *VoiceSignalType {
+	p := new(VoiceSignalType)
+	*p = x
+	return p
+}
+
+func (x VoiceSignalType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (VoiceSignalType) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[5].Descriptor()
+}
+
+func (VoiceSignalType) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[5]
+}
+
+func (x VoiceSignalType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use VoiceSignalType.Descriptor instead.
+func (VoiceSignalType) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{5}
+}
+
+// VoiceSignalSessionStatus tracks finite session-state transitions for
+// signaling orchestration.
+type VoiceSignalSessionStatus int32
+
+const (
+	VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_UNSPECIFIED    VoiceSignalSessionStatus = 0
+	VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_IDLE           VoiceSignalSessionStatus = 1
+	VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_OFFER_SENT     VoiceSignalSessionStatus = 2
+	VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_OFFER_RECEIVED VoiceSignalSessionStatus = 3
+	VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_ANSWER_SENT    VoiceSignalSessionStatus = 4
+	VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_ESTABLISHING   VoiceSignalSessionStatus = 5
+	VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_ESTABLISHED    VoiceSignalSessionStatus = 6
+	VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_RESTARTING     VoiceSignalSessionStatus = 7
+	VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_TERMINATED     VoiceSignalSessionStatus = 8
+	VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_FAILED         VoiceSignalSessionStatus = 9
+)
+
+// Enum value maps for VoiceSignalSessionStatus.
+var (
+	VoiceSignalSessionStatus_name = map[int32]string{
+		0: "VOICE_SIGNAL_SESSION_STATUS_UNSPECIFIED",
+		1: "VOICE_SIGNAL_SESSION_STATUS_IDLE",
+		2: "VOICE_SIGNAL_SESSION_STATUS_OFFER_SENT",
+		3: "VOICE_SIGNAL_SESSION_STATUS_OFFER_RECEIVED",
+		4: "VOICE_SIGNAL_SESSION_STATUS_ANSWER_SENT",
+		5: "VOICE_SIGNAL_SESSION_STATUS_ESTABLISHING",
+		6: "VOICE_SIGNAL_SESSION_STATUS_ESTABLISHED",
+		7: "VOICE_SIGNAL_SESSION_STATUS_RESTARTING",
+		8: "VOICE_SIGNAL_SESSION_STATUS_TERMINATED",
+		9: "VOICE_SIGNAL_SESSION_STATUS_FAILED",
+	}
+	VoiceSignalSessionStatus_value = map[string]int32{
+		"VOICE_SIGNAL_SESSION_STATUS_UNSPECIFIED":    0,
+		"VOICE_SIGNAL_SESSION_STATUS_IDLE":           1,
+		"VOICE_SIGNAL_SESSION_STATUS_OFFER_SENT":     2,
+		"VOICE_SIGNAL_SESSION_STATUS_OFFER_RECEIVED": 3,
+		"VOICE_SIGNAL_SESSION_STATUS_ANSWER_SENT":    4,
+		"VOICE_SIGNAL_SESSION_STATUS_ESTABLISHING":   5,
+		"VOICE_SIGNAL_SESSION_STATUS_ESTABLISHED":    6,
+		"VOICE_SIGNAL_SESSION_STATUS_RESTARTING":     7,
+		"VOICE_SIGNAL_SESSION_STATUS_TERMINATED":     8,
+		"VOICE_SIGNAL_SESSION_STATUS_FAILED":         9,
+	}
+)
+
+func (x VoiceSignalSessionStatus) Enum() *VoiceSignalSessionStatus {
+	p := new(VoiceSignalSessionStatus)
+	*p = x
+	return p
+}
+
+func (x VoiceSignalSessionStatus) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (VoiceSignalSessionStatus) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[6].Descriptor()
+}
+
+func (VoiceSignalSessionStatus) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[6]
+}
+
+func (x VoiceSignalSessionStatus) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use VoiceSignalSessionStatus.Descriptor instead.
+func (VoiceSignalSessionStatus) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{6}
 }
 
 // SignatureAlgorithm tracks how the signature bytes should be verified.
@@ -165,11 +474,11 @@ func (x SignatureAlgorithm) String() string {
 }
 
 func (SignatureAlgorithm) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_aether_proto_enumTypes[2].Descriptor()
+	return file_proto_aether_proto_enumTypes[7].Descriptor()
 }
 
 func (SignatureAlgorithm) Type() protoreflect.EnumType {
-	return &file_proto_aether_proto_enumTypes[2]
+	return &file_proto_aether_proto_enumTypes[7]
 }
 
 func (x SignatureAlgorithm) Number() protoreflect.EnumNumber {
@@ -178,7 +487,7 @@ func (x SignatureAlgorithm) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use SignatureAlgorithm.Descriptor instead.
 func (SignatureAlgorithm) EnumDescriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{2}
+	return file_proto_aether_proto_rawDescGZIP(), []int{7}
 }
 
 // EnvelopeVerificationError enumerates canonical validation failures for
@@ -229,11 +538,11 @@ func (x EnvelopeVerificationError) String() string {
 }
 
 func (EnvelopeVerificationError) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_aether_proto_enumTypes[3].Descriptor()
+	return file_proto_aether_proto_enumTypes[8].Descriptor()
 }
 
 func (EnvelopeVerificationError) Type() protoreflect.EnumType {
-	return &file_proto_aether_proto_enumTypes[3]
+	return &file_proto_aether_proto_enumTypes[8]
 }
 
 func (x EnvelopeVerificationError) Number() protoreflect.EnumNumber {
@@ -242,7 +551,7 @@ func (x EnvelopeVerificationError) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use EnvelopeVerificationError.Descriptor instead.
 func (EnvelopeVerificationError) EnumDescriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{3}
+	return file_proto_aether_proto_rawDescGZIP(), []int{8}
 }
 
 // VerificationStatus is an aggregate decision derived from the error list.
@@ -279,11 +588,11 @@ func (x VerificationStatus) String() string {
 }
 
 func (VerificationStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_aether_proto_enumTypes[4].Descriptor()
+	return file_proto_aether_proto_enumTypes[9].Descriptor()
 }
 
 func (VerificationStatus) Type() protoreflect.EnumType {
-	return &file_proto_aether_proto_enumTypes[4]
+	return &file_proto_aether_proto_enumTypes[9]
 }
 
 func (x VerificationStatus) Number() protoreflect.EnumNumber {
@@ -292,7 +601,7 @@ func (x VerificationStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use VerificationStatus.Descriptor instead.
 func (VerificationStatus) EnumDescriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{4}
+	return file_proto_aether_proto_rawDescGZIP(), []int{9}
 }
 
 // CapabilitySet represents the strongly typed capability flags alongside custom
@@ -734,6 +1043,761 @@ func (x *VoiceState) GetUpdatedAt() uint64 {
 	return 0
 }
 
+// VoiceCodecProfile defines codec and frame defaults for pipeline bootstrap.
+type VoiceCodecProfile struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Codec           VoiceCodec             `protobuf:"varint,1,opt,name=codec,proto3,enum=aether.VoiceCodec" json:"codec,omitempty"`
+	FrameDurationMs uint32                 `protobuf:"varint,2,opt,name=frame_duration_ms,json=frameDurationMs,proto3" json:"frame_duration_ms,omitempty"`
+	SampleRateHz    uint32                 `protobuf:"varint,3,opt,name=sample_rate_hz,json=sampleRateHz,proto3" json:"sample_rate_hz,omitempty"`
+	Channels        uint32                 `protobuf:"varint,4,opt,name=channels,proto3" json:"channels,omitempty"`
+	DtxEnabled      bool                   `protobuf:"varint,5,opt,name=dtx_enabled,json=dtxEnabled,proto3" json:"dtx_enabled,omitempty"`
+	FecEnabled      bool                   `protobuf:"varint,6,opt,name=fec_enabled,json=fecEnabled,proto3" json:"fec_enabled,omitempty"`
+	MaxBitrateBps   uint32                 `protobuf:"varint,7,opt,name=max_bitrate_bps,json=maxBitrateBps,proto3" json:"max_bitrate_bps,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *VoiceCodecProfile) Reset() {
+	*x = VoiceCodecProfile{}
+	mi := &file_proto_aether_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoiceCodecProfile) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoiceCodecProfile) ProtoMessage() {}
+
+func (x *VoiceCodecProfile) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoiceCodecProfile.ProtoReflect.Descriptor instead.
+func (*VoiceCodecProfile) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *VoiceCodecProfile) GetCodec() VoiceCodec {
+	if x != nil {
+		return x.Codec
+	}
+	return VoiceCodec_VOICE_CODEC_UNSPECIFIED
+}
+
+func (x *VoiceCodecProfile) GetFrameDurationMs() uint32 {
+	if x != nil {
+		return x.FrameDurationMs
+	}
+	return 0
+}
+
+func (x *VoiceCodecProfile) GetSampleRateHz() uint32 {
+	if x != nil {
+		return x.SampleRateHz
+	}
+	return 0
+}
+
+func (x *VoiceCodecProfile) GetChannels() uint32 {
+	if x != nil {
+		return x.Channels
+	}
+	return 0
+}
+
+func (x *VoiceCodecProfile) GetDtxEnabled() bool {
+	if x != nil {
+		return x.DtxEnabled
+	}
+	return false
+}
+
+func (x *VoiceCodecProfile) GetFecEnabled() bool {
+	if x != nil {
+		return x.FecEnabled
+	}
+	return false
+}
+
+func (x *VoiceCodecProfile) GetMaxBitrateBps() uint32 {
+	if x != nil {
+		return x.MaxBitrateBps
+	}
+	return 0
+}
+
+// VoiceTransportProfile captures transport setup controls for v0.1.
+type VoiceTransportProfile struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Transport          string                 `protobuf:"bytes,1,opt,name=transport,proto3" json:"transport,omitempty"`
+	RtcpMux            bool                   `protobuf:"varint,2,opt,name=rtcp_mux,json=rtcpMux,proto3" json:"rtcp_mux,omitempty"`
+	IceRestartEnabled  bool                   `protobuf:"varint,3,opt,name=ice_restart_enabled,json=iceRestartEnabled,proto3" json:"ice_restart_enabled,omitempty"`
+	ContinualGathering bool                   `protobuf:"varint,4,opt,name=continual_gathering,json=continualGathering,proto3" json:"continual_gathering,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *VoiceTransportProfile) Reset() {
+	*x = VoiceTransportProfile{}
+	mi := &file_proto_aether_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoiceTransportProfile) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoiceTransportProfile) ProtoMessage() {}
+
+func (x *VoiceTransportProfile) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoiceTransportProfile.ProtoReflect.Descriptor instead.
+func (*VoiceTransportProfile) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *VoiceTransportProfile) GetTransport() string {
+	if x != nil {
+		return x.Transport
+	}
+	return ""
+}
+
+func (x *VoiceTransportProfile) GetRtcpMux() bool {
+	if x != nil {
+		return x.RtcpMux
+	}
+	return false
+}
+
+func (x *VoiceTransportProfile) GetIceRestartEnabled() bool {
+	if x != nil {
+		return x.IceRestartEnabled
+	}
+	return false
+}
+
+func (x *VoiceTransportProfile) GetContinualGathering() bool {
+	if x != nil {
+		return x.ContinualGathering
+	}
+	return false
+}
+
+// VoiceReconnectPolicy defines bounded retry behavior for recoverable failures.
+type VoiceReconnectPolicy struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	MaxAttempts      uint32                 `protobuf:"varint,1,opt,name=max_attempts,json=maxAttempts,proto3" json:"max_attempts,omitempty"`
+	InitialBackoffMs uint32                 `protobuf:"varint,2,opt,name=initial_backoff_ms,json=initialBackoffMs,proto3" json:"initial_backoff_ms,omitempty"`
+	MaxBackoffMs     uint32                 `protobuf:"varint,3,opt,name=max_backoff_ms,json=maxBackoffMs,proto3" json:"max_backoff_ms,omitempty"`
+	RetryableClasses []VoiceReconnectClass  `protobuf:"varint,4,rep,packed,name=retryable_classes,json=retryableClasses,proto3,enum=aether.VoiceReconnectClass" json:"retryable_classes,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *VoiceReconnectPolicy) Reset() {
+	*x = VoiceReconnectPolicy{}
+	mi := &file_proto_aether_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoiceReconnectPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoiceReconnectPolicy) ProtoMessage() {}
+
+func (x *VoiceReconnectPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoiceReconnectPolicy.ProtoReflect.Descriptor instead.
+func (*VoiceReconnectPolicy) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *VoiceReconnectPolicy) GetMaxAttempts() uint32 {
+	if x != nil {
+		return x.MaxAttempts
+	}
+	return 0
+}
+
+func (x *VoiceReconnectPolicy) GetInitialBackoffMs() uint32 {
+	if x != nil {
+		return x.InitialBackoffMs
+	}
+	return 0
+}
+
+func (x *VoiceReconnectPolicy) GetMaxBackoffMs() uint32 {
+	if x != nil {
+		return x.MaxBackoffMs
+	}
+	return 0
+}
+
+func (x *VoiceReconnectPolicy) GetRetryableClasses() []VoiceReconnectClass {
+	if x != nil {
+		return x.RetryableClasses
+	}
+	return nil
+}
+
+// VoiceLifecycleHook records an observed peer lifecycle transition.
+type VoiceLifecycleHook struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	State         VoiceLifecycleState    `protobuf:"varint,1,opt,name=state,proto3,enum=aether.VoiceLifecycleState" json:"state,omitempty"`
+	PeerId        string                 `protobuf:"bytes,2,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"`
+	OccurredAt    uint64                 `protobuf:"varint,3,opt,name=occurred_at,json=occurredAt,proto3" json:"occurred_at,omitempty"` // unix seconds
+	Detail        string                 `protobuf:"bytes,4,opt,name=detail,proto3" json:"detail,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VoiceLifecycleHook) Reset() {
+	*x = VoiceLifecycleHook{}
+	mi := &file_proto_aether_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoiceLifecycleHook) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoiceLifecycleHook) ProtoMessage() {}
+
+func (x *VoiceLifecycleHook) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoiceLifecycleHook.ProtoReflect.Descriptor instead.
+func (*VoiceLifecycleHook) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *VoiceLifecycleHook) GetState() VoiceLifecycleState {
+	if x != nil {
+		return x.State
+	}
+	return VoiceLifecycleState_VOICE_LIFECYCLE_STATE_UNSPECIFIED
+}
+
+func (x *VoiceLifecycleHook) GetPeerId() string {
+	if x != nil {
+		return x.PeerId
+	}
+	return ""
+}
+
+func (x *VoiceLifecycleHook) GetOccurredAt() uint64 {
+	if x != nil {
+		return x.OccurredAt
+	}
+	return 0
+}
+
+func (x *VoiceLifecycleHook) GetDetail() string {
+	if x != nil {
+		return x.Detail
+	}
+	return ""
+}
+
+// VoicePipelineBaseline bundles codec, transport, lifecycle, and reconnect
+// settings for voice-pipeline bootstrap in v0.1.
+type VoicePipelineBaseline struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	SessionId        string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	CodecProfile     *VoiceCodecProfile     `protobuf:"bytes,2,opt,name=codec_profile,json=codecProfile,proto3" json:"codec_profile,omitempty"`
+	TransportProfile *VoiceTransportProfile `protobuf:"bytes,3,opt,name=transport_profile,json=transportProfile,proto3" json:"transport_profile,omitempty"`
+	ReconnectPolicy  *VoiceReconnectPolicy  `protobuf:"bytes,4,opt,name=reconnect_policy,json=reconnectPolicy,proto3" json:"reconnect_policy,omitempty"`
+	LifecycleHooks   []*VoiceLifecycleHook  `protobuf:"bytes,5,rep,name=lifecycle_hooks,json=lifecycleHooks,proto3" json:"lifecycle_hooks,omitempty"`
+	ConfiguredAt     uint64                 `protobuf:"varint,6,opt,name=configured_at,json=configuredAt,proto3" json:"configured_at,omitempty"` // unix seconds
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *VoicePipelineBaseline) Reset() {
+	*x = VoicePipelineBaseline{}
+	mi := &file_proto_aether_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoicePipelineBaseline) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoicePipelineBaseline) ProtoMessage() {}
+
+func (x *VoicePipelineBaseline) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoicePipelineBaseline.ProtoReflect.Descriptor instead.
+func (*VoicePipelineBaseline) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *VoicePipelineBaseline) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+func (x *VoicePipelineBaseline) GetCodecProfile() *VoiceCodecProfile {
+	if x != nil {
+		return x.CodecProfile
+	}
+	return nil
+}
+
+func (x *VoicePipelineBaseline) GetTransportProfile() *VoiceTransportProfile {
+	if x != nil {
+		return x.TransportProfile
+	}
+	return nil
+}
+
+func (x *VoicePipelineBaseline) GetReconnectPolicy() *VoiceReconnectPolicy {
+	if x != nil {
+		return x.ReconnectPolicy
+	}
+	return nil
+}
+
+func (x *VoicePipelineBaseline) GetLifecycleHooks() []*VoiceLifecycleHook {
+	if x != nil {
+		return x.LifecycleHooks
+	}
+	return nil
+}
+
+func (x *VoicePipelineBaseline) GetConfiguredAt() uint64 {
+	if x != nil {
+		return x.ConfiguredAt
+	}
+	return 0
+}
+
+// VoiceSignalSessionRef carries deterministic identifiers used by signaling
+// sessions.
+type VoiceSignalSessionRef struct {
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	SignalSessionId     string                 `protobuf:"bytes,1,opt,name=signal_session_id,json=signalSessionId,proto3" json:"signal_session_id,omitempty"`
+	VoiceSessionId      string                 `protobuf:"bytes,2,opt,name=voice_session_id,json=voiceSessionId,proto3" json:"voice_session_id,omitempty"`
+	ServerId            string                 `protobuf:"bytes,3,opt,name=server_id,json=serverId,proto3" json:"server_id,omitempty"`
+	ChannelId           string                 `protobuf:"bytes,4,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
+	LocalParticipantId  string                 `protobuf:"bytes,5,opt,name=local_participant_id,json=localParticipantId,proto3" json:"local_participant_id,omitempty"`
+	RemoteParticipantId string                 `protobuf:"bytes,6,opt,name=remote_participant_id,json=remoteParticipantId,proto3" json:"remote_participant_id,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *VoiceSignalSessionRef) Reset() {
+	*x = VoiceSignalSessionRef{}
+	mi := &file_proto_aether_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoiceSignalSessionRef) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoiceSignalSessionRef) ProtoMessage() {}
+
+func (x *VoiceSignalSessionRef) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoiceSignalSessionRef.ProtoReflect.Descriptor instead.
+func (*VoiceSignalSessionRef) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *VoiceSignalSessionRef) GetSignalSessionId() string {
+	if x != nil {
+		return x.SignalSessionId
+	}
+	return ""
+}
+
+func (x *VoiceSignalSessionRef) GetVoiceSessionId() string {
+	if x != nil {
+		return x.VoiceSessionId
+	}
+	return ""
+}
+
+func (x *VoiceSignalSessionRef) GetServerId() string {
+	if x != nil {
+		return x.ServerId
+	}
+	return ""
+}
+
+func (x *VoiceSignalSessionRef) GetChannelId() string {
+	if x != nil {
+		return x.ChannelId
+	}
+	return ""
+}
+
+func (x *VoiceSignalSessionRef) GetLocalParticipantId() string {
+	if x != nil {
+		return x.LocalParticipantId
+	}
+	return ""
+}
+
+func (x *VoiceSignalSessionRef) GetRemoteParticipantId() string {
+	if x != nil {
+		return x.RemoteParticipantId
+	}
+	return ""
+}
+
+// VoiceSignalRetryPolicy defines bounded offer/answer retry behavior and ICE
+// update timeout handling.
+type VoiceSignalRetryPolicy struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	MaxOfferAttempts     uint32                 `protobuf:"varint,1,opt,name=max_offer_attempts,json=maxOfferAttempts,proto3" json:"max_offer_attempts,omitempty"`
+	OfferRetryBackoffMs  uint32                 `protobuf:"varint,2,opt,name=offer_retry_backoff_ms,json=offerRetryBackoffMs,proto3" json:"offer_retry_backoff_ms,omitempty"`
+	MaxAnswerAttempts    uint32                 `protobuf:"varint,3,opt,name=max_answer_attempts,json=maxAnswerAttempts,proto3" json:"max_answer_attempts,omitempty"`
+	AnswerRetryBackoffMs uint32                 `protobuf:"varint,4,opt,name=answer_retry_backoff_ms,json=answerRetryBackoffMs,proto3" json:"answer_retry_backoff_ms,omitempty"`
+	MaxIceUpdates        uint32                 `protobuf:"varint,5,opt,name=max_ice_updates,json=maxIceUpdates,proto3" json:"max_ice_updates,omitempty"`
+	IceUpdateTimeoutMs   uint32                 `protobuf:"varint,6,opt,name=ice_update_timeout_ms,json=iceUpdateTimeoutMs,proto3" json:"ice_update_timeout_ms,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *VoiceSignalRetryPolicy) Reset() {
+	*x = VoiceSignalRetryPolicy{}
+	mi := &file_proto_aether_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoiceSignalRetryPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoiceSignalRetryPolicy) ProtoMessage() {}
+
+func (x *VoiceSignalRetryPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoiceSignalRetryPolicy.ProtoReflect.Descriptor instead.
+func (*VoiceSignalRetryPolicy) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *VoiceSignalRetryPolicy) GetMaxOfferAttempts() uint32 {
+	if x != nil {
+		return x.MaxOfferAttempts
+	}
+	return 0
+}
+
+func (x *VoiceSignalRetryPolicy) GetOfferRetryBackoffMs() uint32 {
+	if x != nil {
+		return x.OfferRetryBackoffMs
+	}
+	return 0
+}
+
+func (x *VoiceSignalRetryPolicy) GetMaxAnswerAttempts() uint32 {
+	if x != nil {
+		return x.MaxAnswerAttempts
+	}
+	return 0
+}
+
+func (x *VoiceSignalRetryPolicy) GetAnswerRetryBackoffMs() uint32 {
+	if x != nil {
+		return x.AnswerRetryBackoffMs
+	}
+	return 0
+}
+
+func (x *VoiceSignalRetryPolicy) GetMaxIceUpdates() uint32 {
+	if x != nil {
+		return x.MaxIceUpdates
+	}
+	return 0
+}
+
+func (x *VoiceSignalRetryPolicy) GetIceUpdateTimeoutMs() uint32 {
+	if x != nil {
+		return x.IceUpdateTimeoutMs
+	}
+	return 0
+}
+
+// VoiceSignalFrame is the encrypted signaling envelope exchanged over
+// GossipSub. The encrypted_payload bytes carry SDP/ICE material encrypted by
+// the channel pipeline.
+type VoiceSignalFrame struct {
+	state            protoimpl.MessageState  `protogen:"open.v1"`
+	SignalId         string                  `protobuf:"bytes,1,opt,name=signal_id,json=signalId,proto3" json:"signal_id,omitempty"`
+	SessionRef       *VoiceSignalSessionRef  `protobuf:"bytes,2,opt,name=session_ref,json=sessionRef,proto3" json:"session_ref,omitempty"`
+	SignalType       VoiceSignalType         `protobuf:"varint,3,opt,name=signal_type,json=signalType,proto3,enum=aether.VoiceSignalType" json:"signal_type,omitempty"`
+	Sequence         uint64                  `protobuf:"varint,4,opt,name=sequence,proto3" json:"sequence,omitempty"`
+	EncryptedPayload []byte                  `protobuf:"bytes,5,opt,name=encrypted_payload,json=encryptedPayload,proto3" json:"encrypted_payload,omitempty"`
+	SentAt           uint64                  `protobuf:"varint,6,opt,name=sent_at,json=sentAt,proto3" json:"sent_at,omitempty"`          // unix seconds
+	ExpiresAt        uint64                  `protobuf:"varint,7,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"` // unix seconds
+	RetryPolicy      *VoiceSignalRetryPolicy `protobuf:"bytes,8,opt,name=retry_policy,json=retryPolicy,proto3" json:"retry_policy,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *VoiceSignalFrame) Reset() {
+	*x = VoiceSignalFrame{}
+	mi := &file_proto_aether_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoiceSignalFrame) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoiceSignalFrame) ProtoMessage() {}
+
+func (x *VoiceSignalFrame) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoiceSignalFrame.ProtoReflect.Descriptor instead.
+func (*VoiceSignalFrame) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *VoiceSignalFrame) GetSignalId() string {
+	if x != nil {
+		return x.SignalId
+	}
+	return ""
+}
+
+func (x *VoiceSignalFrame) GetSessionRef() *VoiceSignalSessionRef {
+	if x != nil {
+		return x.SessionRef
+	}
+	return nil
+}
+
+func (x *VoiceSignalFrame) GetSignalType() VoiceSignalType {
+	if x != nil {
+		return x.SignalType
+	}
+	return VoiceSignalType_VOICE_SIGNAL_TYPE_UNSPECIFIED
+}
+
+func (x *VoiceSignalFrame) GetSequence() uint64 {
+	if x != nil {
+		return x.Sequence
+	}
+	return 0
+}
+
+func (x *VoiceSignalFrame) GetEncryptedPayload() []byte {
+	if x != nil {
+		return x.EncryptedPayload
+	}
+	return nil
+}
+
+func (x *VoiceSignalFrame) GetSentAt() uint64 {
+	if x != nil {
+		return x.SentAt
+	}
+	return 0
+}
+
+func (x *VoiceSignalFrame) GetExpiresAt() uint64 {
+	if x != nil {
+		return x.ExpiresAt
+	}
+	return 0
+}
+
+func (x *VoiceSignalFrame) GetRetryPolicy() *VoiceSignalRetryPolicy {
+	if x != nil {
+		return x.RetryPolicy
+	}
+	return nil
+}
+
+// VoiceSignalSessionState records signaling state-machine progress and bounded
+// retry counters.
+type VoiceSignalSessionState struct {
+	state            protoimpl.MessageState   `protogen:"open.v1"`
+	SessionRef       *VoiceSignalSessionRef   `protobuf:"bytes,1,opt,name=session_ref,json=sessionRef,proto3" json:"session_ref,omitempty"`
+	Status           VoiceSignalSessionStatus `protobuf:"varint,2,opt,name=status,proto3,enum=aether.VoiceSignalSessionStatus" json:"status,omitempty"`
+	OfferAttempt     uint32                   `protobuf:"varint,3,opt,name=offer_attempt,json=offerAttempt,proto3" json:"offer_attempt,omitempty"`
+	AnswerAttempt    uint32                   `protobuf:"varint,4,opt,name=answer_attempt,json=answerAttempt,proto3" json:"answer_attempt,omitempty"`
+	IceUpdateCount   uint32                   `protobuf:"varint,5,opt,name=ice_update_count,json=iceUpdateCount,proto3" json:"ice_update_count,omitempty"`
+	LastTransitionAt uint64                   `protobuf:"varint,6,opt,name=last_transition_at,json=lastTransitionAt,proto3" json:"last_transition_at,omitempty"` // unix seconds
+	TerminalReason   string                   `protobuf:"bytes,7,opt,name=terminal_reason,json=terminalReason,proto3" json:"terminal_reason,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *VoiceSignalSessionState) Reset() {
+	*x = VoiceSignalSessionState{}
+	mi := &file_proto_aether_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoiceSignalSessionState) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoiceSignalSessionState) ProtoMessage() {}
+
+func (x *VoiceSignalSessionState) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoiceSignalSessionState.ProtoReflect.Descriptor instead.
+func (*VoiceSignalSessionState) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *VoiceSignalSessionState) GetSessionRef() *VoiceSignalSessionRef {
+	if x != nil {
+		return x.SessionRef
+	}
+	return nil
+}
+
+func (x *VoiceSignalSessionState) GetStatus() VoiceSignalSessionStatus {
+	if x != nil {
+		return x.Status
+	}
+	return VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_UNSPECIFIED
+}
+
+func (x *VoiceSignalSessionState) GetOfferAttempt() uint32 {
+	if x != nil {
+		return x.OfferAttempt
+	}
+	return 0
+}
+
+func (x *VoiceSignalSessionState) GetAnswerAttempt() uint32 {
+	if x != nil {
+		return x.AnswerAttempt
+	}
+	return 0
+}
+
+func (x *VoiceSignalSessionState) GetIceUpdateCount() uint32 {
+	if x != nil {
+		return x.IceUpdateCount
+	}
+	return 0
+}
+
+func (x *VoiceSignalSessionState) GetLastTransitionAt() uint64 {
+	if x != nil {
+		return x.LastTransitionAt
+	}
+	return 0
+}
+
+func (x *VoiceSignalSessionState) GetTerminalReason() string {
+	if x != nil {
+		return x.TerminalReason
+	}
+	return ""
+}
+
 // SignedEnvelope standardizes canonical serialization and signatures.
 type SignedEnvelope struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
@@ -751,7 +1815,7 @@ type SignedEnvelope struct {
 
 func (x *SignedEnvelope) Reset() {
 	*x = SignedEnvelope{}
-	mi := &file_proto_aether_proto_msgTypes[6]
+	mi := &file_proto_aether_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -763,7 +1827,7 @@ func (x *SignedEnvelope) String() string {
 func (*SignedEnvelope) ProtoMessage() {}
 
 func (x *SignedEnvelope) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[6]
+	mi := &file_proto_aether_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -776,7 +1840,7 @@ func (x *SignedEnvelope) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignedEnvelope.ProtoReflect.Descriptor instead.
 func (*SignedEnvelope) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{6}
+	return file_proto_aether_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *SignedEnvelope) GetEnvelopeId() string {
@@ -846,7 +1910,7 @@ type VerificationError struct {
 
 func (x *VerificationError) Reset() {
 	*x = VerificationError{}
-	mi := &file_proto_aether_proto_msgTypes[7]
+	mi := &file_proto_aether_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -858,7 +1922,7 @@ func (x *VerificationError) String() string {
 func (*VerificationError) ProtoMessage() {}
 
 func (x *VerificationError) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[7]
+	mi := &file_proto_aether_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -871,7 +1935,7 @@ func (x *VerificationError) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VerificationError.ProtoReflect.Descriptor instead.
 func (*VerificationError) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{7}
+	return file_proto_aether_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *VerificationError) GetCode() EnvelopeVerificationError {
@@ -901,7 +1965,7 @@ type EnvelopeVerification struct {
 
 func (x *EnvelopeVerification) Reset() {
 	*x = EnvelopeVerification{}
-	mi := &file_proto_aether_proto_msgTypes[8]
+	mi := &file_proto_aether_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -913,7 +1977,7 @@ func (x *EnvelopeVerification) String() string {
 func (*EnvelopeVerification) ProtoMessage() {}
 
 func (x *EnvelopeVerification) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[8]
+	mi := &file_proto_aether_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -926,7 +1990,7 @@ func (x *EnvelopeVerification) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnvelopeVerification.ProtoReflect.Descriptor instead.
 func (*EnvelopeVerification) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{8}
+	return file_proto_aether_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *EnvelopeVerification) GetEnvelope() *SignedEnvelope {
@@ -967,7 +2031,7 @@ type AetherPlaceholder struct {
 
 func (x *AetherPlaceholder) Reset() {
 	*x = AetherPlaceholder{}
-	mi := &file_proto_aether_proto_msgTypes[9]
+	mi := &file_proto_aether_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -979,7 +2043,7 @@ func (x *AetherPlaceholder) String() string {
 func (*AetherPlaceholder) ProtoMessage() {}
 
 func (x *AetherPlaceholder) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[9]
+	mi := &file_proto_aether_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -992,7 +2056,7 @@ func (x *AetherPlaceholder) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AetherPlaceholder.ProtoReflect.Descriptor instead.
 func (*AetherPlaceholder) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{9}
+	return file_proto_aether_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *AetherPlaceholder) GetPlaceholderMessage() string {
@@ -1048,7 +2112,77 @@ const file_proto_aether_proto_rawDesc = "" +
 	"\x05muted\x18\x03 \x01(\bR\x05muted\x12\x1a\n" +
 	"\bdeafened\x18\x04 \x01(\bR\bdeafened\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\x05 \x01(\x04R\tupdatedAtJ\x05\bd\x10\xc8\x01\"\xf0\x02\n" +
+	"updated_at\x18\x05 \x01(\x04R\tupdatedAtJ\x05\bd\x10\xc8\x01\"\x9c\x02\n" +
+	"\x11VoiceCodecProfile\x12(\n" +
+	"\x05codec\x18\x01 \x01(\x0e2\x12.aether.VoiceCodecR\x05codec\x12*\n" +
+	"\x11frame_duration_ms\x18\x02 \x01(\rR\x0fframeDurationMs\x12$\n" +
+	"\x0esample_rate_hz\x18\x03 \x01(\rR\fsampleRateHz\x12\x1a\n" +
+	"\bchannels\x18\x04 \x01(\rR\bchannels\x12\x1f\n" +
+	"\vdtx_enabled\x18\x05 \x01(\bR\n" +
+	"dtxEnabled\x12\x1f\n" +
+	"\vfec_enabled\x18\x06 \x01(\bR\n" +
+	"fecEnabled\x12&\n" +
+	"\x0fmax_bitrate_bps\x18\a \x01(\rR\rmaxBitrateBpsJ\x05\bd\x10\xc8\x01\"\xb8\x01\n" +
+	"\x15VoiceTransportProfile\x12\x1c\n" +
+	"\ttransport\x18\x01 \x01(\tR\ttransport\x12\x19\n" +
+	"\brtcp_mux\x18\x02 \x01(\bR\artcpMux\x12.\n" +
+	"\x13ice_restart_enabled\x18\x03 \x01(\bR\x11iceRestartEnabled\x12/\n" +
+	"\x13continual_gathering\x18\x04 \x01(\bR\x12continualGatheringJ\x05\bd\x10\xc8\x01\"\xde\x01\n" +
+	"\x14VoiceReconnectPolicy\x12!\n" +
+	"\fmax_attempts\x18\x01 \x01(\rR\vmaxAttempts\x12,\n" +
+	"\x12initial_backoff_ms\x18\x02 \x01(\rR\x10initialBackoffMs\x12$\n" +
+	"\x0emax_backoff_ms\x18\x03 \x01(\rR\fmaxBackoffMs\x12H\n" +
+	"\x11retryable_classes\x18\x04 \x03(\x0e2\x1b.aether.VoiceReconnectClassR\x10retryableClassesJ\x05\bd\x10\xc8\x01\"\xa0\x01\n" +
+	"\x12VoiceLifecycleHook\x121\n" +
+	"\x05state\x18\x01 \x01(\x0e2\x1b.aether.VoiceLifecycleStateR\x05state\x12\x17\n" +
+	"\apeer_id\x18\x02 \x01(\tR\x06peerId\x12\x1f\n" +
+	"\voccurred_at\x18\x03 \x01(\x04R\n" +
+	"occurredAt\x12\x16\n" +
+	"\x06detail\x18\x04 \x01(\tR\x06detailJ\x05\bd\x10\xc8\x01\"\xfc\x02\n" +
+	"\x15VoicePipelineBaseline\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\x12>\n" +
+	"\rcodec_profile\x18\x02 \x01(\v2\x19.aether.VoiceCodecProfileR\fcodecProfile\x12J\n" +
+	"\x11transport_profile\x18\x03 \x01(\v2\x1d.aether.VoiceTransportProfileR\x10transportProfile\x12G\n" +
+	"\x10reconnect_policy\x18\x04 \x01(\v2\x1c.aether.VoiceReconnectPolicyR\x0freconnectPolicy\x12C\n" +
+	"\x0flifecycle_hooks\x18\x05 \x03(\v2\x1a.aether.VoiceLifecycleHookR\x0elifecycleHooks\x12#\n" +
+	"\rconfigured_at\x18\x06 \x01(\x04R\fconfiguredAtJ\x05\bd\x10\xc8\x01\"\x96\x02\n" +
+	"\x15VoiceSignalSessionRef\x12*\n" +
+	"\x11signal_session_id\x18\x01 \x01(\tR\x0fsignalSessionId\x12(\n" +
+	"\x10voice_session_id\x18\x02 \x01(\tR\x0evoiceSessionId\x12\x1b\n" +
+	"\tserver_id\x18\x03 \x01(\tR\bserverId\x12\x1d\n" +
+	"\n" +
+	"channel_id\x18\x04 \x01(\tR\tchannelId\x120\n" +
+	"\x14local_participant_id\x18\x05 \x01(\tR\x12localParticipantId\x122\n" +
+	"\x15remote_participant_id\x18\x06 \x01(\tR\x13remoteParticipantIdJ\x05\bd\x10\xc8\x01\"\xc4\x02\n" +
+	"\x16VoiceSignalRetryPolicy\x12,\n" +
+	"\x12max_offer_attempts\x18\x01 \x01(\rR\x10maxOfferAttempts\x123\n" +
+	"\x16offer_retry_backoff_ms\x18\x02 \x01(\rR\x13offerRetryBackoffMs\x12.\n" +
+	"\x13max_answer_attempts\x18\x03 \x01(\rR\x11maxAnswerAttempts\x125\n" +
+	"\x17answer_retry_backoff_ms\x18\x04 \x01(\rR\x14answerRetryBackoffMs\x12&\n" +
+	"\x0fmax_ice_updates\x18\x05 \x01(\rR\rmaxIceUpdates\x121\n" +
+	"\x15ice_update_timeout_ms\x18\x06 \x01(\rR\x12iceUpdateTimeoutMsJ\x05\bd\x10\xc8\x01\"\xf4\x02\n" +
+	"\x10VoiceSignalFrame\x12\x1b\n" +
+	"\tsignal_id\x18\x01 \x01(\tR\bsignalId\x12>\n" +
+	"\vsession_ref\x18\x02 \x01(\v2\x1d.aether.VoiceSignalSessionRefR\n" +
+	"sessionRef\x128\n" +
+	"\vsignal_type\x18\x03 \x01(\x0e2\x17.aether.VoiceSignalTypeR\n" +
+	"signalType\x12\x1a\n" +
+	"\bsequence\x18\x04 \x01(\x04R\bsequence\x12+\n" +
+	"\x11encrypted_payload\x18\x05 \x01(\fR\x10encryptedPayload\x12\x17\n" +
+	"\asent_at\x18\x06 \x01(\x04R\x06sentAt\x12\x1d\n" +
+	"\n" +
+	"expires_at\x18\a \x01(\x04R\texpiresAt\x12A\n" +
+	"\fretry_policy\x18\b \x01(\v2\x1e.aether.VoiceSignalRetryPolicyR\vretryPolicyJ\x05\bd\x10\xc8\x01\"\xe7\x02\n" +
+	"\x17VoiceSignalSessionState\x12>\n" +
+	"\vsession_ref\x18\x01 \x01(\v2\x1d.aether.VoiceSignalSessionRefR\n" +
+	"sessionRef\x128\n" +
+	"\x06status\x18\x02 \x01(\x0e2 .aether.VoiceSignalSessionStatusR\x06status\x12#\n" +
+	"\roffer_attempt\x18\x03 \x01(\rR\fofferAttempt\x12%\n" +
+	"\x0eanswer_attempt\x18\x04 \x01(\rR\ranswerAttempt\x12(\n" +
+	"\x10ice_update_count\x18\x05 \x01(\rR\x0eiceUpdateCount\x12,\n" +
+	"\x12last_transition_at\x18\x06 \x01(\x04R\x10lastTransitionAt\x12'\n" +
+	"\x0fterminal_reason\x18\a \x01(\tR\x0eterminalReasonJ\x05\bd\x10\xc8\x01\"\xf0\x02\n" +
 	"\x0eSignedEnvelope\x12\x1f\n" +
 	"\venvelope_id\x18\x01 \x01(\tR\n" +
 	"envelopeId\x126\n" +
@@ -1073,13 +2207,53 @@ const file_proto_aether_proto_rawDesc = "" +
 	"\x1bCAPABILITY_FLAG_UNSPECIFIED\x10\x00\x12\x18\n" +
 	"\x14CAPABILITY_FLAG_CHAT\x10\x01\x12\x19\n" +
 	"\x15CAPABILITY_FLAG_VOICE\x10\x02\x12\x1e\n" +
-	"\x1aCAPABILITY_FLAG_MANAGEMENT\x10\x03\"\x05\bd\x10\xc7\x01*\xac\x01\n" +
+	"\x1aCAPABILITY_FLAG_MANAGEMENT\x10\x03\"\x05\bd\x10\xc7\x01*\xa8\x02\n" +
 	"\vPayloadType\x12\x1c\n" +
 	"\x18PAYLOAD_TYPE_UNSPECIFIED\x10\x00\x12\x19\n" +
 	"\x15PAYLOAD_TYPE_IDENTITY\x10\x01\x12 \n" +
 	"\x1cPAYLOAD_TYPE_SERVER_MANIFEST\x10\x02\x12\x1d\n" +
 	"\x19PAYLOAD_TYPE_CHAT_MESSAGE\x10\x03\x12\x1c\n" +
-	"\x18PAYLOAD_TYPE_VOICE_STATE\x10\x04\"\x05\bd\x10\xc7\x01*\x7f\n" +
+	"\x18PAYLOAD_TYPE_VOICE_STATE\x10\x04\x12(\n" +
+	"$PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE\x10\x05\x12#\n" +
+	"\x1fPAYLOAD_TYPE_VOICE_SIGNAL_FRAME\x10\x06\x12+\n" +
+	"'PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE\x10\a\"\x05\bd\x10\xc7\x01*F\n" +
+	"\n" +
+	"VoiceCodec\x12\x1b\n" +
+	"\x17VOICE_CODEC_UNSPECIFIED\x10\x00\x12\x14\n" +
+	"\x10VOICE_CODEC_OPUS\x10\x01\"\x05\bd\x10\xc7\x01*\xfb\x01\n" +
+	"\x13VoiceLifecycleState\x12%\n" +
+	"!VOICE_LIFECYCLE_STATE_UNSPECIFIED\x10\x00\x12&\n" +
+	"\"VOICE_LIFECYCLE_STATE_INITIALIZING\x10\x01\x12\x1f\n" +
+	"\x1bVOICE_LIFECYCLE_STATE_READY\x10\x02\x12#\n" +
+	"\x1fVOICE_LIFECYCLE_STATE_DEGRADING\x10\x03\x12&\n" +
+	"\"VOICE_LIFECYCLE_STATE_RECONNECTING\x10\x04\x12 \n" +
+	"\x1cVOICE_LIFECYCLE_STATE_CLOSED\x10\x05\"\x05\bd\x10\xc7\x01*\xa7\x02\n" +
+	"\x13VoiceReconnectClass\x12%\n" +
+	"!VOICE_RECONNECT_CLASS_UNSPECIFIED\x10\x00\x12*\n" +
+	"&VOICE_RECONNECT_CLASS_ICE_DISCONNECTED\x10\x01\x12+\n" +
+	"'VOICE_RECONNECT_CLASS_TRANSPORT_FAILURE\x10\x02\x12(\n" +
+	"$VOICE_RECONNECT_CLASS_REMOTE_RESTART\x10\x03\x12-\n" +
+	")VOICE_RECONNECT_CLASS_LOCAL_DEVICE_CHANGE\x10\x04\x120\n" +
+	",VOICE_RECONNECT_CLASS_AUTHENTICATION_FAILURE\x10\x05\"\x05\bd\x10\xc7\x01*\xff\x01\n" +
+	"\x0fVoiceSignalType\x12!\n" +
+	"\x1dVOICE_SIGNAL_TYPE_UNSPECIFIED\x10\x00\x12\x1b\n" +
+	"\x17VOICE_SIGNAL_TYPE_OFFER\x10\x01\x12\x1c\n" +
+	"\x18VOICE_SIGNAL_TYPE_ANSWER\x10\x02\x12#\n" +
+	"\x1fVOICE_SIGNAL_TYPE_ICE_CANDIDATE\x10\x03\x12\"\n" +
+	"\x1eVOICE_SIGNAL_TYPE_ICE_COMPLETE\x10\x04\x12\x1d\n" +
+	"\x19VOICE_SIGNAL_TYPE_RESTART\x10\x05\x12\x1f\n" +
+	"\x1bVOICE_SIGNAL_TYPE_TERMINATE\x10\x06\"\x05\bd\x10\xc7\x01*\xd8\x03\n" +
+	"\x18VoiceSignalSessionStatus\x12+\n" +
+	"'VOICE_SIGNAL_SESSION_STATUS_UNSPECIFIED\x10\x00\x12$\n" +
+	" VOICE_SIGNAL_SESSION_STATUS_IDLE\x10\x01\x12*\n" +
+	"&VOICE_SIGNAL_SESSION_STATUS_OFFER_SENT\x10\x02\x12.\n" +
+	"*VOICE_SIGNAL_SESSION_STATUS_OFFER_RECEIVED\x10\x03\x12+\n" +
+	"'VOICE_SIGNAL_SESSION_STATUS_ANSWER_SENT\x10\x04\x12,\n" +
+	"(VOICE_SIGNAL_SESSION_STATUS_ESTABLISHING\x10\x05\x12+\n" +
+	"'VOICE_SIGNAL_SESSION_STATUS_ESTABLISHED\x10\x06\x12*\n" +
+	"&VOICE_SIGNAL_SESSION_STATUS_RESTARTING\x10\a\x12*\n" +
+	"&VOICE_SIGNAL_SESSION_STATUS_TERMINATED\x10\b\x12&\n" +
+	"\"VOICE_SIGNAL_SESSION_STATUS_FAILED\x10\t\"\x05\bd\x10\xc7\x01*\x7f\n" +
 	"\x12SignatureAlgorithm\x12#\n" +
 	"\x1fSIGNATURE_ALGORITHM_UNSPECIFIED\x10\x00\x12\x1f\n" +
 	"\x1bSIGNATURE_ALGORITHM_ED25519\x10\x01\x12\x1c\n" +
@@ -1109,49 +2283,75 @@ func file_proto_aether_proto_rawDescGZIP() []byte {
 	return file_proto_aether_proto_rawDescData
 }
 
-var file_proto_aether_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
-var file_proto_aether_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_proto_aether_proto_enumTypes = make([]protoimpl.EnumInfo, 10)
+var file_proto_aether_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_proto_aether_proto_goTypes = []any{
-	(CapabilityFlag)(0),            // 0: aether.CapabilityFlag
-	(PayloadType)(0),               // 1: aether.PayloadType
-	(SignatureAlgorithm)(0),        // 2: aether.SignatureAlgorithm
-	(EnvelopeVerificationError)(0), // 3: aether.EnvelopeVerificationError
-	(VerificationStatus)(0),        // 4: aether.VerificationStatus
-	(*CapabilitySet)(nil),          // 5: aether.CapabilitySet
-	(*IdentityProfile)(nil),        // 6: aether.IdentityProfile
-	(*MembershipState)(nil),        // 7: aether.MembershipState
-	(*ServerManifest)(nil),         // 8: aether.ServerManifest
-	(*ChatMessage)(nil),            // 9: aether.ChatMessage
-	(*VoiceState)(nil),             // 10: aether.VoiceState
-	(*SignedEnvelope)(nil),         // 11: aether.SignedEnvelope
-	(*VerificationError)(nil),      // 12: aether.VerificationError
-	(*EnvelopeVerification)(nil),   // 13: aether.EnvelopeVerification
-	(*AetherPlaceholder)(nil),      // 14: aether.AetherPlaceholder
-	nil,                            // 15: aether.CapabilitySet.CustomClaimsEntry
+	(CapabilityFlag)(0),             // 0: aether.CapabilityFlag
+	(PayloadType)(0),                // 1: aether.PayloadType
+	(VoiceCodec)(0),                 // 2: aether.VoiceCodec
+	(VoiceLifecycleState)(0),        // 3: aether.VoiceLifecycleState
+	(VoiceReconnectClass)(0),        // 4: aether.VoiceReconnectClass
+	(VoiceSignalType)(0),            // 5: aether.VoiceSignalType
+	(VoiceSignalSessionStatus)(0),   // 6: aether.VoiceSignalSessionStatus
+	(SignatureAlgorithm)(0),         // 7: aether.SignatureAlgorithm
+	(EnvelopeVerificationError)(0),  // 8: aether.EnvelopeVerificationError
+	(VerificationStatus)(0),         // 9: aether.VerificationStatus
+	(*CapabilitySet)(nil),           // 10: aether.CapabilitySet
+	(*IdentityProfile)(nil),         // 11: aether.IdentityProfile
+	(*MembershipState)(nil),         // 12: aether.MembershipState
+	(*ServerManifest)(nil),          // 13: aether.ServerManifest
+	(*ChatMessage)(nil),             // 14: aether.ChatMessage
+	(*VoiceState)(nil),              // 15: aether.VoiceState
+	(*VoiceCodecProfile)(nil),       // 16: aether.VoiceCodecProfile
+	(*VoiceTransportProfile)(nil),   // 17: aether.VoiceTransportProfile
+	(*VoiceReconnectPolicy)(nil),    // 18: aether.VoiceReconnectPolicy
+	(*VoiceLifecycleHook)(nil),      // 19: aether.VoiceLifecycleHook
+	(*VoicePipelineBaseline)(nil),   // 20: aether.VoicePipelineBaseline
+	(*VoiceSignalSessionRef)(nil),   // 21: aether.VoiceSignalSessionRef
+	(*VoiceSignalRetryPolicy)(nil),  // 22: aether.VoiceSignalRetryPolicy
+	(*VoiceSignalFrame)(nil),        // 23: aether.VoiceSignalFrame
+	(*VoiceSignalSessionState)(nil), // 24: aether.VoiceSignalSessionState
+	(*SignedEnvelope)(nil),          // 25: aether.SignedEnvelope
+	(*VerificationError)(nil),       // 26: aether.VerificationError
+	(*EnvelopeVerification)(nil),    // 27: aether.EnvelopeVerification
+	(*AetherPlaceholder)(nil),       // 28: aether.AetherPlaceholder
+	nil,                             // 29: aether.CapabilitySet.CustomClaimsEntry
 }
 var file_proto_aether_proto_depIdxs = []int32{
 	0,  // 0: aether.CapabilitySet.flags:type_name -> aether.CapabilityFlag
-	15, // 1: aether.CapabilitySet.custom_claims:type_name -> aether.CapabilitySet.CustomClaimsEntry
-	5,  // 2: aether.IdentityProfile.advertised_capabilities:type_name -> aether.CapabilitySet
-	6,  // 3: aether.MembershipState.member:type_name -> aether.IdentityProfile
-	5,  // 4: aether.MembershipState.granted_capabilities:type_name -> aether.CapabilitySet
-	6,  // 5: aether.ServerManifest.owner:type_name -> aether.IdentityProfile
-	7,  // 6: aether.ServerManifest.members:type_name -> aether.MembershipState
-	5,  // 7: aether.ServerManifest.server_capabilities:type_name -> aether.CapabilitySet
-	6,  // 8: aether.ChatMessage.sender:type_name -> aether.IdentityProfile
-	6,  // 9: aether.VoiceState.participant:type_name -> aether.IdentityProfile
-	1,  // 10: aether.SignedEnvelope.payload_type:type_name -> aether.PayloadType
-	6,  // 11: aether.SignedEnvelope.signer:type_name -> aether.IdentityProfile
-	2,  // 12: aether.SignedEnvelope.signature_algorithm:type_name -> aether.SignatureAlgorithm
-	3,  // 13: aether.VerificationError.code:type_name -> aether.EnvelopeVerificationError
-	11, // 14: aether.EnvelopeVerification.envelope:type_name -> aether.SignedEnvelope
-	4,  // 15: aether.EnvelopeVerification.status:type_name -> aether.VerificationStatus
-	12, // 16: aether.EnvelopeVerification.errors:type_name -> aether.VerificationError
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	29, // 1: aether.CapabilitySet.custom_claims:type_name -> aether.CapabilitySet.CustomClaimsEntry
+	10, // 2: aether.IdentityProfile.advertised_capabilities:type_name -> aether.CapabilitySet
+	11, // 3: aether.MembershipState.member:type_name -> aether.IdentityProfile
+	10, // 4: aether.MembershipState.granted_capabilities:type_name -> aether.CapabilitySet
+	11, // 5: aether.ServerManifest.owner:type_name -> aether.IdentityProfile
+	12, // 6: aether.ServerManifest.members:type_name -> aether.MembershipState
+	10, // 7: aether.ServerManifest.server_capabilities:type_name -> aether.CapabilitySet
+	11, // 8: aether.ChatMessage.sender:type_name -> aether.IdentityProfile
+	11, // 9: aether.VoiceState.participant:type_name -> aether.IdentityProfile
+	2,  // 10: aether.VoiceCodecProfile.codec:type_name -> aether.VoiceCodec
+	4,  // 11: aether.VoiceReconnectPolicy.retryable_classes:type_name -> aether.VoiceReconnectClass
+	3,  // 12: aether.VoiceLifecycleHook.state:type_name -> aether.VoiceLifecycleState
+	16, // 13: aether.VoicePipelineBaseline.codec_profile:type_name -> aether.VoiceCodecProfile
+	17, // 14: aether.VoicePipelineBaseline.transport_profile:type_name -> aether.VoiceTransportProfile
+	18, // 15: aether.VoicePipelineBaseline.reconnect_policy:type_name -> aether.VoiceReconnectPolicy
+	19, // 16: aether.VoicePipelineBaseline.lifecycle_hooks:type_name -> aether.VoiceLifecycleHook
+	21, // 17: aether.VoiceSignalFrame.session_ref:type_name -> aether.VoiceSignalSessionRef
+	5,  // 18: aether.VoiceSignalFrame.signal_type:type_name -> aether.VoiceSignalType
+	22, // 19: aether.VoiceSignalFrame.retry_policy:type_name -> aether.VoiceSignalRetryPolicy
+	21, // 20: aether.VoiceSignalSessionState.session_ref:type_name -> aether.VoiceSignalSessionRef
+	6,  // 21: aether.VoiceSignalSessionState.status:type_name -> aether.VoiceSignalSessionStatus
+	1,  // 22: aether.SignedEnvelope.payload_type:type_name -> aether.PayloadType
+	11, // 23: aether.SignedEnvelope.signer:type_name -> aether.IdentityProfile
+	7,  // 24: aether.SignedEnvelope.signature_algorithm:type_name -> aether.SignatureAlgorithm
+	8,  // 25: aether.VerificationError.code:type_name -> aether.EnvelopeVerificationError
+	25, // 26: aether.EnvelopeVerification.envelope:type_name -> aether.SignedEnvelope
+	9,  // 27: aether.EnvelopeVerification.status:type_name -> aether.VerificationStatus
+	26, // 28: aether.EnvelopeVerification.errors:type_name -> aether.VerificationError
+	29, // [29:29] is the sub-list for method output_type
+	29, // [29:29] is the sub-list for method input_type
+	29, // [29:29] is the sub-list for extension type_name
+	29, // [29:29] is the sub-list for extension extendee
+	0,  // [0:29] is the sub-list for field type_name
 }
 
 func init() { file_proto_aether_proto_init() }
@@ -1164,8 +2364,8 @@ func file_proto_aether_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_aether_proto_rawDesc), len(file_proto_aether_proto_rawDesc)),
-			NumEnums:      5,
-			NumMessages:   11,
+			NumEnums:      10,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

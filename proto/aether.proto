@@ -22,6 +22,72 @@ enum PayloadType {
   PAYLOAD_TYPE_SERVER_MANIFEST = 2;
   PAYLOAD_TYPE_CHAT_MESSAGE = 3;
   PAYLOAD_TYPE_VOICE_STATE = 4;
+  PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE = 5;
+  PAYLOAD_TYPE_VOICE_SIGNAL_FRAME = 6;
+  PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE = 7;
+
+  reserved 100 to 199;
+}
+
+// VoiceCodec enumerates codec families allowed for v0.1 voice baseline.
+enum VoiceCodec {
+  VOICE_CODEC_UNSPECIFIED = 0;
+  VOICE_CODEC_OPUS = 1;
+
+  reserved 100 to 199;
+}
+
+// VoiceLifecycleState captures peer-connection lifecycle checkpoints.
+enum VoiceLifecycleState {
+  VOICE_LIFECYCLE_STATE_UNSPECIFIED = 0;
+  VOICE_LIFECYCLE_STATE_INITIALIZING = 1;
+  VOICE_LIFECYCLE_STATE_READY = 2;
+  VOICE_LIFECYCLE_STATE_DEGRADING = 3;
+  VOICE_LIFECYCLE_STATE_RECONNECTING = 4;
+  VOICE_LIFECYCLE_STATE_CLOSED = 5;
+
+  reserved 100 to 199;
+}
+
+// VoiceReconnectClass classifies deterministic reconnect/error behaviors.
+enum VoiceReconnectClass {
+  VOICE_RECONNECT_CLASS_UNSPECIFIED = 0;
+  VOICE_RECONNECT_CLASS_ICE_DISCONNECTED = 1;
+  VOICE_RECONNECT_CLASS_TRANSPORT_FAILURE = 2;
+  VOICE_RECONNECT_CLASS_REMOTE_RESTART = 3;
+  VOICE_RECONNECT_CLASS_LOCAL_DEVICE_CHANGE = 4;
+  VOICE_RECONNECT_CLASS_AUTHENTICATION_FAILURE = 5;
+
+  reserved 100 to 199;
+}
+
+// VoiceSignalType classifies encrypted signaling messages exchanged over
+// GossipSub channels for voice setup and maintenance.
+enum VoiceSignalType {
+  VOICE_SIGNAL_TYPE_UNSPECIFIED = 0;
+  VOICE_SIGNAL_TYPE_OFFER = 1;
+  VOICE_SIGNAL_TYPE_ANSWER = 2;
+  VOICE_SIGNAL_TYPE_ICE_CANDIDATE = 3;
+  VOICE_SIGNAL_TYPE_ICE_COMPLETE = 4;
+  VOICE_SIGNAL_TYPE_RESTART = 5;
+  VOICE_SIGNAL_TYPE_TERMINATE = 6;
+
+  reserved 100 to 199;
+}
+
+// VoiceSignalSessionStatus tracks finite session-state transitions for
+// signaling orchestration.
+enum VoiceSignalSessionStatus {
+  VOICE_SIGNAL_SESSION_STATUS_UNSPECIFIED = 0;
+  VOICE_SIGNAL_SESSION_STATUS_IDLE = 1;
+  VOICE_SIGNAL_SESSION_STATUS_OFFER_SENT = 2;
+  VOICE_SIGNAL_SESSION_STATUS_OFFER_RECEIVED = 3;
+  VOICE_SIGNAL_SESSION_STATUS_ANSWER_SENT = 4;
+  VOICE_SIGNAL_SESSION_STATUS_ESTABLISHING = 5;
+  VOICE_SIGNAL_SESSION_STATUS_ESTABLISHED = 6;
+  VOICE_SIGNAL_SESSION_STATUS_RESTARTING = 7;
+  VOICE_SIGNAL_SESSION_STATUS_TERMINATED = 8;
+  VOICE_SIGNAL_SESSION_STATUS_FAILED = 9;
 
   reserved 100 to 199;
 }
@@ -121,6 +187,118 @@ message VoiceState {
   bool muted = 3;
   bool deafened = 4;
   uint64 updated_at = 5; // unix seconds
+}
+
+// VoiceCodecProfile defines codec and frame defaults for pipeline bootstrap.
+message VoiceCodecProfile {
+  reserved 100 to 199;
+
+  VoiceCodec codec = 1;
+  uint32 frame_duration_ms = 2;
+  uint32 sample_rate_hz = 3;
+  uint32 channels = 4;
+  bool dtx_enabled = 5;
+  bool fec_enabled = 6;
+  uint32 max_bitrate_bps = 7;
+}
+
+// VoiceTransportProfile captures transport setup controls for v0.1.
+message VoiceTransportProfile {
+  reserved 100 to 199;
+
+  string transport = 1;
+  bool rtcp_mux = 2;
+  bool ice_restart_enabled = 3;
+  bool continual_gathering = 4;
+}
+
+// VoiceReconnectPolicy defines bounded retry behavior for recoverable failures.
+message VoiceReconnectPolicy {
+  reserved 100 to 199;
+
+  uint32 max_attempts = 1;
+  uint32 initial_backoff_ms = 2;
+  uint32 max_backoff_ms = 3;
+  repeated VoiceReconnectClass retryable_classes = 4;
+}
+
+// VoiceLifecycleHook records an observed peer lifecycle transition.
+message VoiceLifecycleHook {
+  reserved 100 to 199;
+
+  VoiceLifecycleState state = 1;
+  string peer_id = 2;
+  uint64 occurred_at = 3; // unix seconds
+  string detail = 4;
+}
+
+// VoicePipelineBaseline bundles codec, transport, lifecycle, and reconnect
+// settings for voice-pipeline bootstrap in v0.1.
+message VoicePipelineBaseline {
+  reserved 100 to 199;
+
+  string session_id = 1;
+  VoiceCodecProfile codec_profile = 2;
+  VoiceTransportProfile transport_profile = 3;
+  VoiceReconnectPolicy reconnect_policy = 4;
+  repeated VoiceLifecycleHook lifecycle_hooks = 5;
+  uint64 configured_at = 6; // unix seconds
+}
+
+// VoiceSignalSessionRef carries deterministic identifiers used by signaling
+// sessions.
+message VoiceSignalSessionRef {
+  reserved 100 to 199;
+
+  string signal_session_id = 1;
+  string voice_session_id = 2;
+  string server_id = 3;
+  string channel_id = 4;
+  string local_participant_id = 5;
+  string remote_participant_id = 6;
+}
+
+// VoiceSignalRetryPolicy defines bounded offer/answer retry behavior and ICE
+// update timeout handling.
+message VoiceSignalRetryPolicy {
+  reserved 100 to 199;
+
+  uint32 max_offer_attempts = 1;
+  uint32 offer_retry_backoff_ms = 2;
+  uint32 max_answer_attempts = 3;
+  uint32 answer_retry_backoff_ms = 4;
+  uint32 max_ice_updates = 5;
+  uint32 ice_update_timeout_ms = 6;
+}
+
+// VoiceSignalFrame is the encrypted signaling envelope exchanged over
+// GossipSub. The encrypted_payload bytes carry SDP/ICE material encrypted by
+// the channel pipeline.
+message VoiceSignalFrame {
+  reserved 100 to 199;
+
+  string signal_id = 1;
+  VoiceSignalSessionRef session_ref = 2;
+  VoiceSignalType signal_type = 3;
+  uint64 sequence = 4;
+  bytes encrypted_payload = 5;
+  uint64 sent_at = 6; // unix seconds
+  uint64 expires_at = 7; // unix seconds
+  VoiceSignalRetryPolicy retry_policy = 8;
+}
+
+// VoiceSignalSessionState records signaling state-machine progress and bounded
+// retry counters.
+message VoiceSignalSessionState {
+  reserved 100 to 199;
+
+  VoiceSignalSessionRef session_ref = 1;
+  VoiceSignalSessionStatus status = 2;
+  uint32 offer_attempt = 3;
+  uint32 answer_attempt = 4;
+  uint32 ice_update_count = 5;
+  uint64 last_transition_at = 6; // unix seconds
+  string terminal_reason = 7;
 }
 
 // SignedEnvelope standardizes canonical serialization and signatures.

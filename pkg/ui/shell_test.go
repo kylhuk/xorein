@@ -897,3 +897,148 @@ func TestVoiceSessionGuards(t *testing.T) {
 		t.Fatalf("expected ErrVoiceParticipantUnknown, got %v", err)
 	}
 }
+
+func TestVoiceControlsLifecycleAndPushToTalk(t *testing.T) {
+	shell := newShellWithIdentity(t)
+
+	if err := shell.UpsertServer("srv-1", "Alpha"); err != nil {
+		t.Fatalf("upsert server: %v", err)
+	}
+	if err := shell.UpsertChannelWithType("srv-1", "voice", "Voice", ChannelTypeVoice); err != nil {
+		t.Fatalf("upsert channel: %v", err)
+	}
+	if err := shell.SelectServer("srv-1"); err != nil {
+		t.Fatalf("select server: %v", err)
+	}
+	if err := shell.SelectChannel("voice"); err != nil {
+		t.Fatalf("select channel: %v", err)
+	}
+	if err := shell.StartVoiceSession(); err != nil {
+		t.Fatalf("start voice session: %v", err)
+	}
+
+	if err := shell.SetPushToTalkMode(VoicePushToTalkHold); err != nil {
+		t.Fatalf("set push-to-talk mode hold: %v", err)
+	}
+	if err := shell.PressPushToTalk(); err != nil {
+		t.Fatalf("press push-to-talk: %v", err)
+	}
+	controls := shell.VoiceControls()
+	if controls.PushToTalkMode != VoicePushToTalkHold || !controls.PushToTalkPressed {
+		t.Fatalf("expected hold mode with pressed=true, got %+v", controls)
+	}
+
+	if err := shell.ReleasePushToTalk(); err != nil {
+		t.Fatalf("release push-to-talk: %v", err)
+	}
+	if err := shell.SetSelfMute(true); err != nil {
+		t.Fatalf("set self mute true: %v", err)
+	}
+	if err := shell.SetSelfDeafen(true); err != nil {
+		t.Fatalf("set self deafen true: %v", err)
+	}
+	controls = shell.VoiceControls()
+	if !controls.SelfMuted || !controls.SelfDeafened {
+		t.Fatalf("expected self mute/deafen true, got %+v", controls)
+	}
+
+	if err := shell.SetPushToTalkMode(VoicePushToTalkDisabled); err != nil {
+		t.Fatalf("set push-to-talk disabled: %v", err)
+	}
+	controls = shell.VoiceControls()
+	if controls.PushToTalkPressed {
+		t.Fatalf("expected push-to-talk pressed cleared in disabled mode, got %+v", controls)
+	}
+
+	if err := shell.LeaveVoiceSession(); err != nil {
+		t.Fatalf("leave voice session: %v", err)
+	}
+	controls = shell.VoiceControls()
+	if controls.SelfMuted || controls.SelfDeafened || controls.PushToTalkPressed {
+		t.Fatalf("expected controls reset on leave, got %+v", controls)
+	}
+}
+
+func TestVoiceDeviceSelectionBehavior(t *testing.T) {
+	shell := newShellWithIdentity(t)
+
+	if err := shell.SetVoiceDevices([]string{"mic-b", "mic-a", "mic-a"}, []string{"spk-b", "spk-a"}); err != nil {
+		t.Fatalf("set voice devices: %v", err)
+	}
+	controls := shell.VoiceControls()
+	if len(controls.AvailableInputDevices) != 2 || controls.AvailableInputDevices[0] != "mic-a" || controls.AvailableInputDevices[1] != "mic-b" {
+		t.Fatalf("unexpected normalized input device list: %+v", controls.AvailableInputDevices)
+	}
+	if len(controls.AvailableOutputDevices) != 2 || controls.AvailableOutputDevices[0] != "spk-a" || controls.AvailableOutputDevices[1] != "spk-b" {
+		t.Fatalf("unexpected normalized output device list: %+v", controls.AvailableOutputDevices)
+	}
+	if controls.InputDeviceID != "mic-a" || controls.OutputDeviceID != "spk-a" {
+		t.Fatalf("expected fallback to first sorted devices, got input=%q output=%q", controls.InputDeviceID, controls.OutputDeviceID)
+	}
+
+	if err := shell.SwitchInputDevice("mic-b"); err != nil {
+		t.Fatalf("switch input device: %v", err)
+	}
+	if err := shell.SwitchOutputDevice("spk-b"); err != nil {
+		t.Fatalf("switch output device: %v", err)
+	}
+	controls = shell.VoiceControls()
+	if controls.InputDeviceID != "mic-b" || controls.OutputDeviceID != "spk-b" {
+		t.Fatalf("expected switched devices, got input=%q output=%q", controls.InputDeviceID, controls.OutputDeviceID)
+	}
+	if controls.InputSwitchInProgress || controls.OutputSwitchInProgress {
+		t.Fatalf("expected switch-in-progress flags false after switch completion, got %+v", controls)
+	}
+}
+
+func TestVoiceControlAndDeviceValidationGuards(t *testing.T) {
+	var nilShell *Shell
+	if err := nilShell.SetSelfMute(true); !errors.Is(err, ErrShellRequired) {
+		t.Fatalf("expected ErrShellRequired set self mute, got %v", err)
+	}
+	if err := nilShell.SwitchInputDevice("mic"); !errors.Is(err, ErrShellRequired) {
+		t.Fatalf("expected ErrShellRequired switch input device, got %v", err)
+	}
+
+	shell := newShellWithIdentity(t)
+
+	if err := shell.SetSelfMute(true); !errors.Is(err, ErrVoiceControlUnavailable) {
+		t.Fatalf("expected ErrVoiceControlUnavailable for set self mute without session, got %v", err)
+	}
+	if err := shell.SetSelfDeafen(true); !errors.Is(err, ErrVoiceControlUnavailable) {
+		t.Fatalf("expected ErrVoiceControlUnavailable for set self deafen without session, got %v", err)
+	}
+	if err := shell.PressPushToTalk(); !errors.Is(err, ErrVoiceControlUnavailable) {
+		t.Fatalf("expected ErrVoiceControlUnavailable for press push-to-talk without session, got %v", err)
+	}
+
+	if err := shell.SetPushToTalkMode(VoicePushToTalkMode("toggle")); !errors.Is(err, ErrVoicePushToTalkModeInvalid) {
+		t.Fatalf("expected ErrVoicePushToTalkModeInvalid, got %v", err)
+	}
+	if err := shell.SwitchInputDevice(" "); !errors.Is(err, ErrVoiceDeviceIDMissing) {
+		t.Fatalf("expected ErrVoiceDeviceIDMissing switch input, got %v", err)
+	}
+	if err := shell.SwitchOutputDevice(" "); !errors.Is(err, ErrVoiceDeviceIDMissing) {
+		t.Fatalf("expected ErrVoiceDeviceIDMissing switch output, got %v", err)
+	}
+
+	if err := shell.SetVoiceDevices([]string{"mic-a"}, []string{"spk-a"}); err != nil {
+		t.Fatalf("set initial voice devices: %v", err)
+	}
+	if err := shell.SwitchInputDevice("mic-z"); err != nil {
+		t.Fatalf("unexpected switch input fallback error: %v", err)
+	}
+	if err := shell.SwitchOutputDevice("spk-z"); err != nil {
+		t.Fatalf("unexpected switch output fallback error: %v", err)
+	}
+	controls := shell.VoiceControls()
+	if controls.InputDeviceID != "mic-a" || controls.OutputDeviceID != "spk-a" {
+		t.Fatalf("expected fallback to active devices, got input=%q output=%q", controls.InputDeviceID, controls.OutputDeviceID)
+	}
+	if err := shell.SetVoiceDevices([]string{}, []string{"spk-a"}); !errors.Is(err, ErrVoiceInputDeviceUnknown) {
+		t.Fatalf("expected ErrVoiceInputDeviceUnknown for empty input list, got %v", err)
+	}
+	if err := shell.SetVoiceDevices([]string{"mic-a"}, []string{}); !errors.Is(err, ErrVoiceOutputDeviceUnknown) {
+		t.Fatalf("expected ErrVoiceOutputDeviceUnknown for empty output list, got %v", err)
+	}
+}

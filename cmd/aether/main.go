@@ -8,19 +8,26 @@ import (
 	"time"
 
 	phase6 "github.com/aether/code_aether/pkg/phase6"
+	phase9 "github.com/aether/code_aether/pkg/phase9"
 )
 
 var (
-	runMode      = flag.String("mode", "client", "runtime mode: client|relay|bootstrap")
-	scenario     = flag.String("scenario", "", "optional scenario: create-server|join-deeplink")
-	serverID     = flag.String("server-id", "aether-server", "server identifier for manifest scenarios")
-	identity     = flag.String("identity", "aether-identity", "identity string used when signing manifests and joining")
-	description  = flag.String("description", "phase6 stub server", "server description for manifest metadata")
-	version      = flag.Int("version", 1, "manifest version value")
-	chatEnabled  = flag.Bool("capability-chat", true, "advertise chat capability")
-	voiceEnabled = flag.Bool("capability-voice", false, "advertise voice capability")
-	deeplink     = flag.String("deeplink", "", "deeplink URI for join-deeplink scenario")
-	seedManifest = flag.Bool("seed-manifest", false, "seed manifest store before join handshake")
+	runMode           = flag.String("mode", "client", "runtime mode: client|relay|bootstrap")
+	scenario          = flag.String("scenario", "", "optional scenario: create-server|join-deeplink")
+	serverID          = flag.String("server-id", "aether-server", "server identifier for manifest scenarios")
+	identity          = flag.String("identity", "aether-identity", "identity string used when signing manifests and joining")
+	description       = flag.String("description", "phase6 stub server", "server description for manifest metadata")
+	version           = flag.Int("version", 1, "manifest version value")
+	chatEnabled       = flag.Bool("capability-chat", true, "advertise chat capability")
+	voiceEnabled      = flag.Bool("capability-voice", false, "advertise voice capability")
+	deeplink          = flag.String("deeplink", "", "deeplink URI for join-deeplink scenario")
+	seedManifest      = flag.Bool("seed-manifest", false, "seed manifest store before join handshake")
+	relayListen       = flag.String("relay-listen", "0.0.0.0:4001", "relay listen address host:port")
+	relayStore        = flag.String("relay-store", "./artifacts/generated/relay-store", "relay store-and-forward data directory")
+	relayHealth       = flag.Duration("relay-health-interval", 30*time.Second, "relay health status emission interval")
+	relayReservations = flag.Int("relay-reservation-limit", 256, "maximum concurrent relay reservations")
+	relaySessionTTL   = flag.Duration("relay-session-timeout", 2*time.Minute, "maximum relay session lifetime")
+	relayMaxBytesSec  = flag.Int64("relay-max-bytes-per-sec", 1_000_000, "per-session relay bandwidth budget in bytes/sec")
 )
 
 func main() {
@@ -36,6 +43,10 @@ func main() {
 	store := phase6.NewManifestStore(0)
 	switch strings.ToLower(*scenario) {
 	case "":
+		if *runMode == "relay" {
+			runRelayMode()
+			return
+		}
 		fmt.Printf("Phase 2 foundation stub: cmd/aether mode=%s\n", *runMode)
 	case "create-server":
 		runCreateServer(store)
@@ -45,6 +56,45 @@ func main() {
 		fmt.Fprintf(os.Stderr, "unknown scenario %q; valid scenarios: create-server, join-deeplink\n", *scenario)
 		os.Exit(3)
 	}
+}
+
+func runRelayMode() {
+	if strings.TrimSpace(*relayListen) == "" {
+		fmt.Fprintln(os.Stderr, "invalid relay configuration: --relay-listen must be non-empty host:port")
+		os.Exit(11)
+	}
+	if strings.TrimSpace(*relayStore) == "" {
+		fmt.Fprintln(os.Stderr, "invalid relay configuration: --relay-store must be non-empty path")
+		os.Exit(12)
+	}
+	if *relayHealth <= 0 {
+		fmt.Fprintln(os.Stderr, "invalid relay configuration: --relay-health-interval must be greater than 0")
+		os.Exit(13)
+	}
+
+	service, err := phase9.NewService(phase9.Config{
+		ReservationLimit: *relayReservations,
+		SessionTimeout:   *relaySessionTTL,
+		MaxBytesPerSec:   *relayMaxBytesSec,
+	})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "invalid relay policy: %v\n", err)
+		os.Exit(14)
+	}
+
+	startedAt := time.Now().UTC()
+	snapshot := service.Snapshot()
+	fmt.Printf("Relay runtime active mode=relay listen=%s store=%s\n", *relayListen, *relayStore)
+	fmt.Printf("Relay policy: reservation_limit=%d session_timeout=%s max_bytes_per_sec=%d active=%d rejected=%d timed_out=%d established=%d\n",
+		snapshot.ReservationLimit,
+		snapshot.SessionTimeout,
+		snapshot.MaxBytesPerSec,
+		snapshot.Active,
+		snapshot.Rejected,
+		snapshot.TimedOut,
+		snapshot.Established,
+	)
+	fmt.Printf("Relay health status: state=ready started_at=%s next_health_in=%s\n", startedAt.Format(time.RFC3339Nano), relayHealth.String())
 }
 
 func runCreateServer(store *phase6.ManifestStore) {

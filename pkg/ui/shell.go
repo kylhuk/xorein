@@ -31,6 +31,11 @@ var (
 	ErrVoiceParticipantMissing             = errors.New("voice participant missing")
 	ErrVoiceParticipantUnknown             = errors.New("voice participant unknown")
 	ErrVoiceConnectionInvalid              = errors.New("voice connection status invalid")
+	ErrVoiceControlUnavailable             = errors.New("voice controls unavailable without active voice session")
+	ErrVoicePushToTalkModeInvalid          = errors.New("voice push-to-talk mode invalid")
+	ErrVoiceDeviceIDMissing                = errors.New("voice device id missing")
+	ErrVoiceInputDeviceUnknown             = errors.New("voice input device unknown")
+	ErrVoiceOutputDeviceUnknown            = errors.New("voice output device unknown")
 	ErrNetworkPathStatusInvalid            = errors.New("network path status invalid")
 	ErrNetworkPathInvalid                  = errors.New("network path invalid")
 	ErrNetworkReasonClassInvalid           = errors.New("network reason class invalid")
@@ -44,6 +49,8 @@ const DefaultComposerMaxLength = 4000
 const (
 	DefaultAudioVolume              = 70
 	DefaultDiagnosticRetentionLimit = 128
+	DefaultVoiceInputDeviceID       = "default-input"
+	DefaultVoiceOutputDeviceID      = "default-output"
 )
 
 // VirtualMessageWindow captures a deterministic message render window and metadata.
@@ -216,6 +223,28 @@ type VoiceBarState struct {
 	Participants []VoiceParticipantTileState
 }
 
+// VoicePushToTalkMode describes push-to-talk interaction semantics.
+type VoicePushToTalkMode string
+
+const (
+	VoicePushToTalkDisabled VoicePushToTalkMode = "disabled"
+	VoicePushToTalkHold     VoicePushToTalkMode = "hold"
+)
+
+// VoiceControlState models deterministic local voice controls and selected devices.
+type VoiceControlState struct {
+	SelfMuted              bool
+	SelfDeafened           bool
+	PushToTalkMode         VoicePushToTalkMode
+	PushToTalkPressed      bool
+	InputDeviceID          string
+	OutputDeviceID         string
+	AvailableInputDevices  []string
+	AvailableOutputDevices []string
+	InputSwitchInProgress  bool
+	OutputSwitchInProgress bool
+}
+
 // SettingsProfileState models editable profile settings.
 type SettingsProfileState struct {
 	DisplayName   string
@@ -317,6 +346,7 @@ type AppState struct {
 	NetworkDiagnostics NetworkDiagnosticsState
 	VoiceSession       VoiceSessionState
 	VoiceBar           VoiceBarState
+	VoiceControls      VoiceControlState
 	SelectedServerID   string
 	SelectedChannelID  string
 	Subscription       SubscriptionState
@@ -344,6 +374,7 @@ func NewShell() *Shell {
 			DraftsByScope:      map[string]string{},
 			Settings:           defaultSettingsState(),
 			NetworkDiagnostics: defaultNetworkDiagnosticsState(),
+			VoiceControls:      defaultVoiceControlState(),
 		},
 		persistedSettings:        defaultSettingsState(),
 		diagnosticRetentionLimit: DefaultDiagnosticRetentionLimit,
@@ -673,6 +704,153 @@ func (s *Shell) UpdateVoiceParticipantStatus(participantID string, speaking, mut
 	return fmt.Errorf("%w: %s", ErrVoiceParticipantUnknown, participantID)
 }
 
+// VoiceControls returns a defensive copy of deterministic voice control state.
+func (s *Shell) VoiceControls() VoiceControlState {
+	if s == nil {
+		return defaultVoiceControlState()
+	}
+	return normalizeVoiceControlState(s.state.VoiceControls)
+}
+
+// SetVoiceDevices replaces available device inventories and enforces active selections.
+func (s *Shell) SetVoiceDevices(inputIDs, outputIDs []string) error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	next := normalizeVoiceControlState(s.state.VoiceControls)
+	next.AvailableInputDevices = normalizeDeviceList(inputIDs)
+	next.AvailableOutputDevices = normalizeDeviceList(outputIDs)
+	if _, err := resolveDeviceSelection(next.AvailableInputDevices, next.InputDeviceID, ErrVoiceInputDeviceUnknown); err != nil {
+		return err
+	}
+	if _, err := resolveDeviceSelection(next.AvailableOutputDevices, next.OutputDeviceID, ErrVoiceOutputDeviceUnknown); err != nil {
+		return err
+	}
+	next.InputSwitchInProgress = false
+	next.OutputSwitchInProgress = false
+	s.state.VoiceControls = next
+	return nil
+}
+
+// SetPushToTalkMode updates push-to-talk mode and normalizes pressed-state semantics.
+func (s *Shell) SetPushToTalkMode(mode VoicePushToTalkMode) error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	normalizedMode, err := normalizeVoicePushToTalkMode(mode)
+	if err != nil {
+		return err
+	}
+	next := normalizeVoiceControlState(s.state.VoiceControls)
+	next.PushToTalkMode = normalizedMode
+	if normalizedMode == VoicePushToTalkDisabled {
+		next.PushToTalkPressed = false
+	}
+	s.state.VoiceControls = next
+	return nil
+}
+
+// SetSelfMute toggles local self-mute state in active voice sessions.
+func (s *Shell) SetSelfMute(muted bool) error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	if !s.state.VoiceSession.Active {
+		return ErrVoiceControlUnavailable
+	}
+	next := normalizeVoiceControlState(s.state.VoiceControls)
+	next.SelfMuted = muted
+	if !muted {
+		next.PushToTalkPressed = false
+	}
+	s.state.VoiceControls = next
+	return nil
+}
+
+// SetSelfDeafen toggles local self-deafen state in active voice sessions.
+func (s *Shell) SetSelfDeafen(deafened bool) error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	if !s.state.VoiceSession.Active {
+		return ErrVoiceControlUnavailable
+	}
+	next := normalizeVoiceControlState(s.state.VoiceControls)
+	next.SelfDeafened = deafened
+	s.state.VoiceControls = next
+	return nil
+}
+
+// PressPushToTalk marks local push-to-talk press state when hold mode is active.
+func (s *Shell) PressPushToTalk() error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	if !s.state.VoiceSession.Active {
+		return ErrVoiceControlUnavailable
+	}
+	next := normalizeVoiceControlState(s.state.VoiceControls)
+	if next.PushToTalkMode != VoicePushToTalkHold {
+		return ErrVoicePushToTalkModeInvalid
+	}
+	next.PushToTalkPressed = true
+	s.state.VoiceControls = next
+	return nil
+}
+
+// ReleasePushToTalk clears local push-to-talk press state.
+func (s *Shell) ReleasePushToTalk() error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	next := normalizeVoiceControlState(s.state.VoiceControls)
+	next.PushToTalkPressed = false
+	s.state.VoiceControls = next
+	return nil
+}
+
+// SwitchInputDevice updates active input device with session-safe lifecycle semantics.
+func (s *Shell) SwitchInputDevice(deviceID string) error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	deviceID = strings.TrimSpace(deviceID)
+	if deviceID == "" {
+		return ErrVoiceDeviceIDMissing
+	}
+	next := normalizeVoiceControlState(s.state.VoiceControls)
+	resolved, err := resolveDeviceSelection(next.AvailableInputDevices, deviceID, ErrVoiceInputDeviceUnknown)
+	if err != nil {
+		return err
+	}
+	next.InputSwitchInProgress = true
+	next.InputDeviceID = resolved
+	next.InputSwitchInProgress = false
+	s.state.VoiceControls = next
+	return nil
+}
+
+// SwitchOutputDevice updates active output device with session-safe lifecycle semantics.
+func (s *Shell) SwitchOutputDevice(deviceID string) error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	deviceID = strings.TrimSpace(deviceID)
+	if deviceID == "" {
+		return ErrVoiceDeviceIDMissing
+	}
+	next := normalizeVoiceControlState(s.state.VoiceControls)
+	resolved, err := resolveDeviceSelection(next.AvailableOutputDevices, deviceID, ErrVoiceOutputDeviceUnknown)
+	if err != nil {
+		return err
+	}
+	next.OutputSwitchInProgress = true
+	next.OutputDeviceID = resolved
+	next.OutputSwitchInProgress = false
+	s.state.VoiceControls = next
+	return nil
+}
+
 // PersistentVoiceBar returns a deterministic voice bar state independent of current route.
 func (s *Shell) PersistentVoiceBar() VoiceBarState {
 	if s == nil {
@@ -955,6 +1133,89 @@ func normalizeVoiceConnectionStatus(status VoiceConnectionStatus) (VoiceConnecti
 	}
 }
 
+func normalizeVoicePushToTalkMode(mode VoicePushToTalkMode) (VoicePushToTalkMode, error) {
+	normalized := VoicePushToTalkMode(strings.ToLower(strings.TrimSpace(string(mode))))
+	switch normalized {
+	case "", VoicePushToTalkDisabled:
+		return VoicePushToTalkDisabled, nil
+	case VoicePushToTalkHold:
+		return VoicePushToTalkHold, nil
+	default:
+		return "", fmt.Errorf("%w: %s", ErrVoicePushToTalkModeInvalid, mode)
+	}
+}
+
+func defaultVoiceControlState() VoiceControlState {
+	return VoiceControlState{
+		PushToTalkMode:         VoicePushToTalkDisabled,
+		InputDeviceID:          DefaultVoiceInputDeviceID,
+		OutputDeviceID:         DefaultVoiceOutputDeviceID,
+		AvailableInputDevices:  []string{DefaultVoiceInputDeviceID},
+		AvailableOutputDevices: []string{DefaultVoiceOutputDeviceID},
+	}
+}
+
+func normalizeVoiceControlState(state VoiceControlState) VoiceControlState {
+	mode, err := normalizeVoicePushToTalkMode(state.PushToTalkMode)
+	if err != nil {
+		mode = VoicePushToTalkDisabled
+	}
+	state.PushToTalkMode = mode
+	state.AvailableInputDevices = normalizeDeviceList(state.AvailableInputDevices)
+	state.AvailableOutputDevices = normalizeDeviceList(state.AvailableOutputDevices)
+	state.InputDeviceID = strings.TrimSpace(state.InputDeviceID)
+	state.OutputDeviceID = strings.TrimSpace(state.OutputDeviceID)
+	if resolved, err := resolveDeviceSelection(state.AvailableInputDevices, state.InputDeviceID, ErrVoiceInputDeviceUnknown); err == nil {
+		state.InputDeviceID = resolved
+	}
+	if resolved, err := resolveDeviceSelection(state.AvailableOutputDevices, state.OutputDeviceID, ErrVoiceOutputDeviceUnknown); err == nil {
+		state.OutputDeviceID = resolved
+	}
+	if state.PushToTalkMode == VoicePushToTalkDisabled {
+		state.PushToTalkPressed = false
+	}
+	return state
+}
+
+func normalizeDeviceList(deviceIDs []string) []string {
+	if len(deviceIDs) == 0 {
+		return []string{}
+	}
+	uniq := map[string]struct{}{}
+	for _, id := range deviceIDs {
+		trimmed := strings.TrimSpace(id)
+		if trimmed == "" {
+			continue
+		}
+		uniq[trimmed] = struct{}{}
+	}
+	normalized := make([]string, 0, len(uniq))
+	for id := range uniq {
+		normalized = append(normalized, id)
+	}
+	sort.Strings(normalized)
+	return normalized
+}
+
+func resolveDeviceSelection(devices []string, preferred string, baseErr error) (string, error) {
+	preferred = strings.TrimSpace(preferred)
+	if preferred == "" {
+		if len(devices) == 0 {
+			return "", baseErr
+		}
+		return devices[0], nil
+	}
+	for _, id := range devices {
+		if id == preferred {
+			return preferred, nil
+		}
+	}
+	if len(devices) == 0 {
+		return "", fmt.Errorf("%w: %s", baseErr, preferred)
+	}
+	return devices[0], nil
+}
+
 func defaultSettingsState() SettingsState {
 	return SettingsState{
 		Profile: SettingsProfileState{},
@@ -1192,6 +1453,11 @@ func sortVoiceParticipants(participants []VoiceParticipantTileState) {
 
 func (s *Shell) clearVoiceSession() {
 	s.state.VoiceSession = VoiceSessionState{}
+	controls := normalizeVoiceControlState(s.state.VoiceControls)
+	controls.PushToTalkPressed = false
+	controls.SelfMuted = false
+	controls.SelfDeafened = false
+	s.state.VoiceControls = controls
 }
 
 func (s *Shell) hasServer(serverID string) bool {
