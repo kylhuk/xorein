@@ -10,3 +10,4 @@ AGENTS.md
 *_test.go
 *.gen.yaml
 pkg/
+.config/
