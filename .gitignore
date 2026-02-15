@@ -7,6 +7,5 @@ aether*.md
 TODO*.md
 SPRINT*.md
 AGENTS.md
-*_test.go
 *.gen.yaml
 .config/

@@ -1,0 +1,81 @@
+package protocol
+
+import (
+	"reflect"
+	"testing"
+)
+
+func TestValidFeatureFlagName(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		valid bool
+	}{
+		{name: "valid chat", input: "cap.chat", valid: true},
+		{name: "valid dotted", input: "cap.voice.low-latency", valid: true},
+		{name: "missing prefix", input: "chat", valid: false},
+		{name: "upper-case", input: "cap.Chat", valid: false},
+		{name: "empty tail", input: "cap.", valid: false},
+		{name: "invalid rune", input: "cap.voice/opus", valid: false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ValidFeatureFlagName(tt.input); got != tt.valid {
+				t.Fatalf("ValidFeatureFlagName(%q)=%v want %v", tt.input, got, tt.valid)
+			}
+		})
+	}
+}
+
+func TestNegotiateCapabilities(t *testing.T) {
+	local := []FeatureFlag{FeatureChat, FeatureVoice, FeatureIdentity}
+
+	t.Run("accepts-known-ignores-unknown-advertised", func(t *testing.T) {
+		result := NegotiateCapabilities(
+			local,
+			[]string{"cap.chat", "cap.voice", "cap.future", "bad"},
+			nil,
+		)
+
+		wantAccepted := []FeatureFlag{FeatureChat, FeatureVoice}
+		if !reflect.DeepEqual(result.Accepted, wantAccepted) {
+			t.Fatalf("accepted mismatch: got %#v want %#v", result.Accepted, wantAccepted)
+		}
+
+		wantIgnored := []string{"bad", "cap.future"}
+		if !reflect.DeepEqual(result.IgnoredRemote, wantIgnored) {
+			t.Fatalf("ignored mismatch: got %#v want %#v", result.IgnoredRemote, wantIgnored)
+		}
+
+		if len(result.MissingRequired) != 0 {
+			t.Fatalf("unexpected missing required: %#v", result.MissingRequired)
+		}
+
+		if result.Feedback != CapabilityFeedbackRemoteFeaturesIgnored {
+			t.Fatalf("feedback mismatch: got %q want %q", result.Feedback, CapabilityFeedbackRemoteFeaturesIgnored)
+		}
+	})
+
+	t.Run("fails-on-unsupported-required", func(t *testing.T) {
+		result := NegotiateCapabilities(
+			local,
+			[]string{"cap.chat", "cap.voice"},
+			[]string{"cap.identity", "cap.sync", "bad"},
+		)
+
+		wantAccepted := []FeatureFlag{FeatureChat, FeatureVoice}
+		if !reflect.DeepEqual(result.Accepted, wantAccepted) {
+			t.Fatalf("accepted mismatch: got %#v want %#v", result.Accepted, wantAccepted)
+		}
+
+		wantMissing := []string{"bad", "cap.sync"}
+		if !reflect.DeepEqual(result.MissingRequired, wantMissing) {
+			t.Fatalf("missing mismatch: got %#v want %#v", result.MissingRequired, wantMissing)
+		}
+
+		if result.Feedback != CapabilityFeedbackUpgradeRequired {
+			t.Fatalf("feedback mismatch: got %q want %q", result.Feedback, CapabilityFeedbackUpgradeRequired)
+		}
+	})
+}
