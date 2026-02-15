@@ -1,6 +1,12 @@
+.cache/
+.github/
+.vestige*
 .kilocodemodes
 .kilocode/
 aether*.md
 TODO*.md
 SPRINT*.md
 AGENTS.md
+*_test.go
+*.gen.yaml
+pkg/

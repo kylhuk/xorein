@@ -17,4 +17,5 @@ This document explains how the Phase 2 foundation discipline uses [`golangci-lin
 ## Enforcement
 
 - CI runs `make check-full` (see [`Makefile`](Makefile:1)) which includes `lint` so any suppression must not hide new regressions.
+- Runtime module-aware lint gate is validated in Podman with `golangci-lint run ./...` once `go.mod` is present; evidence is recorded in [`docs/v0.1/phase2/evidence-phase2.md`](docs/v0.1/phase2/evidence-phase2.md:1).
 - Reviewers should request justification or alternative solutions before merging suppressed lints.

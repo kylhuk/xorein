@@ -2,10 +2,164 @@ syntax = "proto3";
 
 package aether;
 
-// Reserved numbers ensure additive-safe expansion as specified in docs/v0.1/phase2/proto-reservation-policy.md
-reserved 100;
-reserved "legacy_port";
+option go_package = "github.com/aether/code_aether/gen/go/aether;apb";
 
+// CapabilityFlag enumerates the primitive features that a participant can
+// advertise or request inside manifests or invitations.
+enum CapabilityFlag {
+  CAPABILITY_FLAG_UNSPECIFIED = 0;
+  CAPABILITY_FLAG_CHAT = 1;
+  CAPABILITY_FLAG_VOICE = 2;
+  CAPABILITY_FLAG_MANAGEMENT = 3;
+
+  reserved 100 to 199;
+}
+
+// PayloadType identifies the structured type carried inside SignedEnvelope.
+enum PayloadType {
+  PAYLOAD_TYPE_UNSPECIFIED = 0;
+  PAYLOAD_TYPE_IDENTITY = 1;
+  PAYLOAD_TYPE_SERVER_MANIFEST = 2;
+  PAYLOAD_TYPE_CHAT_MESSAGE = 3;
+  PAYLOAD_TYPE_VOICE_STATE = 4;
+
+  reserved 100 to 199;
+}
+
+// SignatureAlgorithm tracks how the signature bytes should be verified.
+enum SignatureAlgorithm {
+  SIGNATURE_ALGORITHM_UNSPECIFIED = 0;
+  SIGNATURE_ALGORITHM_ED25519 = 1;
+  SIGNATURE_ALGORITHM_P256 = 2;
+
+  reserved 100 to 199;
+}
+
+// EnvelopeVerificationError enumerates canonical validation failures for
+// envelopes. Detailed descriptions are documented in
+// docs/v0.1/phase3/p3-t4-envelope-spec.md.
+enum EnvelopeVerificationError {
+  ENVELOPE_VERIFICATION_ERROR_UNSPECIFIED = 0;
+  ENVELOPE_VERIFICATION_ERROR_SIGNATURE_MISMATCH = 1;
+  ENVELOPE_VERIFICATION_ERROR_UNSIGNED_PAYLOAD = 2;
+  ENVELOPE_VERIFICATION_ERROR_UNSUPPORTED_PAYLOAD_TYPE = 3;
+  ENVELOPE_VERIFICATION_ERROR_CANONICALIZATION_MISMATCH = 4;
+  ENVELOPE_VERIFICATION_ERROR_EXPIRED_SIGNATURE = 5;
+  ENVELOPE_VERIFICATION_ERROR_UNTRUSTED_SIGNER = 6;
+
+  reserved 100 to 199;
+}
+
+// VerificationStatus is an aggregate decision derived from the error list.
+enum VerificationStatus {
+  VERIFICATION_STATUS_UNSPECIFIED = 0;
+  VERIFICATION_STATUS_ACCEPTED = 1;
+  VERIFICATION_STATUS_REJECTED = 2;
+
+  reserved 100 to 199;
+}
+
+// CapabilitySet represents the strongly typed capability flags alongside custom
+// opaque attributes for future extensions.
+message CapabilitySet {
+  reserved 100 to 199;
+
+  repeated CapabilityFlag flags = 1;
+  map<string, string> custom_claims = 2;
+}
+
+// IdentityProfile captures cryptographic material and descriptive metadata.
+message IdentityProfile {
+  reserved 100 to 199;
+
+  string identity_id = 1;
+  string display_name = 2;
+  bytes signing_public_key = 3;
+  bytes profile_signature = 4;
+  CapabilitySet advertised_capabilities = 5;
+}
+
+// MembershipState records per-member enablement toggles within manifests.
+message MembershipState {
+  reserved 100 to 199;
+
+  IdentityProfile member = 1;
+  bool chat_enabled = 2;
+  bool voice_enabled = 3;
+  CapabilitySet granted_capabilities = 4;
+}
+
+// ServerManifest v0.1 conveys the bootstrap state for a deployment.
+message ServerManifest {
+  reserved 100 to 199;
+
+  string manifest_id = 1;
+  IdentityProfile owner = 2;
+  string server_description = 3;
+  repeated MembershipState members = 4;
+  CapabilitySet server_capabilities = 5;
+  uint64 published_at = 6; // unix seconds
+}
+
+// ChatMessage represents a minimal text payload propagated via envelopes.
+message ChatMessage {
+  reserved 100 to 199;
+
+  string message_id = 1;
+  IdentityProfile sender = 2;
+  string room_id = 3;
+  string body = 4;
+  uint64 sent_at = 5; // unix seconds
+}
+
+// VoiceState tracks participant mute/deafen state for signaling.
+message VoiceState {
+  reserved 100 to 199;
+
+  string session_id = 1;
+  IdentityProfile participant = 2;
+  bool muted = 3;
+  bool deafened = 4;
+  uint64 updated_at = 5; // unix seconds
+}
+
+// SignedEnvelope standardizes canonical serialization and signatures.
+message SignedEnvelope {
+  reserved 100 to 199;
+
+  string envelope_id = 1;
+  PayloadType payload_type = 2;
+  bytes payload = 3;
+  IdentityProfile signer = 4;
+  SignatureAlgorithm signature_algorithm = 5;
+  bytes signature = 6;
+  bytes canonical_payload = 7;
+  uint64 signed_at = 8; // unix seconds
+}
+
+// VerificationError contains a taxonomy code plus human-readable detail.
+message VerificationError {
+  reserved 100 to 199;
+
+  EnvelopeVerificationError code = 1;
+  string detail = 2;
+}
+
+// EnvelopeVerification is a helper wrapper for API responses.
+message EnvelopeVerification {
+  reserved 100 to 199;
+
+  SignedEnvelope envelope = 1;
+  VerificationStatus status = 2;
+  repeated VerificationError errors = 3;
+  bytes canonical_bytes = 4;
+}
+
+// AetherPlaceholder remains for backward compatibility with initial scaffolds.
 message AetherPlaceholder {
+  // Reserved numbers ensure additive-safe expansion as specified in docs/v0.1/phase2/proto-reservation-policy.md
+  reserved 100;
+  reserved "legacy_port";
+
   string placeholder_message = 1;
 }

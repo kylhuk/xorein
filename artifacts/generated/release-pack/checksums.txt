@@ -1,0 +1,2 @@
+8adda0878faf2cd0bf0aaea03902d6e263e99861dd1837d3288e0297cdb38dca  artifacts/generated/stamp.txt
+b0f06aa6e9b7cca2172d85562a0be0e7fdb1a7300e0cc6a1269d83ddee678387  bin/aether
