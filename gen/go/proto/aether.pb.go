@@ -30,21 +30,42 @@ const (
 	CapabilityFlag_CAPABILITY_FLAG_CHAT        CapabilityFlag = 1
 	CapabilityFlag_CAPABILITY_FLAG_VOICE       CapabilityFlag = 2
 	CapabilityFlag_CAPABILITY_FLAG_MANAGEMENT  CapabilityFlag = 3
+	CapabilityFlag_CAPABILITY_FLAG_DM          CapabilityFlag = 4
+	CapabilityFlag_CAPABILITY_FLAG_GROUP_DM    CapabilityFlag = 5
+	CapabilityFlag_CAPABILITY_FLAG_FRIENDS     CapabilityFlag = 6
+	CapabilityFlag_CAPABILITY_FLAG_PRESENCE    CapabilityFlag = 7
+	CapabilityFlag_CAPABILITY_FLAG_NOTIFY      CapabilityFlag = 8
+	CapabilityFlag_CAPABILITY_FLAG_MODERATION  CapabilityFlag = 9
+	CapabilityFlag_CAPABILITY_FLAG_GOVERNANCE  CapabilityFlag = 10
 )
 
 // Enum value maps for CapabilityFlag.
 var (
 	CapabilityFlag_name = map[int32]string{
-		0: "CAPABILITY_FLAG_UNSPECIFIED",
-		1: "CAPABILITY_FLAG_CHAT",
-		2: "CAPABILITY_FLAG_VOICE",
-		3: "CAPABILITY_FLAG_MANAGEMENT",
+		0:  "CAPABILITY_FLAG_UNSPECIFIED",
+		1:  "CAPABILITY_FLAG_CHAT",
+		2:  "CAPABILITY_FLAG_VOICE",
+		3:  "CAPABILITY_FLAG_MANAGEMENT",
+		4:  "CAPABILITY_FLAG_DM",
+		5:  "CAPABILITY_FLAG_GROUP_DM",
+		6:  "CAPABILITY_FLAG_FRIENDS",
+		7:  "CAPABILITY_FLAG_PRESENCE",
+		8:  "CAPABILITY_FLAG_NOTIFY",
+		9:  "CAPABILITY_FLAG_MODERATION",
+		10: "CAPABILITY_FLAG_GOVERNANCE",
 	}
 	CapabilityFlag_value = map[string]int32{
 		"CAPABILITY_FLAG_UNSPECIFIED": 0,
 		"CAPABILITY_FLAG_CHAT":        1,
 		"CAPABILITY_FLAG_VOICE":       2,
 		"CAPABILITY_FLAG_MANAGEMENT":  3,
+		"CAPABILITY_FLAG_DM":          4,
+		"CAPABILITY_FLAG_GROUP_DM":    5,
+		"CAPABILITY_FLAG_FRIENDS":     6,
+		"CAPABILITY_FLAG_PRESENCE":    7,
+		"CAPABILITY_FLAG_NOTIFY":      8,
+		"CAPABILITY_FLAG_MODERATION":  9,
+		"CAPABILITY_FLAG_GOVERNANCE":  10,
 	}
 )
 
@@ -79,37 +100,109 @@ func (CapabilityFlag) EnumDescriptor() ([]byte, []int) {
 type PayloadType int32
 
 const (
-	PayloadType_PAYLOAD_TYPE_UNSPECIFIED                PayloadType = 0
-	PayloadType_PAYLOAD_TYPE_IDENTITY                   PayloadType = 1
-	PayloadType_PAYLOAD_TYPE_SERVER_MANIFEST            PayloadType = 2
-	PayloadType_PAYLOAD_TYPE_CHAT_MESSAGE               PayloadType = 3
-	PayloadType_PAYLOAD_TYPE_VOICE_STATE                PayloadType = 4
-	PayloadType_PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE    PayloadType = 5
-	PayloadType_PAYLOAD_TYPE_VOICE_SIGNAL_FRAME         PayloadType = 6
-	PayloadType_PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE PayloadType = 7
+	PayloadType_PAYLOAD_TYPE_UNSPECIFIED                    PayloadType = 0
+	PayloadType_PAYLOAD_TYPE_IDENTITY                       PayloadType = 1
+	PayloadType_PAYLOAD_TYPE_SERVER_MANIFEST                PayloadType = 2
+	PayloadType_PAYLOAD_TYPE_CHAT_MESSAGE                   PayloadType = 3
+	PayloadType_PAYLOAD_TYPE_VOICE_STATE                    PayloadType = 4
+	PayloadType_PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE        PayloadType = 5
+	PayloadType_PAYLOAD_TYPE_VOICE_SIGNAL_FRAME             PayloadType = 6
+	PayloadType_PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE     PayloadType = 7
+	PayloadType_PAYLOAD_TYPE_DM_PREKEY_BUNDLE               PayloadType = 8
+	PayloadType_PAYLOAD_TYPE_DM_MESSAGE                     PayloadType = 9
+	PayloadType_PAYLOAD_TYPE_DM_TRANSPORT_DECISION          PayloadType = 10
+	PayloadType_PAYLOAD_TYPE_DM_DELIVERY_RECEIPT            PayloadType = 11
+	PayloadType_PAYLOAD_TYPE_GROUP_DM_MEMBERSHIP_EVENT      PayloadType = 12
+	PayloadType_PAYLOAD_TYPE_FRIEND_REQUEST                 PayloadType = 13
+	PayloadType_PAYLOAD_TYPE_PRESENCE_STATE                 PayloadType = 14
+	PayloadType_PAYLOAD_TYPE_PRESENCE_EVENT                 PayloadType = 15
+	PayloadType_PAYLOAD_TYPE_NOTIFICATION                   PayloadType = 16
+	PayloadType_PAYLOAD_TYPE_MENTION_TOKEN                  PayloadType = 17
+	PayloadType_PAYLOAD_TYPE_MENTION_DECISION               PayloadType = 18
+	PayloadType_PAYLOAD_TYPE_ROLE_STATE                     PayloadType = 19
+	PayloadType_PAYLOAD_TYPE_POLICIES                       PayloadType = 20
+	PayloadType_PAYLOAD_TYPE_MODERATION_EVENT               PayloadType = 21
+	PayloadType_PAYLOAD_TYPE_SLOW_MODE_DECISION             PayloadType = 22
+	PayloadType_PAYLOAD_TYPE_GOVERNANCE_METADATA            PayloadType = 23
+	PayloadType_PAYLOAD_TYPE_FRIEND_IDENTITY_SHARE          PayloadType = 24
+	PayloadType_PAYLOAD_TYPE_FRIEND_INVITE_PAYLOAD          PayloadType = 25
+	PayloadType_PAYLOAD_TYPE_PRESENCE_DISSEMINATION_POLICY  PayloadType = 26
+	PayloadType_PAYLOAD_TYPE_DM_DIRECT_SESSION_LIFECYCLE    PayloadType = 27
+	PayloadType_PAYLOAD_TYPE_GROUP_DM_SENDER_KEY_ENVELOPE   PayloadType = 28
+	PayloadType_PAYLOAD_TYPE_GROUP_DM_REKEY_DECISION        PayloadType = 29
+	PayloadType_PAYLOAD_TYPE_GROUP_DM_HISTORY_SYNC_DECISION PayloadType = 30
+	PayloadType_PAYLOAD_TYPE_GROUP_DM_GROWTH_DECISION       PayloadType = 31
 )
 
 // Enum value maps for PayloadType.
 var (
 	PayloadType_name = map[int32]string{
-		0: "PAYLOAD_TYPE_UNSPECIFIED",
-		1: "PAYLOAD_TYPE_IDENTITY",
-		2: "PAYLOAD_TYPE_SERVER_MANIFEST",
-		3: "PAYLOAD_TYPE_CHAT_MESSAGE",
-		4: "PAYLOAD_TYPE_VOICE_STATE",
-		5: "PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE",
-		6: "PAYLOAD_TYPE_VOICE_SIGNAL_FRAME",
-		7: "PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE",
+		0:  "PAYLOAD_TYPE_UNSPECIFIED",
+		1:  "PAYLOAD_TYPE_IDENTITY",
+		2:  "PAYLOAD_TYPE_SERVER_MANIFEST",
+		3:  "PAYLOAD_TYPE_CHAT_MESSAGE",
+		4:  "PAYLOAD_TYPE_VOICE_STATE",
+		5:  "PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE",
+		6:  "PAYLOAD_TYPE_VOICE_SIGNAL_FRAME",
+		7:  "PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE",
+		8:  "PAYLOAD_TYPE_DM_PREKEY_BUNDLE",
+		9:  "PAYLOAD_TYPE_DM_MESSAGE",
+		10: "PAYLOAD_TYPE_DM_TRANSPORT_DECISION",
+		11: "PAYLOAD_TYPE_DM_DELIVERY_RECEIPT",
+		12: "PAYLOAD_TYPE_GROUP_DM_MEMBERSHIP_EVENT",
+		13: "PAYLOAD_TYPE_FRIEND_REQUEST",
+		14: "PAYLOAD_TYPE_PRESENCE_STATE",
+		15: "PAYLOAD_TYPE_PRESENCE_EVENT",
+		16: "PAYLOAD_TYPE_NOTIFICATION",
+		17: "PAYLOAD_TYPE_MENTION_TOKEN",
+		18: "PAYLOAD_TYPE_MENTION_DECISION",
+		19: "PAYLOAD_TYPE_ROLE_STATE",
+		20: "PAYLOAD_TYPE_POLICIES",
+		21: "PAYLOAD_TYPE_MODERATION_EVENT",
+		22: "PAYLOAD_TYPE_SLOW_MODE_DECISION",
+		23: "PAYLOAD_TYPE_GOVERNANCE_METADATA",
+		24: "PAYLOAD_TYPE_FRIEND_IDENTITY_SHARE",
+		25: "PAYLOAD_TYPE_FRIEND_INVITE_PAYLOAD",
+		26: "PAYLOAD_TYPE_PRESENCE_DISSEMINATION_POLICY",
+		27: "PAYLOAD_TYPE_DM_DIRECT_SESSION_LIFECYCLE",
+		28: "PAYLOAD_TYPE_GROUP_DM_SENDER_KEY_ENVELOPE",
+		29: "PAYLOAD_TYPE_GROUP_DM_REKEY_DECISION",
+		30: "PAYLOAD_TYPE_GROUP_DM_HISTORY_SYNC_DECISION",
+		31: "PAYLOAD_TYPE_GROUP_DM_GROWTH_DECISION",
 	}
 	PayloadType_value = map[string]int32{
-		"PAYLOAD_TYPE_UNSPECIFIED":                0,
-		"PAYLOAD_TYPE_IDENTITY":                   1,
-		"PAYLOAD_TYPE_SERVER_MANIFEST":            2,
-		"PAYLOAD_TYPE_CHAT_MESSAGE":               3,
-		"PAYLOAD_TYPE_VOICE_STATE":                4,
-		"PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE":    5,
-		"PAYLOAD_TYPE_VOICE_SIGNAL_FRAME":         6,
-		"PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE": 7,
+		"PAYLOAD_TYPE_UNSPECIFIED":                    0,
+		"PAYLOAD_TYPE_IDENTITY":                       1,
+		"PAYLOAD_TYPE_SERVER_MANIFEST":                2,
+		"PAYLOAD_TYPE_CHAT_MESSAGE":                   3,
+		"PAYLOAD_TYPE_VOICE_STATE":                    4,
+		"PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE":        5,
+		"PAYLOAD_TYPE_VOICE_SIGNAL_FRAME":             6,
+		"PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE":     7,
+		"PAYLOAD_TYPE_DM_PREKEY_BUNDLE":               8,
+		"PAYLOAD_TYPE_DM_MESSAGE":                     9,
+		"PAYLOAD_TYPE_DM_TRANSPORT_DECISION":          10,
+		"PAYLOAD_TYPE_DM_DELIVERY_RECEIPT":            11,
+		"PAYLOAD_TYPE_GROUP_DM_MEMBERSHIP_EVENT":      12,
+		"PAYLOAD_TYPE_FRIEND_REQUEST":                 13,
+		"PAYLOAD_TYPE_PRESENCE_STATE":                 14,
+		"PAYLOAD_TYPE_PRESENCE_EVENT":                 15,
+		"PAYLOAD_TYPE_NOTIFICATION":                   16,
+		"PAYLOAD_TYPE_MENTION_TOKEN":                  17,
+		"PAYLOAD_TYPE_MENTION_DECISION":               18,
+		"PAYLOAD_TYPE_ROLE_STATE":                     19,
+		"PAYLOAD_TYPE_POLICIES":                       20,
+		"PAYLOAD_TYPE_MODERATION_EVENT":               21,
+		"PAYLOAD_TYPE_SLOW_MODE_DECISION":             22,
+		"PAYLOAD_TYPE_GOVERNANCE_METADATA":            23,
+		"PAYLOAD_TYPE_FRIEND_IDENTITY_SHARE":          24,
+		"PAYLOAD_TYPE_FRIEND_INVITE_PAYLOAD":          25,
+		"PAYLOAD_TYPE_PRESENCE_DISSEMINATION_POLICY":  26,
+		"PAYLOAD_TYPE_DM_DIRECT_SESSION_LIFECYCLE":    27,
+		"PAYLOAD_TYPE_GROUP_DM_SENDER_KEY_ENVELOPE":   28,
+		"PAYLOAD_TYPE_GROUP_DM_REKEY_DECISION":        29,
+		"PAYLOAD_TYPE_GROUP_DM_HISTORY_SYNC_DECISION": 30,
+		"PAYLOAD_TYPE_GROUP_DM_GROWTH_DECISION":       31,
 	}
 )
 
@@ -554,6 +647,1548 @@ func (EnvelopeVerificationError) EnumDescriptor() ([]byte, []int) {
 	return file_proto_aether_proto_rawDescGZIP(), []int{8}
 }
 
+// SecurityMode encodes conversation mode negotiation for v0.2 envelopes.
+type SecurityMode int32
+
+const (
+	SecurityMode_SECURITY_MODE_UNSPECIFIED SecurityMode = 0
+	SecurityMode_SECURITY_MODE_SEAL        SecurityMode = 1
+	SecurityMode_SECURITY_MODE_TREE        SecurityMode = 2
+	SecurityMode_SECURITY_MODE_CLEAR       SecurityMode = 3
+)
+
+// Enum value maps for SecurityMode.
+var (
+	SecurityMode_name = map[int32]string{
+		0: "SECURITY_MODE_UNSPECIFIED",
+		1: "SECURITY_MODE_SEAL",
+		2: "SECURITY_MODE_TREE",
+		3: "SECURITY_MODE_CLEAR",
+	}
+	SecurityMode_value = map[string]int32{
+		"SECURITY_MODE_UNSPECIFIED": 0,
+		"SECURITY_MODE_SEAL":        1,
+		"SECURITY_MODE_TREE":        2,
+		"SECURITY_MODE_CLEAR":       3,
+	}
+)
+
+func (x SecurityMode) Enum() *SecurityMode {
+	p := new(SecurityMode)
+	*p = x
+	return p
+}
+
+func (x SecurityMode) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (SecurityMode) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[9].Descriptor()
+}
+
+func (SecurityMode) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[9]
+}
+
+func (x SecurityMode) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use SecurityMode.Descriptor instead.
+func (SecurityMode) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{9}
+}
+
+// DmDeliveryPath declares deterministic transport selection for DM attempts.
+type DmDeliveryPath int32
+
+const (
+	DmDeliveryPath_DM_DELIVERY_PATH_UNSPECIFIED DmDeliveryPath = 0
+	DmDeliveryPath_DM_DELIVERY_PATH_DIRECT      DmDeliveryPath = 1
+	DmDeliveryPath_DM_DELIVERY_PATH_OFFLINE     DmDeliveryPath = 2
+	DmDeliveryPath_DM_DELIVERY_PATH_REJECT      DmDeliveryPath = 3
+)
+
+// Enum value maps for DmDeliveryPath.
+var (
+	DmDeliveryPath_name = map[int32]string{
+		0: "DM_DELIVERY_PATH_UNSPECIFIED",
+		1: "DM_DELIVERY_PATH_DIRECT",
+		2: "DM_DELIVERY_PATH_OFFLINE",
+		3: "DM_DELIVERY_PATH_REJECT",
+	}
+	DmDeliveryPath_value = map[string]int32{
+		"DM_DELIVERY_PATH_UNSPECIFIED": 0,
+		"DM_DELIVERY_PATH_DIRECT":      1,
+		"DM_DELIVERY_PATH_OFFLINE":     2,
+		"DM_DELIVERY_PATH_REJECT":      3,
+	}
+)
+
+func (x DmDeliveryPath) Enum() *DmDeliveryPath {
+	p := new(DmDeliveryPath)
+	*p = x
+	return p
+}
+
+func (x DmDeliveryPath) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (DmDeliveryPath) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[10].Descriptor()
+}
+
+func (DmDeliveryPath) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[10]
+}
+
+func (x DmDeliveryPath) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use DmDeliveryPath.Descriptor instead.
+func (DmDeliveryPath) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{10}
+}
+
+// DmTransportReason is a closed taxonomy for transport path decisions.
+type DmTransportReason int32
+
+const (
+	DmTransportReason_DM_TRANSPORT_REASON_UNSPECIFIED               DmTransportReason = 0
+	DmTransportReason_DM_TRANSPORT_REASON_DIRECT_AVAILABLE          DmTransportReason = 1
+	DmTransportReason_DM_TRANSPORT_REASON_PEER_OFFLINE              DmTransportReason = 2
+	DmTransportReason_DM_TRANSPORT_REASON_DIRECT_UNSUPPORTED        DmTransportReason = 3
+	DmTransportReason_DM_TRANSPORT_REASON_UNSUPPORTED_SECURITY_MODE DmTransportReason = 4
+)
+
+// Enum value maps for DmTransportReason.
+var (
+	DmTransportReason_name = map[int32]string{
+		0: "DM_TRANSPORT_REASON_UNSPECIFIED",
+		1: "DM_TRANSPORT_REASON_DIRECT_AVAILABLE",
+		2: "DM_TRANSPORT_REASON_PEER_OFFLINE",
+		3: "DM_TRANSPORT_REASON_DIRECT_UNSUPPORTED",
+		4: "DM_TRANSPORT_REASON_UNSUPPORTED_SECURITY_MODE",
+	}
+	DmTransportReason_value = map[string]int32{
+		"DM_TRANSPORT_REASON_UNSPECIFIED":               0,
+		"DM_TRANSPORT_REASON_DIRECT_AVAILABLE":          1,
+		"DM_TRANSPORT_REASON_PEER_OFFLINE":              2,
+		"DM_TRANSPORT_REASON_DIRECT_UNSUPPORTED":        3,
+		"DM_TRANSPORT_REASON_UNSUPPORTED_SECURITY_MODE": 4,
+	}
+)
+
+func (x DmTransportReason) Enum() *DmTransportReason {
+	p := new(DmTransportReason)
+	*p = x
+	return p
+}
+
+func (x DmTransportReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (DmTransportReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[11].Descriptor()
+}
+
+func (DmTransportReason) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[11]
+}
+
+func (x DmTransportReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use DmTransportReason.Descriptor instead.
+func (DmTransportReason) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{11}
+}
+
+// DmDirectSessionState tracks direct stream lifecycle state.
+type DmDirectSessionState int32
+
+const (
+	DmDirectSessionState_DM_DIRECT_SESSION_STATE_UNSPECIFIED DmDirectSessionState = 0
+	DmDirectSessionState_DM_DIRECT_SESSION_STATE_CLOSED      DmDirectSessionState = 1
+	DmDirectSessionState_DM_DIRECT_SESSION_STATE_OPENING     DmDirectSessionState = 2
+	DmDirectSessionState_DM_DIRECT_SESSION_STATE_OPEN        DmDirectSessionState = 3
+	DmDirectSessionState_DM_DIRECT_SESSION_STATE_RETRYING    DmDirectSessionState = 4
+)
+
+// Enum value maps for DmDirectSessionState.
+var (
+	DmDirectSessionState_name = map[int32]string{
+		0: "DM_DIRECT_SESSION_STATE_UNSPECIFIED",
+		1: "DM_DIRECT_SESSION_STATE_CLOSED",
+		2: "DM_DIRECT_SESSION_STATE_OPENING",
+		3: "DM_DIRECT_SESSION_STATE_OPEN",
+		4: "DM_DIRECT_SESSION_STATE_RETRYING",
+	}
+	DmDirectSessionState_value = map[string]int32{
+		"DM_DIRECT_SESSION_STATE_UNSPECIFIED": 0,
+		"DM_DIRECT_SESSION_STATE_CLOSED":      1,
+		"DM_DIRECT_SESSION_STATE_OPENING":     2,
+		"DM_DIRECT_SESSION_STATE_OPEN":        3,
+		"DM_DIRECT_SESSION_STATE_RETRYING":    4,
+	}
+)
+
+func (x DmDirectSessionState) Enum() *DmDirectSessionState {
+	p := new(DmDirectSessionState)
+	*p = x
+	return p
+}
+
+func (x DmDirectSessionState) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (DmDirectSessionState) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[12].Descriptor()
+}
+
+func (DmDirectSessionState) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[12]
+}
+
+func (x DmDirectSessionState) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use DmDirectSessionState.Descriptor instead.
+func (DmDirectSessionState) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{12}
+}
+
+// DmDirectSessionEvent classifies direct stream lifecycle triggers.
+type DmDirectSessionEvent int32
+
+const (
+	DmDirectSessionEvent_DM_DIRECT_SESSION_EVENT_UNSPECIFIED    DmDirectSessionEvent = 0
+	DmDirectSessionEvent_DM_DIRECT_SESSION_EVENT_OPEN_REQUESTED DmDirectSessionEvent = 1
+	DmDirectSessionEvent_DM_DIRECT_SESSION_EVENT_OPEN_CONFIRMED DmDirectSessionEvent = 2
+	DmDirectSessionEvent_DM_DIRECT_SESSION_EVENT_CLOSE          DmDirectSessionEvent = 3
+	DmDirectSessionEvent_DM_DIRECT_SESSION_EVENT_TIMEOUT        DmDirectSessionEvent = 4
+	DmDirectSessionEvent_DM_DIRECT_SESSION_EVENT_RETRY_TICK     DmDirectSessionEvent = 5
+)
+
+// Enum value maps for DmDirectSessionEvent.
+var (
+	DmDirectSessionEvent_name = map[int32]string{
+		0: "DM_DIRECT_SESSION_EVENT_UNSPECIFIED",
+		1: "DM_DIRECT_SESSION_EVENT_OPEN_REQUESTED",
+		2: "DM_DIRECT_SESSION_EVENT_OPEN_CONFIRMED",
+		3: "DM_DIRECT_SESSION_EVENT_CLOSE",
+		4: "DM_DIRECT_SESSION_EVENT_TIMEOUT",
+		5: "DM_DIRECT_SESSION_EVENT_RETRY_TICK",
+	}
+	DmDirectSessionEvent_value = map[string]int32{
+		"DM_DIRECT_SESSION_EVENT_UNSPECIFIED":    0,
+		"DM_DIRECT_SESSION_EVENT_OPEN_REQUESTED": 1,
+		"DM_DIRECT_SESSION_EVENT_OPEN_CONFIRMED": 2,
+		"DM_DIRECT_SESSION_EVENT_CLOSE":          3,
+		"DM_DIRECT_SESSION_EVENT_TIMEOUT":        4,
+		"DM_DIRECT_SESSION_EVENT_RETRY_TICK":     5,
+	}
+)
+
+func (x DmDirectSessionEvent) Enum() *DmDirectSessionEvent {
+	p := new(DmDirectSessionEvent)
+	*p = x
+	return p
+}
+
+func (x DmDirectSessionEvent) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (DmDirectSessionEvent) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[13].Descriptor()
+}
+
+func (DmDirectSessionEvent) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[13]
+}
+
+func (x DmDirectSessionEvent) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use DmDirectSessionEvent.Descriptor instead.
+func (DmDirectSessionEvent) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{13}
+}
+
+// DmReceiptStatus classifies offline delivery receipt progression.
+type DmReceiptStatus int32
+
+const (
+	DmReceiptStatus_DM_RECEIPT_STATUS_UNSPECIFIED     DmReceiptStatus = 0
+	DmReceiptStatus_DM_RECEIPT_STATUS_PENDING         DmReceiptStatus = 1
+	DmReceiptStatus_DM_RECEIPT_STATUS_RETRY_SCHEDULED DmReceiptStatus = 2
+	DmReceiptStatus_DM_RECEIPT_STATUS_DELIVERED       DmReceiptStatus = 3
+	DmReceiptStatus_DM_RECEIPT_STATUS_EXPIRED         DmReceiptStatus = 4
+)
+
+// Enum value maps for DmReceiptStatus.
+var (
+	DmReceiptStatus_name = map[int32]string{
+		0: "DM_RECEIPT_STATUS_UNSPECIFIED",
+		1: "DM_RECEIPT_STATUS_PENDING",
+		2: "DM_RECEIPT_STATUS_RETRY_SCHEDULED",
+		3: "DM_RECEIPT_STATUS_DELIVERED",
+		4: "DM_RECEIPT_STATUS_EXPIRED",
+	}
+	DmReceiptStatus_value = map[string]int32{
+		"DM_RECEIPT_STATUS_UNSPECIFIED":     0,
+		"DM_RECEIPT_STATUS_PENDING":         1,
+		"DM_RECEIPT_STATUS_RETRY_SCHEDULED": 2,
+		"DM_RECEIPT_STATUS_DELIVERED":       3,
+		"DM_RECEIPT_STATUS_EXPIRED":         4,
+	}
+)
+
+func (x DmReceiptStatus) Enum() *DmReceiptStatus {
+	p := new(DmReceiptStatus)
+	*p = x
+	return p
+}
+
+func (x DmReceiptStatus) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (DmReceiptStatus) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[14].Descriptor()
+}
+
+func (DmReceiptStatus) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[14]
+}
+
+func (x DmReceiptStatus) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use DmReceiptStatus.Descriptor instead.
+func (DmReceiptStatus) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{14}
+}
+
+// GroupDmMemberState tracks baseline group membership lifecycle states.
+type GroupDmMemberState int32
+
+const (
+	GroupDmMemberState_GROUP_DM_MEMBER_STATE_UNSPECIFIED GroupDmMemberState = 0
+	GroupDmMemberState_GROUP_DM_MEMBER_STATE_NONE        GroupDmMemberState = 1
+	GroupDmMemberState_GROUP_DM_MEMBER_STATE_INVITED     GroupDmMemberState = 2
+	GroupDmMemberState_GROUP_DM_MEMBER_STATE_MEMBER      GroupDmMemberState = 3
+	GroupDmMemberState_GROUP_DM_MEMBER_STATE_LEFT        GroupDmMemberState = 4
+	GroupDmMemberState_GROUP_DM_MEMBER_STATE_REMOVED     GroupDmMemberState = 5
+)
+
+// Enum value maps for GroupDmMemberState.
+var (
+	GroupDmMemberState_name = map[int32]string{
+		0: "GROUP_DM_MEMBER_STATE_UNSPECIFIED",
+		1: "GROUP_DM_MEMBER_STATE_NONE",
+		2: "GROUP_DM_MEMBER_STATE_INVITED",
+		3: "GROUP_DM_MEMBER_STATE_MEMBER",
+		4: "GROUP_DM_MEMBER_STATE_LEFT",
+		5: "GROUP_DM_MEMBER_STATE_REMOVED",
+	}
+	GroupDmMemberState_value = map[string]int32{
+		"GROUP_DM_MEMBER_STATE_UNSPECIFIED": 0,
+		"GROUP_DM_MEMBER_STATE_NONE":        1,
+		"GROUP_DM_MEMBER_STATE_INVITED":     2,
+		"GROUP_DM_MEMBER_STATE_MEMBER":      3,
+		"GROUP_DM_MEMBER_STATE_LEFT":        4,
+		"GROUP_DM_MEMBER_STATE_REMOVED":     5,
+	}
+)
+
+func (x GroupDmMemberState) Enum() *GroupDmMemberState {
+	p := new(GroupDmMemberState)
+	*p = x
+	return p
+}
+
+func (x GroupDmMemberState) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GroupDmMemberState) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[15].Descriptor()
+}
+
+func (GroupDmMemberState) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[15]
+}
+
+func (x GroupDmMemberState) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GroupDmMemberState.Descriptor instead.
+func (GroupDmMemberState) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{15}
+}
+
+// GroupDmMembershipEventType tracks minimal event kinds for state transition.
+type GroupDmMembershipEventType int32
+
+const (
+	GroupDmMembershipEventType_GROUP_DM_MEMBERSHIP_EVENT_TYPE_UNSPECIFIED GroupDmMembershipEventType = 0
+	GroupDmMembershipEventType_GROUP_DM_MEMBERSHIP_EVENT_TYPE_INVITE      GroupDmMembershipEventType = 1
+	GroupDmMembershipEventType_GROUP_DM_MEMBERSHIP_EVENT_TYPE_JOIN        GroupDmMembershipEventType = 2
+	GroupDmMembershipEventType_GROUP_DM_MEMBERSHIP_EVENT_TYPE_LEAVE       GroupDmMembershipEventType = 3
+	GroupDmMembershipEventType_GROUP_DM_MEMBERSHIP_EVENT_TYPE_REMOVE      GroupDmMembershipEventType = 4
+)
+
+// Enum value maps for GroupDmMembershipEventType.
+var (
+	GroupDmMembershipEventType_name = map[int32]string{
+		0: "GROUP_DM_MEMBERSHIP_EVENT_TYPE_UNSPECIFIED",
+		1: "GROUP_DM_MEMBERSHIP_EVENT_TYPE_INVITE",
+		2: "GROUP_DM_MEMBERSHIP_EVENT_TYPE_JOIN",
+		3: "GROUP_DM_MEMBERSHIP_EVENT_TYPE_LEAVE",
+		4: "GROUP_DM_MEMBERSHIP_EVENT_TYPE_REMOVE",
+	}
+	GroupDmMembershipEventType_value = map[string]int32{
+		"GROUP_DM_MEMBERSHIP_EVENT_TYPE_UNSPECIFIED": 0,
+		"GROUP_DM_MEMBERSHIP_EVENT_TYPE_INVITE":      1,
+		"GROUP_DM_MEMBERSHIP_EVENT_TYPE_JOIN":        2,
+		"GROUP_DM_MEMBERSHIP_EVENT_TYPE_LEAVE":       3,
+		"GROUP_DM_MEMBERSHIP_EVENT_TYPE_REMOVE":      4,
+	}
+)
+
+func (x GroupDmMembershipEventType) Enum() *GroupDmMembershipEventType {
+	p := new(GroupDmMembershipEventType)
+	*p = x
+	return p
+}
+
+func (x GroupDmMembershipEventType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GroupDmMembershipEventType) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[16].Descriptor()
+}
+
+func (GroupDmMembershipEventType) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[16]
+}
+
+func (x GroupDmMembershipEventType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GroupDmMembershipEventType.Descriptor instead.
+func (GroupDmMembershipEventType) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{16}
+}
+
+// GroupDmMemberCapReason is the deterministic cap response for membership operations.
+type GroupDmMemberCapReason int32
+
+const (
+	GroupDmMemberCapReason_GROUP_DM_MEMBER_CAP_REASON_UNSPECIFIED GroupDmMemberCapReason = 0
+	GroupDmMemberCapReason_GROUP_DM_MEMBER_CAP_REASON_OK          GroupDmMemberCapReason = 1
+	GroupDmMemberCapReason_GROUP_DM_MEMBER_CAP_REASON_WARNING     GroupDmMemberCapReason = 2
+	GroupDmMemberCapReason_GROUP_DM_MEMBER_CAP_REASON_EXCEEDED    GroupDmMemberCapReason = 3
+)
+
+// Enum value maps for GroupDmMemberCapReason.
+var (
+	GroupDmMemberCapReason_name = map[int32]string{
+		0: "GROUP_DM_MEMBER_CAP_REASON_UNSPECIFIED",
+		1: "GROUP_DM_MEMBER_CAP_REASON_OK",
+		2: "GROUP_DM_MEMBER_CAP_REASON_WARNING",
+		3: "GROUP_DM_MEMBER_CAP_REASON_EXCEEDED",
+	}
+	GroupDmMemberCapReason_value = map[string]int32{
+		"GROUP_DM_MEMBER_CAP_REASON_UNSPECIFIED": 0,
+		"GROUP_DM_MEMBER_CAP_REASON_OK":          1,
+		"GROUP_DM_MEMBER_CAP_REASON_WARNING":     2,
+		"GROUP_DM_MEMBER_CAP_REASON_EXCEEDED":    3,
+	}
+)
+
+func (x GroupDmMemberCapReason) Enum() *GroupDmMemberCapReason {
+	p := new(GroupDmMemberCapReason)
+	*p = x
+	return p
+}
+
+func (x GroupDmMemberCapReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GroupDmMemberCapReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[17].Descriptor()
+}
+
+func (GroupDmMemberCapReason) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[17]
+}
+
+func (x GroupDmMemberCapReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GroupDmMemberCapReason.Descriptor instead.
+func (GroupDmMemberCapReason) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{17}
+}
+
+// GroupDmKeyDistributionReason classifies sender-key distribution outcomes.
+type GroupDmKeyDistributionReason int32
+
+const (
+	GroupDmKeyDistributionReason_GROUP_DM_KEY_DISTRIBUTION_REASON_UNSPECIFIED            GroupDmKeyDistributionReason = 0
+	GroupDmKeyDistributionReason_GROUP_DM_KEY_DISTRIBUTION_REASON_ACCEPTED               GroupDmKeyDistributionReason = 1
+	GroupDmKeyDistributionReason_GROUP_DM_KEY_DISTRIBUTION_REASON_INVALID_ENVELOPE       GroupDmKeyDistributionReason = 2
+	GroupDmKeyDistributionReason_GROUP_DM_KEY_DISTRIBUTION_REASON_UNAUTHORIZED_SENDER    GroupDmKeyDistributionReason = 3
+	GroupDmKeyDistributionReason_GROUP_DM_KEY_DISTRIBUTION_REASON_MISSING_SIGNATURE      GroupDmKeyDistributionReason = 4
+	GroupDmKeyDistributionReason_GROUP_DM_KEY_DISTRIBUTION_REASON_REPLAY_UNPROTECTED     GroupDmKeyDistributionReason = 5
+	GroupDmKeyDistributionReason_GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_SCHEDULED        GroupDmKeyDistributionReason = 6
+	GroupDmKeyDistributionReason_GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_EXHAUSTED        GroupDmKeyDistributionReason = 7
+	GroupDmKeyDistributionReason_GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_TERMINAL_FAILURE GroupDmKeyDistributionReason = 8
+)
+
+// Enum value maps for GroupDmKeyDistributionReason.
+var (
+	GroupDmKeyDistributionReason_name = map[int32]string{
+		0: "GROUP_DM_KEY_DISTRIBUTION_REASON_UNSPECIFIED",
+		1: "GROUP_DM_KEY_DISTRIBUTION_REASON_ACCEPTED",
+		2: "GROUP_DM_KEY_DISTRIBUTION_REASON_INVALID_ENVELOPE",
+		3: "GROUP_DM_KEY_DISTRIBUTION_REASON_UNAUTHORIZED_SENDER",
+		4: "GROUP_DM_KEY_DISTRIBUTION_REASON_MISSING_SIGNATURE",
+		5: "GROUP_DM_KEY_DISTRIBUTION_REASON_REPLAY_UNPROTECTED",
+		6: "GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_SCHEDULED",
+		7: "GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_EXHAUSTED",
+		8: "GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_TERMINAL_FAILURE",
+	}
+	GroupDmKeyDistributionReason_value = map[string]int32{
+		"GROUP_DM_KEY_DISTRIBUTION_REASON_UNSPECIFIED":            0,
+		"GROUP_DM_KEY_DISTRIBUTION_REASON_ACCEPTED":               1,
+		"GROUP_DM_KEY_DISTRIBUTION_REASON_INVALID_ENVELOPE":       2,
+		"GROUP_DM_KEY_DISTRIBUTION_REASON_UNAUTHORIZED_SENDER":    3,
+		"GROUP_DM_KEY_DISTRIBUTION_REASON_MISSING_SIGNATURE":      4,
+		"GROUP_DM_KEY_DISTRIBUTION_REASON_REPLAY_UNPROTECTED":     5,
+		"GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_SCHEDULED":        6,
+		"GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_EXHAUSTED":        7,
+		"GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_TERMINAL_FAILURE": 8,
+	}
+)
+
+func (x GroupDmKeyDistributionReason) Enum() *GroupDmKeyDistributionReason {
+	p := new(GroupDmKeyDistributionReason)
+	*p = x
+	return p
+}
+
+func (x GroupDmKeyDistributionReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GroupDmKeyDistributionReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[18].Descriptor()
+}
+
+func (GroupDmKeyDistributionReason) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[18]
+}
+
+func (x GroupDmKeyDistributionReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GroupDmKeyDistributionReason.Descriptor instead.
+func (GroupDmKeyDistributionReason) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{18}
+}
+
+// GroupDmRekeyTrigger classifies mandatory rekey events.
+type GroupDmRekeyTrigger int32
+
+const (
+	GroupDmRekeyTrigger_GROUP_DM_REKEY_TRIGGER_UNSPECIFIED          GroupDmRekeyTrigger = 0
+	GroupDmRekeyTrigger_GROUP_DM_REKEY_TRIGGER_MEMBER_ADDED         GroupDmRekeyTrigger = 1
+	GroupDmRekeyTrigger_GROUP_DM_REKEY_TRIGGER_MEMBER_REMOVED       GroupDmRekeyTrigger = 2
+	GroupDmRekeyTrigger_GROUP_DM_REKEY_TRIGGER_MEMBER_LEFT          GroupDmRekeyTrigger = 3
+	GroupDmRekeyTrigger_GROUP_DM_REKEY_TRIGGER_COMPROMISE_SUSPECTED GroupDmRekeyTrigger = 4
+	GroupDmRekeyTrigger_GROUP_DM_REKEY_TRIGGER_REJOIN_AFTER_REMOVAL GroupDmRekeyTrigger = 5
+)
+
+// Enum value maps for GroupDmRekeyTrigger.
+var (
+	GroupDmRekeyTrigger_name = map[int32]string{
+		0: "GROUP_DM_REKEY_TRIGGER_UNSPECIFIED",
+		1: "GROUP_DM_REKEY_TRIGGER_MEMBER_ADDED",
+		2: "GROUP_DM_REKEY_TRIGGER_MEMBER_REMOVED",
+		3: "GROUP_DM_REKEY_TRIGGER_MEMBER_LEFT",
+		4: "GROUP_DM_REKEY_TRIGGER_COMPROMISE_SUSPECTED",
+		5: "GROUP_DM_REKEY_TRIGGER_REJOIN_AFTER_REMOVAL",
+	}
+	GroupDmRekeyTrigger_value = map[string]int32{
+		"GROUP_DM_REKEY_TRIGGER_UNSPECIFIED":          0,
+		"GROUP_DM_REKEY_TRIGGER_MEMBER_ADDED":         1,
+		"GROUP_DM_REKEY_TRIGGER_MEMBER_REMOVED":       2,
+		"GROUP_DM_REKEY_TRIGGER_MEMBER_LEFT":          3,
+		"GROUP_DM_REKEY_TRIGGER_COMPROMISE_SUSPECTED": 4,
+		"GROUP_DM_REKEY_TRIGGER_REJOIN_AFTER_REMOVAL": 5,
+	}
+)
+
+func (x GroupDmRekeyTrigger) Enum() *GroupDmRekeyTrigger {
+	p := new(GroupDmRekeyTrigger)
+	*p = x
+	return p
+}
+
+func (x GroupDmRekeyTrigger) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GroupDmRekeyTrigger) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[19].Descriptor()
+}
+
+func (GroupDmRekeyTrigger) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[19]
+}
+
+func (x GroupDmRekeyTrigger) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GroupDmRekeyTrigger.Descriptor instead.
+func (GroupDmRekeyTrigger) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{19}
+}
+
+// GroupDmRekeyReason classifies deterministic rekey decisions.
+type GroupDmRekeyReason int32
+
+const (
+	GroupDmRekeyReason_GROUP_DM_REKEY_REASON_UNSPECIFIED                GroupDmRekeyReason = 0
+	GroupDmRekeyReason_GROUP_DM_REKEY_REASON_REQUIRED_MEMBERSHIP_CHANGE GroupDmRekeyReason = 1
+	GroupDmRekeyReason_GROUP_DM_REKEY_REASON_REQUIRED_COMPROMISE        GroupDmRekeyReason = 2
+	GroupDmRekeyReason_GROUP_DM_REKEY_REASON_REQUIRED_REJOIN_GATE       GroupDmRekeyReason = 3
+	GroupDmRekeyReason_GROUP_DM_REKEY_REASON_NOT_REQUIRED               GroupDmRekeyReason = 4
+)
+
+// Enum value maps for GroupDmRekeyReason.
+var (
+	GroupDmRekeyReason_name = map[int32]string{
+		0: "GROUP_DM_REKEY_REASON_UNSPECIFIED",
+		1: "GROUP_DM_REKEY_REASON_REQUIRED_MEMBERSHIP_CHANGE",
+		2: "GROUP_DM_REKEY_REASON_REQUIRED_COMPROMISE",
+		3: "GROUP_DM_REKEY_REASON_REQUIRED_REJOIN_GATE",
+		4: "GROUP_DM_REKEY_REASON_NOT_REQUIRED",
+	}
+	GroupDmRekeyReason_value = map[string]int32{
+		"GROUP_DM_REKEY_REASON_UNSPECIFIED":                0,
+		"GROUP_DM_REKEY_REASON_REQUIRED_MEMBERSHIP_CHANGE": 1,
+		"GROUP_DM_REKEY_REASON_REQUIRED_COMPROMISE":        2,
+		"GROUP_DM_REKEY_REASON_REQUIRED_REJOIN_GATE":       3,
+		"GROUP_DM_REKEY_REASON_NOT_REQUIRED":               4,
+	}
+)
+
+func (x GroupDmRekeyReason) Enum() *GroupDmRekeyReason {
+	p := new(GroupDmRekeyReason)
+	*p = x
+	return p
+}
+
+func (x GroupDmRekeyReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GroupDmRekeyReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[20].Descriptor()
+}
+
+func (GroupDmRekeyReason) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[20]
+}
+
+func (x GroupDmRekeyReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GroupDmRekeyReason.Descriptor instead.
+func (GroupDmRekeyReason) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{20}
+}
+
+// GroupDmTransportPath identifies direct/offline routing outcomes.
+type GroupDmTransportPath int32
+
+const (
+	GroupDmTransportPath_GROUP_DM_TRANSPORT_PATH_UNSPECIFIED GroupDmTransportPath = 0
+	GroupDmTransportPath_GROUP_DM_TRANSPORT_PATH_DIRECT      GroupDmTransportPath = 1
+	GroupDmTransportPath_GROUP_DM_TRANSPORT_PATH_OFFLINE     GroupDmTransportPath = 2
+	GroupDmTransportPath_GROUP_DM_TRANSPORT_PATH_REJECT      GroupDmTransportPath = 3
+)
+
+// Enum value maps for GroupDmTransportPath.
+var (
+	GroupDmTransportPath_name = map[int32]string{
+		0: "GROUP_DM_TRANSPORT_PATH_UNSPECIFIED",
+		1: "GROUP_DM_TRANSPORT_PATH_DIRECT",
+		2: "GROUP_DM_TRANSPORT_PATH_OFFLINE",
+		3: "GROUP_DM_TRANSPORT_PATH_REJECT",
+	}
+	GroupDmTransportPath_value = map[string]int32{
+		"GROUP_DM_TRANSPORT_PATH_UNSPECIFIED": 0,
+		"GROUP_DM_TRANSPORT_PATH_DIRECT":      1,
+		"GROUP_DM_TRANSPORT_PATH_OFFLINE":     2,
+		"GROUP_DM_TRANSPORT_PATH_REJECT":      3,
+	}
+)
+
+func (x GroupDmTransportPath) Enum() *GroupDmTransportPath {
+	p := new(GroupDmTransportPath)
+	*p = x
+	return p
+}
+
+func (x GroupDmTransportPath) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GroupDmTransportPath) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[21].Descriptor()
+}
+
+func (GroupDmTransportPath) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[21]
+}
+
+func (x GroupDmTransportPath) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GroupDmTransportPath.Descriptor instead.
+func (GroupDmTransportPath) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{21}
+}
+
+// GroupDmTransportReason classifies deterministic transport routing reasons.
+type GroupDmTransportReason int32
+
+const (
+	GroupDmTransportReason_GROUP_DM_TRANSPORT_REASON_UNSPECIFIED      GroupDmTransportReason = 0
+	GroupDmTransportReason_GROUP_DM_TRANSPORT_REASON_DIRECT_AVAILABLE GroupDmTransportReason = 1
+	GroupDmTransportReason_GROUP_DM_TRANSPORT_REASON_OFFLINE_FALLBACK GroupDmTransportReason = 2
+	GroupDmTransportReason_GROUP_DM_TRANSPORT_REASON_REJECTED         GroupDmTransportReason = 3
+)
+
+// Enum value maps for GroupDmTransportReason.
+var (
+	GroupDmTransportReason_name = map[int32]string{
+		0: "GROUP_DM_TRANSPORT_REASON_UNSPECIFIED",
+		1: "GROUP_DM_TRANSPORT_REASON_DIRECT_AVAILABLE",
+		2: "GROUP_DM_TRANSPORT_REASON_OFFLINE_FALLBACK",
+		3: "GROUP_DM_TRANSPORT_REASON_REJECTED",
+	}
+	GroupDmTransportReason_value = map[string]int32{
+		"GROUP_DM_TRANSPORT_REASON_UNSPECIFIED":      0,
+		"GROUP_DM_TRANSPORT_REASON_DIRECT_AVAILABLE": 1,
+		"GROUP_DM_TRANSPORT_REASON_OFFLINE_FALLBACK": 2,
+		"GROUP_DM_TRANSPORT_REASON_REJECTED":         3,
+	}
+)
+
+func (x GroupDmTransportReason) Enum() *GroupDmTransportReason {
+	p := new(GroupDmTransportReason)
+	*p = x
+	return p
+}
+
+func (x GroupDmTransportReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GroupDmTransportReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[22].Descriptor()
+}
+
+func (GroupDmTransportReason) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[22]
+}
+
+func (x GroupDmTransportReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GroupDmTransportReason.Descriptor instead.
+func (GroupDmTransportReason) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{22}
+}
+
+// GroupDmHistorySyncReason classifies history visibility/sync outcomes.
+type GroupDmHistorySyncReason int32
+
+const (
+	GroupDmHistorySyncReason_GROUP_DM_HISTORY_SYNC_REASON_UNSPECIFIED    GroupDmHistorySyncReason = 0
+	GroupDmHistorySyncReason_GROUP_DM_HISTORY_SYNC_REASON_OK             GroupDmHistorySyncReason = 1
+	GroupDmHistorySyncReason_GROUP_DM_HISTORY_SYNC_REASON_LOCKED         GroupDmHistorySyncReason = 2
+	GroupDmHistorySyncReason_GROUP_DM_HISTORY_SYNC_REASON_WINDOW_BOUNDED GroupDmHistorySyncReason = 3
+	GroupDmHistorySyncReason_GROUP_DM_HISTORY_SYNC_REASON_INVALID_RANGE  GroupDmHistorySyncReason = 4
+)
+
+// Enum value maps for GroupDmHistorySyncReason.
+var (
+	GroupDmHistorySyncReason_name = map[int32]string{
+		0: "GROUP_DM_HISTORY_SYNC_REASON_UNSPECIFIED",
+		1: "GROUP_DM_HISTORY_SYNC_REASON_OK",
+		2: "GROUP_DM_HISTORY_SYNC_REASON_LOCKED",
+		3: "GROUP_DM_HISTORY_SYNC_REASON_WINDOW_BOUNDED",
+		4: "GROUP_DM_HISTORY_SYNC_REASON_INVALID_RANGE",
+	}
+	GroupDmHistorySyncReason_value = map[string]int32{
+		"GROUP_DM_HISTORY_SYNC_REASON_UNSPECIFIED":    0,
+		"GROUP_DM_HISTORY_SYNC_REASON_OK":             1,
+		"GROUP_DM_HISTORY_SYNC_REASON_LOCKED":         2,
+		"GROUP_DM_HISTORY_SYNC_REASON_WINDOW_BOUNDED": 3,
+		"GROUP_DM_HISTORY_SYNC_REASON_INVALID_RANGE":  4,
+	}
+)
+
+func (x GroupDmHistorySyncReason) Enum() *GroupDmHistorySyncReason {
+	p := new(GroupDmHistorySyncReason)
+	*p = x
+	return p
+}
+
+func (x GroupDmHistorySyncReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GroupDmHistorySyncReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[23].Descriptor()
+}
+
+func (GroupDmHistorySyncReason) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[23]
+}
+
+func (x GroupDmHistorySyncReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GroupDmHistorySyncReason.Descriptor instead.
+func (GroupDmHistorySyncReason) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{23}
+}
+
+// GroupDmGrowthReason classifies member-cap growth decisions.
+type GroupDmGrowthReason int32
+
+const (
+	GroupDmGrowthReason_GROUP_DM_GROWTH_REASON_UNSPECIFIED      GroupDmGrowthReason = 0
+	GroupDmGrowthReason_GROUP_DM_GROWTH_REASON_OK               GroupDmGrowthReason = 1
+	GroupDmGrowthReason_GROUP_DM_GROWTH_REASON_WARNING          GroupDmGrowthReason = 2
+	GroupDmGrowthReason_GROUP_DM_GROWTH_REASON_CONVERT_REQUIRED GroupDmGrowthReason = 3
+)
+
+// Enum value maps for GroupDmGrowthReason.
+var (
+	GroupDmGrowthReason_name = map[int32]string{
+		0: "GROUP_DM_GROWTH_REASON_UNSPECIFIED",
+		1: "GROUP_DM_GROWTH_REASON_OK",
+		2: "GROUP_DM_GROWTH_REASON_WARNING",
+		3: "GROUP_DM_GROWTH_REASON_CONVERT_REQUIRED",
+	}
+	GroupDmGrowthReason_value = map[string]int32{
+		"GROUP_DM_GROWTH_REASON_UNSPECIFIED":      0,
+		"GROUP_DM_GROWTH_REASON_OK":               1,
+		"GROUP_DM_GROWTH_REASON_WARNING":          2,
+		"GROUP_DM_GROWTH_REASON_CONVERT_REQUIRED": 3,
+	}
+)
+
+func (x GroupDmGrowthReason) Enum() *GroupDmGrowthReason {
+	p := new(GroupDmGrowthReason)
+	*p = x
+	return p
+}
+
+func (x GroupDmGrowthReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GroupDmGrowthReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[24].Descriptor()
+}
+
+func (GroupDmGrowthReason) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[24]
+}
+
+func (x GroupDmGrowthReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GroupDmGrowthReason.Descriptor instead.
+func (GroupDmGrowthReason) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{24}
+}
+
+// FriendRequestState tracks friend request lifecycle states.
+type FriendRequestState int32
+
+const (
+	FriendRequestState_FRIEND_REQUEST_STATE_UNSPECIFIED FriendRequestState = 0
+	FriendRequestState_FRIEND_REQUEST_STATE_PENDING     FriendRequestState = 1
+	FriendRequestState_FRIEND_REQUEST_STATE_ACCEPTED    FriendRequestState = 2
+	FriendRequestState_FRIEND_REQUEST_STATE_DECLINED    FriendRequestState = 3
+	FriendRequestState_FRIEND_REQUEST_STATE_CANCELED    FriendRequestState = 4
+	FriendRequestState_FRIEND_REQUEST_STATE_BLOCKED     FriendRequestState = 5
+)
+
+// Enum value maps for FriendRequestState.
+var (
+	FriendRequestState_name = map[int32]string{
+		0: "FRIEND_REQUEST_STATE_UNSPECIFIED",
+		1: "FRIEND_REQUEST_STATE_PENDING",
+		2: "FRIEND_REQUEST_STATE_ACCEPTED",
+		3: "FRIEND_REQUEST_STATE_DECLINED",
+		4: "FRIEND_REQUEST_STATE_CANCELED",
+		5: "FRIEND_REQUEST_STATE_BLOCKED",
+	}
+	FriendRequestState_value = map[string]int32{
+		"FRIEND_REQUEST_STATE_UNSPECIFIED": 0,
+		"FRIEND_REQUEST_STATE_PENDING":     1,
+		"FRIEND_REQUEST_STATE_ACCEPTED":    2,
+		"FRIEND_REQUEST_STATE_DECLINED":    3,
+		"FRIEND_REQUEST_STATE_CANCELED":    4,
+		"FRIEND_REQUEST_STATE_BLOCKED":     5,
+	}
+)
+
+func (x FriendRequestState) Enum() *FriendRequestState {
+	p := new(FriendRequestState)
+	*p = x
+	return p
+}
+
+func (x FriendRequestState) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (FriendRequestState) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[25].Descriptor()
+}
+
+func (FriendRequestState) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[25]
+}
+
+func (x FriendRequestState) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use FriendRequestState.Descriptor instead.
+func (FriendRequestState) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{25}
+}
+
+// FriendRequestAction maps locally executable request actions.
+type FriendRequestAction int32
+
+const (
+	FriendRequestAction_FRIEND_REQUEST_ACTION_UNSPECIFIED FriendRequestAction = 0
+	FriendRequestAction_FRIEND_REQUEST_ACTION_ACCEPT      FriendRequestAction = 1
+	FriendRequestAction_FRIEND_REQUEST_ACTION_DECLINE     FriendRequestAction = 2
+	FriendRequestAction_FRIEND_REQUEST_ACTION_CANCEL      FriendRequestAction = 3
+	FriendRequestAction_FRIEND_REQUEST_ACTION_BLOCK       FriendRequestAction = 4
+)
+
+// Enum value maps for FriendRequestAction.
+var (
+	FriendRequestAction_name = map[int32]string{
+		0: "FRIEND_REQUEST_ACTION_UNSPECIFIED",
+		1: "FRIEND_REQUEST_ACTION_ACCEPT",
+		2: "FRIEND_REQUEST_ACTION_DECLINE",
+		3: "FRIEND_REQUEST_ACTION_CANCEL",
+		4: "FRIEND_REQUEST_ACTION_BLOCK",
+	}
+	FriendRequestAction_value = map[string]int32{
+		"FRIEND_REQUEST_ACTION_UNSPECIFIED": 0,
+		"FRIEND_REQUEST_ACTION_ACCEPT":      1,
+		"FRIEND_REQUEST_ACTION_DECLINE":     2,
+		"FRIEND_REQUEST_ACTION_CANCEL":      3,
+		"FRIEND_REQUEST_ACTION_BLOCK":       4,
+	}
+)
+
+func (x FriendRequestAction) Enum() *FriendRequestAction {
+	p := new(FriendRequestAction)
+	*p = x
+	return p
+}
+
+func (x FriendRequestAction) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (FriendRequestAction) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[26].Descriptor()
+}
+
+func (FriendRequestAction) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[26]
+}
+
+func (x FriendRequestAction) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use FriendRequestAction.Descriptor instead.
+func (FriendRequestAction) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{26}
+}
+
+// FriendExchangeEntryPath identifies how a friend invitation payload is transported.
+type FriendExchangeEntryPath int32
+
+const (
+	FriendExchangeEntryPath_FRIEND_EXCHANGE_ENTRY_PATH_UNSPECIFIED FriendExchangeEntryPath = 0
+	FriendExchangeEntryPath_FRIEND_EXCHANGE_ENTRY_PATH_PUBLIC_KEY  FriendExchangeEntryPath = 1
+	FriendExchangeEntryPath_FRIEND_EXCHANGE_ENTRY_PATH_QR          FriendExchangeEntryPath = 2
+	FriendExchangeEntryPath_FRIEND_EXCHANGE_ENTRY_PATH_DEEP_LINK   FriendExchangeEntryPath = 3
+)
+
+// Enum value maps for FriendExchangeEntryPath.
+var (
+	FriendExchangeEntryPath_name = map[int32]string{
+		0: "FRIEND_EXCHANGE_ENTRY_PATH_UNSPECIFIED",
+		1: "FRIEND_EXCHANGE_ENTRY_PATH_PUBLIC_KEY",
+		2: "FRIEND_EXCHANGE_ENTRY_PATH_QR",
+		3: "FRIEND_EXCHANGE_ENTRY_PATH_DEEP_LINK",
+	}
+	FriendExchangeEntryPath_value = map[string]int32{
+		"FRIEND_EXCHANGE_ENTRY_PATH_UNSPECIFIED": 0,
+		"FRIEND_EXCHANGE_ENTRY_PATH_PUBLIC_KEY":  1,
+		"FRIEND_EXCHANGE_ENTRY_PATH_QR":          2,
+		"FRIEND_EXCHANGE_ENTRY_PATH_DEEP_LINK":   3,
+	}
+)
+
+func (x FriendExchangeEntryPath) Enum() *FriendExchangeEntryPath {
+	p := new(FriendExchangeEntryPath)
+	*p = x
+	return p
+}
+
+func (x FriendExchangeEntryPath) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (FriendExchangeEntryPath) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[27].Descriptor()
+}
+
+func (FriendExchangeEntryPath) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[27]
+}
+
+func (x FriendExchangeEntryPath) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use FriendExchangeEntryPath.Descriptor instead.
+func (FriendExchangeEntryPath) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{27}
+}
+
+// PresenceState captures current presence visibility.
+type PresenceState int32
+
+const (
+	PresenceState_PRESENCE_STATE_UNSPECIFIED PresenceState = 0
+	PresenceState_PRESENCE_STATE_ONLINE      PresenceState = 1
+	PresenceState_PRESENCE_STATE_IDLE        PresenceState = 2
+	PresenceState_PRESENCE_STATE_DND         PresenceState = 3
+	PresenceState_PRESENCE_STATE_INVISIBLE   PresenceState = 4
+	PresenceState_PRESENCE_STATE_OFFLINE     PresenceState = 5
+)
+
+// Enum value maps for PresenceState.
+var (
+	PresenceState_name = map[int32]string{
+		0: "PRESENCE_STATE_UNSPECIFIED",
+		1: "PRESENCE_STATE_ONLINE",
+		2: "PRESENCE_STATE_IDLE",
+		3: "PRESENCE_STATE_DND",
+		4: "PRESENCE_STATE_INVISIBLE",
+		5: "PRESENCE_STATE_OFFLINE",
+	}
+	PresenceState_value = map[string]int32{
+		"PRESENCE_STATE_UNSPECIFIED": 0,
+		"PRESENCE_STATE_ONLINE":      1,
+		"PRESENCE_STATE_IDLE":        2,
+		"PRESENCE_STATE_DND":         3,
+		"PRESENCE_STATE_INVISIBLE":   4,
+		"PRESENCE_STATE_OFFLINE":     5,
+	}
+)
+
+func (x PresenceState) Enum() *PresenceState {
+	p := new(PresenceState)
+	*p = x
+	return p
+}
+
+func (x PresenceState) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PresenceState) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[28].Descriptor()
+}
+
+func (PresenceState) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[28]
+}
+
+func (x PresenceState) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use PresenceState.Descriptor instead.
+func (PresenceState) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{28}
+}
+
+// PresenceEvent is the deterministic event driver for presence transitions.
+type PresenceEvent int32
+
+const (
+	PresenceEvent_PRESENCE_EVENT_UNSPECIFIED  PresenceEvent = 0
+	PresenceEvent_PRESENCE_EVENT_IDLE_TIMEOUT PresenceEvent = 1
+	PresenceEvent_PRESENCE_EVENT_ACTIVITY     PresenceEvent = 2
+	PresenceEvent_PRESENCE_EVENT_DISCONNECT   PresenceEvent = 3
+)
+
+// Enum value maps for PresenceEvent.
+var (
+	PresenceEvent_name = map[int32]string{
+		0: "PRESENCE_EVENT_UNSPECIFIED",
+		1: "PRESENCE_EVENT_IDLE_TIMEOUT",
+		2: "PRESENCE_EVENT_ACTIVITY",
+		3: "PRESENCE_EVENT_DISCONNECT",
+	}
+	PresenceEvent_value = map[string]int32{
+		"PRESENCE_EVENT_UNSPECIFIED":  0,
+		"PRESENCE_EVENT_IDLE_TIMEOUT": 1,
+		"PRESENCE_EVENT_ACTIVITY":     2,
+		"PRESENCE_EVENT_DISCONNECT":   3,
+	}
+)
+
+func (x PresenceEvent) Enum() *PresenceEvent {
+	p := new(PresenceEvent)
+	*p = x
+	return p
+}
+
+func (x PresenceEvent) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PresenceEvent) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[29].Descriptor()
+}
+
+func (PresenceEvent) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[29]
+}
+
+func (x PresenceEvent) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use PresenceEvent.Descriptor instead.
+func (PresenceEvent) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{29}
+}
+
+// PresenceTransitionReason classifies why a presence transition was applied.
+type PresenceTransitionReason int32
+
+const (
+	PresenceTransitionReason_PRESENCE_TRANSITION_REASON_UNSPECIFIED           PresenceTransitionReason = 0
+	PresenceTransitionReason_PRESENCE_TRANSITION_REASON_APPLIED               PresenceTransitionReason = 1
+	PresenceTransitionReason_PRESENCE_TRANSITION_REASON_IGNORED_BY_PRECEDENCE PresenceTransitionReason = 2
+)
+
+// Enum value maps for PresenceTransitionReason.
+var (
+	PresenceTransitionReason_name = map[int32]string{
+		0: "PRESENCE_TRANSITION_REASON_UNSPECIFIED",
+		1: "PRESENCE_TRANSITION_REASON_APPLIED",
+		2: "PRESENCE_TRANSITION_REASON_IGNORED_BY_PRECEDENCE",
+	}
+	PresenceTransitionReason_value = map[string]int32{
+		"PRESENCE_TRANSITION_REASON_UNSPECIFIED":           0,
+		"PRESENCE_TRANSITION_REASON_APPLIED":               1,
+		"PRESENCE_TRANSITION_REASON_IGNORED_BY_PRECEDENCE": 2,
+	}
+)
+
+func (x PresenceTransitionReason) Enum() *PresenceTransitionReason {
+	p := new(PresenceTransitionReason)
+	*p = x
+	return p
+}
+
+func (x PresenceTransitionReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PresenceTransitionReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[30].Descriptor()
+}
+
+func (PresenceTransitionReason) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[30]
+}
+
+func (x PresenceTransitionReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use PresenceTransitionReason.Descriptor instead.
+func (PresenceTransitionReason) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{30}
+}
+
+// MentionType is a baseline v0.2 mention taxonomy.
+type MentionType int32
+
+const (
+	MentionType_MENTION_TYPE_UNSPECIFIED MentionType = 0
+	MentionType_MENTION_TYPE_USER        MentionType = 1
+	MentionType_MENTION_TYPE_ROLE        MentionType = 2
+	MentionType_MENTION_TYPE_EVERYONE    MentionType = 3
+	MentionType_MENTION_TYPE_HERE        MentionType = 4
+)
+
+// Enum value maps for MentionType.
+var (
+	MentionType_name = map[int32]string{
+		0: "MENTION_TYPE_UNSPECIFIED",
+		1: "MENTION_TYPE_USER",
+		2: "MENTION_TYPE_ROLE",
+		3: "MENTION_TYPE_EVERYONE",
+		4: "MENTION_TYPE_HERE",
+	}
+	MentionType_value = map[string]int32{
+		"MENTION_TYPE_UNSPECIFIED": 0,
+		"MENTION_TYPE_USER":        1,
+		"MENTION_TYPE_ROLE":        2,
+		"MENTION_TYPE_EVERYONE":    3,
+		"MENTION_TYPE_HERE":        4,
+	}
+)
+
+func (x MentionType) Enum() *MentionType {
+	p := new(MentionType)
+	*p = x
+	return p
+}
+
+func (x MentionType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (MentionType) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[31].Descriptor()
+}
+
+func (MentionType) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[31]
+}
+
+func (x MentionType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use MentionType.Descriptor instead.
+func (MentionType) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{31}
+}
+
+// PolicyReason provides deterministic outcomes for role gates and moderation.
+type PolicyReason int32
+
+const (
+	PolicyReason_POLICY_REASON_UNSPECIFIED                  PolicyReason = 0
+	PolicyReason_POLICY_REASON_MENTION_AUTHORIZED           PolicyReason = 1
+	PolicyReason_POLICY_REASON_MENTION_UNAUTHORIZED         PolicyReason = 2
+	PolicyReason_POLICY_REASON_SLOW_MODE_ACTIVE             PolicyReason = 3
+	PolicyReason_POLICY_REASON_SLOW_MODE_BYPASS             PolicyReason = 4
+	PolicyReason_POLICY_REASON_SLOW_MODE_PASS               PolicyReason = 5
+	PolicyReason_POLICY_REASON_MODERATION_ALLOWED           PolicyReason = 6
+	PolicyReason_POLICY_REASON_MODERATION_FORBIDDEN_TARGET  PolicyReason = 7
+	PolicyReason_POLICY_REASON_SLOW_MODE_REPLAY_DUPLICATE   PolicyReason = 8
+	PolicyReason_POLICY_REASON_SLOW_MODE_REPLAY_STALE_EVENT PolicyReason = 9
+	PolicyReason_POLICY_REASON_MODERATION_MISSING_SIGNATURE PolicyReason = 10
+	PolicyReason_POLICY_REASON_MODERATION_INVALID_SIGNER    PolicyReason = 11
+	PolicyReason_POLICY_REASON_MODERATION_INVALID_SIGNATURE PolicyReason = 12
+	PolicyReason_POLICY_REASON_MODERATION_NON_COMPLIANT     PolicyReason = 13
+)
+
+// Enum value maps for PolicyReason.
+var (
+	PolicyReason_name = map[int32]string{
+		0:  "POLICY_REASON_UNSPECIFIED",
+		1:  "POLICY_REASON_MENTION_AUTHORIZED",
+		2:  "POLICY_REASON_MENTION_UNAUTHORIZED",
+		3:  "POLICY_REASON_SLOW_MODE_ACTIVE",
+		4:  "POLICY_REASON_SLOW_MODE_BYPASS",
+		5:  "POLICY_REASON_SLOW_MODE_PASS",
+		6:  "POLICY_REASON_MODERATION_ALLOWED",
+		7:  "POLICY_REASON_MODERATION_FORBIDDEN_TARGET",
+		8:  "POLICY_REASON_SLOW_MODE_REPLAY_DUPLICATE",
+		9:  "POLICY_REASON_SLOW_MODE_REPLAY_STALE_EVENT",
+		10: "POLICY_REASON_MODERATION_MISSING_SIGNATURE",
+		11: "POLICY_REASON_MODERATION_INVALID_SIGNER",
+		12: "POLICY_REASON_MODERATION_INVALID_SIGNATURE",
+		13: "POLICY_REASON_MODERATION_NON_COMPLIANT",
+	}
+	PolicyReason_value = map[string]int32{
+		"POLICY_REASON_UNSPECIFIED":                  0,
+		"POLICY_REASON_MENTION_AUTHORIZED":           1,
+		"POLICY_REASON_MENTION_UNAUTHORIZED":         2,
+		"POLICY_REASON_SLOW_MODE_ACTIVE":             3,
+		"POLICY_REASON_SLOW_MODE_BYPASS":             4,
+		"POLICY_REASON_SLOW_MODE_PASS":               5,
+		"POLICY_REASON_MODERATION_ALLOWED":           6,
+		"POLICY_REASON_MODERATION_FORBIDDEN_TARGET":  7,
+		"POLICY_REASON_SLOW_MODE_REPLAY_DUPLICATE":   8,
+		"POLICY_REASON_SLOW_MODE_REPLAY_STALE_EVENT": 9,
+		"POLICY_REASON_MODERATION_MISSING_SIGNATURE": 10,
+		"POLICY_REASON_MODERATION_INVALID_SIGNER":    11,
+		"POLICY_REASON_MODERATION_INVALID_SIGNATURE": 12,
+		"POLICY_REASON_MODERATION_NON_COMPLIANT":     13,
+	}
+)
+
+func (x PolicyReason) Enum() *PolicyReason {
+	p := new(PolicyReason)
+	*p = x
+	return p
+}
+
+func (x PolicyReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PolicyReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[32].Descriptor()
+}
+
+func (PolicyReason) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[32]
+}
+
+func (x PolicyReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use PolicyReason.Descriptor instead.
+func (PolicyReason) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{32}
+}
+
+// NotificationKind captures in-app notification categories in v0.2.
+type NotificationKind int32
+
+const (
+	NotificationKind_NOTIFICATION_KIND_UNSPECIFIED NotificationKind = 0
+	NotificationKind_NOTIFICATION_KIND_DM          NotificationKind = 1
+	NotificationKind_NOTIFICATION_KIND_GROUP_DM    NotificationKind = 2
+	NotificationKind_NOTIFICATION_KIND_FRIEND      NotificationKind = 3
+	NotificationKind_NOTIFICATION_KIND_PRESENCE    NotificationKind = 4
+	NotificationKind_NOTIFICATION_KIND_MODERATION  NotificationKind = 5
+	NotificationKind_NOTIFICATION_KIND_SYSTEM      NotificationKind = 6
+)
+
+// Enum value maps for NotificationKind.
+var (
+	NotificationKind_name = map[int32]string{
+		0: "NOTIFICATION_KIND_UNSPECIFIED",
+		1: "NOTIFICATION_KIND_DM",
+		2: "NOTIFICATION_KIND_GROUP_DM",
+		3: "NOTIFICATION_KIND_FRIEND",
+		4: "NOTIFICATION_KIND_PRESENCE",
+		5: "NOTIFICATION_KIND_MODERATION",
+		6: "NOTIFICATION_KIND_SYSTEM",
+	}
+	NotificationKind_value = map[string]int32{
+		"NOTIFICATION_KIND_UNSPECIFIED": 0,
+		"NOTIFICATION_KIND_DM":          1,
+		"NOTIFICATION_KIND_GROUP_DM":    2,
+		"NOTIFICATION_KIND_FRIEND":      3,
+		"NOTIFICATION_KIND_PRESENCE":    4,
+		"NOTIFICATION_KIND_MODERATION":  5,
+		"NOTIFICATION_KIND_SYSTEM":      6,
+	}
+)
+
+func (x NotificationKind) Enum() *NotificationKind {
+	p := new(NotificationKind)
+	*p = x
+	return p
+}
+
+func (x NotificationKind) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (NotificationKind) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[33].Descriptor()
+}
+
+func (NotificationKind) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[33]
+}
+
+func (x NotificationKind) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use NotificationKind.Descriptor instead.
+func (NotificationKind) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{33}
+}
+
+// ModerationAction defines baseline moderation commands.
+type ModerationAction int32
+
+const (
+	ModerationAction_MODERATION_ACTION_UNSPECIFIED ModerationAction = 0
+	ModerationAction_MODERATION_ACTION_REDACT      ModerationAction = 1
+	ModerationAction_MODERATION_ACTION_DELETE      ModerationAction = 2
+	ModerationAction_MODERATION_ACTION_TIMEOUT     ModerationAction = 3
+	ModerationAction_MODERATION_ACTION_BAN         ModerationAction = 4
+)
+
+// Enum value maps for ModerationAction.
+var (
+	ModerationAction_name = map[int32]string{
+		0: "MODERATION_ACTION_UNSPECIFIED",
+		1: "MODERATION_ACTION_REDACT",
+		2: "MODERATION_ACTION_DELETE",
+		3: "MODERATION_ACTION_TIMEOUT",
+		4: "MODERATION_ACTION_BAN",
+	}
+	ModerationAction_value = map[string]int32{
+		"MODERATION_ACTION_UNSPECIFIED": 0,
+		"MODERATION_ACTION_REDACT":      1,
+		"MODERATION_ACTION_DELETE":      2,
+		"MODERATION_ACTION_TIMEOUT":     3,
+		"MODERATION_ACTION_BAN":         4,
+	}
+)
+
+func (x ModerationAction) Enum() *ModerationAction {
+	p := new(ModerationAction)
+	*p = x
+	return p
+}
+
+func (x ModerationAction) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ModerationAction) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[34].Descriptor()
+}
+
+func (ModerationAction) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[34]
+}
+
+func (x ModerationAction) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ModerationAction.Descriptor instead.
+func (ModerationAction) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{34}
+}
+
+// Role defines baseline v0.2 RBAC hierarchy.
+type V02Role int32
+
+const (
+	V02Role_V02_ROLE_UNSPECIFIED V02Role = 0
+	V02Role_V02_ROLE_MEMBER      V02Role = 1
+	V02Role_V02_ROLE_MODERATOR   V02Role = 2
+	V02Role_V02_ROLE_ADMIN       V02Role = 3
+	V02Role_V02_ROLE_OWNER       V02Role = 4
+)
+
+// Enum value maps for V02Role.
+var (
+	V02Role_name = map[int32]string{
+		0: "V02_ROLE_UNSPECIFIED",
+		1: "V02_ROLE_MEMBER",
+		2: "V02_ROLE_MODERATOR",
+		3: "V02_ROLE_ADMIN",
+		4: "V02_ROLE_OWNER",
+	}
+	V02Role_value = map[string]int32{
+		"V02_ROLE_UNSPECIFIED": 0,
+		"V02_ROLE_MEMBER":      1,
+		"V02_ROLE_MODERATOR":   2,
+		"V02_ROLE_ADMIN":       3,
+		"V02_ROLE_OWNER":       4,
+	}
+)
+
+func (x V02Role) Enum() *V02Role {
+	p := new(V02Role)
+	*p = x
+	return p
+}
+
+func (x V02Role) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (V02Role) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[35].Descriptor()
+}
+
+func (V02Role) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[35]
+}
+
+func (x V02Role) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use V02Role.Descriptor instead.
+func (V02Role) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{35}
+}
+
 // VerificationStatus is an aggregate decision derived from the error list.
 type VerificationStatus int32
 
@@ -588,11 +2223,11 @@ func (x VerificationStatus) String() string {
 }
 
 func (VerificationStatus) Descriptor() protoreflect.EnumDescriptor {
-	return file_proto_aether_proto_enumTypes[9].Descriptor()
+	return file_proto_aether_proto_enumTypes[36].Descriptor()
 }
 
 func (VerificationStatus) Type() protoreflect.EnumType {
-	return &file_proto_aether_proto_enumTypes[9]
+	return &file_proto_aether_proto_enumTypes[36]
 }
 
 func (x VerificationStatus) Number() protoreflect.EnumNumber {
@@ -601,7 +2236,7 @@ func (x VerificationStatus) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use VerificationStatus.Descriptor instead.
 func (VerificationStatus) EnumDescriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{9}
+	return file_proto_aether_proto_rawDescGZIP(), []int{36}
 }
 
 // CapabilitySet represents the strongly typed capability flags alongside custom
@@ -2066,6 +3701,2809 @@ func (x *AetherPlaceholder) GetPlaceholderMessage() string {
 	return ""
 }
 
+// ProtocolMetadata adds deterministic wire-contract metadata for v0.2 families.
+type ProtocolMetadata struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	ProtocolId      string                 `protobuf:"bytes,1,opt,name=protocol_id,json=protocolId,proto3" json:"protocol_id,omitempty"`
+	ProtocolMajor   uint32                 `protobuf:"varint,2,opt,name=protocol_major,json=protocolMajor,proto3" json:"protocol_major,omitempty"`
+	ProtocolMinor   uint32                 `protobuf:"varint,3,opt,name=protocol_minor,json=protocolMinor,proto3" json:"protocol_minor,omitempty"`
+	SecurityMode    SecurityMode           `protobuf:"varint,4,opt,name=security_mode,json=securityMode,proto3,enum=aether.SecurityMode" json:"security_mode,omitempty"`
+	ModeEpochId     string                 `protobuf:"bytes,5,opt,name=mode_epoch_id,json=modeEpochId,proto3" json:"mode_epoch_id,omitempty"`
+	RequiredFlags   []string               `protobuf:"bytes,6,rep,name=required_flags,json=requiredFlags,proto3" json:"required_flags,omitempty"`
+	AdvertisedFlags []string               `protobuf:"bytes,7,rep,name=advertised_flags,json=advertisedFlags,proto3" json:"advertised_flags,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *ProtocolMetadata) Reset() {
+	*x = ProtocolMetadata{}
+	mi := &file_proto_aether_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ProtocolMetadata) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProtocolMetadata) ProtoMessage() {}
+
+func (x *ProtocolMetadata) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProtocolMetadata.ProtoReflect.Descriptor instead.
+func (*ProtocolMetadata) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *ProtocolMetadata) GetProtocolId() string {
+	if x != nil {
+		return x.ProtocolId
+	}
+	return ""
+}
+
+func (x *ProtocolMetadata) GetProtocolMajor() uint32 {
+	if x != nil {
+		return x.ProtocolMajor
+	}
+	return 0
+}
+
+func (x *ProtocolMetadata) GetProtocolMinor() uint32 {
+	if x != nil {
+		return x.ProtocolMinor
+	}
+	return 0
+}
+
+func (x *ProtocolMetadata) GetSecurityMode() SecurityMode {
+	if x != nil {
+		return x.SecurityMode
+	}
+	return SecurityMode_SECURITY_MODE_UNSPECIFIED
+}
+
+func (x *ProtocolMetadata) GetModeEpochId() string {
+	if x != nil {
+		return x.ModeEpochId
+	}
+	return ""
+}
+
+func (x *ProtocolMetadata) GetRequiredFlags() []string {
+	if x != nil {
+		return x.RequiredFlags
+	}
+	return nil
+}
+
+func (x *ProtocolMetadata) GetAdvertisedFlags() []string {
+	if x != nil {
+		return x.AdvertisedFlags
+	}
+	return nil
+}
+
+// DmPrekeyRecord carries additive prekey publication contract data.
+type DmPrekeyRecord struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	IdentityId         string                 `protobuf:"bytes,1,opt,name=identity_id,json=identityId,proto3" json:"identity_id,omitempty"`
+	SignedPrekeyId     string                 `protobuf:"bytes,2,opt,name=signed_prekey_id,json=signedPrekeyId,proto3" json:"signed_prekey_id,omitempty"`
+	OneTimePrekeyCount uint32                 `protobuf:"varint,3,opt,name=one_time_prekey_count,json=oneTimePrekeyCount,proto3" json:"one_time_prekey_count,omitempty"`
+	PublishedAtUnix    uint64                 `protobuf:"varint,4,opt,name=published_at_unix,json=publishedAtUnix,proto3" json:"published_at_unix,omitempty"`
+	ExpiresAtUnix      uint64                 `protobuf:"varint,5,opt,name=expires_at_unix,json=expiresAtUnix,proto3" json:"expires_at_unix,omitempty"`
+	Signature          []byte                 `protobuf:"bytes,6,opt,name=signature,proto3" json:"signature,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *DmPrekeyRecord) Reset() {
+	*x = DmPrekeyRecord{}
+	mi := &file_proto_aether_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DmPrekeyRecord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DmPrekeyRecord) ProtoMessage() {}
+
+func (x *DmPrekeyRecord) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DmPrekeyRecord.ProtoReflect.Descriptor instead.
+func (*DmPrekeyRecord) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *DmPrekeyRecord) GetIdentityId() string {
+	if x != nil {
+		return x.IdentityId
+	}
+	return ""
+}
+
+func (x *DmPrekeyRecord) GetSignedPrekeyId() string {
+	if x != nil {
+		return x.SignedPrekeyId
+	}
+	return ""
+}
+
+func (x *DmPrekeyRecord) GetOneTimePrekeyCount() uint32 {
+	if x != nil {
+		return x.OneTimePrekeyCount
+	}
+	return 0
+}
+
+func (x *DmPrekeyRecord) GetPublishedAtUnix() uint64 {
+	if x != nil {
+		return x.PublishedAtUnix
+	}
+	return 0
+}
+
+func (x *DmPrekeyRecord) GetExpiresAtUnix() uint64 {
+	if x != nil {
+		return x.ExpiresAtUnix
+	}
+	return 0
+}
+
+func (x *DmPrekeyRecord) GetSignature() []byte {
+	if x != nil {
+		return x.Signature
+	}
+	return nil
+}
+
+// DmMessageEnvelope defines the direct/offline encrypted DM payload contract.
+type DmMessageEnvelope struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	MessageId          string                 `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+	ConversationId     string                 `protobuf:"bytes,2,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	Ciphertext         []byte                 `protobuf:"bytes,3,opt,name=ciphertext,proto3" json:"ciphertext,omitempty"`
+	SecurityMode       SecurityMode           `protobuf:"varint,4,opt,name=security_mode,json=securityMode,proto3,enum=aether.SecurityMode" json:"security_mode,omitempty"`
+	ModeEpochId        string                 `protobuf:"bytes,5,opt,name=mode_epoch_id,json=modeEpochId,proto3" json:"mode_epoch_id,omitempty"`
+	SenderId           string                 `protobuf:"bytes,6,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"`
+	RecipientId        string                 `protobuf:"bytes,7,opt,name=recipient_id,json=recipientId,proto3" json:"recipient_id,omitempty"`
+	SessionId          string                 `protobuf:"bytes,8,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	IntegrityTag       []byte                 `protobuf:"bytes,9,opt,name=integrity_tag,json=integrityTag,proto3" json:"integrity_tag,omitempty"`
+	MetadataFieldCount uint32                 `protobuf:"varint,10,opt,name=metadata_field_count,json=metadataFieldCount,proto3" json:"metadata_field_count,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *DmMessageEnvelope) Reset() {
+	*x = DmMessageEnvelope{}
+	mi := &file_proto_aether_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DmMessageEnvelope) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DmMessageEnvelope) ProtoMessage() {}
+
+func (x *DmMessageEnvelope) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DmMessageEnvelope.ProtoReflect.Descriptor instead.
+func (*DmMessageEnvelope) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *DmMessageEnvelope) GetMessageId() string {
+	if x != nil {
+		return x.MessageId
+	}
+	return ""
+}
+
+func (x *DmMessageEnvelope) GetConversationId() string {
+	if x != nil {
+		return x.ConversationId
+	}
+	return ""
+}
+
+func (x *DmMessageEnvelope) GetCiphertext() []byte {
+	if x != nil {
+		return x.Ciphertext
+	}
+	return nil
+}
+
+func (x *DmMessageEnvelope) GetSecurityMode() SecurityMode {
+	if x != nil {
+		return x.SecurityMode
+	}
+	return SecurityMode_SECURITY_MODE_UNSPECIFIED
+}
+
+func (x *DmMessageEnvelope) GetModeEpochId() string {
+	if x != nil {
+		return x.ModeEpochId
+	}
+	return ""
+}
+
+func (x *DmMessageEnvelope) GetSenderId() string {
+	if x != nil {
+		return x.SenderId
+	}
+	return ""
+}
+
+func (x *DmMessageEnvelope) GetRecipientId() string {
+	if x != nil {
+		return x.RecipientId
+	}
+	return ""
+}
+
+func (x *DmMessageEnvelope) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+func (x *DmMessageEnvelope) GetIntegrityTag() []byte {
+	if x != nil {
+		return x.IntegrityTag
+	}
+	return nil
+}
+
+func (x *DmMessageEnvelope) GetMetadataFieldCount() uint32 {
+	if x != nil {
+		return x.MetadataFieldCount
+	}
+	return 0
+}
+
+// DmQueuedMessage mirrors offline mailbox payload contract.
+type DmQueuedMessage struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	MessageId         string                 `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+	RecipientId       string                 `protobuf:"bytes,2,opt,name=recipient_id,json=recipientId,proto3" json:"recipient_id,omitempty"`
+	Ciphertext        []byte                 `protobuf:"bytes,3,opt,name=ciphertext,proto3" json:"ciphertext,omitempty"`
+	SecurityMode      SecurityMode           `protobuf:"varint,4,opt,name=security_mode,json=securityMode,proto3,enum=aether.SecurityMode" json:"security_mode,omitempty"`
+	ModeEpochId       string                 `protobuf:"bytes,5,opt,name=mode_epoch_id,json=modeEpochId,proto3" json:"mode_epoch_id,omitempty"`
+	MailboxAddress    string                 `protobuf:"bytes,6,opt,name=mailbox_address,json=mailboxAddress,proto3" json:"mailbox_address,omitempty"`
+	ExpiresAtUnix     uint64                 `protobuf:"varint,7,opt,name=expires_at_unix,json=expiresAtUnix,proto3" json:"expires_at_unix,omitempty"`
+	ReplicationFactor uint32                 `protobuf:"varint,8,opt,name=replication_factor,json=replicationFactor,proto3" json:"replication_factor,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *DmQueuedMessage) Reset() {
+	*x = DmQueuedMessage{}
+	mi := &file_proto_aether_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DmQueuedMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DmQueuedMessage) ProtoMessage() {}
+
+func (x *DmQueuedMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DmQueuedMessage.ProtoReflect.Descriptor instead.
+func (*DmQueuedMessage) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *DmQueuedMessage) GetMessageId() string {
+	if x != nil {
+		return x.MessageId
+	}
+	return ""
+}
+
+func (x *DmQueuedMessage) GetRecipientId() string {
+	if x != nil {
+		return x.RecipientId
+	}
+	return ""
+}
+
+func (x *DmQueuedMessage) GetCiphertext() []byte {
+	if x != nil {
+		return x.Ciphertext
+	}
+	return nil
+}
+
+func (x *DmQueuedMessage) GetSecurityMode() SecurityMode {
+	if x != nil {
+		return x.SecurityMode
+	}
+	return SecurityMode_SECURITY_MODE_UNSPECIFIED
+}
+
+func (x *DmQueuedMessage) GetModeEpochId() string {
+	if x != nil {
+		return x.ModeEpochId
+	}
+	return ""
+}
+
+func (x *DmQueuedMessage) GetMailboxAddress() string {
+	if x != nil {
+		return x.MailboxAddress
+	}
+	return ""
+}
+
+func (x *DmQueuedMessage) GetExpiresAtUnix() uint64 {
+	if x != nil {
+		return x.ExpiresAtUnix
+	}
+	return 0
+}
+
+func (x *DmQueuedMessage) GetReplicationFactor() uint32 {
+	if x != nil {
+		return x.ReplicationFactor
+	}
+	return 0
+}
+
+// DmTransportDecision is the wire representation of deterministic transport selection.
+type DmTransportDecision struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Path          DmDeliveryPath         `protobuf:"varint,1,opt,name=path,proto3,enum=aether.DmDeliveryPath" json:"path,omitempty"`
+	Reason        DmTransportReason      `protobuf:"varint,2,opt,name=reason,proto3,enum=aether.DmTransportReason" json:"reason,omitempty"`
+	SessionState  DmDirectSessionState   `protobuf:"varint,3,opt,name=session_state,json=sessionState,proto3,enum=aether.DmDirectSessionState" json:"session_state,omitempty"`
+	SessionId     string                 `protobuf:"bytes,4,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DmTransportDecision) Reset() {
+	*x = DmTransportDecision{}
+	mi := &file_proto_aether_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DmTransportDecision) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DmTransportDecision) ProtoMessage() {}
+
+func (x *DmTransportDecision) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DmTransportDecision.ProtoReflect.Descriptor instead.
+func (*DmTransportDecision) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *DmTransportDecision) GetPath() DmDeliveryPath {
+	if x != nil {
+		return x.Path
+	}
+	return DmDeliveryPath_DM_DELIVERY_PATH_UNSPECIFIED
+}
+
+func (x *DmTransportDecision) GetReason() DmTransportReason {
+	if x != nil {
+		return x.Reason
+	}
+	return DmTransportReason_DM_TRANSPORT_REASON_UNSPECIFIED
+}
+
+func (x *DmTransportDecision) GetSessionState() DmDirectSessionState {
+	if x != nil {
+		return x.SessionState
+	}
+	return DmDirectSessionState_DM_DIRECT_SESSION_STATE_UNSPECIFIED
+}
+
+func (x *DmTransportDecision) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+// DmDirectSessionLifecycle records deterministic direct-stream transitions.
+type DmDirectSessionLifecycle struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	SessionId      string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	ConversationId string                 `protobuf:"bytes,2,opt,name=conversation_id,json=conversationId,proto3" json:"conversation_id,omitempty"`
+	CurrentState   DmDirectSessionState   `protobuf:"varint,3,opt,name=current_state,json=currentState,proto3,enum=aether.DmDirectSessionState" json:"current_state,omitempty"`
+	NextState      DmDirectSessionState   `protobuf:"varint,4,opt,name=next_state,json=nextState,proto3,enum=aether.DmDirectSessionState" json:"next_state,omitempty"`
+	Event          DmDirectSessionEvent   `protobuf:"varint,5,opt,name=event,proto3,enum=aether.DmDirectSessionEvent" json:"event,omitempty"`
+	Reason         DmTransportReason      `protobuf:"varint,6,opt,name=reason,proto3,enum=aether.DmTransportReason" json:"reason,omitempty"`
+	OccurredAtUnix uint64                 `protobuf:"varint,7,opt,name=occurred_at_unix,json=occurredAtUnix,proto3" json:"occurred_at_unix,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *DmDirectSessionLifecycle) Reset() {
+	*x = DmDirectSessionLifecycle{}
+	mi := &file_proto_aether_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DmDirectSessionLifecycle) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DmDirectSessionLifecycle) ProtoMessage() {}
+
+func (x *DmDirectSessionLifecycle) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DmDirectSessionLifecycle.ProtoReflect.Descriptor instead.
+func (*DmDirectSessionLifecycle) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *DmDirectSessionLifecycle) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+func (x *DmDirectSessionLifecycle) GetConversationId() string {
+	if x != nil {
+		return x.ConversationId
+	}
+	return ""
+}
+
+func (x *DmDirectSessionLifecycle) GetCurrentState() DmDirectSessionState {
+	if x != nil {
+		return x.CurrentState
+	}
+	return DmDirectSessionState_DM_DIRECT_SESSION_STATE_UNSPECIFIED
+}
+
+func (x *DmDirectSessionLifecycle) GetNextState() DmDirectSessionState {
+	if x != nil {
+		return x.NextState
+	}
+	return DmDirectSessionState_DM_DIRECT_SESSION_STATE_UNSPECIFIED
+}
+
+func (x *DmDirectSessionLifecycle) GetEvent() DmDirectSessionEvent {
+	if x != nil {
+		return x.Event
+	}
+	return DmDirectSessionEvent_DM_DIRECT_SESSION_EVENT_UNSPECIFIED
+}
+
+func (x *DmDirectSessionLifecycle) GetReason() DmTransportReason {
+	if x != nil {
+		return x.Reason
+	}
+	return DmTransportReason_DM_TRANSPORT_REASON_UNSPECIFIED
+}
+
+func (x *DmDirectSessionLifecycle) GetOccurredAtUnix() uint64 {
+	if x != nil {
+		return x.OccurredAtUnix
+	}
+	return 0
+}
+
+// DmDeliveryReceipt captures deterministic DM receipt semantics.
+type DmDeliveryReceipt struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	MessageId          string                 `protobuf:"bytes,1,opt,name=message_id,json=messageId,proto3" json:"message_id,omitempty"`
+	RecipientId        string                 `protobuf:"bytes,2,opt,name=recipient_id,json=recipientId,proto3" json:"recipient_id,omitempty"`
+	Path               DmDeliveryPath         `protobuf:"varint,3,opt,name=path,proto3,enum=aether.DmDeliveryPath" json:"path,omitempty"`
+	Acknowledged       bool                   `protobuf:"varint,4,opt,name=acknowledged,proto3" json:"acknowledged,omitempty"`
+	AcknowledgedAtUnix uint64                 `protobuf:"varint,5,opt,name=acknowledged_at_unix,json=acknowledgedAtUnix,proto3" json:"acknowledged_at_unix,omitempty"`
+	Status             DmReceiptStatus        `protobuf:"varint,6,opt,name=status,proto3,enum=aether.DmReceiptStatus" json:"status,omitempty"`
+	Attempts           uint32                 `protobuf:"varint,7,opt,name=attempts,proto3" json:"attempts,omitempty"`
+	RetryAfterUnix     uint64                 `protobuf:"varint,8,opt,name=retry_after_unix,json=retryAfterUnix,proto3" json:"retry_after_unix,omitempty"`
+	MailboxAddress     string                 `protobuf:"bytes,9,opt,name=mailbox_address,json=mailboxAddress,proto3" json:"mailbox_address,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *DmDeliveryReceipt) Reset() {
+	*x = DmDeliveryReceipt{}
+	mi := &file_proto_aether_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DmDeliveryReceipt) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DmDeliveryReceipt) ProtoMessage() {}
+
+func (x *DmDeliveryReceipt) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DmDeliveryReceipt.ProtoReflect.Descriptor instead.
+func (*DmDeliveryReceipt) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *DmDeliveryReceipt) GetMessageId() string {
+	if x != nil {
+		return x.MessageId
+	}
+	return ""
+}
+
+func (x *DmDeliveryReceipt) GetRecipientId() string {
+	if x != nil {
+		return x.RecipientId
+	}
+	return ""
+}
+
+func (x *DmDeliveryReceipt) GetPath() DmDeliveryPath {
+	if x != nil {
+		return x.Path
+	}
+	return DmDeliveryPath_DM_DELIVERY_PATH_UNSPECIFIED
+}
+
+func (x *DmDeliveryReceipt) GetAcknowledged() bool {
+	if x != nil {
+		return x.Acknowledged
+	}
+	return false
+}
+
+func (x *DmDeliveryReceipt) GetAcknowledgedAtUnix() uint64 {
+	if x != nil {
+		return x.AcknowledgedAtUnix
+	}
+	return 0
+}
+
+func (x *DmDeliveryReceipt) GetStatus() DmReceiptStatus {
+	if x != nil {
+		return x.Status
+	}
+	return DmReceiptStatus_DM_RECEIPT_STATUS_UNSPECIFIED
+}
+
+func (x *DmDeliveryReceipt) GetAttempts() uint32 {
+	if x != nil {
+		return x.Attempts
+	}
+	return 0
+}
+
+func (x *DmDeliveryReceipt) GetRetryAfterUnix() uint64 {
+	if x != nil {
+		return x.RetryAfterUnix
+	}
+	return 0
+}
+
+func (x *DmDeliveryReceipt) GetMailboxAddress() string {
+	if x != nil {
+		return x.MailboxAddress
+	}
+	return ""
+}
+
+// GroupDmMemberCap models cap checks for add/remove flows.
+type GroupDmMemberCap struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Allowed       bool                   `protobuf:"varint,1,opt,name=allowed,proto3" json:"allowed,omitempty"`
+	Warning       bool                   `protobuf:"varint,2,opt,name=warning,proto3" json:"warning,omitempty"`
+	Reason        GroupDmMemberCapReason `protobuf:"varint,3,opt,name=reason,proto3,enum=aether.GroupDmMemberCapReason" json:"reason,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GroupDmMemberCap) Reset() {
+	*x = GroupDmMemberCap{}
+	mi := &file_proto_aether_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GroupDmMemberCap) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GroupDmMemberCap) ProtoMessage() {}
+
+func (x *GroupDmMemberCap) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GroupDmMemberCap.ProtoReflect.Descriptor instead.
+func (*GroupDmMemberCap) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *GroupDmMemberCap) GetAllowed() bool {
+	if x != nil {
+		return x.Allowed
+	}
+	return false
+}
+
+func (x *GroupDmMemberCap) GetWarning() bool {
+	if x != nil {
+		return x.Warning
+	}
+	return false
+}
+
+func (x *GroupDmMemberCap) GetReason() GroupDmMemberCapReason {
+	if x != nil {
+		return x.Reason
+	}
+	return GroupDmMemberCapReason_GROUP_DM_MEMBER_CAP_REASON_UNSPECIFIED
+}
+
+// GroupDmMembershipEvent records member-state transitions.
+type GroupDmMembershipEvent struct {
+	state         protoimpl.MessageState     `protogen:"open.v1"`
+	EventId       string                     `protobuf:"bytes,1,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
+	Sequence      uint64                     `protobuf:"varint,2,opt,name=sequence,proto3" json:"sequence,omitempty"`
+	CurrentState  GroupDmMemberState         `protobuf:"varint,3,opt,name=current_state,json=currentState,proto3,enum=aether.GroupDmMemberState" json:"current_state,omitempty"`
+	NextState     GroupDmMemberState         `protobuf:"varint,4,opt,name=next_state,json=nextState,proto3,enum=aether.GroupDmMemberState" json:"next_state,omitempty"`
+	EventType     GroupDmMembershipEventType `protobuf:"varint,5,opt,name=event_type,json=eventType,proto3,enum=aether.GroupDmMembershipEventType" json:"event_type,omitempty"`
+	MemberId      string                     `protobuf:"bytes,6,opt,name=member_id,json=memberId,proto3" json:"member_id,omitempty"`
+	SecurityMode  SecurityMode               `protobuf:"varint,7,opt,name=security_mode,json=securityMode,proto3,enum=aether.SecurityMode" json:"security_mode,omitempty"`
+	ModeEpochId   string                     `protobuf:"bytes,8,opt,name=mode_epoch_id,json=modeEpochId,proto3" json:"mode_epoch_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GroupDmMembershipEvent) Reset() {
+	*x = GroupDmMembershipEvent{}
+	mi := &file_proto_aether_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GroupDmMembershipEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GroupDmMembershipEvent) ProtoMessage() {}
+
+func (x *GroupDmMembershipEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GroupDmMembershipEvent.ProtoReflect.Descriptor instead.
+func (*GroupDmMembershipEvent) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *GroupDmMembershipEvent) GetEventId() string {
+	if x != nil {
+		return x.EventId
+	}
+	return ""
+}
+
+func (x *GroupDmMembershipEvent) GetSequence() uint64 {
+	if x != nil {
+		return x.Sequence
+	}
+	return 0
+}
+
+func (x *GroupDmMembershipEvent) GetCurrentState() GroupDmMemberState {
+	if x != nil {
+		return x.CurrentState
+	}
+	return GroupDmMemberState_GROUP_DM_MEMBER_STATE_UNSPECIFIED
+}
+
+func (x *GroupDmMembershipEvent) GetNextState() GroupDmMemberState {
+	if x != nil {
+		return x.NextState
+	}
+	return GroupDmMemberState_GROUP_DM_MEMBER_STATE_UNSPECIFIED
+}
+
+func (x *GroupDmMembershipEvent) GetEventType() GroupDmMembershipEventType {
+	if x != nil {
+		return x.EventType
+	}
+	return GroupDmMembershipEventType_GROUP_DM_MEMBERSHIP_EVENT_TYPE_UNSPECIFIED
+}
+
+func (x *GroupDmMembershipEvent) GetMemberId() string {
+	if x != nil {
+		return x.MemberId
+	}
+	return ""
+}
+
+func (x *GroupDmMembershipEvent) GetSecurityMode() SecurityMode {
+	if x != nil {
+		return x.SecurityMode
+	}
+	return SecurityMode_SECURITY_MODE_UNSPECIFIED
+}
+
+func (x *GroupDmMembershipEvent) GetModeEpochId() string {
+	if x != nil {
+		return x.ModeEpochId
+	}
+	return ""
+}
+
+// GroupDmSenderKeyEnvelope captures initial sender-key handoff payloads.
+type GroupDmSenderKeyEnvelope struct {
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	EnvelopeId          string                 `protobuf:"bytes,1,opt,name=envelope_id,json=envelopeId,proto3" json:"envelope_id,omitempty"`
+	GroupId             string                 `protobuf:"bytes,2,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
+	SenderId            string                 `protobuf:"bytes,3,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"`
+	RecipientId         string                 `protobuf:"bytes,4,opt,name=recipient_id,json=recipientId,proto3" json:"recipient_id,omitempty"`
+	Epoch               uint64                 `protobuf:"varint,5,opt,name=epoch,proto3" json:"epoch,omitempty"`
+	Nonce               string                 `protobuf:"bytes,6,opt,name=nonce,proto3" json:"nonce,omitempty"`
+	Ciphertext          []byte                 `protobuf:"bytes,7,opt,name=ciphertext,proto3" json:"ciphertext,omitempty"`
+	SignatureAlgorithm  SignatureAlgorithm     `protobuf:"varint,8,opt,name=signature_algorithm,json=signatureAlgorithm,proto3,enum=aether.SignatureAlgorithm" json:"signature_algorithm,omitempty"`
+	Signature           []byte                 `protobuf:"bytes,9,opt,name=signature,proto3" json:"signature,omitempty"`
+	ReplayProtectionTag string                 `protobuf:"bytes,10,opt,name=replay_protection_tag,json=replayProtectionTag,proto3" json:"replay_protection_tag,omitempty"`
+	RetryAttempt        uint32                 `protobuf:"varint,11,opt,name=retry_attempt,json=retryAttempt,proto3" json:"retry_attempt,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *GroupDmSenderKeyEnvelope) Reset() {
+	*x = GroupDmSenderKeyEnvelope{}
+	mi := &file_proto_aether_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GroupDmSenderKeyEnvelope) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GroupDmSenderKeyEnvelope) ProtoMessage() {}
+
+func (x *GroupDmSenderKeyEnvelope) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GroupDmSenderKeyEnvelope.ProtoReflect.Descriptor instead.
+func (*GroupDmSenderKeyEnvelope) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *GroupDmSenderKeyEnvelope) GetEnvelopeId() string {
+	if x != nil {
+		return x.EnvelopeId
+	}
+	return ""
+}
+
+func (x *GroupDmSenderKeyEnvelope) GetGroupId() string {
+	if x != nil {
+		return x.GroupId
+	}
+	return ""
+}
+
+func (x *GroupDmSenderKeyEnvelope) GetSenderId() string {
+	if x != nil {
+		return x.SenderId
+	}
+	return ""
+}
+
+func (x *GroupDmSenderKeyEnvelope) GetRecipientId() string {
+	if x != nil {
+		return x.RecipientId
+	}
+	return ""
+}
+
+func (x *GroupDmSenderKeyEnvelope) GetEpoch() uint64 {
+	if x != nil {
+		return x.Epoch
+	}
+	return 0
+}
+
+func (x *GroupDmSenderKeyEnvelope) GetNonce() string {
+	if x != nil {
+		return x.Nonce
+	}
+	return ""
+}
+
+func (x *GroupDmSenderKeyEnvelope) GetCiphertext() []byte {
+	if x != nil {
+		return x.Ciphertext
+	}
+	return nil
+}
+
+func (x *GroupDmSenderKeyEnvelope) GetSignatureAlgorithm() SignatureAlgorithm {
+	if x != nil {
+		return x.SignatureAlgorithm
+	}
+	return SignatureAlgorithm_SIGNATURE_ALGORITHM_UNSPECIFIED
+}
+
+func (x *GroupDmSenderKeyEnvelope) GetSignature() []byte {
+	if x != nil {
+		return x.Signature
+	}
+	return nil
+}
+
+func (x *GroupDmSenderKeyEnvelope) GetReplayProtectionTag() string {
+	if x != nil {
+		return x.ReplayProtectionTag
+	}
+	return ""
+}
+
+func (x *GroupDmSenderKeyEnvelope) GetRetryAttempt() uint32 {
+	if x != nil {
+		return x.RetryAttempt
+	}
+	return 0
+}
+
+// GroupDmKeyDistributionDecision captures deterministic sender-key distribution outcomes.
+type GroupDmKeyDistributionDecision struct {
+	state             protoimpl.MessageState       `protogen:"open.v1"`
+	Accepted          bool                         `protobuf:"varint,1,opt,name=accepted,proto3" json:"accepted,omitempty"`
+	Retry             bool                         `protobuf:"varint,2,opt,name=retry,proto3" json:"retry,omitempty"`
+	Reason            GroupDmKeyDistributionReason `protobuf:"varint,3,opt,name=reason,proto3,enum=aether.GroupDmKeyDistributionReason" json:"reason,omitempty"`
+	RetryAfterSeconds uint32                       `protobuf:"varint,4,opt,name=retry_after_seconds,json=retryAfterSeconds,proto3" json:"retry_after_seconds,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *GroupDmKeyDistributionDecision) Reset() {
+	*x = GroupDmKeyDistributionDecision{}
+	mi := &file_proto_aether_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GroupDmKeyDistributionDecision) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GroupDmKeyDistributionDecision) ProtoMessage() {}
+
+func (x *GroupDmKeyDistributionDecision) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GroupDmKeyDistributionDecision.ProtoReflect.Descriptor instead.
+func (*GroupDmKeyDistributionDecision) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *GroupDmKeyDistributionDecision) GetAccepted() bool {
+	if x != nil {
+		return x.Accepted
+	}
+	return false
+}
+
+func (x *GroupDmKeyDistributionDecision) GetRetry() bool {
+	if x != nil {
+		return x.Retry
+	}
+	return false
+}
+
+func (x *GroupDmKeyDistributionDecision) GetReason() GroupDmKeyDistributionReason {
+	if x != nil {
+		return x.Reason
+	}
+	return GroupDmKeyDistributionReason_GROUP_DM_KEY_DISTRIBUTION_REASON_UNSPECIFIED
+}
+
+func (x *GroupDmKeyDistributionDecision) GetRetryAfterSeconds() uint32 {
+	if x != nil {
+		return x.RetryAfterSeconds
+	}
+	return 0
+}
+
+// GroupDmRekeyDecision captures mandatory rekey outcomes and rejoin constraints.
+type GroupDmRekeyDecision struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Trigger        GroupDmRekeyTrigger    `protobuf:"varint,1,opt,name=trigger,proto3,enum=aether.GroupDmRekeyTrigger" json:"trigger,omitempty"`
+	Mandatory      bool                   `protobuf:"varint,2,opt,name=mandatory,proto3" json:"mandatory,omitempty"`
+	RejoinAllowed  bool                   `protobuf:"varint,3,opt,name=rejoin_allowed,json=rejoinAllowed,proto3" json:"rejoin_allowed,omitempty"`
+	Reason         GroupDmRekeyReason     `protobuf:"varint,4,opt,name=reason,proto3,enum=aether.GroupDmRekeyReason" json:"reason,omitempty"`
+	RemovedEpoch   uint64                 `protobuf:"varint,5,opt,name=removed_epoch,json=removedEpoch,proto3" json:"removed_epoch,omitempty"`
+	CurrentEpoch   uint64                 `protobuf:"varint,6,opt,name=current_epoch,json=currentEpoch,proto3" json:"current_epoch,omitempty"`
+	RekeyCompleted bool                   `protobuf:"varint,7,opt,name=rekey_completed,json=rekeyCompleted,proto3" json:"rekey_completed,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *GroupDmRekeyDecision) Reset() {
+	*x = GroupDmRekeyDecision{}
+	mi := &file_proto_aether_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GroupDmRekeyDecision) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GroupDmRekeyDecision) ProtoMessage() {}
+
+func (x *GroupDmRekeyDecision) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GroupDmRekeyDecision.ProtoReflect.Descriptor instead.
+func (*GroupDmRekeyDecision) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *GroupDmRekeyDecision) GetTrigger() GroupDmRekeyTrigger {
+	if x != nil {
+		return x.Trigger
+	}
+	return GroupDmRekeyTrigger_GROUP_DM_REKEY_TRIGGER_UNSPECIFIED
+}
+
+func (x *GroupDmRekeyDecision) GetMandatory() bool {
+	if x != nil {
+		return x.Mandatory
+	}
+	return false
+}
+
+func (x *GroupDmRekeyDecision) GetRejoinAllowed() bool {
+	if x != nil {
+		return x.RejoinAllowed
+	}
+	return false
+}
+
+func (x *GroupDmRekeyDecision) GetReason() GroupDmRekeyReason {
+	if x != nil {
+		return x.Reason
+	}
+	return GroupDmRekeyReason_GROUP_DM_REKEY_REASON_UNSPECIFIED
+}
+
+func (x *GroupDmRekeyDecision) GetRemovedEpoch() uint64 {
+	if x != nil {
+		return x.RemovedEpoch
+	}
+	return 0
+}
+
+func (x *GroupDmRekeyDecision) GetCurrentEpoch() uint64 {
+	if x != nil {
+		return x.CurrentEpoch
+	}
+	return 0
+}
+
+func (x *GroupDmRekeyDecision) GetRekeyCompleted() bool {
+	if x != nil {
+		return x.RekeyCompleted
+	}
+	return false
+}
+
+// GroupDmTransportDecision captures deterministic direct/offline routing decisions.
+type GroupDmTransportDecision struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Path             GroupDmTransportPath   `protobuf:"varint,1,opt,name=path,proto3,enum=aether.GroupDmTransportPath" json:"path,omitempty"`
+	Reason           GroupDmTransportReason `protobuf:"varint,2,opt,name=reason,proto3,enum=aether.GroupDmTransportReason" json:"reason,omitempty"`
+	OfflineRetrieval bool                   `protobuf:"varint,3,opt,name=offline_retrieval,json=offlineRetrieval,proto3" json:"offline_retrieval,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *GroupDmTransportDecision) Reset() {
+	*x = GroupDmTransportDecision{}
+	mi := &file_proto_aether_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GroupDmTransportDecision) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GroupDmTransportDecision) ProtoMessage() {}
+
+func (x *GroupDmTransportDecision) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GroupDmTransportDecision.ProtoReflect.Descriptor instead.
+func (*GroupDmTransportDecision) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *GroupDmTransportDecision) GetPath() GroupDmTransportPath {
+	if x != nil {
+		return x.Path
+	}
+	return GroupDmTransportPath_GROUP_DM_TRANSPORT_PATH_UNSPECIFIED
+}
+
+func (x *GroupDmTransportDecision) GetReason() GroupDmTransportReason {
+	if x != nil {
+		return x.Reason
+	}
+	return GroupDmTransportReason_GROUP_DM_TRANSPORT_REASON_UNSPECIFIED
+}
+
+func (x *GroupDmTransportDecision) GetOfflineRetrieval() bool {
+	if x != nil {
+		return x.OfflineRetrieval
+	}
+	return false
+}
+
+// GroupDmHistorySyncDecision captures history visibility and sync boundary outcomes.
+type GroupDmHistorySyncDecision struct {
+	state               protoimpl.MessageState   `protogen:"open.v1"`
+	JoinSequence        uint64                   `protobuf:"varint,1,opt,name=join_sequence,json=joinSequence,proto3" json:"join_sequence,omitempty"`
+	RequestFromSequence uint64                   `protobuf:"varint,2,opt,name=request_from_sequence,json=requestFromSequence,proto3" json:"request_from_sequence,omitempty"`
+	RequestToSequence   uint64                   `protobuf:"varint,3,opt,name=request_to_sequence,json=requestToSequence,proto3" json:"request_to_sequence,omitempty"`
+	BoundedFromSequence uint64                   `protobuf:"varint,4,opt,name=bounded_from_sequence,json=boundedFromSequence,proto3" json:"bounded_from_sequence,omitempty"`
+	BoundedToSequence   uint64                   `protobuf:"varint,5,opt,name=bounded_to_sequence,json=boundedToSequence,proto3" json:"bounded_to_sequence,omitempty"`
+	LockedHistory       bool                     `protobuf:"varint,6,opt,name=locked_history,json=lockedHistory,proto3" json:"locked_history,omitempty"`
+	FromJoinTime        bool                     `protobuf:"varint,7,opt,name=from_join_time,json=fromJoinTime,proto3" json:"from_join_time,omitempty"`
+	Reason              GroupDmHistorySyncReason `protobuf:"varint,8,opt,name=reason,proto3,enum=aether.GroupDmHistorySyncReason" json:"reason,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *GroupDmHistorySyncDecision) Reset() {
+	*x = GroupDmHistorySyncDecision{}
+	mi := &file_proto_aether_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GroupDmHistorySyncDecision) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GroupDmHistorySyncDecision) ProtoMessage() {}
+
+func (x *GroupDmHistorySyncDecision) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GroupDmHistorySyncDecision.ProtoReflect.Descriptor instead.
+func (*GroupDmHistorySyncDecision) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *GroupDmHistorySyncDecision) GetJoinSequence() uint64 {
+	if x != nil {
+		return x.JoinSequence
+	}
+	return 0
+}
+
+func (x *GroupDmHistorySyncDecision) GetRequestFromSequence() uint64 {
+	if x != nil {
+		return x.RequestFromSequence
+	}
+	return 0
+}
+
+func (x *GroupDmHistorySyncDecision) GetRequestToSequence() uint64 {
+	if x != nil {
+		return x.RequestToSequence
+	}
+	return 0
+}
+
+func (x *GroupDmHistorySyncDecision) GetBoundedFromSequence() uint64 {
+	if x != nil {
+		return x.BoundedFromSequence
+	}
+	return 0
+}
+
+func (x *GroupDmHistorySyncDecision) GetBoundedToSequence() uint64 {
+	if x != nil {
+		return x.BoundedToSequence
+	}
+	return 0
+}
+
+func (x *GroupDmHistorySyncDecision) GetLockedHistory() bool {
+	if x != nil {
+		return x.LockedHistory
+	}
+	return false
+}
+
+func (x *GroupDmHistorySyncDecision) GetFromJoinTime() bool {
+	if x != nil {
+		return x.FromJoinTime
+	}
+	return false
+}
+
+func (x *GroupDmHistorySyncDecision) GetReason() GroupDmHistorySyncReason {
+	if x != nil {
+		return x.Reason
+	}
+	return GroupDmHistorySyncReason_GROUP_DM_HISTORY_SYNC_REASON_UNSPECIFIED
+}
+
+// GroupDmConvertPlan captures deterministic convert-to-server wizard steps.
+type GroupDmConvertPlan struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	CreateServer         bool                   `protobuf:"varint,1,opt,name=create_server,json=createServer,proto3" json:"create_server,omitempty"`
+	CreateInitialChannel bool                   `protobuf:"varint,2,opt,name=create_initial_channel,json=createInitialChannel,proto3" json:"create_initial_channel,omitempty"`
+	MigrateMemberList    bool                   `protobuf:"varint,3,opt,name=migrate_member_list,json=migrateMemberList,proto3" json:"migrate_member_list,omitempty"`
+	PostSystemNotice     bool                   `protobuf:"varint,4,opt,name=post_system_notice,json=postSystemNotice,proto3" json:"post_system_notice,omitempty"`
+	HistoryTransferable  bool                   `protobuf:"varint,5,opt,name=history_transferable,json=historyTransferable,proto3" json:"history_transferable,omitempty"`
+	DisclosureCode       string                 `protobuf:"bytes,6,opt,name=disclosure_code,json=disclosureCode,proto3" json:"disclosure_code,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *GroupDmConvertPlan) Reset() {
+	*x = GroupDmConvertPlan{}
+	mi := &file_proto_aether_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GroupDmConvertPlan) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GroupDmConvertPlan) ProtoMessage() {}
+
+func (x *GroupDmConvertPlan) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GroupDmConvertPlan.ProtoReflect.Descriptor instead.
+func (*GroupDmConvertPlan) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *GroupDmConvertPlan) GetCreateServer() bool {
+	if x != nil {
+		return x.CreateServer
+	}
+	return false
+}
+
+func (x *GroupDmConvertPlan) GetCreateInitialChannel() bool {
+	if x != nil {
+		return x.CreateInitialChannel
+	}
+	return false
+}
+
+func (x *GroupDmConvertPlan) GetMigrateMemberList() bool {
+	if x != nil {
+		return x.MigrateMemberList
+	}
+	return false
+}
+
+func (x *GroupDmConvertPlan) GetPostSystemNotice() bool {
+	if x != nil {
+		return x.PostSystemNotice
+	}
+	return false
+}
+
+func (x *GroupDmConvertPlan) GetHistoryTransferable() bool {
+	if x != nil {
+		return x.HistoryTransferable
+	}
+	return false
+}
+
+func (x *GroupDmConvertPlan) GetDisclosureCode() string {
+	if x != nil {
+		return x.DisclosureCode
+	}
+	return ""
+}
+
+// GroupDmGrowthDecision captures member-cap growth and conversion disclosures.
+type GroupDmGrowthDecision struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	MemberCap        uint32                 `protobuf:"varint,1,opt,name=member_cap,json=memberCap,proto3" json:"member_cap,omitempty"`
+	WarningThreshold uint32                 `protobuf:"varint,2,opt,name=warning_threshold,json=warningThreshold,proto3" json:"warning_threshold,omitempty"`
+	CurrentMembers   uint32                 `protobuf:"varint,3,opt,name=current_members,json=currentMembers,proto3" json:"current_members,omitempty"`
+	AddingMembers    uint32                 `protobuf:"varint,4,opt,name=adding_members,json=addingMembers,proto3" json:"adding_members,omitempty"`
+	Allowed          bool                   `protobuf:"varint,5,opt,name=allowed,proto3" json:"allowed,omitempty"`
+	Warning          bool                   `protobuf:"varint,6,opt,name=warning,proto3" json:"warning,omitempty"`
+	ConvertToServer  bool                   `protobuf:"varint,7,opt,name=convert_to_server,json=convertToServer,proto3" json:"convert_to_server,omitempty"`
+	Reason           GroupDmGrowthReason    `protobuf:"varint,8,opt,name=reason,proto3,enum=aether.GroupDmGrowthReason" json:"reason,omitempty"`
+	DisclosureCode   string                 `protobuf:"bytes,9,opt,name=disclosure_code,json=disclosureCode,proto3" json:"disclosure_code,omitempty"`
+	ConvertPlan      *GroupDmConvertPlan    `protobuf:"bytes,10,opt,name=convert_plan,json=convertPlan,proto3" json:"convert_plan,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *GroupDmGrowthDecision) Reset() {
+	*x = GroupDmGrowthDecision{}
+	mi := &file_proto_aether_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GroupDmGrowthDecision) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GroupDmGrowthDecision) ProtoMessage() {}
+
+func (x *GroupDmGrowthDecision) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GroupDmGrowthDecision.ProtoReflect.Descriptor instead.
+func (*GroupDmGrowthDecision) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *GroupDmGrowthDecision) GetMemberCap() uint32 {
+	if x != nil {
+		return x.MemberCap
+	}
+	return 0
+}
+
+func (x *GroupDmGrowthDecision) GetWarningThreshold() uint32 {
+	if x != nil {
+		return x.WarningThreshold
+	}
+	return 0
+}
+
+func (x *GroupDmGrowthDecision) GetCurrentMembers() uint32 {
+	if x != nil {
+		return x.CurrentMembers
+	}
+	return 0
+}
+
+func (x *GroupDmGrowthDecision) GetAddingMembers() uint32 {
+	if x != nil {
+		return x.AddingMembers
+	}
+	return 0
+}
+
+func (x *GroupDmGrowthDecision) GetAllowed() bool {
+	if x != nil {
+		return x.Allowed
+	}
+	return false
+}
+
+func (x *GroupDmGrowthDecision) GetWarning() bool {
+	if x != nil {
+		return x.Warning
+	}
+	return false
+}
+
+func (x *GroupDmGrowthDecision) GetConvertToServer() bool {
+	if x != nil {
+		return x.ConvertToServer
+	}
+	return false
+}
+
+func (x *GroupDmGrowthDecision) GetReason() GroupDmGrowthReason {
+	if x != nil {
+		return x.Reason
+	}
+	return GroupDmGrowthReason_GROUP_DM_GROWTH_REASON_UNSPECIFIED
+}
+
+func (x *GroupDmGrowthDecision) GetDisclosureCode() string {
+	if x != nil {
+		return x.DisclosureCode
+	}
+	return ""
+}
+
+func (x *GroupDmGrowthDecision) GetConvertPlan() *GroupDmConvertPlan {
+	if x != nil {
+		return x.ConvertPlan
+	}
+	return nil
+}
+
+// FriendRequest represents a minimal friend edge lifecycle event.
+type FriendRequest struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	FromId             string                 `protobuf:"bytes,1,opt,name=from_id,json=fromId,proto3" json:"from_id,omitempty"`
+	ToId               string                 `protobuf:"bytes,2,opt,name=to_id,json=toId,proto3" json:"to_id,omitempty"`
+	State              FriendRequestState     `protobuf:"varint,3,opt,name=state,proto3,enum=aether.FriendRequestState" json:"state,omitempty"`
+	Action             FriendRequestAction    `protobuf:"varint,4,opt,name=action,proto3,enum=aether.FriendRequestAction" json:"action,omitempty"`
+	RequestId          string                 `protobuf:"bytes,5,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
+	Nonce              string                 `protobuf:"bytes,6,opt,name=nonce,proto3" json:"nonce,omitempty"`
+	CreatedAtUnix      uint64                 `protobuf:"varint,7,opt,name=created_at_unix,json=createdAtUnix,proto3" json:"created_at_unix,omitempty"`
+	ExpiresAtUnix      uint64                 `protobuf:"varint,8,opt,name=expires_at_unix,json=expiresAtUnix,proto3" json:"expires_at_unix,omitempty"`
+	SignerId           string                 `protobuf:"bytes,9,opt,name=signer_id,json=signerId,proto3" json:"signer_id,omitempty"`
+	SignatureAlgorithm SignatureAlgorithm     `protobuf:"varint,10,opt,name=signature_algorithm,json=signatureAlgorithm,proto3,enum=aether.SignatureAlgorithm" json:"signature_algorithm,omitempty"`
+	Signature          []byte                 `protobuf:"bytes,11,opt,name=signature,proto3" json:"signature,omitempty"`
+	VerificationStatus VerificationStatus     `protobuf:"varint,12,opt,name=verification_status,json=verificationStatus,proto3,enum=aether.VerificationStatus" json:"verification_status,omitempty"`
+	ReplayDetected     bool                   `protobuf:"varint,13,opt,name=replay_detected,json=replayDetected,proto3" json:"replay_detected,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *FriendRequest) Reset() {
+	*x = FriendRequest{}
+	mi := &file_proto_aether_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FriendRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FriendRequest) ProtoMessage() {}
+
+func (x *FriendRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FriendRequest.ProtoReflect.Descriptor instead.
+func (*FriendRequest) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *FriendRequest) GetFromId() string {
+	if x != nil {
+		return x.FromId
+	}
+	return ""
+}
+
+func (x *FriendRequest) GetToId() string {
+	if x != nil {
+		return x.ToId
+	}
+	return ""
+}
+
+func (x *FriendRequest) GetState() FriendRequestState {
+	if x != nil {
+		return x.State
+	}
+	return FriendRequestState_FRIEND_REQUEST_STATE_UNSPECIFIED
+}
+
+func (x *FriendRequest) GetAction() FriendRequestAction {
+	if x != nil {
+		return x.Action
+	}
+	return FriendRequestAction_FRIEND_REQUEST_ACTION_UNSPECIFIED
+}
+
+func (x *FriendRequest) GetRequestId() string {
+	if x != nil {
+		return x.RequestId
+	}
+	return ""
+}
+
+func (x *FriendRequest) GetNonce() string {
+	if x != nil {
+		return x.Nonce
+	}
+	return ""
+}
+
+func (x *FriendRequest) GetCreatedAtUnix() uint64 {
+	if x != nil {
+		return x.CreatedAtUnix
+	}
+	return 0
+}
+
+func (x *FriendRequest) GetExpiresAtUnix() uint64 {
+	if x != nil {
+		return x.ExpiresAtUnix
+	}
+	return 0
+}
+
+func (x *FriendRequest) GetSignerId() string {
+	if x != nil {
+		return x.SignerId
+	}
+	return ""
+}
+
+func (x *FriendRequest) GetSignatureAlgorithm() SignatureAlgorithm {
+	if x != nil {
+		return x.SignatureAlgorithm
+	}
+	return SignatureAlgorithm_SIGNATURE_ALGORITHM_UNSPECIFIED
+}
+
+func (x *FriendRequest) GetSignature() []byte {
+	if x != nil {
+		return x.Signature
+	}
+	return nil
+}
+
+func (x *FriendRequest) GetVerificationStatus() VerificationStatus {
+	if x != nil {
+		return x.VerificationStatus
+	}
+	return VerificationStatus_VERIFICATION_STATUS_UNSPECIFIED
+}
+
+func (x *FriendRequest) GetReplayDetected() bool {
+	if x != nil {
+		return x.ReplayDetected
+	}
+	return false
+}
+
+// FriendIdentityShare is the canonical friend key-share representation.
+type FriendIdentityShare struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	FormatVersion     string                 `protobuf:"bytes,1,opt,name=format_version,json=formatVersion,proto3" json:"format_version,omitempty"`
+	IdentityId        string                 `protobuf:"bytes,2,opt,name=identity_id,json=identityId,proto3" json:"identity_id,omitempty"`
+	PublicKey         []byte                 `protobuf:"bytes,3,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	PublicKeyChecksum string                 `protobuf:"bytes,4,opt,name=public_key_checksum,json=publicKeyChecksum,proto3" json:"public_key_checksum,omitempty"`
+	EncodedShare      string                 `protobuf:"bytes,5,opt,name=encoded_share,json=encodedShare,proto3" json:"encoded_share,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *FriendIdentityShare) Reset() {
+	*x = FriendIdentityShare{}
+	mi := &file_proto_aether_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FriendIdentityShare) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FriendIdentityShare) ProtoMessage() {}
+
+func (x *FriendIdentityShare) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FriendIdentityShare.ProtoReflect.Descriptor instead.
+func (*FriendIdentityShare) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *FriendIdentityShare) GetFormatVersion() string {
+	if x != nil {
+		return x.FormatVersion
+	}
+	return ""
+}
+
+func (x *FriendIdentityShare) GetIdentityId() string {
+	if x != nil {
+		return x.IdentityId
+	}
+	return ""
+}
+
+func (x *FriendIdentityShare) GetPublicKey() []byte {
+	if x != nil {
+		return x.PublicKey
+	}
+	return nil
+}
+
+func (x *FriendIdentityShare) GetPublicKeyChecksum() string {
+	if x != nil {
+		return x.PublicKeyChecksum
+	}
+	return ""
+}
+
+func (x *FriendIdentityShare) GetEncodedShare() string {
+	if x != nil {
+		return x.EncodedShare
+	}
+	return ""
+}
+
+// FriendInvitePayload normalizes QR and deep-link invitation payloads.
+type FriendInvitePayload struct {
+	state              protoimpl.MessageState  `protogen:"open.v1"`
+	IdentityShare      *FriendIdentityShare    `protobuf:"bytes,1,opt,name=identity_share,json=identityShare,proto3" json:"identity_share,omitempty"`
+	EntryPath          FriendExchangeEntryPath `protobuf:"varint,2,opt,name=entry_path,json=entryPath,proto3,enum=aether.FriendExchangeEntryPath" json:"entry_path,omitempty"`
+	Nonce              string                  `protobuf:"bytes,3,opt,name=nonce,proto3" json:"nonce,omitempty"`
+	ExpiresAtUnix      uint64                  `protobuf:"varint,4,opt,name=expires_at_unix,json=expiresAtUnix,proto3" json:"expires_at_unix,omitempty"`
+	SignatureAlgorithm SignatureAlgorithm      `protobuf:"varint,5,opt,name=signature_algorithm,json=signatureAlgorithm,proto3,enum=aether.SignatureAlgorithm" json:"signature_algorithm,omitempty"`
+	Signature          []byte                  `protobuf:"bytes,6,opt,name=signature,proto3" json:"signature,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *FriendInvitePayload) Reset() {
+	*x = FriendInvitePayload{}
+	mi := &file_proto_aether_proto_msgTypes[37]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FriendInvitePayload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FriendInvitePayload) ProtoMessage() {}
+
+func (x *FriendInvitePayload) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[37]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FriendInvitePayload.ProtoReflect.Descriptor instead.
+func (*FriendInvitePayload) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{37}
+}
+
+func (x *FriendInvitePayload) GetIdentityShare() *FriendIdentityShare {
+	if x != nil {
+		return x.IdentityShare
+	}
+	return nil
+}
+
+func (x *FriendInvitePayload) GetEntryPath() FriendExchangeEntryPath {
+	if x != nil {
+		return x.EntryPath
+	}
+	return FriendExchangeEntryPath_FRIEND_EXCHANGE_ENTRY_PATH_UNSPECIFIED
+}
+
+func (x *FriendInvitePayload) GetNonce() string {
+	if x != nil {
+		return x.Nonce
+	}
+	return ""
+}
+
+func (x *FriendInvitePayload) GetExpiresAtUnix() uint64 {
+	if x != nil {
+		return x.ExpiresAtUnix
+	}
+	return 0
+}
+
+func (x *FriendInvitePayload) GetSignatureAlgorithm() SignatureAlgorithm {
+	if x != nil {
+		return x.SignatureAlgorithm
+	}
+	return SignatureAlgorithm_SIGNATURE_ALGORITHM_UNSPECIFIED
+}
+
+func (x *FriendInvitePayload) GetSignature() []byte {
+	if x != nil {
+		return x.Signature
+	}
+	return nil
+}
+
+// FriendConcurrentResolution captures deterministic tie-breaking output.
+type FriendConcurrentResolution struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	State              FriendRequestState     `protobuf:"varint,1,opt,name=state,proto3,enum=aether.FriendRequestState" json:"state,omitempty"`
+	CanonicalRequester string                 `protobuf:"bytes,2,opt,name=canonical_requester,json=canonicalRequester,proto3" json:"canonical_requester,omitempty"`
+	CanonicalRecipient string                 `protobuf:"bytes,3,opt,name=canonical_recipient,json=canonicalRecipient,proto3" json:"canonical_recipient,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *FriendConcurrentResolution) Reset() {
+	*x = FriendConcurrentResolution{}
+	mi := &file_proto_aether_proto_msgTypes[38]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FriendConcurrentResolution) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FriendConcurrentResolution) ProtoMessage() {}
+
+func (x *FriendConcurrentResolution) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[38]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FriendConcurrentResolution.ProtoReflect.Descriptor instead.
+func (*FriendConcurrentResolution) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{38}
+}
+
+func (x *FriendConcurrentResolution) GetState() FriendRequestState {
+	if x != nil {
+		return x.State
+	}
+	return FriendRequestState_FRIEND_REQUEST_STATE_UNSPECIFIED
+}
+
+func (x *FriendConcurrentResolution) GetCanonicalRequester() string {
+	if x != nil {
+		return x.CanonicalRequester
+	}
+	return ""
+}
+
+func (x *FriendConcurrentResolution) GetCanonicalRecipient() string {
+	if x != nil {
+		return x.CanonicalRecipient
+	}
+	return ""
+}
+
+// PresenceStateEntry stores compact presence snapshot data.
+type PresenceStateEntry struct {
+	state            protoimpl.MessageState   `protogen:"open.v1"`
+	IdentityId       string                   `protobuf:"bytes,1,opt,name=identity_id,json=identityId,proto3" json:"identity_id,omitempty"`
+	State            PresenceState            `protobuf:"varint,2,opt,name=state,proto3,enum=aether.PresenceState" json:"state,omitempty"`
+	Status           string                   `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
+	LastUpdatedUnix  uint64                   `protobuf:"varint,4,opt,name=last_updated_unix,json=lastUpdatedUnix,proto3" json:"last_updated_unix,omitempty"`
+	TtlSeconds       uint32                   `protobuf:"varint,5,opt,name=ttl_seconds,json=ttlSeconds,proto3" json:"ttl_seconds,omitempty"`
+	TransitionReason PresenceTransitionReason `protobuf:"varint,6,opt,name=transition_reason,json=transitionReason,proto3,enum=aether.PresenceTransitionReason" json:"transition_reason,omitempty"`
+	StatusVersion    uint64                   `protobuf:"varint,7,opt,name=status_version,json=statusVersion,proto3" json:"status_version,omitempty"`
+	StatusRedacted   bool                     `protobuf:"varint,8,opt,name=status_redacted,json=statusRedacted,proto3" json:"status_redacted,omitempty"`
+	PublishedAtUnix  uint64                   `protobuf:"varint,9,opt,name=published_at_unix,json=publishedAtUnix,proto3" json:"published_at_unix,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *PresenceStateEntry) Reset() {
+	*x = PresenceStateEntry{}
+	mi := &file_proto_aether_proto_msgTypes[39]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PresenceStateEntry) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PresenceStateEntry) ProtoMessage() {}
+
+func (x *PresenceStateEntry) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[39]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PresenceStateEntry.ProtoReflect.Descriptor instead.
+func (*PresenceStateEntry) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{39}
+}
+
+func (x *PresenceStateEntry) GetIdentityId() string {
+	if x != nil {
+		return x.IdentityId
+	}
+	return ""
+}
+
+func (x *PresenceStateEntry) GetState() PresenceState {
+	if x != nil {
+		return x.State
+	}
+	return PresenceState_PRESENCE_STATE_UNSPECIFIED
+}
+
+func (x *PresenceStateEntry) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *PresenceStateEntry) GetLastUpdatedUnix() uint64 {
+	if x != nil {
+		return x.LastUpdatedUnix
+	}
+	return 0
+}
+
+func (x *PresenceStateEntry) GetTtlSeconds() uint32 {
+	if x != nil {
+		return x.TtlSeconds
+	}
+	return 0
+}
+
+func (x *PresenceStateEntry) GetTransitionReason() PresenceTransitionReason {
+	if x != nil {
+		return x.TransitionReason
+	}
+	return PresenceTransitionReason_PRESENCE_TRANSITION_REASON_UNSPECIFIED
+}
+
+func (x *PresenceStateEntry) GetStatusVersion() uint64 {
+	if x != nil {
+		return x.StatusVersion
+	}
+	return 0
+}
+
+func (x *PresenceStateEntry) GetStatusRedacted() bool {
+	if x != nil {
+		return x.StatusRedacted
+	}
+	return false
+}
+
+func (x *PresenceStateEntry) GetPublishedAtUnix() uint64 {
+	if x != nil {
+		return x.PublishedAtUnix
+	}
+	return 0
+}
+
+// PresenceEventRecord stores event-driven transition traces.
+type PresenceEventRecord struct {
+	state             protoimpl.MessageState   `protogen:"open.v1"`
+	PreviousState     PresenceState            `protobuf:"varint,1,opt,name=previous_state,json=previousState,proto3,enum=aether.PresenceState" json:"previous_state,omitempty"`
+	NextState         PresenceState            `protobuf:"varint,2,opt,name=next_state,json=nextState,proto3,enum=aether.PresenceState" json:"next_state,omitempty"`
+	Event             PresenceEvent            `protobuf:"varint,3,opt,name=event,proto3,enum=aether.PresenceEvent" json:"event,omitempty"`
+	Reason            PresenceTransitionReason `protobuf:"varint,4,opt,name=reason,proto3,enum=aether.PresenceTransitionReason" json:"reason,omitempty"`
+	OccurredAt        uint64                   `protobuf:"varint,5,opt,name=occurred_at,json=occurredAt,proto3" json:"occurred_at,omitempty"`
+	Sequence          uint64                   `protobuf:"varint,6,opt,name=sequence,proto3" json:"sequence,omitempty"`
+	DebounceUntilUnix uint64                   `protobuf:"varint,7,opt,name=debounce_until_unix,json=debounceUntilUnix,proto3" json:"debounce_until_unix,omitempty"`
+	ThrottleUntilUnix uint64                   `protobuf:"varint,8,opt,name=throttle_until_unix,json=throttleUntilUnix,proto3" json:"throttle_until_unix,omitempty"`
+	Heartbeat         bool                     `protobuf:"varint,9,opt,name=heartbeat,proto3" json:"heartbeat,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *PresenceEventRecord) Reset() {
+	*x = PresenceEventRecord{}
+	mi := &file_proto_aether_proto_msgTypes[40]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PresenceEventRecord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PresenceEventRecord) ProtoMessage() {}
+
+func (x *PresenceEventRecord) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[40]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PresenceEventRecord.ProtoReflect.Descriptor instead.
+func (*PresenceEventRecord) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{40}
+}
+
+func (x *PresenceEventRecord) GetPreviousState() PresenceState {
+	if x != nil {
+		return x.PreviousState
+	}
+	return PresenceState_PRESENCE_STATE_UNSPECIFIED
+}
+
+func (x *PresenceEventRecord) GetNextState() PresenceState {
+	if x != nil {
+		return x.NextState
+	}
+	return PresenceState_PRESENCE_STATE_UNSPECIFIED
+}
+
+func (x *PresenceEventRecord) GetEvent() PresenceEvent {
+	if x != nil {
+		return x.Event
+	}
+	return PresenceEvent_PRESENCE_EVENT_UNSPECIFIED
+}
+
+func (x *PresenceEventRecord) GetReason() PresenceTransitionReason {
+	if x != nil {
+		return x.Reason
+	}
+	return PresenceTransitionReason_PRESENCE_TRANSITION_REASON_UNSPECIFIED
+}
+
+func (x *PresenceEventRecord) GetOccurredAt() uint64 {
+	if x != nil {
+		return x.OccurredAt
+	}
+	return 0
+}
+
+func (x *PresenceEventRecord) GetSequence() uint64 {
+	if x != nil {
+		return x.Sequence
+	}
+	return 0
+}
+
+func (x *PresenceEventRecord) GetDebounceUntilUnix() uint64 {
+	if x != nil {
+		return x.DebounceUntilUnix
+	}
+	return 0
+}
+
+func (x *PresenceEventRecord) GetThrottleUntilUnix() uint64 {
+	if x != nil {
+		return x.ThrottleUntilUnix
+	}
+	return 0
+}
+
+func (x *PresenceEventRecord) GetHeartbeat() bool {
+	if x != nil {
+		return x.Heartbeat
+	}
+	return false
+}
+
+// PresenceDisseminationPolicy defines cadence and convergence windows.
+type PresenceDisseminationPolicy struct {
+	state                     protoimpl.MessageState `protogen:"open.v1"`
+	DebounceSeconds           uint32                 `protobuf:"varint,1,opt,name=debounce_seconds,json=debounceSeconds,proto3" json:"debounce_seconds,omitempty"`
+	MinPublishIntervalSeconds uint32                 `protobuf:"varint,2,opt,name=min_publish_interval_seconds,json=minPublishIntervalSeconds,proto3" json:"min_publish_interval_seconds,omitempty"`
+	HeartbeatIntervalSeconds  uint32                 `protobuf:"varint,3,opt,name=heartbeat_interval_seconds,json=heartbeatIntervalSeconds,proto3" json:"heartbeat_interval_seconds,omitempty"`
+	MaxStatusLatencySeconds   uint32                 `protobuf:"varint,4,opt,name=max_status_latency_seconds,json=maxStatusLatencySeconds,proto3" json:"max_status_latency_seconds,omitempty"`
+	unknownFields             protoimpl.UnknownFields
+	sizeCache                 protoimpl.SizeCache
+}
+
+func (x *PresenceDisseminationPolicy) Reset() {
+	*x = PresenceDisseminationPolicy{}
+	mi := &file_proto_aether_proto_msgTypes[41]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PresenceDisseminationPolicy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PresenceDisseminationPolicy) ProtoMessage() {}
+
+func (x *PresenceDisseminationPolicy) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[41]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PresenceDisseminationPolicy.ProtoReflect.Descriptor instead.
+func (*PresenceDisseminationPolicy) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{41}
+}
+
+func (x *PresenceDisseminationPolicy) GetDebounceSeconds() uint32 {
+	if x != nil {
+		return x.DebounceSeconds
+	}
+	return 0
+}
+
+func (x *PresenceDisseminationPolicy) GetMinPublishIntervalSeconds() uint32 {
+	if x != nil {
+		return x.MinPublishIntervalSeconds
+	}
+	return 0
+}
+
+func (x *PresenceDisseminationPolicy) GetHeartbeatIntervalSeconds() uint32 {
+	if x != nil {
+		return x.HeartbeatIntervalSeconds
+	}
+	return 0
+}
+
+func (x *PresenceDisseminationPolicy) GetMaxStatusLatencySeconds() uint32 {
+	if x != nil {
+		return x.MaxStatusLatencySeconds
+	}
+	return 0
+}
+
+// NotificationEvent defines v0.2 attention-surface payloads.
+type NotificationEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Kind          NotificationKind       `protobuf:"varint,1,opt,name=kind,proto3,enum=aether.NotificationKind" json:"kind,omitempty"`
+	ActorId       string                 `protobuf:"bytes,2,opt,name=actor_id,json=actorId,proto3" json:"actor_id,omitempty"`
+	SubjectId     string                 `protobuf:"bytes,3,opt,name=subject_id,json=subjectId,proto3" json:"subject_id,omitempty"`
+	Unread        bool                   `protobuf:"varint,4,opt,name=unread,proto3" json:"unread,omitempty"`
+	UnreadCount   uint32                 `protobuf:"varint,5,opt,name=unread_count,json=unreadCount,proto3" json:"unread_count,omitempty"`
+	SourceId      string                 `protobuf:"bytes,6,opt,name=source_id,json=sourceId,proto3" json:"source_id,omitempty"`
+	SourceUrl     string                 `protobuf:"bytes,7,opt,name=source_url,json=sourceUrl,proto3" json:"source_url,omitempty"`
+	ModeEpochId   string                 `protobuf:"bytes,8,opt,name=mode_epoch_id,json=modeEpochId,proto3" json:"mode_epoch_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *NotificationEvent) Reset() {
+	*x = NotificationEvent{}
+	mi := &file_proto_aether_proto_msgTypes[42]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *NotificationEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*NotificationEvent) ProtoMessage() {}
+
+func (x *NotificationEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[42]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use NotificationEvent.ProtoReflect.Descriptor instead.
+func (*NotificationEvent) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{42}
+}
+
+func (x *NotificationEvent) GetKind() NotificationKind {
+	if x != nil {
+		return x.Kind
+	}
+	return NotificationKind_NOTIFICATION_KIND_UNSPECIFIED
+}
+
+func (x *NotificationEvent) GetActorId() string {
+	if x != nil {
+		return x.ActorId
+	}
+	return ""
+}
+
+func (x *NotificationEvent) GetSubjectId() string {
+	if x != nil {
+		return x.SubjectId
+	}
+	return ""
+}
+
+func (x *NotificationEvent) GetUnread() bool {
+	if x != nil {
+		return x.Unread
+	}
+	return false
+}
+
+func (x *NotificationEvent) GetUnreadCount() uint32 {
+	if x != nil {
+		return x.UnreadCount
+	}
+	return 0
+}
+
+func (x *NotificationEvent) GetSourceId() string {
+	if x != nil {
+		return x.SourceId
+	}
+	return ""
+}
+
+func (x *NotificationEvent) GetSourceUrl() string {
+	if x != nil {
+		return x.SourceUrl
+	}
+	return ""
+}
+
+func (x *NotificationEvent) GetModeEpochId() string {
+	if x != nil {
+		return x.ModeEpochId
+	}
+	return ""
+}
+
+// MentionToken carries parse output from policy tokens.
+type MentionToken struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Type          MentionType            `protobuf:"varint,1,opt,name=type,proto3,enum=aether.MentionType" json:"type,omitempty"`
+	Raw           string                 `protobuf:"bytes,2,opt,name=raw,proto3" json:"raw,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MentionToken) Reset() {
+	*x = MentionToken{}
+	mi := &file_proto_aether_proto_msgTypes[43]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MentionToken) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MentionToken) ProtoMessage() {}
+
+func (x *MentionToken) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[43]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MentionToken.ProtoReflect.Descriptor instead.
+func (*MentionToken) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{43}
+}
+
+func (x *MentionToken) GetType() MentionType {
+	if x != nil {
+		return x.Type
+	}
+	return MentionType_MENTION_TYPE_UNSPECIFIED
+}
+
+func (x *MentionToken) GetRaw() string {
+	if x != nil {
+		return x.Raw
+	}
+	return ""
+}
+
+// PolicyDecision communicates mention/moderation/slow-mode outcomes.
+type PolicyDecision struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Allowed       bool                   `protobuf:"varint,1,opt,name=allowed,proto3" json:"allowed,omitempty"`
+	Reason        PolicyReason           `protobuf:"varint,2,opt,name=reason,proto3,enum=aether.PolicyReason" json:"reason,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PolicyDecision) Reset() {
+	*x = PolicyDecision{}
+	mi := &file_proto_aether_proto_msgTypes[44]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PolicyDecision) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PolicyDecision) ProtoMessage() {}
+
+func (x *PolicyDecision) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[44]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PolicyDecision.ProtoReflect.Descriptor instead.
+func (*PolicyDecision) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{44}
+}
+
+func (x *PolicyDecision) GetAllowed() bool {
+	if x != nil {
+		return x.Allowed
+	}
+	return false
+}
+
+func (x *PolicyDecision) GetReason() PolicyReason {
+	if x != nil {
+		return x.Reason
+	}
+	return PolicyReason_POLICY_REASON_UNSPECIFIED
+}
+
+// SlowModeActorState stores compact actor last-activity state.
+type SlowModeActorState struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	ActorId          string                 `protobuf:"bytes,1,opt,name=actor_id,json=actorId,proto3" json:"actor_id,omitempty"`
+	LastActivityUnix uint64                 `protobuf:"varint,2,opt,name=last_activity_unix,json=lastActivityUnix,proto3" json:"last_activity_unix,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *SlowModeActorState) Reset() {
+	*x = SlowModeActorState{}
+	mi := &file_proto_aether_proto_msgTypes[45]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SlowModeActorState) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SlowModeActorState) ProtoMessage() {}
+
+func (x *SlowModeActorState) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[45]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SlowModeActorState.ProtoReflect.Descriptor instead.
+func (*SlowModeActorState) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{45}
+}
+
+func (x *SlowModeActorState) GetActorId() string {
+	if x != nil {
+		return x.ActorId
+	}
+	return ""
+}
+
+func (x *SlowModeActorState) GetLastActivityUnix() uint64 {
+	if x != nil {
+		return x.LastActivityUnix
+	}
+	return 0
+}
+
+// SlowModeDecision is the wire representation of delay-window decisions.
+type SlowModeDecision struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Allowed         bool                   `protobuf:"varint,1,opt,name=allowed,proto3" json:"allowed,omitempty"`
+	Reason          PolicyReason           `protobuf:"varint,2,opt,name=reason,proto3,enum=aether.PolicyReason" json:"reason,omitempty"`
+	Actors          []*SlowModeActorState  `protobuf:"bytes,3,rep,name=actors,proto3" json:"actors,omitempty"`
+	ScopeId         string                 `protobuf:"bytes,4,opt,name=scope_id,json=scopeId,proto3" json:"scope_id,omitempty"`
+	EventId         string                 `protobuf:"bytes,5,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
+	ActorId         string                 `protobuf:"bytes,6,opt,name=actor_id,json=actorId,proto3" json:"actor_id,omitempty"`
+	EvaluatedAtUnix uint64                 `protobuf:"varint,7,opt,name=evaluated_at_unix,json=evaluatedAtUnix,proto3" json:"evaluated_at_unix,omitempty"`
+	Replay          bool                   `protobuf:"varint,8,opt,name=replay,proto3" json:"replay,omitempty"`
+	Reconciled      bool                   `protobuf:"varint,9,opt,name=reconciled,proto3" json:"reconciled,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *SlowModeDecision) Reset() {
+	*x = SlowModeDecision{}
+	mi := &file_proto_aether_proto_msgTypes[46]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SlowModeDecision) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SlowModeDecision) ProtoMessage() {}
+
+func (x *SlowModeDecision) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[46]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SlowModeDecision.ProtoReflect.Descriptor instead.
+func (*SlowModeDecision) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{46}
+}
+
+func (x *SlowModeDecision) GetAllowed() bool {
+	if x != nil {
+		return x.Allowed
+	}
+	return false
+}
+
+func (x *SlowModeDecision) GetReason() PolicyReason {
+	if x != nil {
+		return x.Reason
+	}
+	return PolicyReason_POLICY_REASON_UNSPECIFIED
+}
+
+func (x *SlowModeDecision) GetActors() []*SlowModeActorState {
+	if x != nil {
+		return x.Actors
+	}
+	return nil
+}
+
+func (x *SlowModeDecision) GetScopeId() string {
+	if x != nil {
+		return x.ScopeId
+	}
+	return ""
+}
+
+func (x *SlowModeDecision) GetEventId() string {
+	if x != nil {
+		return x.EventId
+	}
+	return ""
+}
+
+func (x *SlowModeDecision) GetActorId() string {
+	if x != nil {
+		return x.ActorId
+	}
+	return ""
+}
+
+func (x *SlowModeDecision) GetEvaluatedAtUnix() uint64 {
+	if x != nil {
+		return x.EvaluatedAtUnix
+	}
+	return 0
+}
+
+func (x *SlowModeDecision) GetReplay() bool {
+	if x != nil {
+		return x.Replay
+	}
+	return false
+}
+
+func (x *SlowModeDecision) GetReconciled() bool {
+	if x != nil {
+		return x.Reconciled
+	}
+	return false
+}
+
+// ModerationEvent captures baseline moderation command execution outcomes.
+type ModerationEvent struct {
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	ActorId             string                 `protobuf:"bytes,1,opt,name=actor_id,json=actorId,proto3" json:"actor_id,omitempty"`
+	TargetId            string                 `protobuf:"bytes,2,opt,name=target_id,json=targetId,proto3" json:"target_id,omitempty"`
+	Action              ModerationAction       `protobuf:"varint,3,opt,name=action,proto3,enum=aether.ModerationAction" json:"action,omitempty"`
+	Allowed             bool                   `protobuf:"varint,4,opt,name=allowed,proto3" json:"allowed,omitempty"`
+	Reason              PolicyReason           `protobuf:"varint,5,opt,name=reason,proto3,enum=aether.PolicyReason" json:"reason,omitempty"`
+	EventId             string                 `protobuf:"bytes,6,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
+	SignerId            string                 `protobuf:"bytes,7,opt,name=signer_id,json=signerId,proto3" json:"signer_id,omitempty"`
+	SignatureAlgorithm  SignatureAlgorithm     `protobuf:"varint,8,opt,name=signature_algorithm,json=signatureAlgorithm,proto3,enum=aether.SignatureAlgorithm" json:"signature_algorithm,omitempty"`
+	Signature           []byte                 `protobuf:"bytes,9,opt,name=signature,proto3" json:"signature,omitempty"`
+	VerificationStatus  VerificationStatus     `protobuf:"varint,10,opt,name=verification_status,json=verificationStatus,proto3,enum=aether.VerificationStatus" json:"verification_status,omitempty"`
+	EnforcementRequired bool                   `protobuf:"varint,11,opt,name=enforcement_required,json=enforcementRequired,proto3" json:"enforcement_required,omitempty"`
+	NonComplianceReason string                 `protobuf:"bytes,12,opt,name=non_compliance_reason,json=nonComplianceReason,proto3" json:"non_compliance_reason,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *ModerationEvent) Reset() {
+	*x = ModerationEvent{}
+	mi := &file_proto_aether_proto_msgTypes[47]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ModerationEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ModerationEvent) ProtoMessage() {}
+
+func (x *ModerationEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[47]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ModerationEvent.ProtoReflect.Descriptor instead.
+func (*ModerationEvent) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{47}
+}
+
+func (x *ModerationEvent) GetActorId() string {
+	if x != nil {
+		return x.ActorId
+	}
+	return ""
+}
+
+func (x *ModerationEvent) GetTargetId() string {
+	if x != nil {
+		return x.TargetId
+	}
+	return ""
+}
+
+func (x *ModerationEvent) GetAction() ModerationAction {
+	if x != nil {
+		return x.Action
+	}
+	return ModerationAction_MODERATION_ACTION_UNSPECIFIED
+}
+
+func (x *ModerationEvent) GetAllowed() bool {
+	if x != nil {
+		return x.Allowed
+	}
+	return false
+}
+
+func (x *ModerationEvent) GetReason() PolicyReason {
+	if x != nil {
+		return x.Reason
+	}
+	return PolicyReason_POLICY_REASON_UNSPECIFIED
+}
+
+func (x *ModerationEvent) GetEventId() string {
+	if x != nil {
+		return x.EventId
+	}
+	return ""
+}
+
+func (x *ModerationEvent) GetSignerId() string {
+	if x != nil {
+		return x.SignerId
+	}
+	return ""
+}
+
+func (x *ModerationEvent) GetSignatureAlgorithm() SignatureAlgorithm {
+	if x != nil {
+		return x.SignatureAlgorithm
+	}
+	return SignatureAlgorithm_SIGNATURE_ALGORITHM_UNSPECIFIED
+}
+
+func (x *ModerationEvent) GetSignature() []byte {
+	if x != nil {
+		return x.Signature
+	}
+	return nil
+}
+
+func (x *ModerationEvent) GetVerificationStatus() VerificationStatus {
+	if x != nil {
+		return x.VerificationStatus
+	}
+	return VerificationStatus_VERIFICATION_STATUS_UNSPECIFIED
+}
+
+func (x *ModerationEvent) GetEnforcementRequired() bool {
+	if x != nil {
+		return x.EnforcementRequired
+	}
+	return false
+}
+
+func (x *ModerationEvent) GetNonComplianceReason() string {
+	if x != nil {
+		return x.NonComplianceReason
+	}
+	return ""
+}
+
+// RoleState is the additive wire model for v0.2 RBAC convergence.
+type RoleState struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IdentityId    string                 `protobuf:"bytes,1,opt,name=identity_id,json=identityId,proto3" json:"identity_id,omitempty"`
+	Role          V02Role                `protobuf:"varint,2,opt,name=role,proto3,enum=aether.V02Role" json:"role,omitempty"`
+	Version       uint64                 `protobuf:"varint,3,opt,name=version,proto3" json:"version,omitempty"`
+	UpdatedAtUnix uint64                 `protobuf:"varint,4,opt,name=updated_at_unix,json=updatedAtUnix,proto3" json:"updated_at_unix,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RoleState) Reset() {
+	*x = RoleState{}
+	mi := &file_proto_aether_proto_msgTypes[48]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RoleState) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RoleState) ProtoMessage() {}
+
+func (x *RoleState) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[48]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RoleState.ProtoReflect.Descriptor instead.
+func (*RoleState) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{48}
+}
+
+func (x *RoleState) GetIdentityId() string {
+	if x != nil {
+		return x.IdentityId
+	}
+	return ""
+}
+
+func (x *RoleState) GetRole() V02Role {
+	if x != nil {
+		return x.Role
+	}
+	return V02Role_V02_ROLE_UNSPECIFIED
+}
+
+func (x *RoleState) GetVersion() uint64 {
+	if x != nil {
+		return x.Version
+	}
+	return 0
+}
+
+func (x *RoleState) GetUpdatedAtUnix() uint64 {
+	if x != nil {
+		return x.UpdatedAtUnix
+	}
+	return 0
+}
+
+// GovernanceMetadata stores protocol version and mode metadata for negotiation.
+type GovernanceMetadata struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	ProtocolId      string                 `protobuf:"bytes,1,opt,name=protocol_id,json=protocolId,proto3" json:"protocol_id,omitempty"`
+	ProtocolMajor   uint32                 `protobuf:"varint,2,opt,name=protocol_major,json=protocolMajor,proto3" json:"protocol_major,omitempty"`
+	ProtocolMinor   uint32                 `protobuf:"varint,3,opt,name=protocol_minor,json=protocolMinor,proto3" json:"protocol_minor,omitempty"`
+	RequiredFlags   []string               `protobuf:"bytes,4,rep,name=required_flags,json=requiredFlags,proto3" json:"required_flags,omitempty"`
+	AdvertisedFlags []string               `protobuf:"bytes,5,rep,name=advertised_flags,json=advertisedFlags,proto3" json:"advertised_flags,omitempty"`
+	SecurityMode    SecurityMode           `protobuf:"varint,6,opt,name=security_mode,json=securityMode,proto3,enum=aether.SecurityMode" json:"security_mode,omitempty"`
+	ModeEpochId     string                 `protobuf:"bytes,7,opt,name=mode_epoch_id,json=modeEpochId,proto3" json:"mode_epoch_id,omitempty"`
+	PolicyVersion   uint64                 `protobuf:"varint,8,opt,name=policy_version,json=policyVersion,proto3" json:"policy_version,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *GovernanceMetadata) Reset() {
+	*x = GovernanceMetadata{}
+	mi := &file_proto_aether_proto_msgTypes[49]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GovernanceMetadata) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GovernanceMetadata) ProtoMessage() {}
+
+func (x *GovernanceMetadata) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[49]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GovernanceMetadata.ProtoReflect.Descriptor instead.
+func (*GovernanceMetadata) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{49}
+}
+
+func (x *GovernanceMetadata) GetProtocolId() string {
+	if x != nil {
+		return x.ProtocolId
+	}
+	return ""
+}
+
+func (x *GovernanceMetadata) GetProtocolMajor() uint32 {
+	if x != nil {
+		return x.ProtocolMajor
+	}
+	return 0
+}
+
+func (x *GovernanceMetadata) GetProtocolMinor() uint32 {
+	if x != nil {
+		return x.ProtocolMinor
+	}
+	return 0
+}
+
+func (x *GovernanceMetadata) GetRequiredFlags() []string {
+	if x != nil {
+		return x.RequiredFlags
+	}
+	return nil
+}
+
+func (x *GovernanceMetadata) GetAdvertisedFlags() []string {
+	if x != nil {
+		return x.AdvertisedFlags
+	}
+	return nil
+}
+
+func (x *GovernanceMetadata) GetSecurityMode() SecurityMode {
+	if x != nil {
+		return x.SecurityMode
+	}
+	return SecurityMode_SECURITY_MODE_UNSPECIFIED
+}
+
+func (x *GovernanceMetadata) GetModeEpochId() string {
+	if x != nil {
+		return x.ModeEpochId
+	}
+	return ""
+}
+
+func (x *GovernanceMetadata) GetPolicyVersion() uint64 {
+	if x != nil {
+		return x.PolicyVersion
+	}
+	return 0
+}
+
 var File_proto_aether_proto protoreflect.FileDescriptor
 
 const file_proto_aether_proto_rawDesc = "" +
@@ -2202,12 +6640,296 @@ const file_proto_aether_proto_rawDesc = "" +
 	"\x06errors\x18\x03 \x03(\v2\x19.aether.VerificationErrorR\x06errors\x12'\n" +
 	"\x0fcanonical_bytes\x18\x04 \x01(\fR\x0ecanonicalBytesJ\x05\bd\x10\xc8\x01\"W\n" +
 	"\x11AetherPlaceholder\x12/\n" +
-	"\x13placeholder_message\x18\x01 \x01(\tR\x12placeholderMessageJ\x04\bd\x10eR\vlegacy_port*\x8d\x01\n" +
+	"\x13placeholder_message\x18\x01 \x01(\tR\x12placeholderMessageJ\x04\bd\x10eR\vlegacy_port\"\xb9\x02\n" +
+	"\x10ProtocolMetadata\x12\x1f\n" +
+	"\vprotocol_id\x18\x01 \x01(\tR\n" +
+	"protocolId\x12%\n" +
+	"\x0eprotocol_major\x18\x02 \x01(\rR\rprotocolMajor\x12%\n" +
+	"\x0eprotocol_minor\x18\x03 \x01(\rR\rprotocolMinor\x129\n" +
+	"\rsecurity_mode\x18\x04 \x01(\x0e2\x14.aether.SecurityModeR\fsecurityMode\x12\"\n" +
+	"\rmode_epoch_id\x18\x05 \x01(\tR\vmodeEpochId\x12%\n" +
+	"\x0erequired_flags\x18\x06 \x03(\tR\rrequiredFlags\x12)\n" +
+	"\x10advertised_flags\x18\a \x03(\tR\x0fadvertisedFlagsJ\x05\bd\x10\xc8\x01\"\x87\x02\n" +
+	"\x0eDmPrekeyRecord\x12\x1f\n" +
+	"\videntity_id\x18\x01 \x01(\tR\n" +
+	"identityId\x12(\n" +
+	"\x10signed_prekey_id\x18\x02 \x01(\tR\x0esignedPrekeyId\x121\n" +
+	"\x15one_time_prekey_count\x18\x03 \x01(\rR\x12oneTimePrekeyCount\x12*\n" +
+	"\x11published_at_unix\x18\x04 \x01(\x04R\x0fpublishedAtUnix\x12&\n" +
+	"\x0fexpires_at_unix\x18\x05 \x01(\x04R\rexpiresAtUnix\x12\x1c\n" +
+	"\tsignature\x18\x06 \x01(\fR\tsignatureJ\x05\bd\x10\xc8\x01\"\x97\x03\n" +
+	"\x11DmMessageEnvelope\x12\x1d\n" +
+	"\n" +
+	"message_id\x18\x01 \x01(\tR\tmessageId\x12'\n" +
+	"\x0fconversation_id\x18\x02 \x01(\tR\x0econversationId\x12\x1e\n" +
+	"\n" +
+	"ciphertext\x18\x03 \x01(\fR\n" +
+	"ciphertext\x129\n" +
+	"\rsecurity_mode\x18\x04 \x01(\x0e2\x14.aether.SecurityModeR\fsecurityMode\x12\"\n" +
+	"\rmode_epoch_id\x18\x05 \x01(\tR\vmodeEpochId\x12\x1b\n" +
+	"\tsender_id\x18\x06 \x01(\tR\bsenderId\x12!\n" +
+	"\frecipient_id\x18\a \x01(\tR\vrecipientId\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\b \x01(\tR\tsessionId\x12#\n" +
+	"\rintegrity_tag\x18\t \x01(\fR\fintegrityTag\x120\n" +
+	"\x14metadata_field_count\x18\n" +
+	" \x01(\rR\x12metadataFieldCountJ\x05\bd\x10\xc8\x01\"\xd9\x02\n" +
+	"\x0fDmQueuedMessage\x12\x1d\n" +
+	"\n" +
+	"message_id\x18\x01 \x01(\tR\tmessageId\x12!\n" +
+	"\frecipient_id\x18\x02 \x01(\tR\vrecipientId\x12\x1e\n" +
+	"\n" +
+	"ciphertext\x18\x03 \x01(\fR\n" +
+	"ciphertext\x129\n" +
+	"\rsecurity_mode\x18\x04 \x01(\x0e2\x14.aether.SecurityModeR\fsecurityMode\x12\"\n" +
+	"\rmode_epoch_id\x18\x05 \x01(\tR\vmodeEpochId\x12'\n" +
+	"\x0fmailbox_address\x18\x06 \x01(\tR\x0emailboxAddress\x12&\n" +
+	"\x0fexpires_at_unix\x18\a \x01(\x04R\rexpiresAtUnix\x12-\n" +
+	"\x12replication_factor\x18\b \x01(\rR\x11replicationFactorJ\x05\bd\x10\xc8\x01\"\xdd\x01\n" +
+	"\x13DmTransportDecision\x12*\n" +
+	"\x04path\x18\x01 \x01(\x0e2\x16.aether.DmDeliveryPathR\x04path\x121\n" +
+	"\x06reason\x18\x02 \x01(\x0e2\x19.aether.DmTransportReasonR\x06reason\x12A\n" +
+	"\rsession_state\x18\x03 \x01(\x0e2\x1c.aether.DmDirectSessionStateR\fsessionState\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x04 \x01(\tR\tsessionIdJ\x05\bd\x10\xc8\x01\"\xfa\x02\n" +
+	"\x18DmDirectSessionLifecycle\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\x12'\n" +
+	"\x0fconversation_id\x18\x02 \x01(\tR\x0econversationId\x12A\n" +
+	"\rcurrent_state\x18\x03 \x01(\x0e2\x1c.aether.DmDirectSessionStateR\fcurrentState\x12;\n" +
+	"\n" +
+	"next_state\x18\x04 \x01(\x0e2\x1c.aether.DmDirectSessionStateR\tnextState\x122\n" +
+	"\x05event\x18\x05 \x01(\x0e2\x1c.aether.DmDirectSessionEventR\x05event\x121\n" +
+	"\x06reason\x18\x06 \x01(\x0e2\x19.aether.DmTransportReasonR\x06reason\x12(\n" +
+	"\x10occurred_at_unix\x18\a \x01(\x04R\x0eoccurredAtUnixJ\x05\bd\x10\xc8\x01\"\xfe\x02\n" +
+	"\x11DmDeliveryReceipt\x12\x1d\n" +
+	"\n" +
+	"message_id\x18\x01 \x01(\tR\tmessageId\x12!\n" +
+	"\frecipient_id\x18\x02 \x01(\tR\vrecipientId\x12*\n" +
+	"\x04path\x18\x03 \x01(\x0e2\x16.aether.DmDeliveryPathR\x04path\x12\"\n" +
+	"\facknowledged\x18\x04 \x01(\bR\facknowledged\x120\n" +
+	"\x14acknowledged_at_unix\x18\x05 \x01(\x04R\x12acknowledgedAtUnix\x12/\n" +
+	"\x06status\x18\x06 \x01(\x0e2\x17.aether.DmReceiptStatusR\x06status\x12\x1a\n" +
+	"\battempts\x18\a \x01(\rR\battempts\x12(\n" +
+	"\x10retry_after_unix\x18\b \x01(\x04R\x0eretryAfterUnix\x12'\n" +
+	"\x0fmailbox_address\x18\t \x01(\tR\x0emailboxAddressJ\x05\bd\x10\xc8\x01\"\x85\x01\n" +
+	"\x10GroupDmMemberCap\x12\x18\n" +
+	"\aallowed\x18\x01 \x01(\bR\aallowed\x12\x18\n" +
+	"\awarning\x18\x02 \x01(\bR\awarning\x126\n" +
+	"\x06reason\x18\x03 \x01(\x0e2\x1e.aether.GroupDmMemberCapReasonR\x06reasonJ\x05\bd\x10\xc8\x01\"\x91\x03\n" +
+	"\x16GroupDmMembershipEvent\x12\x19\n" +
+	"\bevent_id\x18\x01 \x01(\tR\aeventId\x12\x1a\n" +
+	"\bsequence\x18\x02 \x01(\x04R\bsequence\x12?\n" +
+	"\rcurrent_state\x18\x03 \x01(\x0e2\x1a.aether.GroupDmMemberStateR\fcurrentState\x129\n" +
+	"\n" +
+	"next_state\x18\x04 \x01(\x0e2\x1a.aether.GroupDmMemberStateR\tnextState\x12A\n" +
+	"\n" +
+	"event_type\x18\x05 \x01(\x0e2\".aether.GroupDmMembershipEventTypeR\teventType\x12\x1b\n" +
+	"\tmember_id\x18\x06 \x01(\tR\bmemberId\x129\n" +
+	"\rsecurity_mode\x18\a \x01(\x0e2\x14.aether.SecurityModeR\fsecurityMode\x12\"\n" +
+	"\rmode_epoch_id\x18\b \x01(\tR\vmodeEpochIdJ\x05\bd\x10\xc8\x01\"\xad\x03\n" +
+	"\x18GroupDmSenderKeyEnvelope\x12\x1f\n" +
+	"\venvelope_id\x18\x01 \x01(\tR\n" +
+	"envelopeId\x12\x19\n" +
+	"\bgroup_id\x18\x02 \x01(\tR\agroupId\x12\x1b\n" +
+	"\tsender_id\x18\x03 \x01(\tR\bsenderId\x12!\n" +
+	"\frecipient_id\x18\x04 \x01(\tR\vrecipientId\x12\x14\n" +
+	"\x05epoch\x18\x05 \x01(\x04R\x05epoch\x12\x14\n" +
+	"\x05nonce\x18\x06 \x01(\tR\x05nonce\x12\x1e\n" +
+	"\n" +
+	"ciphertext\x18\a \x01(\fR\n" +
+	"ciphertext\x12K\n" +
+	"\x13signature_algorithm\x18\b \x01(\x0e2\x1a.aether.SignatureAlgorithmR\x12signatureAlgorithm\x12\x1c\n" +
+	"\tsignature\x18\t \x01(\fR\tsignature\x122\n" +
+	"\x15replay_protection_tag\x18\n" +
+	" \x01(\tR\x13replayProtectionTag\x12#\n" +
+	"\rretry_attempt\x18\v \x01(\rR\fretryAttemptJ\x05\bd\x10\xc8\x01\"\xc7\x01\n" +
+	"\x1eGroupDmKeyDistributionDecision\x12\x1a\n" +
+	"\baccepted\x18\x01 \x01(\bR\baccepted\x12\x14\n" +
+	"\x05retry\x18\x02 \x01(\bR\x05retry\x12<\n" +
+	"\x06reason\x18\x03 \x01(\x0e2$.aether.GroupDmKeyDistributionReasonR\x06reason\x12.\n" +
+	"\x13retry_after_seconds\x18\x04 \x01(\rR\x11retryAfterSecondsJ\x05\bd\x10\xc8\x01\"\xc0\x02\n" +
+	"\x14GroupDmRekeyDecision\x125\n" +
+	"\atrigger\x18\x01 \x01(\x0e2\x1b.aether.GroupDmRekeyTriggerR\atrigger\x12\x1c\n" +
+	"\tmandatory\x18\x02 \x01(\bR\tmandatory\x12%\n" +
+	"\x0erejoin_allowed\x18\x03 \x01(\bR\rrejoinAllowed\x122\n" +
+	"\x06reason\x18\x04 \x01(\x0e2\x1a.aether.GroupDmRekeyReasonR\x06reason\x12#\n" +
+	"\rremoved_epoch\x18\x05 \x01(\x04R\fremovedEpoch\x12#\n" +
+	"\rcurrent_epoch\x18\x06 \x01(\x04R\fcurrentEpoch\x12'\n" +
+	"\x0frekey_completed\x18\a \x01(\bR\x0erekeyCompletedJ\x05\bd\x10\xc8\x01\"\xb8\x01\n" +
+	"\x18GroupDmTransportDecision\x120\n" +
+	"\x04path\x18\x01 \x01(\x0e2\x1c.aether.GroupDmTransportPathR\x04path\x126\n" +
+	"\x06reason\x18\x02 \x01(\x0e2\x1e.aether.GroupDmTransportReasonR\x06reason\x12+\n" +
+	"\x11offline_retrieval\x18\x03 \x01(\bR\x10offlineRetrievalJ\x05\bd\x10\xc8\x01\"\x97\x03\n" +
+	"\x1aGroupDmHistorySyncDecision\x12#\n" +
+	"\rjoin_sequence\x18\x01 \x01(\x04R\fjoinSequence\x122\n" +
+	"\x15request_from_sequence\x18\x02 \x01(\x04R\x13requestFromSequence\x12.\n" +
+	"\x13request_to_sequence\x18\x03 \x01(\x04R\x11requestToSequence\x122\n" +
+	"\x15bounded_from_sequence\x18\x04 \x01(\x04R\x13boundedFromSequence\x12.\n" +
+	"\x13bounded_to_sequence\x18\x05 \x01(\x04R\x11boundedToSequence\x12%\n" +
+	"\x0elocked_history\x18\x06 \x01(\bR\rlockedHistory\x12$\n" +
+	"\x0efrom_join_time\x18\a \x01(\bR\ffromJoinTime\x128\n" +
+	"\x06reason\x18\b \x01(\x0e2 .aether.GroupDmHistorySyncReasonR\x06reasonJ\x05\bd\x10\xc8\x01\"\xb0\x02\n" +
+	"\x12GroupDmConvertPlan\x12#\n" +
+	"\rcreate_server\x18\x01 \x01(\bR\fcreateServer\x124\n" +
+	"\x16create_initial_channel\x18\x02 \x01(\bR\x14createInitialChannel\x12.\n" +
+	"\x13migrate_member_list\x18\x03 \x01(\bR\x11migrateMemberList\x12,\n" +
+	"\x12post_system_notice\x18\x04 \x01(\bR\x10postSystemNotice\x121\n" +
+	"\x14history_transferable\x18\x05 \x01(\bR\x13historyTransferable\x12'\n" +
+	"\x0fdisclosure_code\x18\x06 \x01(\tR\x0edisclosureCodeJ\x05\bd\x10\xc8\x01\"\xb7\x03\n" +
+	"\x15GroupDmGrowthDecision\x12\x1d\n" +
+	"\n" +
+	"member_cap\x18\x01 \x01(\rR\tmemberCap\x12+\n" +
+	"\x11warning_threshold\x18\x02 \x01(\rR\x10warningThreshold\x12'\n" +
+	"\x0fcurrent_members\x18\x03 \x01(\rR\x0ecurrentMembers\x12%\n" +
+	"\x0eadding_members\x18\x04 \x01(\rR\raddingMembers\x12\x18\n" +
+	"\aallowed\x18\x05 \x01(\bR\aallowed\x12\x18\n" +
+	"\awarning\x18\x06 \x01(\bR\awarning\x12*\n" +
+	"\x11convert_to_server\x18\a \x01(\bR\x0fconvertToServer\x123\n" +
+	"\x06reason\x18\b \x01(\x0e2\x1b.aether.GroupDmGrowthReasonR\x06reason\x12'\n" +
+	"\x0fdisclosure_code\x18\t \x01(\tR\x0edisclosureCode\x12=\n" +
+	"\fconvert_plan\x18\n" +
+	" \x01(\v2\x1a.aether.GroupDmConvertPlanR\vconvertPlanJ\x05\bd\x10\xc8\x01\"\xae\x04\n" +
+	"\rFriendRequest\x12\x17\n" +
+	"\afrom_id\x18\x01 \x01(\tR\x06fromId\x12\x13\n" +
+	"\x05to_id\x18\x02 \x01(\tR\x04toId\x120\n" +
+	"\x05state\x18\x03 \x01(\x0e2\x1a.aether.FriendRequestStateR\x05state\x123\n" +
+	"\x06action\x18\x04 \x01(\x0e2\x1b.aether.FriendRequestActionR\x06action\x12\x1d\n" +
+	"\n" +
+	"request_id\x18\x05 \x01(\tR\trequestId\x12\x14\n" +
+	"\x05nonce\x18\x06 \x01(\tR\x05nonce\x12&\n" +
+	"\x0fcreated_at_unix\x18\a \x01(\x04R\rcreatedAtUnix\x12&\n" +
+	"\x0fexpires_at_unix\x18\b \x01(\x04R\rexpiresAtUnix\x12\x1b\n" +
+	"\tsigner_id\x18\t \x01(\tR\bsignerId\x12K\n" +
+	"\x13signature_algorithm\x18\n" +
+	" \x01(\x0e2\x1a.aether.SignatureAlgorithmR\x12signatureAlgorithm\x12\x1c\n" +
+	"\tsignature\x18\v \x01(\fR\tsignature\x12K\n" +
+	"\x13verification_status\x18\f \x01(\x0e2\x1a.aether.VerificationStatusR\x12verificationStatus\x12'\n" +
+	"\x0freplay_detected\x18\r \x01(\bR\x0ereplayDetectedJ\x05\bd\x10\xc8\x01\"\xd8\x01\n" +
+	"\x13FriendIdentityShare\x12%\n" +
+	"\x0eformat_version\x18\x01 \x01(\tR\rformatVersion\x12\x1f\n" +
+	"\videntity_id\x18\x02 \x01(\tR\n" +
+	"identityId\x12\x1d\n" +
+	"\n" +
+	"public_key\x18\x03 \x01(\fR\tpublicKey\x12.\n" +
+	"\x13public_key_checksum\x18\x04 \x01(\tR\x11publicKeyChecksum\x12#\n" +
+	"\rencoded_share\x18\x05 \x01(\tR\fencodedShareJ\x05\bd\x10\xc8\x01\"\xc9\x02\n" +
+	"\x13FriendInvitePayload\x12B\n" +
+	"\x0eidentity_share\x18\x01 \x01(\v2\x1b.aether.FriendIdentityShareR\ridentityShare\x12>\n" +
+	"\n" +
+	"entry_path\x18\x02 \x01(\x0e2\x1f.aether.FriendExchangeEntryPathR\tentryPath\x12\x14\n" +
+	"\x05nonce\x18\x03 \x01(\tR\x05nonce\x12&\n" +
+	"\x0fexpires_at_unix\x18\x04 \x01(\x04R\rexpiresAtUnix\x12K\n" +
+	"\x13signature_algorithm\x18\x05 \x01(\x0e2\x1a.aether.SignatureAlgorithmR\x12signatureAlgorithm\x12\x1c\n" +
+	"\tsignature\x18\x06 \x01(\fR\tsignatureJ\x05\bd\x10\xc8\x01\"\xb7\x01\n" +
+	"\x1aFriendConcurrentResolution\x120\n" +
+	"\x05state\x18\x01 \x01(\x0e2\x1a.aether.FriendRequestStateR\x05state\x12/\n" +
+	"\x13canonical_requester\x18\x02 \x01(\tR\x12canonicalRequester\x12/\n" +
+	"\x13canonical_recipient\x18\x03 \x01(\tR\x12canonicalRecipientJ\x05\bd\x10\xc8\x01\"\x99\x03\n" +
+	"\x12PresenceStateEntry\x12\x1f\n" +
+	"\videntity_id\x18\x01 \x01(\tR\n" +
+	"identityId\x12+\n" +
+	"\x05state\x18\x02 \x01(\x0e2\x15.aether.PresenceStateR\x05state\x12\x16\n" +
+	"\x06status\x18\x03 \x01(\tR\x06status\x12*\n" +
+	"\x11last_updated_unix\x18\x04 \x01(\x04R\x0flastUpdatedUnix\x12\x1f\n" +
+	"\vttl_seconds\x18\x05 \x01(\rR\n" +
+	"ttlSeconds\x12M\n" +
+	"\x11transition_reason\x18\x06 \x01(\x0e2 .aether.PresenceTransitionReasonR\x10transitionReason\x12%\n" +
+	"\x0estatus_version\x18\a \x01(\x04R\rstatusVersion\x12'\n" +
+	"\x0fstatus_redacted\x18\b \x01(\bR\x0estatusRedacted\x12*\n" +
+	"\x11published_at_unix\x18\t \x01(\x04R\x0fpublishedAtUnixJ\x05\bd\x10\xc8\x01\"\xb2\x03\n" +
+	"\x13PresenceEventRecord\x12<\n" +
+	"\x0eprevious_state\x18\x01 \x01(\x0e2\x15.aether.PresenceStateR\rpreviousState\x124\n" +
+	"\n" +
+	"next_state\x18\x02 \x01(\x0e2\x15.aether.PresenceStateR\tnextState\x12+\n" +
+	"\x05event\x18\x03 \x01(\x0e2\x15.aether.PresenceEventR\x05event\x128\n" +
+	"\x06reason\x18\x04 \x01(\x0e2 .aether.PresenceTransitionReasonR\x06reason\x12\x1f\n" +
+	"\voccurred_at\x18\x05 \x01(\x04R\n" +
+	"occurredAt\x12\x1a\n" +
+	"\bsequence\x18\x06 \x01(\x04R\bsequence\x12.\n" +
+	"\x13debounce_until_unix\x18\a \x01(\x04R\x11debounceUntilUnix\x12.\n" +
+	"\x13throttle_until_unix\x18\b \x01(\x04R\x11throttleUntilUnix\x12\x1c\n" +
+	"\theartbeat\x18\t \x01(\bR\theartbeatJ\x05\bd\x10\xc8\x01\"\x8b\x02\n" +
+	"\x1bPresenceDisseminationPolicy\x12)\n" +
+	"\x10debounce_seconds\x18\x01 \x01(\rR\x0fdebounceSeconds\x12?\n" +
+	"\x1cmin_publish_interval_seconds\x18\x02 \x01(\rR\x19minPublishIntervalSeconds\x12<\n" +
+	"\x1aheartbeat_interval_seconds\x18\x03 \x01(\rR\x18heartbeatIntervalSeconds\x12;\n" +
+	"\x1amax_status_latency_seconds\x18\x04 \x01(\rR\x17maxStatusLatencySecondsJ\x05\bd\x10\xc8\x01\"\x9d\x02\n" +
+	"\x11NotificationEvent\x12,\n" +
+	"\x04kind\x18\x01 \x01(\x0e2\x18.aether.NotificationKindR\x04kind\x12\x19\n" +
+	"\bactor_id\x18\x02 \x01(\tR\aactorId\x12\x1d\n" +
+	"\n" +
+	"subject_id\x18\x03 \x01(\tR\tsubjectId\x12\x16\n" +
+	"\x06unread\x18\x04 \x01(\bR\x06unread\x12!\n" +
+	"\funread_count\x18\x05 \x01(\rR\vunreadCount\x12\x1b\n" +
+	"\tsource_id\x18\x06 \x01(\tR\bsourceId\x12\x1d\n" +
+	"\n" +
+	"source_url\x18\a \x01(\tR\tsourceUrl\x12\"\n" +
+	"\rmode_epoch_id\x18\b \x01(\tR\vmodeEpochIdJ\x05\bd\x10\xc8\x01\"P\n" +
+	"\fMentionToken\x12'\n" +
+	"\x04type\x18\x01 \x01(\x0e2\x13.aether.MentionTypeR\x04type\x12\x10\n" +
+	"\x03raw\x18\x02 \x01(\tR\x03rawJ\x05\bd\x10\xc8\x01\"_\n" +
+	"\x0ePolicyDecision\x12\x18\n" +
+	"\aallowed\x18\x01 \x01(\bR\aallowed\x12,\n" +
+	"\x06reason\x18\x02 \x01(\x0e2\x14.aether.PolicyReasonR\x06reasonJ\x05\bd\x10\xc8\x01\"d\n" +
+	"\x12SlowModeActorState\x12\x19\n" +
+	"\bactor_id\x18\x01 \x01(\tR\aactorId\x12,\n" +
+	"\x12last_activity_unix\x18\x02 \x01(\x04R\x10lastActivityUnixJ\x05\bd\x10\xc8\x01\"\xca\x02\n" +
+	"\x10SlowModeDecision\x12\x18\n" +
+	"\aallowed\x18\x01 \x01(\bR\aallowed\x12,\n" +
+	"\x06reason\x18\x02 \x01(\x0e2\x14.aether.PolicyReasonR\x06reason\x122\n" +
+	"\x06actors\x18\x03 \x03(\v2\x1a.aether.SlowModeActorStateR\x06actors\x12\x19\n" +
+	"\bscope_id\x18\x04 \x01(\tR\ascopeId\x12\x19\n" +
+	"\bevent_id\x18\x05 \x01(\tR\aeventId\x12\x19\n" +
+	"\bactor_id\x18\x06 \x01(\tR\aactorId\x12*\n" +
+	"\x11evaluated_at_unix\x18\a \x01(\x04R\x0fevaluatedAtUnix\x12\x16\n" +
+	"\x06replay\x18\b \x01(\bR\x06replay\x12\x1e\n" +
+	"\n" +
+	"reconciled\x18\t \x01(\bR\n" +
+	"reconciledJ\x05\bd\x10\xc8\x01\"\xa1\x04\n" +
+	"\x0fModerationEvent\x12\x19\n" +
+	"\bactor_id\x18\x01 \x01(\tR\aactorId\x12\x1b\n" +
+	"\ttarget_id\x18\x02 \x01(\tR\btargetId\x120\n" +
+	"\x06action\x18\x03 \x01(\x0e2\x18.aether.ModerationActionR\x06action\x12\x18\n" +
+	"\aallowed\x18\x04 \x01(\bR\aallowed\x12,\n" +
+	"\x06reason\x18\x05 \x01(\x0e2\x14.aether.PolicyReasonR\x06reason\x12\x19\n" +
+	"\bevent_id\x18\x06 \x01(\tR\aeventId\x12\x1b\n" +
+	"\tsigner_id\x18\a \x01(\tR\bsignerId\x12K\n" +
+	"\x13signature_algorithm\x18\b \x01(\x0e2\x1a.aether.SignatureAlgorithmR\x12signatureAlgorithm\x12\x1c\n" +
+	"\tsignature\x18\t \x01(\fR\tsignature\x12K\n" +
+	"\x13verification_status\x18\n" +
+	" \x01(\x0e2\x1a.aether.VerificationStatusR\x12verificationStatus\x121\n" +
+	"\x14enforcement_required\x18\v \x01(\bR\x13enforcementRequired\x122\n" +
+	"\x15non_compliance_reason\x18\f \x01(\tR\x13nonComplianceReasonJ\x05\bd\x10\xc8\x01\"\x9a\x01\n" +
+	"\tRoleState\x12\x1f\n" +
+	"\videntity_id\x18\x01 \x01(\tR\n" +
+	"identityId\x12#\n" +
+	"\x04role\x18\x02 \x01(\x0e2\x0f.aether.V02RoleR\x04role\x12\x18\n" +
+	"\aversion\x18\x03 \x01(\x04R\aversion\x12&\n" +
+	"\x0fupdated_at_unix\x18\x04 \x01(\x04R\rupdatedAtUnixJ\x05\bd\x10\xc8\x01\"\xe2\x02\n" +
+	"\x12GovernanceMetadata\x12\x1f\n" +
+	"\vprotocol_id\x18\x01 \x01(\tR\n" +
+	"protocolId\x12%\n" +
+	"\x0eprotocol_major\x18\x02 \x01(\rR\rprotocolMajor\x12%\n" +
+	"\x0eprotocol_minor\x18\x03 \x01(\rR\rprotocolMinor\x12%\n" +
+	"\x0erequired_flags\x18\x04 \x03(\tR\rrequiredFlags\x12)\n" +
+	"\x10advertised_flags\x18\x05 \x03(\tR\x0fadvertisedFlags\x129\n" +
+	"\rsecurity_mode\x18\x06 \x01(\x0e2\x14.aether.SecurityModeR\fsecurityMode\x12\"\n" +
+	"\rmode_epoch_id\x18\a \x01(\tR\vmodeEpochId\x12%\n" +
+	"\x0epolicy_version\x18\b \x01(\x04R\rpolicyVersionJ\x05\bd\x10\xc8\x01*\xda\x02\n" +
 	"\x0eCapabilityFlag\x12\x1f\n" +
 	"\x1bCAPABILITY_FLAG_UNSPECIFIED\x10\x00\x12\x18\n" +
 	"\x14CAPABILITY_FLAG_CHAT\x10\x01\x12\x19\n" +
 	"\x15CAPABILITY_FLAG_VOICE\x10\x02\x12\x1e\n" +
-	"\x1aCAPABILITY_FLAG_MANAGEMENT\x10\x03\"\x05\bd\x10\xc7\x01*\xa8\x02\n" +
+	"\x1aCAPABILITY_FLAG_MANAGEMENT\x10\x03\x12\x16\n" +
+	"\x12CAPABILITY_FLAG_DM\x10\x04\x12\x1c\n" +
+	"\x18CAPABILITY_FLAG_GROUP_DM\x10\x05\x12\x1b\n" +
+	"\x17CAPABILITY_FLAG_FRIENDS\x10\x06\x12\x1c\n" +
+	"\x18CAPABILITY_FLAG_PRESENCE\x10\a\x12\x1a\n" +
+	"\x16CAPABILITY_FLAG_NOTIFY\x10\b\x12\x1e\n" +
+	"\x1aCAPABILITY_FLAG_MODERATION\x10\t\x12\x1e\n" +
+	"\x1aCAPABILITY_FLAG_GOVERNANCE\x10\n" +
+	"\"\x05\bd\x10\xc7\x01*\xb0\t\n" +
 	"\vPayloadType\x12\x1c\n" +
 	"\x18PAYLOAD_TYPE_UNSPECIFIED\x10\x00\x12\x19\n" +
 	"\x15PAYLOAD_TYPE_IDENTITY\x10\x01\x12 \n" +
@@ -2216,7 +6938,32 @@ const file_proto_aether_proto_rawDesc = "" +
 	"\x18PAYLOAD_TYPE_VOICE_STATE\x10\x04\x12(\n" +
 	"$PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE\x10\x05\x12#\n" +
 	"\x1fPAYLOAD_TYPE_VOICE_SIGNAL_FRAME\x10\x06\x12+\n" +
-	"'PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE\x10\a\"\x05\bd\x10\xc7\x01*F\n" +
+	"'PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE\x10\a\x12!\n" +
+	"\x1dPAYLOAD_TYPE_DM_PREKEY_BUNDLE\x10\b\x12\x1b\n" +
+	"\x17PAYLOAD_TYPE_DM_MESSAGE\x10\t\x12&\n" +
+	"\"PAYLOAD_TYPE_DM_TRANSPORT_DECISION\x10\n" +
+	"\x12$\n" +
+	" PAYLOAD_TYPE_DM_DELIVERY_RECEIPT\x10\v\x12*\n" +
+	"&PAYLOAD_TYPE_GROUP_DM_MEMBERSHIP_EVENT\x10\f\x12\x1f\n" +
+	"\x1bPAYLOAD_TYPE_FRIEND_REQUEST\x10\r\x12\x1f\n" +
+	"\x1bPAYLOAD_TYPE_PRESENCE_STATE\x10\x0e\x12\x1f\n" +
+	"\x1bPAYLOAD_TYPE_PRESENCE_EVENT\x10\x0f\x12\x1d\n" +
+	"\x19PAYLOAD_TYPE_NOTIFICATION\x10\x10\x12\x1e\n" +
+	"\x1aPAYLOAD_TYPE_MENTION_TOKEN\x10\x11\x12!\n" +
+	"\x1dPAYLOAD_TYPE_MENTION_DECISION\x10\x12\x12\x1b\n" +
+	"\x17PAYLOAD_TYPE_ROLE_STATE\x10\x13\x12\x19\n" +
+	"\x15PAYLOAD_TYPE_POLICIES\x10\x14\x12!\n" +
+	"\x1dPAYLOAD_TYPE_MODERATION_EVENT\x10\x15\x12#\n" +
+	"\x1fPAYLOAD_TYPE_SLOW_MODE_DECISION\x10\x16\x12$\n" +
+	" PAYLOAD_TYPE_GOVERNANCE_METADATA\x10\x17\x12&\n" +
+	"\"PAYLOAD_TYPE_FRIEND_IDENTITY_SHARE\x10\x18\x12&\n" +
+	"\"PAYLOAD_TYPE_FRIEND_INVITE_PAYLOAD\x10\x19\x12.\n" +
+	"*PAYLOAD_TYPE_PRESENCE_DISSEMINATION_POLICY\x10\x1a\x12,\n" +
+	"(PAYLOAD_TYPE_DM_DIRECT_SESSION_LIFECYCLE\x10\x1b\x12-\n" +
+	")PAYLOAD_TYPE_GROUP_DM_SENDER_KEY_ENVELOPE\x10\x1c\x12(\n" +
+	"$PAYLOAD_TYPE_GROUP_DM_REKEY_DECISION\x10\x1d\x12/\n" +
+	"+PAYLOAD_TYPE_GROUP_DM_HISTORY_SYNC_DECISION\x10\x1e\x12)\n" +
+	"%PAYLOAD_TYPE_GROUP_DM_GROWTH_DECISION\x10\x1f\"\x05\bd\x10\xc7\x01*F\n" +
 	"\n" +
 	"VoiceCodec\x12\x1b\n" +
 	"\x17VOICE_CODEC_UNSPECIFIED\x10\x00\x12\x14\n" +
@@ -2265,7 +7012,180 @@ const file_proto_aether_proto_rawDesc = "" +
 	"4ENVELOPE_VERIFICATION_ERROR_UNSUPPORTED_PAYLOAD_TYPE\x10\x03\x129\n" +
 	"5ENVELOPE_VERIFICATION_ERROR_CANONICALIZATION_MISMATCH\x10\x04\x121\n" +
 	"-ENVELOPE_VERIFICATION_ERROR_EXPIRED_SIGNATURE\x10\x05\x120\n" +
-	",ENVELOPE_VERIFICATION_ERROR_UNTRUSTED_SIGNER\x10\x06\"\x05\bd\x10\xc7\x01*\x84\x01\n" +
+	",ENVELOPE_VERIFICATION_ERROR_UNTRUSTED_SIGNER\x10\x06\"\x05\bd\x10\xc7\x01*}\n" +
+	"\fSecurityMode\x12\x1d\n" +
+	"\x19SECURITY_MODE_UNSPECIFIED\x10\x00\x12\x16\n" +
+	"\x12SECURITY_MODE_SEAL\x10\x01\x12\x16\n" +
+	"\x12SECURITY_MODE_TREE\x10\x02\x12\x17\n" +
+	"\x13SECURITY_MODE_CLEAR\x10\x03\"\x05\bd\x10\xc7\x01*\x91\x01\n" +
+	"\x0eDmDeliveryPath\x12 \n" +
+	"\x1cDM_DELIVERY_PATH_UNSPECIFIED\x10\x00\x12\x1b\n" +
+	"\x17DM_DELIVERY_PATH_DIRECT\x10\x01\x12\x1c\n" +
+	"\x18DM_DELIVERY_PATH_OFFLINE\x10\x02\x12\x1b\n" +
+	"\x17DM_DELIVERY_PATH_REJECT\x10\x03\"\x05\bd\x10\xc7\x01*\xee\x01\n" +
+	"\x11DmTransportReason\x12#\n" +
+	"\x1fDM_TRANSPORT_REASON_UNSPECIFIED\x10\x00\x12(\n" +
+	"$DM_TRANSPORT_REASON_DIRECT_AVAILABLE\x10\x01\x12$\n" +
+	" DM_TRANSPORT_REASON_PEER_OFFLINE\x10\x02\x12*\n" +
+	"&DM_TRANSPORT_REASON_DIRECT_UNSUPPORTED\x10\x03\x121\n" +
+	"-DM_TRANSPORT_REASON_UNSUPPORTED_SECURITY_MODE\x10\x04\"\x05\bd\x10\xc7\x01*\xd7\x01\n" +
+	"\x14DmDirectSessionState\x12'\n" +
+	"#DM_DIRECT_SESSION_STATE_UNSPECIFIED\x10\x00\x12\"\n" +
+	"\x1eDM_DIRECT_SESSION_STATE_CLOSED\x10\x01\x12#\n" +
+	"\x1fDM_DIRECT_SESSION_STATE_OPENING\x10\x02\x12 \n" +
+	"\x1cDM_DIRECT_SESSION_STATE_OPEN\x10\x03\x12$\n" +
+	" DM_DIRECT_SESSION_STATE_RETRYING\x10\x04\"\x05\bd\x10\xc7\x01*\x8e\x02\n" +
+	"\x14DmDirectSessionEvent\x12'\n" +
+	"#DM_DIRECT_SESSION_EVENT_UNSPECIFIED\x10\x00\x12*\n" +
+	"&DM_DIRECT_SESSION_EVENT_OPEN_REQUESTED\x10\x01\x12*\n" +
+	"&DM_DIRECT_SESSION_EVENT_OPEN_CONFIRMED\x10\x02\x12!\n" +
+	"\x1dDM_DIRECT_SESSION_EVENT_CLOSE\x10\x03\x12#\n" +
+	"\x1fDM_DIRECT_SESSION_EVENT_TIMEOUT\x10\x04\x12&\n" +
+	"\"DM_DIRECT_SESSION_EVENT_RETRY_TICK\x10\x05\"\x05\bd\x10\xc7\x01*\xc1\x01\n" +
+	"\x0fDmReceiptStatus\x12!\n" +
+	"\x1dDM_RECEIPT_STATUS_UNSPECIFIED\x10\x00\x12\x1d\n" +
+	"\x19DM_RECEIPT_STATUS_PENDING\x10\x01\x12%\n" +
+	"!DM_RECEIPT_STATUS_RETRY_SCHEDULED\x10\x02\x12\x1f\n" +
+	"\x1bDM_RECEIPT_STATUS_DELIVERED\x10\x03\x12\x1d\n" +
+	"\x19DM_RECEIPT_STATUS_EXPIRED\x10\x04\"\x05\bd\x10\xc7\x01*\xea\x01\n" +
+	"\x12GroupDmMemberState\x12%\n" +
+	"!GROUP_DM_MEMBER_STATE_UNSPECIFIED\x10\x00\x12\x1e\n" +
+	"\x1aGROUP_DM_MEMBER_STATE_NONE\x10\x01\x12!\n" +
+	"\x1dGROUP_DM_MEMBER_STATE_INVITED\x10\x02\x12 \n" +
+	"\x1cGROUP_DM_MEMBER_STATE_MEMBER\x10\x03\x12\x1e\n" +
+	"\x1aGROUP_DM_MEMBER_STATE_LEFT\x10\x04\x12!\n" +
+	"\x1dGROUP_DM_MEMBER_STATE_REMOVED\x10\x05\"\x05\bd\x10\xc7\x01*\xfc\x01\n" +
+	"\x1aGroupDmMembershipEventType\x12.\n" +
+	"*GROUP_DM_MEMBERSHIP_EVENT_TYPE_UNSPECIFIED\x10\x00\x12)\n" +
+	"%GROUP_DM_MEMBERSHIP_EVENT_TYPE_INVITE\x10\x01\x12'\n" +
+	"#GROUP_DM_MEMBERSHIP_EVENT_TYPE_JOIN\x10\x02\x12(\n" +
+	"$GROUP_DM_MEMBERSHIP_EVENT_TYPE_LEAVE\x10\x03\x12)\n" +
+	"%GROUP_DM_MEMBERSHIP_EVENT_TYPE_REMOVE\x10\x04\"\x05\bd\x10\xc7\x01*\xbf\x01\n" +
+	"\x16GroupDmMemberCapReason\x12*\n" +
+	"&GROUP_DM_MEMBER_CAP_REASON_UNSPECIFIED\x10\x00\x12!\n" +
+	"\x1dGROUP_DM_MEMBER_CAP_REASON_OK\x10\x01\x12&\n" +
+	"\"GROUP_DM_MEMBER_CAP_REASON_WARNING\x10\x02\x12'\n" +
+	"#GROUP_DM_MEMBER_CAP_REASON_EXCEEDED\x10\x03\"\x05\bd\x10\xc7\x01*\x91\x04\n" +
+	"\x1cGroupDmKeyDistributionReason\x120\n" +
+	",GROUP_DM_KEY_DISTRIBUTION_REASON_UNSPECIFIED\x10\x00\x12-\n" +
+	")GROUP_DM_KEY_DISTRIBUTION_REASON_ACCEPTED\x10\x01\x125\n" +
+	"1GROUP_DM_KEY_DISTRIBUTION_REASON_INVALID_ENVELOPE\x10\x02\x128\n" +
+	"4GROUP_DM_KEY_DISTRIBUTION_REASON_UNAUTHORIZED_SENDER\x10\x03\x126\n" +
+	"2GROUP_DM_KEY_DISTRIBUTION_REASON_MISSING_SIGNATURE\x10\x04\x127\n" +
+	"3GROUP_DM_KEY_DISTRIBUTION_REASON_REPLAY_UNPROTECTED\x10\x05\x124\n" +
+	"0GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_SCHEDULED\x10\x06\x124\n" +
+	"0GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_EXHAUSTED\x10\a\x12;\n" +
+	"7GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_TERMINAL_FAILURE\x10\b\"\x05\bd\x10\xc7\x01*\xa2\x02\n" +
+	"\x13GroupDmRekeyTrigger\x12&\n" +
+	"\"GROUP_DM_REKEY_TRIGGER_UNSPECIFIED\x10\x00\x12'\n" +
+	"#GROUP_DM_REKEY_TRIGGER_MEMBER_ADDED\x10\x01\x12)\n" +
+	"%GROUP_DM_REKEY_TRIGGER_MEMBER_REMOVED\x10\x02\x12&\n" +
+	"\"GROUP_DM_REKEY_TRIGGER_MEMBER_LEFT\x10\x03\x12/\n" +
+	"+GROUP_DM_REKEY_TRIGGER_COMPROMISE_SUSPECTED\x10\x04\x12/\n" +
+	"+GROUP_DM_REKEY_TRIGGER_REJOIN_AFTER_REMOVAL\x10\x05\"\x05\bd\x10\xc7\x01*\xff\x01\n" +
+	"\x12GroupDmRekeyReason\x12%\n" +
+	"!GROUP_DM_REKEY_REASON_UNSPECIFIED\x10\x00\x124\n" +
+	"0GROUP_DM_REKEY_REASON_REQUIRED_MEMBERSHIP_CHANGE\x10\x01\x12-\n" +
+	")GROUP_DM_REKEY_REASON_REQUIRED_COMPROMISE\x10\x02\x12.\n" +
+	"*GROUP_DM_REKEY_REASON_REQUIRED_REJOIN_GATE\x10\x03\x12&\n" +
+	"\"GROUP_DM_REKEY_REASON_NOT_REQUIRED\x10\x04\"\x05\bd\x10\xc7\x01*\xb3\x01\n" +
+	"\x14GroupDmTransportPath\x12'\n" +
+	"#GROUP_DM_TRANSPORT_PATH_UNSPECIFIED\x10\x00\x12\"\n" +
+	"\x1eGROUP_DM_TRANSPORT_PATH_DIRECT\x10\x01\x12#\n" +
+	"\x1fGROUP_DM_TRANSPORT_PATH_OFFLINE\x10\x02\x12\"\n" +
+	"\x1eGROUP_DM_TRANSPORT_PATH_REJECT\x10\x03\"\x05\bd\x10\xc7\x01*\xd2\x01\n" +
+	"\x16GroupDmTransportReason\x12)\n" +
+	"%GROUP_DM_TRANSPORT_REASON_UNSPECIFIED\x10\x00\x12.\n" +
+	"*GROUP_DM_TRANSPORT_REASON_DIRECT_AVAILABLE\x10\x01\x12.\n" +
+	"*GROUP_DM_TRANSPORT_REASON_OFFLINE_FALLBACK\x10\x02\x12&\n" +
+	"\"GROUP_DM_TRANSPORT_REASON_REJECTED\x10\x03\"\x05\bd\x10\xc7\x01*\xfe\x01\n" +
+	"\x18GroupDmHistorySyncReason\x12,\n" +
+	"(GROUP_DM_HISTORY_SYNC_REASON_UNSPECIFIED\x10\x00\x12#\n" +
+	"\x1fGROUP_DM_HISTORY_SYNC_REASON_OK\x10\x01\x12'\n" +
+	"#GROUP_DM_HISTORY_SYNC_REASON_LOCKED\x10\x02\x12/\n" +
+	"+GROUP_DM_HISTORY_SYNC_REASON_WINDOW_BOUNDED\x10\x03\x12.\n" +
+	"*GROUP_DM_HISTORY_SYNC_REASON_INVALID_RANGE\x10\x04\"\x05\bd\x10\xc7\x01*\xb4\x01\n" +
+	"\x13GroupDmGrowthReason\x12&\n" +
+	"\"GROUP_DM_GROWTH_REASON_UNSPECIFIED\x10\x00\x12\x1d\n" +
+	"\x19GROUP_DM_GROWTH_REASON_OK\x10\x01\x12\"\n" +
+	"\x1eGROUP_DM_GROWTH_REASON_WARNING\x10\x02\x12+\n" +
+	"'GROUP_DM_GROWTH_REASON_CONVERT_REQUIRED\x10\x03\"\x05\bd\x10\xc7\x01*\xee\x01\n" +
+	"\x12FriendRequestState\x12$\n" +
+	" FRIEND_REQUEST_STATE_UNSPECIFIED\x10\x00\x12 \n" +
+	"\x1cFRIEND_REQUEST_STATE_PENDING\x10\x01\x12!\n" +
+	"\x1dFRIEND_REQUEST_STATE_ACCEPTED\x10\x02\x12!\n" +
+	"\x1dFRIEND_REQUEST_STATE_DECLINED\x10\x03\x12!\n" +
+	"\x1dFRIEND_REQUEST_STATE_CANCELED\x10\x04\x12 \n" +
+	"\x1cFRIEND_REQUEST_STATE_BLOCKED\x10\x05\"\x05\bd\x10\xc7\x01*\xcb\x01\n" +
+	"\x13FriendRequestAction\x12%\n" +
+	"!FRIEND_REQUEST_ACTION_UNSPECIFIED\x10\x00\x12 \n" +
+	"\x1cFRIEND_REQUEST_ACTION_ACCEPT\x10\x01\x12!\n" +
+	"\x1dFRIEND_REQUEST_ACTION_DECLINE\x10\x02\x12 \n" +
+	"\x1cFRIEND_REQUEST_ACTION_CANCEL\x10\x03\x12\x1f\n" +
+	"\x1bFRIEND_REQUEST_ACTION_BLOCK\x10\x04\"\x05\bd\x10\xc7\x01*\xc4\x01\n" +
+	"\x17FriendExchangeEntryPath\x12*\n" +
+	"&FRIEND_EXCHANGE_ENTRY_PATH_UNSPECIFIED\x10\x00\x12)\n" +
+	"%FRIEND_EXCHANGE_ENTRY_PATH_PUBLIC_KEY\x10\x01\x12!\n" +
+	"\x1dFRIEND_EXCHANGE_ENTRY_PATH_QR\x10\x02\x12(\n" +
+	"$FRIEND_EXCHANGE_ENTRY_PATH_DEEP_LINK\x10\x03\"\x05\bd\x10\xc7\x01*\xbc\x01\n" +
+	"\rPresenceState\x12\x1e\n" +
+	"\x1aPRESENCE_STATE_UNSPECIFIED\x10\x00\x12\x19\n" +
+	"\x15PRESENCE_STATE_ONLINE\x10\x01\x12\x17\n" +
+	"\x13PRESENCE_STATE_IDLE\x10\x02\x12\x16\n" +
+	"\x12PRESENCE_STATE_DND\x10\x03\x12\x1c\n" +
+	"\x18PRESENCE_STATE_INVISIBLE\x10\x04\x12\x1a\n" +
+	"\x16PRESENCE_STATE_OFFLINE\x10\x05\"\x05\bd\x10\xc7\x01*\x93\x01\n" +
+	"\rPresenceEvent\x12\x1e\n" +
+	"\x1aPRESENCE_EVENT_UNSPECIFIED\x10\x00\x12\x1f\n" +
+	"\x1bPRESENCE_EVENT_IDLE_TIMEOUT\x10\x01\x12\x1b\n" +
+	"\x17PRESENCE_EVENT_ACTIVITY\x10\x02\x12\x1d\n" +
+	"\x19PRESENCE_EVENT_DISCONNECT\x10\x03\"\x05\bd\x10\xc7\x01*\xab\x01\n" +
+	"\x18PresenceTransitionReason\x12*\n" +
+	"&PRESENCE_TRANSITION_REASON_UNSPECIFIED\x10\x00\x12&\n" +
+	"\"PRESENCE_TRANSITION_REASON_APPLIED\x10\x01\x124\n" +
+	"0PRESENCE_TRANSITION_REASON_IGNORED_BY_PRECEDENCE\x10\x02\"\x05\bd\x10\xc7\x01*\x92\x01\n" +
+	"\vMentionType\x12\x1c\n" +
+	"\x18MENTION_TYPE_UNSPECIFIED\x10\x00\x12\x15\n" +
+	"\x11MENTION_TYPE_USER\x10\x01\x12\x15\n" +
+	"\x11MENTION_TYPE_ROLE\x10\x02\x12\x19\n" +
+	"\x15MENTION_TYPE_EVERYONE\x10\x03\x12\x15\n" +
+	"\x11MENTION_TYPE_HERE\x10\x04\"\x05\bd\x10\xc7\x01*\xd8\x04\n" +
+	"\fPolicyReason\x12\x1d\n" +
+	"\x19POLICY_REASON_UNSPECIFIED\x10\x00\x12$\n" +
+	" POLICY_REASON_MENTION_AUTHORIZED\x10\x01\x12&\n" +
+	"\"POLICY_REASON_MENTION_UNAUTHORIZED\x10\x02\x12\"\n" +
+	"\x1ePOLICY_REASON_SLOW_MODE_ACTIVE\x10\x03\x12\"\n" +
+	"\x1ePOLICY_REASON_SLOW_MODE_BYPASS\x10\x04\x12 \n" +
+	"\x1cPOLICY_REASON_SLOW_MODE_PASS\x10\x05\x12$\n" +
+	" POLICY_REASON_MODERATION_ALLOWED\x10\x06\x12-\n" +
+	")POLICY_REASON_MODERATION_FORBIDDEN_TARGET\x10\a\x12,\n" +
+	"(POLICY_REASON_SLOW_MODE_REPLAY_DUPLICATE\x10\b\x12.\n" +
+	"*POLICY_REASON_SLOW_MODE_REPLAY_STALE_EVENT\x10\t\x12.\n" +
+	"*POLICY_REASON_MODERATION_MISSING_SIGNATURE\x10\n" +
+	"\x12+\n" +
+	"'POLICY_REASON_MODERATION_INVALID_SIGNER\x10\v\x12.\n" +
+	"*POLICY_REASON_MODERATION_INVALID_SIGNATURE\x10\f\x12*\n" +
+	"&POLICY_REASON_MODERATION_NON_COMPLIANT\x10\r\"\x05\bd\x10\xc7\x01*\xf4\x01\n" +
+	"\x10NotificationKind\x12!\n" +
+	"\x1dNOTIFICATION_KIND_UNSPECIFIED\x10\x00\x12\x18\n" +
+	"\x14NOTIFICATION_KIND_DM\x10\x01\x12\x1e\n" +
+	"\x1aNOTIFICATION_KIND_GROUP_DM\x10\x02\x12\x1c\n" +
+	"\x18NOTIFICATION_KIND_FRIEND\x10\x03\x12\x1e\n" +
+	"\x1aNOTIFICATION_KIND_PRESENCE\x10\x04\x12 \n" +
+	"\x1cNOTIFICATION_KIND_MODERATION\x10\x05\x12\x1c\n" +
+	"\x18NOTIFICATION_KIND_SYSTEM\x10\x06\"\x05\bd\x10\xc7\x01*\xb2\x01\n" +
+	"\x10ModerationAction\x12!\n" +
+	"\x1dMODERATION_ACTION_UNSPECIFIED\x10\x00\x12\x1c\n" +
+	"\x18MODERATION_ACTION_REDACT\x10\x01\x12\x1c\n" +
+	"\x18MODERATION_ACTION_DELETE\x10\x02\x12\x1d\n" +
+	"\x19MODERATION_ACTION_TIMEOUT\x10\x03\x12\x19\n" +
+	"\x15MODERATION_ACTION_BAN\x10\x04\"\x05\bd\x10\xc7\x01*\x7f\n" +
+	"\aV02Role\x12\x18\n" +
+	"\x14V02_ROLE_UNSPECIFIED\x10\x00\x12\x13\n" +
+	"\x0fV02_ROLE_MEMBER\x10\x01\x12\x16\n" +
+	"\x12V02_ROLE_MODERATOR\x10\x02\x12\x12\n" +
+	"\x0eV02_ROLE_ADMIN\x10\x03\x12\x12\n" +
+	"\x0eV02_ROLE_OWNER\x10\x04\"\x05\bd\x10\xc7\x01*\x84\x01\n" +
 	"\x12VerificationStatus\x12#\n" +
 	"\x1fVERIFICATION_STATUS_UNSPECIFIED\x10\x00\x12 \n" +
 	"\x1cVERIFICATION_STATUS_ACCEPTED\x10\x01\x12 \n" +
@@ -2283,75 +7203,184 @@ func file_proto_aether_proto_rawDescGZIP() []byte {
 	return file_proto_aether_proto_rawDescData
 }
 
-var file_proto_aether_proto_enumTypes = make([]protoimpl.EnumInfo, 10)
-var file_proto_aether_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_proto_aether_proto_enumTypes = make([]protoimpl.EnumInfo, 37)
+var file_proto_aether_proto_msgTypes = make([]protoimpl.MessageInfo, 51)
 var file_proto_aether_proto_goTypes = []any{
-	(CapabilityFlag)(0),             // 0: aether.CapabilityFlag
-	(PayloadType)(0),                // 1: aether.PayloadType
-	(VoiceCodec)(0),                 // 2: aether.VoiceCodec
-	(VoiceLifecycleState)(0),        // 3: aether.VoiceLifecycleState
-	(VoiceReconnectClass)(0),        // 4: aether.VoiceReconnectClass
-	(VoiceSignalType)(0),            // 5: aether.VoiceSignalType
-	(VoiceSignalSessionStatus)(0),   // 6: aether.VoiceSignalSessionStatus
-	(SignatureAlgorithm)(0),         // 7: aether.SignatureAlgorithm
-	(EnvelopeVerificationError)(0),  // 8: aether.EnvelopeVerificationError
-	(VerificationStatus)(0),         // 9: aether.VerificationStatus
-	(*CapabilitySet)(nil),           // 10: aether.CapabilitySet
-	(*IdentityProfile)(nil),         // 11: aether.IdentityProfile
-	(*MembershipState)(nil),         // 12: aether.MembershipState
-	(*ServerManifest)(nil),          // 13: aether.ServerManifest
-	(*ChatMessage)(nil),             // 14: aether.ChatMessage
-	(*VoiceState)(nil),              // 15: aether.VoiceState
-	(*VoiceCodecProfile)(nil),       // 16: aether.VoiceCodecProfile
-	(*VoiceTransportProfile)(nil),   // 17: aether.VoiceTransportProfile
-	(*VoiceReconnectPolicy)(nil),    // 18: aether.VoiceReconnectPolicy
-	(*VoiceLifecycleHook)(nil),      // 19: aether.VoiceLifecycleHook
-	(*VoicePipelineBaseline)(nil),   // 20: aether.VoicePipelineBaseline
-	(*VoiceSignalSessionRef)(nil),   // 21: aether.VoiceSignalSessionRef
-	(*VoiceSignalRetryPolicy)(nil),  // 22: aether.VoiceSignalRetryPolicy
-	(*VoiceSignalFrame)(nil),        // 23: aether.VoiceSignalFrame
-	(*VoiceSignalSessionState)(nil), // 24: aether.VoiceSignalSessionState
-	(*SignedEnvelope)(nil),          // 25: aether.SignedEnvelope
-	(*VerificationError)(nil),       // 26: aether.VerificationError
-	(*EnvelopeVerification)(nil),    // 27: aether.EnvelopeVerification
-	(*AetherPlaceholder)(nil),       // 28: aether.AetherPlaceholder
-	nil,                             // 29: aether.CapabilitySet.CustomClaimsEntry
+	(CapabilityFlag)(0),                    // 0: aether.CapabilityFlag
+	(PayloadType)(0),                       // 1: aether.PayloadType
+	(VoiceCodec)(0),                        // 2: aether.VoiceCodec
+	(VoiceLifecycleState)(0),               // 3: aether.VoiceLifecycleState
+	(VoiceReconnectClass)(0),               // 4: aether.VoiceReconnectClass
+	(VoiceSignalType)(0),                   // 5: aether.VoiceSignalType
+	(VoiceSignalSessionStatus)(0),          // 6: aether.VoiceSignalSessionStatus
+	(SignatureAlgorithm)(0),                // 7: aether.SignatureAlgorithm
+	(EnvelopeVerificationError)(0),         // 8: aether.EnvelopeVerificationError
+	(SecurityMode)(0),                      // 9: aether.SecurityMode
+	(DmDeliveryPath)(0),                    // 10: aether.DmDeliveryPath
+	(DmTransportReason)(0),                 // 11: aether.DmTransportReason
+	(DmDirectSessionState)(0),              // 12: aether.DmDirectSessionState
+	(DmDirectSessionEvent)(0),              // 13: aether.DmDirectSessionEvent
+	(DmReceiptStatus)(0),                   // 14: aether.DmReceiptStatus
+	(GroupDmMemberState)(0),                // 15: aether.GroupDmMemberState
+	(GroupDmMembershipEventType)(0),        // 16: aether.GroupDmMembershipEventType
+	(GroupDmMemberCapReason)(0),            // 17: aether.GroupDmMemberCapReason
+	(GroupDmKeyDistributionReason)(0),      // 18: aether.GroupDmKeyDistributionReason
+	(GroupDmRekeyTrigger)(0),               // 19: aether.GroupDmRekeyTrigger
+	(GroupDmRekeyReason)(0),                // 20: aether.GroupDmRekeyReason
+	(GroupDmTransportPath)(0),              // 21: aether.GroupDmTransportPath
+	(GroupDmTransportReason)(0),            // 22: aether.GroupDmTransportReason
+	(GroupDmHistorySyncReason)(0),          // 23: aether.GroupDmHistorySyncReason
+	(GroupDmGrowthReason)(0),               // 24: aether.GroupDmGrowthReason
+	(FriendRequestState)(0),                // 25: aether.FriendRequestState
+	(FriendRequestAction)(0),               // 26: aether.FriendRequestAction
+	(FriendExchangeEntryPath)(0),           // 27: aether.FriendExchangeEntryPath
+	(PresenceState)(0),                     // 28: aether.PresenceState
+	(PresenceEvent)(0),                     // 29: aether.PresenceEvent
+	(PresenceTransitionReason)(0),          // 30: aether.PresenceTransitionReason
+	(MentionType)(0),                       // 31: aether.MentionType
+	(PolicyReason)(0),                      // 32: aether.PolicyReason
+	(NotificationKind)(0),                  // 33: aether.NotificationKind
+	(ModerationAction)(0),                  // 34: aether.ModerationAction
+	(V02Role)(0),                           // 35: aether.V02Role
+	(VerificationStatus)(0),                // 36: aether.VerificationStatus
+	(*CapabilitySet)(nil),                  // 37: aether.CapabilitySet
+	(*IdentityProfile)(nil),                // 38: aether.IdentityProfile
+	(*MembershipState)(nil),                // 39: aether.MembershipState
+	(*ServerManifest)(nil),                 // 40: aether.ServerManifest
+	(*ChatMessage)(nil),                    // 41: aether.ChatMessage
+	(*VoiceState)(nil),                     // 42: aether.VoiceState
+	(*VoiceCodecProfile)(nil),              // 43: aether.VoiceCodecProfile
+	(*VoiceTransportProfile)(nil),          // 44: aether.VoiceTransportProfile
+	(*VoiceReconnectPolicy)(nil),           // 45: aether.VoiceReconnectPolicy
+	(*VoiceLifecycleHook)(nil),             // 46: aether.VoiceLifecycleHook
+	(*VoicePipelineBaseline)(nil),          // 47: aether.VoicePipelineBaseline
+	(*VoiceSignalSessionRef)(nil),          // 48: aether.VoiceSignalSessionRef
+	(*VoiceSignalRetryPolicy)(nil),         // 49: aether.VoiceSignalRetryPolicy
+	(*VoiceSignalFrame)(nil),               // 50: aether.VoiceSignalFrame
+	(*VoiceSignalSessionState)(nil),        // 51: aether.VoiceSignalSessionState
+	(*SignedEnvelope)(nil),                 // 52: aether.SignedEnvelope
+	(*VerificationError)(nil),              // 53: aether.VerificationError
+	(*EnvelopeVerification)(nil),           // 54: aether.EnvelopeVerification
+	(*AetherPlaceholder)(nil),              // 55: aether.AetherPlaceholder
+	(*ProtocolMetadata)(nil),               // 56: aether.ProtocolMetadata
+	(*DmPrekeyRecord)(nil),                 // 57: aether.DmPrekeyRecord
+	(*DmMessageEnvelope)(nil),              // 58: aether.DmMessageEnvelope
+	(*DmQueuedMessage)(nil),                // 59: aether.DmQueuedMessage
+	(*DmTransportDecision)(nil),            // 60: aether.DmTransportDecision
+	(*DmDirectSessionLifecycle)(nil),       // 61: aether.DmDirectSessionLifecycle
+	(*DmDeliveryReceipt)(nil),              // 62: aether.DmDeliveryReceipt
+	(*GroupDmMemberCap)(nil),               // 63: aether.GroupDmMemberCap
+	(*GroupDmMembershipEvent)(nil),         // 64: aether.GroupDmMembershipEvent
+	(*GroupDmSenderKeyEnvelope)(nil),       // 65: aether.GroupDmSenderKeyEnvelope
+	(*GroupDmKeyDistributionDecision)(nil), // 66: aether.GroupDmKeyDistributionDecision
+	(*GroupDmRekeyDecision)(nil),           // 67: aether.GroupDmRekeyDecision
+	(*GroupDmTransportDecision)(nil),       // 68: aether.GroupDmTransportDecision
+	(*GroupDmHistorySyncDecision)(nil),     // 69: aether.GroupDmHistorySyncDecision
+	(*GroupDmConvertPlan)(nil),             // 70: aether.GroupDmConvertPlan
+	(*GroupDmGrowthDecision)(nil),          // 71: aether.GroupDmGrowthDecision
+	(*FriendRequest)(nil),                  // 72: aether.FriendRequest
+	(*FriendIdentityShare)(nil),            // 73: aether.FriendIdentityShare
+	(*FriendInvitePayload)(nil),            // 74: aether.FriendInvitePayload
+	(*FriendConcurrentResolution)(nil),     // 75: aether.FriendConcurrentResolution
+	(*PresenceStateEntry)(nil),             // 76: aether.PresenceStateEntry
+	(*PresenceEventRecord)(nil),            // 77: aether.PresenceEventRecord
+	(*PresenceDisseminationPolicy)(nil),    // 78: aether.PresenceDisseminationPolicy
+	(*NotificationEvent)(nil),              // 79: aether.NotificationEvent
+	(*MentionToken)(nil),                   // 80: aether.MentionToken
+	(*PolicyDecision)(nil),                 // 81: aether.PolicyDecision
+	(*SlowModeActorState)(nil),             // 82: aether.SlowModeActorState
+	(*SlowModeDecision)(nil),               // 83: aether.SlowModeDecision
+	(*ModerationEvent)(nil),                // 84: aether.ModerationEvent
+	(*RoleState)(nil),                      // 85: aether.RoleState
+	(*GovernanceMetadata)(nil),             // 86: aether.GovernanceMetadata
+	nil,                                    // 87: aether.CapabilitySet.CustomClaimsEntry
 }
 var file_proto_aether_proto_depIdxs = []int32{
 	0,  // 0: aether.CapabilitySet.flags:type_name -> aether.CapabilityFlag
-	29, // 1: aether.CapabilitySet.custom_claims:type_name -> aether.CapabilitySet.CustomClaimsEntry
-	10, // 2: aether.IdentityProfile.advertised_capabilities:type_name -> aether.CapabilitySet
-	11, // 3: aether.MembershipState.member:type_name -> aether.IdentityProfile
-	10, // 4: aether.MembershipState.granted_capabilities:type_name -> aether.CapabilitySet
-	11, // 5: aether.ServerManifest.owner:type_name -> aether.IdentityProfile
-	12, // 6: aether.ServerManifest.members:type_name -> aether.MembershipState
-	10, // 7: aether.ServerManifest.server_capabilities:type_name -> aether.CapabilitySet
-	11, // 8: aether.ChatMessage.sender:type_name -> aether.IdentityProfile
-	11, // 9: aether.VoiceState.participant:type_name -> aether.IdentityProfile
+	87, // 1: aether.CapabilitySet.custom_claims:type_name -> aether.CapabilitySet.CustomClaimsEntry
+	37, // 2: aether.IdentityProfile.advertised_capabilities:type_name -> aether.CapabilitySet
+	38, // 3: aether.MembershipState.member:type_name -> aether.IdentityProfile
+	37, // 4: aether.MembershipState.granted_capabilities:type_name -> aether.CapabilitySet
+	38, // 5: aether.ServerManifest.owner:type_name -> aether.IdentityProfile
+	39, // 6: aether.ServerManifest.members:type_name -> aether.MembershipState
+	37, // 7: aether.ServerManifest.server_capabilities:type_name -> aether.CapabilitySet
+	38, // 8: aether.ChatMessage.sender:type_name -> aether.IdentityProfile
+	38, // 9: aether.VoiceState.participant:type_name -> aether.IdentityProfile
 	2,  // 10: aether.VoiceCodecProfile.codec:type_name -> aether.VoiceCodec
 	4,  // 11: aether.VoiceReconnectPolicy.retryable_classes:type_name -> aether.VoiceReconnectClass
 	3,  // 12: aether.VoiceLifecycleHook.state:type_name -> aether.VoiceLifecycleState
-	16, // 13: aether.VoicePipelineBaseline.codec_profile:type_name -> aether.VoiceCodecProfile
-	17, // 14: aether.VoicePipelineBaseline.transport_profile:type_name -> aether.VoiceTransportProfile
-	18, // 15: aether.VoicePipelineBaseline.reconnect_policy:type_name -> aether.VoiceReconnectPolicy
-	19, // 16: aether.VoicePipelineBaseline.lifecycle_hooks:type_name -> aether.VoiceLifecycleHook
-	21, // 17: aether.VoiceSignalFrame.session_ref:type_name -> aether.VoiceSignalSessionRef
+	43, // 13: aether.VoicePipelineBaseline.codec_profile:type_name -> aether.VoiceCodecProfile
+	44, // 14: aether.VoicePipelineBaseline.transport_profile:type_name -> aether.VoiceTransportProfile
+	45, // 15: aether.VoicePipelineBaseline.reconnect_policy:type_name -> aether.VoiceReconnectPolicy
+	46, // 16: aether.VoicePipelineBaseline.lifecycle_hooks:type_name -> aether.VoiceLifecycleHook
+	48, // 17: aether.VoiceSignalFrame.session_ref:type_name -> aether.VoiceSignalSessionRef
 	5,  // 18: aether.VoiceSignalFrame.signal_type:type_name -> aether.VoiceSignalType
-	22, // 19: aether.VoiceSignalFrame.retry_policy:type_name -> aether.VoiceSignalRetryPolicy
-	21, // 20: aether.VoiceSignalSessionState.session_ref:type_name -> aether.VoiceSignalSessionRef
+	49, // 19: aether.VoiceSignalFrame.retry_policy:type_name -> aether.VoiceSignalRetryPolicy
+	48, // 20: aether.VoiceSignalSessionState.session_ref:type_name -> aether.VoiceSignalSessionRef
 	6,  // 21: aether.VoiceSignalSessionState.status:type_name -> aether.VoiceSignalSessionStatus
 	1,  // 22: aether.SignedEnvelope.payload_type:type_name -> aether.PayloadType
-	11, // 23: aether.SignedEnvelope.signer:type_name -> aether.IdentityProfile
+	38, // 23: aether.SignedEnvelope.signer:type_name -> aether.IdentityProfile
 	7,  // 24: aether.SignedEnvelope.signature_algorithm:type_name -> aether.SignatureAlgorithm
 	8,  // 25: aether.VerificationError.code:type_name -> aether.EnvelopeVerificationError
-	25, // 26: aether.EnvelopeVerification.envelope:type_name -> aether.SignedEnvelope
-	9,  // 27: aether.EnvelopeVerification.status:type_name -> aether.VerificationStatus
-	26, // 28: aether.EnvelopeVerification.errors:type_name -> aether.VerificationError
-	29, // [29:29] is the sub-list for method output_type
-	29, // [29:29] is the sub-list for method input_type
-	29, // [29:29] is the sub-list for extension type_name
-	29, // [29:29] is the sub-list for extension extendee
-	0,  // [0:29] is the sub-list for field type_name
+	52, // 26: aether.EnvelopeVerification.envelope:type_name -> aether.SignedEnvelope
+	36, // 27: aether.EnvelopeVerification.status:type_name -> aether.VerificationStatus
+	53, // 28: aether.EnvelopeVerification.errors:type_name -> aether.VerificationError
+	9,  // 29: aether.ProtocolMetadata.security_mode:type_name -> aether.SecurityMode
+	9,  // 30: aether.DmMessageEnvelope.security_mode:type_name -> aether.SecurityMode
+	9,  // 31: aether.DmQueuedMessage.security_mode:type_name -> aether.SecurityMode
+	10, // 32: aether.DmTransportDecision.path:type_name -> aether.DmDeliveryPath
+	11, // 33: aether.DmTransportDecision.reason:type_name -> aether.DmTransportReason
+	12, // 34: aether.DmTransportDecision.session_state:type_name -> aether.DmDirectSessionState
+	12, // 35: aether.DmDirectSessionLifecycle.current_state:type_name -> aether.DmDirectSessionState
+	12, // 36: aether.DmDirectSessionLifecycle.next_state:type_name -> aether.DmDirectSessionState
+	13, // 37: aether.DmDirectSessionLifecycle.event:type_name -> aether.DmDirectSessionEvent
+	11, // 38: aether.DmDirectSessionLifecycle.reason:type_name -> aether.DmTransportReason
+	10, // 39: aether.DmDeliveryReceipt.path:type_name -> aether.DmDeliveryPath
+	14, // 40: aether.DmDeliveryReceipt.status:type_name -> aether.DmReceiptStatus
+	17, // 41: aether.GroupDmMemberCap.reason:type_name -> aether.GroupDmMemberCapReason
+	15, // 42: aether.GroupDmMembershipEvent.current_state:type_name -> aether.GroupDmMemberState
+	15, // 43: aether.GroupDmMembershipEvent.next_state:type_name -> aether.GroupDmMemberState
+	16, // 44: aether.GroupDmMembershipEvent.event_type:type_name -> aether.GroupDmMembershipEventType
+	9,  // 45: aether.GroupDmMembershipEvent.security_mode:type_name -> aether.SecurityMode
+	7,  // 46: aether.GroupDmSenderKeyEnvelope.signature_algorithm:type_name -> aether.SignatureAlgorithm
+	18, // 47: aether.GroupDmKeyDistributionDecision.reason:type_name -> aether.GroupDmKeyDistributionReason
+	19, // 48: aether.GroupDmRekeyDecision.trigger:type_name -> aether.GroupDmRekeyTrigger
+	20, // 49: aether.GroupDmRekeyDecision.reason:type_name -> aether.GroupDmRekeyReason
+	21, // 50: aether.GroupDmTransportDecision.path:type_name -> aether.GroupDmTransportPath
+	22, // 51: aether.GroupDmTransportDecision.reason:type_name -> aether.GroupDmTransportReason
+	23, // 52: aether.GroupDmHistorySyncDecision.reason:type_name -> aether.GroupDmHistorySyncReason
+	24, // 53: aether.GroupDmGrowthDecision.reason:type_name -> aether.GroupDmGrowthReason
+	70, // 54: aether.GroupDmGrowthDecision.convert_plan:type_name -> aether.GroupDmConvertPlan
+	25, // 55: aether.FriendRequest.state:type_name -> aether.FriendRequestState
+	26, // 56: aether.FriendRequest.action:type_name -> aether.FriendRequestAction
+	7,  // 57: aether.FriendRequest.signature_algorithm:type_name -> aether.SignatureAlgorithm
+	36, // 58: aether.FriendRequest.verification_status:type_name -> aether.VerificationStatus
+	73, // 59: aether.FriendInvitePayload.identity_share:type_name -> aether.FriendIdentityShare
+	27, // 60: aether.FriendInvitePayload.entry_path:type_name -> aether.FriendExchangeEntryPath
+	7,  // 61: aether.FriendInvitePayload.signature_algorithm:type_name -> aether.SignatureAlgorithm
+	25, // 62: aether.FriendConcurrentResolution.state:type_name -> aether.FriendRequestState
+	28, // 63: aether.PresenceStateEntry.state:type_name -> aether.PresenceState
+	30, // 64: aether.PresenceStateEntry.transition_reason:type_name -> aether.PresenceTransitionReason
+	28, // 65: aether.PresenceEventRecord.previous_state:type_name -> aether.PresenceState
+	28, // 66: aether.PresenceEventRecord.next_state:type_name -> aether.PresenceState
+	29, // 67: aether.PresenceEventRecord.event:type_name -> aether.PresenceEvent
+	30, // 68: aether.PresenceEventRecord.reason:type_name -> aether.PresenceTransitionReason
+	33, // 69: aether.NotificationEvent.kind:type_name -> aether.NotificationKind
+	31, // 70: aether.MentionToken.type:type_name -> aether.MentionType
+	32, // 71: aether.PolicyDecision.reason:type_name -> aether.PolicyReason
+	32, // 72: aether.SlowModeDecision.reason:type_name -> aether.PolicyReason
+	82, // 73: aether.SlowModeDecision.actors:type_name -> aether.SlowModeActorState
+	34, // 74: aether.ModerationEvent.action:type_name -> aether.ModerationAction
+	32, // 75: aether.ModerationEvent.reason:type_name -> aether.PolicyReason
+	7,  // 76: aether.ModerationEvent.signature_algorithm:type_name -> aether.SignatureAlgorithm
+	36, // 77: aether.ModerationEvent.verification_status:type_name -> aether.VerificationStatus
+	35, // 78: aether.RoleState.role:type_name -> aether.V02Role
+	9,  // 79: aether.GovernanceMetadata.security_mode:type_name -> aether.SecurityMode
+	80, // [80:80] is the sub-list for method output_type
+	80, // [80:80] is the sub-list for method input_type
+	80, // [80:80] is the sub-list for extension type_name
+	80, // [80:80] is the sub-list for extension extendee
+	0,  // [0:80] is the sub-list for field type_name
 }
 
 func init() { file_proto_aether_proto_init() }
@@ -2364,8 +7393,8 @@ func file_proto_aether_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_aether_proto_rawDesc), len(file_proto_aether_proto_rawDesc)),
-			NumEnums:      10,
-			NumMessages:   20,
+			NumEnums:      37,
+			NumMessages:   51,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

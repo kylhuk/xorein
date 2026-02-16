@@ -18,6 +18,15 @@ const (
 	FeatureManifest   FeatureFlag = "cap.manifest"
 	FeatureIdentity   FeatureFlag = "cap.identity"
 	FeatureSync       FeatureFlag = "cap.sync"
+	FeatureDM         FeatureFlag = "cap.dm"
+	FeatureGroupDM    FeatureFlag = "cap.group-dm"
+	FeatureFriends    FeatureFlag = "cap.friends"
+	FeaturePresence   FeatureFlag = "cap.presence"
+	FeatureNotify     FeatureFlag = "cap.notify"
+	FeatureMentions   FeatureFlag = "cap.mentions"
+	FeatureModeration FeatureFlag = "cap.moderation"
+	FeatureRBAC       FeatureFlag = "cap.rbac"
+	FeatureSlowMode   FeatureFlag = "cap.slow-mode"
 )
 
 var defaultFeatureFlags = []FeatureFlag{
@@ -27,6 +36,40 @@ var defaultFeatureFlags = []FeatureFlag{
 	FeatureManifest,
 	FeatureIdentity,
 	FeatureSync,
+	FeatureDM,
+	FeatureGroupDM,
+	FeatureFriends,
+	FeaturePresence,
+	FeatureNotify,
+	FeatureMentions,
+	FeatureModeration,
+	FeatureRBAC,
+	FeatureSlowMode,
+}
+
+// SecurityMode is the negotiated conversation posture label.
+type SecurityMode string
+
+const (
+	SecurityModeUnspecified SecurityMode = "unspecified"
+	SecurityModeSeal        SecurityMode = "seal"
+	SecurityModeTree        SecurityMode = "tree"
+	SecurityModeClear       SecurityMode = "clear"
+)
+
+// ModeNegotiationReason provides deterministic mode negotiation outcomes.
+type ModeNegotiationReason string
+
+const (
+	ModeNegotiationReasonMatched     ModeNegotiationReason = "matched"
+	ModeNegotiationReasonUnsupported ModeNegotiationReason = "unsupported-mode"
+	ModeNegotiationReasonNoOffer     ModeNegotiationReason = "no-offer"
+)
+
+// ModeNegotiationResult captures negotiated mode and deterministic reason.
+type ModeNegotiationResult struct {
+	Mode   SecurityMode
+	Reason ModeNegotiationReason
 }
 
 // DefaultFeatureFlags returns the canonical v0.1 capability names.
@@ -144,6 +187,27 @@ func NegotiateCapabilities(localSupported []FeatureFlag, remoteAdvertised []stri
 		result.Feedback = CapabilityFeedbackRemoteFeaturesIgnored
 	}
 	return result
+}
+
+// NegotiateConversationSecurityMode returns the first shared mode based on
+// deterministic local preference order.
+func NegotiateConversationSecurityMode(localPreferred []SecurityMode, remoteOffered []SecurityMode) ModeNegotiationResult {
+	if len(remoteOffered) == 0 {
+		return ModeNegotiationResult{Mode: SecurityModeUnspecified, Reason: ModeNegotiationReasonNoOffer}
+	}
+	offered := make(map[SecurityMode]struct{}, len(remoteOffered))
+	for _, mode := range remoteOffered {
+		offered[mode] = struct{}{}
+	}
+	for _, mode := range localPreferred {
+		if mode == SecurityModeUnspecified {
+			continue
+		}
+		if _, ok := offered[mode]; ok {
+			return ModeNegotiationResult{Mode: mode, Reason: ModeNegotiationReasonMatched}
+		}
+	}
+	return ModeNegotiationResult{Mode: SecurityModeUnspecified, Reason: ModeNegotiationReasonUnsupported}
 }
 
 func sortFeatureFlags(set map[FeatureFlag]struct{}) []FeatureFlag {
