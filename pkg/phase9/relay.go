@@ -2,6 +2,7 @@ package phase9
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -46,6 +47,7 @@ func (c Config) Normalize() (Config, error) {
 // Service tracks bounded relay reservations and emits deterministic observability snapshots.
 type Service struct {
 	cfg         Config
+	mu          sync.Mutex
 	active      int
 	rejected    uint64
 	timedOut    uint64
@@ -88,6 +90,8 @@ func NewService(cfg Config) (*Service, error) {
 
 // Reserve attempts to admit a relay reservation and enforces configured limits.
 func (s *Service) Reserve() bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	if s.active >= s.cfg.ReservationLimit {
 		s.rejected++
 		return false
@@ -99,6 +103,8 @@ func (s *Service) Reserve() bool {
 
 // Release closes an active reservation if one exists.
 func (s *Service) Release() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	if s.active > 0 {
 		s.active--
 	}
@@ -106,6 +112,8 @@ func (s *Service) Release() {
 
 // ExpireOne records an active reservation timeout event.
 func (s *Service) ExpireOne() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	if s.active > 0 {
 		s.active--
 		s.timedOut++
@@ -114,6 +122,8 @@ func (s *Service) ExpireOne() {
 
 // Snapshot returns a stable view of relay limits and policy counters.
 func (s *Service) Snapshot() Snapshot {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	return Snapshot{
 		ReservationLimit: s.cfg.ReservationLimit,
 		SessionTimeout:   s.cfg.SessionTimeout,

@@ -148,7 +148,7 @@ func (r *GossipSignalingRuntime) ReceiveAndDispatch(encoded []byte) (*apb.VoiceS
 	if frame.GetSignalType() == apb.VoiceSignalType_VOICE_SIGNAL_TYPE_ICE_CANDIDATE {
 		r.lastICEUpdate = frame.GetSentAt()
 	}
-	if r.machine.FailOnICETimeout(r.lastICEUpdate) {
+	if r.lastICEUpdate != 0 && r.machine.FailOnICETimeout(r.lastICEUpdate) {
 		return nil, nil, ErrSignalICEUpdateTimeout
 	}
 
