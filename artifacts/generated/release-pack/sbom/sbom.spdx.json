@@ -1,1 +1,26 @@
-sbom-placeholder
+{
+  "spdxVersion": "SPDX-2.3",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "aether-v0.1-release-pack",
+  "documentNamespace": "https://aether.invalid/spdx/release-pack/v0.1",
+  "creationInfo": {
+    "created": "1970-01-01T00:00:00Z",
+    "creators": ["Tool: scripts/release-pack-verify.sh"]
+  },
+  "files": [
+    {
+      "SPDXID": "SPDXRef-File-BinAether",
+      "fileName": "bin/aether",
+      "checksums": [
+        {"algorithm": "SHA256", "checksumValue": "b0f06aa6e9b7cca2172d85562a0be0e7fdb1a7300e0cc6a1269d83ddee678387"}
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-File-Stamp",
+      "fileName": "artifacts/generated/stamp.txt",
+      "checksums": [
+        {"algorithm": "SHA256", "checksumValue": "8adda0878faf2cd0bf0aaea03902d6e263e99861dd1837d3288e0297cdb38dca"}
+      ]
+    }
+  ]
+}

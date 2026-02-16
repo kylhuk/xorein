@@ -12,11 +12,11 @@ func TestSFrameKeyDistributorIssueAndRefresh(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewChannelModel() error = %v", err)
 	}
-	if _, err := channel.RegisterChannel(phase7.ChannelMetadata{ID: phase7.ChannelID("voice_main")}); err != nil {
-		t.Fatalf("RegisterChannel() error = %v", err)
+	if _, registerErr := channel.RegisterChannel(phase7.ChannelMetadata{ID: phase7.ChannelID("voice_main")}); registerErr != nil {
+		t.Fatalf("RegisterChannel() error = %v", registerErr)
 	}
-	if _, err := channel.Join(phase7.ParticipantID("alice"), phase7.ChannelID("voice_main")); err != nil {
-		t.Fatalf("Join(alice) error = %v", err)
+	if _, joinErr := channel.Join(phase7.ParticipantID("alice"), phase7.ChannelID("voice_main")); joinErr != nil {
+		t.Fatalf("Join(alice) error = %v", joinErr)
 	}
 
 	distributor, err := NewSFrameKeyDistributor(channel, phase7.NewBootstrapper())
@@ -60,8 +60,8 @@ func TestSFrameKeyDistributorValidationAndMembershipGuards(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewChannelModel() error = %v", err)
 	}
-	if _, err := channel.RegisterChannel(phase7.ChannelMetadata{ID: phase7.ChannelID("voice_main")}); err != nil {
-		t.Fatalf("RegisterChannel() error = %v", err)
+	if _, registerErr := channel.RegisterChannel(phase7.ChannelMetadata{ID: phase7.ChannelID("voice_main")}); registerErr != nil {
+		t.Fatalf("RegisterChannel() error = %v", registerErr)
 	}
 
 	distributor, err := NewSFrameKeyDistributor(channel, phase7.NewBootstrapper())

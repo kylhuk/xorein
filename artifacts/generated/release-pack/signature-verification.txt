@@ -1,2 +1,12 @@
-signature-workflow: planned-only
-status: blocked-by-P11-T3
+signature-workflow: ed25519-detached
+signing_method: go-ed25519-via-podman
+signing_image: docker.io/library/golang:1.24.8
+payload: artifacts/generated/release-pack/signing/payload.txt
+sign_output:
+payload_sha256=e54287ff6d2e364788628910017fddf59baea0d4ce77ff490b472aa68f874acd
+public_key_hex=03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8
+signature_base64=tWE8/GzZz7d+1OHOUDqqmCcIJvwx5ndsQPE7W81i1kqIPt0WOx0QK5hn8gzyQzj8vHm1ImnRFz5EVZjoAk+jAg==
+verify_output:
+payload_sha256=e54287ff6d2e364788628910017fddf59baea0d4ce77ff490b472aa68f874acd
+verification=OK
+status: verified

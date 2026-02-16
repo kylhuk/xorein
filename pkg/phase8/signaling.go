@@ -169,11 +169,15 @@ func (r *GossipSignalingRuntime) nextRetryAttempt(signalType apb.VoiceSignalType
 }
 
 func (r *GossipSignalingRuntime) canRetry(signalType apb.VoiceSignalType, attempt int) bool {
+	if attempt < 0 {
+		return false
+	}
+	attemptI64 := int64(attempt)
 	switch signalType {
 	case apb.VoiceSignalType_VOICE_SIGNAL_TYPE_OFFER:
-		return uint32(attempt) < r.retryPolicy.GetMaxOfferAttempts()
+		return attemptI64 < int64(r.retryPolicy.GetMaxOfferAttempts())
 	case apb.VoiceSignalType_VOICE_SIGNAL_TYPE_ANSWER:
-		return uint32(attempt) < r.retryPolicy.GetMaxAnswerAttempts()
+		return attemptI64 < int64(r.retryPolicy.GetMaxAnswerAttempts())
 	default:
 		return false
 	}
@@ -258,9 +262,11 @@ func NewVoiceSignalFrame(sessionRef *apb.VoiceSignalSessionRef, signalType apb.V
 func (m *SignalingSessionMachine) State() *apb.VoiceSignalSessionState {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	copy := *m.state
-	copy.SessionRef = cloneSessionRef(m.state.GetSessionRef())
-	return &copy
+	state, ok := proto.Clone(m.state).(*apb.VoiceSignalSessionState)
+	if !ok || state == nil {
+		return &apb.VoiceSignalSessionState{}
+	}
+	return state
 }
 
 func (m *SignalingSessionMachine) NextOfferAttempt() (uint32, uint32, error) {

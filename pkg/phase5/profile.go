@@ -45,6 +45,59 @@ type Profile struct {
 	UpdatedAt   time.Time
 }
 
+// ProfileFieldSensitivity classifies privacy impact for profile fields.
+type ProfileFieldSensitivity string
+
+const (
+	ProfileSensitivityRestricted  ProfileFieldSensitivity = "restricted"
+	ProfileSensitivityPersonal    ProfileFieldSensitivity = "personal"
+	ProfileSensitivityPublic      ProfileFieldSensitivity = "public"
+	ProfileSensitivityOperational ProfileFieldSensitivity = "operational"
+)
+
+var profileFieldSensitivity = map[string]ProfileFieldSensitivity{
+	"identity":     ProfileSensitivityRestricted,
+	"display_name": ProfileSensitivityPublic,
+	"bio":          ProfileSensitivityPersonal,
+	"avatar_url":   ProfileSensitivityPersonal,
+	"version":      ProfileSensitivityOperational,
+	"updated_at":   ProfileSensitivityOperational,
+}
+
+// ProfileFieldSensitivityMap returns a stable copy of profile field
+// sensitivity classifications.
+func ProfileFieldSensitivityMap() map[string]ProfileFieldSensitivity {
+	out := make(map[string]ProfileFieldSensitivity, len(profileFieldSensitivity))
+	for field, class := range profileFieldSensitivity {
+		out[field] = class
+	}
+	return out
+}
+
+// DefaultProfileOptionalFields clears optional profile fields unless explicitly
+// provided by the caller.
+func DefaultProfileOptionalFields(p *Profile) {
+	if p == nil {
+		return
+	}
+	p.Bio = ""
+	p.AvatarURL = ""
+}
+
+// RedactedProfileMetadata returns a deterministic, privacy-preserving metadata
+// view that excludes personal optional fields.
+func RedactedProfileMetadata(p *Profile) map[string]any {
+	if p == nil {
+		return map[string]any{}
+	}
+	return map[string]any{
+		"identity":     p.Identity,
+		"display_name": p.DisplayName,
+		"version":      p.Version,
+		"updated_at":   p.UpdatedAt.UTC().Format(time.RFC3339Nano),
+	}
+}
+
 // ValidateFields enforces deterministic profile field requirements.
 func (p *Profile) ValidateFields() error {
 	if p == nil {

@@ -10,6 +10,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"math"
 	"strings"
 )
 
@@ -196,20 +197,36 @@ func (env StorageEnvelope) Marshal() ([]byte, error) {
 	if err := env.Validate(); err != nil {
 		return nil, err
 	}
+	if !storageEnvelopeMarshalLengthsWithinBounds(uint64(len(env.Salt)), uint64(len(env.Nonce)), uint64(len(env.Ciphertext))) {
+		return nil, errInvalidEnvelope
+	}
+	saltLen := uint32(len(env.Salt))         // #nosec G115 -- bounded by MaxUint32 check above
+	nonceLen := uint32(len(env.Nonce))       // #nosec G115 -- bounded by MaxUint32 check above
+	cipherLen := uint32(len(env.Ciphertext)) // #nosec G115 -- bounded by MaxUint32 check above
 	buf := make([]byte, 4+len(env.Salt)+4+len(env.Nonce)+4+len(env.Ciphertext))
 	offset := 0
-	binary.BigEndian.PutUint32(buf[offset:], uint32(len(env.Salt)))
+	binary.BigEndian.PutUint32(buf[offset:], saltLen)
 	offset += 4
 	copy(buf[offset:], env.Salt)
 	offset += len(env.Salt)
-	binary.BigEndian.PutUint32(buf[offset:], uint32(len(env.Nonce)))
+	binary.BigEndian.PutUint32(buf[offset:], nonceLen)
 	offset += 4
 	copy(buf[offset:], env.Nonce)
 	offset += len(env.Nonce)
-	binary.BigEndian.PutUint32(buf[offset:], uint32(len(env.Ciphertext)))
+	binary.BigEndian.PutUint32(buf[offset:], cipherLen)
 	offset += 4
 	copy(buf[offset:], env.Ciphertext)
 	return buf, nil
+}
+
+func storageEnvelopeLengthWithinBounds(length uint64) bool {
+	return length <= math.MaxUint32
+}
+
+func storageEnvelopeMarshalLengthsWithinBounds(saltLength uint64, nonceLength uint64, ciphertextLength uint64) bool {
+	return storageEnvelopeLengthWithinBounds(saltLength) &&
+		storageEnvelopeLengthWithinBounds(nonceLength) &&
+		storageEnvelopeLengthWithinBounds(ciphertextLength)
 }
 
 // Unmarshal loads an envelope from bytes while validating corruption.

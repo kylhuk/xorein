@@ -50,7 +50,37 @@ let baseRelayConfig : Types.Relay.Config =
       , health = baseHealth
       }
 
+let baseBootstrapNode : Types.Bootstrap.Node =
+      { name = "bootstrap-template"
+      , region = "global"
+      , environment = "dev"
+      , listen =
+          [ "/ip4/0.0.0.0/tcp/3001"
+          , "/ip4/0.0.0.0/udp/3001/quic-v1"
+          ]
+      , announce = [ "/dns4/bootstrap-template.aether.test/tcp/3001" ]
+      , tags = [ "bootstrap", "prototype" ]
+      , contact = "ops@aether.test"
+      }
+
+let baseBootstrapMetrics : Types.Bootstrap.Metrics =
+      { enabled = True
+      , listenAddr = "0.0.0.0:9191"
+      }
+
+let baseBootstrapHealth : Types.Bootstrap.Health =
+      { expectPeers = 32
+      , interval = "15s"
+      }
+
+let baseBootstrapConfig : Types.Bootstrap.Config =
+      { node = baseBootstrapNode
+      , metrics = baseBootstrapMetrics
+      , health = baseBootstrapHealth
+      }
+
 in  { ConfigType = Types.ConfigType
     , default = { application = "aether", environment = "dev", version = "0.1" }
     , relay = { base = baseRelayConfig }
+    , bootstrap = { base = baseBootstrapConfig }
     }

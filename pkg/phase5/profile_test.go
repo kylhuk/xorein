@@ -248,3 +248,104 @@ func TestProfileStoreCacheInvalidationOnAcceptedUpdate(t *testing.T) {
 		t.Fatalf("expected cache repopulated after resolve")
 	}
 }
+
+func TestProfileFieldSensitivityMap(t *testing.T) {
+	got := ProfileFieldSensitivityMap()
+
+	want := map[string]ProfileFieldSensitivity{
+		"identity":     ProfileSensitivityRestricted,
+		"display_name": ProfileSensitivityPublic,
+		"bio":          ProfileSensitivityPersonal,
+		"avatar_url":   ProfileSensitivityPersonal,
+		"version":      ProfileSensitivityOperational,
+		"updated_at":   ProfileSensitivityOperational,
+	}
+
+	if len(got) != len(want) {
+		t.Fatalf("sensitivity map size mismatch: got %d want %d", len(got), len(want))
+	}
+	for field, wantClass := range want {
+		if gotClass, ok := got[field]; !ok {
+			t.Fatalf("missing field classification for %q", field)
+		} else if gotClass != wantClass {
+			t.Fatalf("unexpected classification for %q: got %q want %q", field, gotClass, wantClass)
+		}
+	}
+
+	got["identity"] = ProfileSensitivityPublic
+	reloaded := ProfileFieldSensitivityMap()
+	if reloaded["identity"] != ProfileSensitivityRestricted {
+		t.Fatalf("classification map must return a copy; identity class mutated to %q", reloaded["identity"])
+	}
+}
+
+func TestDefaultProfileOptionalFields(t *testing.T) {
+	t.Run("nil profile is no-op", func(t *testing.T) {
+		DefaultProfileOptionalFields(nil)
+	})
+
+	t.Run("optional fields cleared", func(t *testing.T) {
+		profile := &Profile{
+			Identity:    "id",
+			DisplayName: "name",
+			Bio:         "non-empty",
+			AvatarURL:   "https://example.com/avatar.png",
+			Version:     1,
+			UpdatedAt:   time.Date(2024, time.January, 1, 0, 0, 0, 0, time.UTC),
+		}
+
+		DefaultProfileOptionalFields(profile)
+
+		if profile.Bio != "" {
+			t.Fatalf("bio should be cleared by default-off behavior, got %q", profile.Bio)
+		}
+		if profile.AvatarURL != "" {
+			t.Fatalf("avatar_url should be cleared by default-off behavior, got %q", profile.AvatarURL)
+		}
+	})
+}
+
+func TestRedactedProfileMetadata(t *testing.T) {
+	t.Run("nil profile returns empty map", func(t *testing.T) {
+		got := RedactedProfileMetadata(nil)
+		if len(got) != 0 {
+			t.Fatalf("expected empty metadata for nil profile, got %d entries", len(got))
+		}
+	})
+
+	t.Run("returns deterministic redacted view", func(t *testing.T) {
+		updatedAt := time.Date(2024, time.April, 2, 3, 4, 5, 678900000, time.FixedZone("UTC+2", 2*60*60))
+		profile := &Profile{
+			Identity:    "abc123",
+			DisplayName: "alice",
+			Bio:         "sensitive",
+			AvatarURL:   "https://example.com/private.png",
+			Version:     7,
+			UpdatedAt:   updatedAt,
+		}
+
+		got := RedactedProfileMetadata(profile)
+
+		if _, ok := got["bio"]; ok {
+			t.Fatalf("redacted metadata must not include bio")
+		}
+		if _, ok := got["avatar_url"]; ok {
+			t.Fatalf("redacted metadata must not include avatar_url")
+		}
+
+		if got["identity"] != profile.Identity {
+			t.Fatalf("identity mismatch: got %v want %v", got["identity"], profile.Identity)
+		}
+		if got["display_name"] != profile.DisplayName {
+			t.Fatalf("display_name mismatch: got %v want %v", got["display_name"], profile.DisplayName)
+		}
+		if got["version"] != profile.Version {
+			t.Fatalf("version mismatch: got %v want %v", got["version"], profile.Version)
+		}
+
+		wantUpdated := updatedAt.UTC().Format(time.RFC3339Nano)
+		if got["updated_at"] != wantUpdated {
+			t.Fatalf("updated_at mismatch: got %v want %v", got["updated_at"], wantUpdated)
+		}
+	})
+}

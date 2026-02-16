@@ -1,0 +1,592 @@
+{
+  "bootstrapEnvironments": [
+    {
+      "environment": "dev",
+      "nodes": [
+        {
+          "health": {
+            "expectPeers": 32,
+            "interval": "15s"
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9191"
+          },
+          "node": {
+            "announce": [
+              "/dns4/bootstrap-dev-eu.aether.test/tcp/3101"
+            ],
+            "contact": "noc+dev-eu@aether.test",
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/3101",
+              "/ip4/0.0.0.0/udp/3101/quic-v1"
+            ],
+            "name": "bootstrap-dev-eu",
+            "region": "eu-west",
+            "tags": [
+              "bootstrap",
+              "prototype"
+            ]
+          }
+        },
+        {
+          "health": {
+            "expectPeers": 32,
+            "interval": "15s"
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9191"
+          },
+          "node": {
+            "announce": [
+              "/dns4/bootstrap-dev-us.aether.test/tcp/3201"
+            ],
+            "contact": "noc+dev-us@aether.test",
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/3201",
+              "/ip4/0.0.0.0/udp/3201/quic-v1"
+            ],
+            "name": "bootstrap-dev-us",
+            "region": "us-east",
+            "tags": [
+              "bootstrap",
+              "prototype"
+            ]
+          }
+        },
+        {
+          "health": {
+            "expectPeers": 32,
+            "interval": "15s"
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9191"
+          },
+          "node": {
+            "announce": [
+              "/dns4/bootstrap-dev-ap.aether.test/tcp/3301"
+            ],
+            "contact": "noc+dev-ap@aether.test",
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/3301",
+              "/ip4/0.0.0.0/udp/3301/quic-v1"
+            ],
+            "name": "bootstrap-dev-ap",
+            "region": "ap-south",
+            "tags": [
+              "bootstrap",
+              "prototype"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "environment": "staging",
+      "nodes": [
+        {
+          "health": {
+            "expectPeers": 32,
+            "interval": "15s"
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9191"
+          },
+          "node": {
+            "announce": [
+              "/dns4/bootstrap-staging-eu.aether.test/tcp/3401"
+            ],
+            "contact": "noc+staging-eu@aether.test",
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/3401",
+              "/ip4/0.0.0.0/udp/3401/quic-v1"
+            ],
+            "name": "bootstrap-staging-eu",
+            "region": "eu-central",
+            "tags": [
+              "bootstrap",
+              "prototype"
+            ]
+          }
+        },
+        {
+          "health": {
+            "expectPeers": 32,
+            "interval": "15s"
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9191"
+          },
+          "node": {
+            "announce": [
+              "/dns4/bootstrap-staging-us.aether.test/tcp/3501"
+            ],
+            "contact": "noc+staging-us@aether.test",
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/3501",
+              "/ip4/0.0.0.0/udp/3501/quic-v1"
+            ],
+            "name": "bootstrap-staging-us",
+            "region": "us-west",
+            "tags": [
+              "bootstrap",
+              "prototype"
+            ]
+          }
+        },
+        {
+          "health": {
+            "expectPeers": 32,
+            "interval": "15s"
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9191"
+          },
+          "node": {
+            "announce": [
+              "/dns4/bootstrap-staging-ap.aether.test/tcp/3601"
+            ],
+            "contact": "noc+staging-ap@aether.test",
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/3601",
+              "/ip4/0.0.0.0/udp/3601/quic-v1"
+            ],
+            "name": "bootstrap-staging-ap",
+            "region": "ap-south",
+            "tags": [
+              "bootstrap",
+              "prototype"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "environment": "production",
+      "nodes": [
+        {
+          "health": {
+            "expectPeers": 32,
+            "interval": "15s"
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9191"
+          },
+          "node": {
+            "announce": [
+              "/dns4/bootstrap-prod-eu.aether.chat/tcp/3701"
+            ],
+            "contact": "noc+prod-eu@aether.chat",
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/3701",
+              "/ip4/0.0.0.0/udp/3701/quic-v1"
+            ],
+            "name": "bootstrap-prod-eu",
+            "region": "eu-central",
+            "tags": [
+              "bootstrap",
+              "prototype"
+            ]
+          }
+        },
+        {
+          "health": {
+            "expectPeers": 32,
+            "interval": "15s"
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9191"
+          },
+          "node": {
+            "announce": [
+              "/dns4/bootstrap-prod-us.aether.chat/tcp/3801"
+            ],
+            "contact": "noc+prod-us@aether.chat",
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/3801",
+              "/ip4/0.0.0.0/udp/3801/quic-v1"
+            ],
+            "name": "bootstrap-prod-us",
+            "region": "us-east",
+            "tags": [
+              "bootstrap",
+              "prototype"
+            ]
+          }
+        },
+        {
+          "health": {
+            "expectPeers": 32,
+            "interval": "15s"
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9191"
+          },
+          "node": {
+            "announce": [
+              "/dns4/bootstrap-prod-ap.aether.chat/tcp/3901"
+            ],
+            "contact": "noc+prod-ap@aether.chat",
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/3901",
+              "/ip4/0.0.0.0/udp/3901/quic-v1"
+            ],
+            "name": "bootstrap-prod-ap",
+            "region": "ap-south",
+            "tags": [
+              "bootstrap",
+              "prototype"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "config": {
+    "application": "aether",
+    "environment": "dev",
+    "version": "0.1"
+  },
+  "relayEnvironments": [
+    {
+      "environment": "dev",
+      "nodes": [
+        {
+          "health": {
+            "interval": "30s"
+          },
+          "limits": {
+            "maxCircuitBandwidth": "1Mbps",
+            "maxCircuitDuration": "2m",
+            "maxCircuits": 512
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9090"
+          },
+          "node": {
+            "announce": [
+              "/dns4/relay-dev-eu.aether.test/tcp/4101"
+            ],
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/4101",
+              "/ip4/0.0.0.0/udp/4101/quic-v1",
+              "/ip4/0.0.0.0/tcp/4102/ws"
+            ],
+            "name": "relay-dev-eu",
+            "region": "eu-west",
+            "role": "relay",
+            "tags": [
+              "relay",
+              "prototype"
+            ]
+          },
+          "sfu": {
+            "enabled": true,
+            "maxParticipants": 100,
+            "maxRooms": 50
+          },
+          "storeForward": {
+            "enabled": true,
+            "maxBytes": 536870912,
+            "maxMessages": 8192,
+            "storagePath": "/var/lib/aether/store",
+            "ttl": "30d"
+          }
+        },
+        {
+          "health": {
+            "interval": "30s"
+          },
+          "limits": {
+            "maxCircuitBandwidth": "1Mbps",
+            "maxCircuitDuration": "2m",
+            "maxCircuits": 512
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9090"
+          },
+          "node": {
+            "announce": [
+              "/dns4/relay-dev-us.aether.test/tcp/4201"
+            ],
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/4201",
+              "/ip4/0.0.0.0/udp/4201/quic-v1",
+              "/ip4/0.0.0.0/tcp/4202/ws"
+            ],
+            "name": "relay-dev-us",
+            "region": "us-east",
+            "role": "relay",
+            "tags": [
+              "relay",
+              "prototype"
+            ]
+          },
+          "sfu": {
+            "enabled": true,
+            "maxParticipants": 100,
+            "maxRooms": 50
+          },
+          "storeForward": {
+            "enabled": true,
+            "maxBytes": 536870912,
+            "maxMessages": 8192,
+            "storagePath": "/var/lib/aether/store",
+            "ttl": "30d"
+          }
+        }
+      ]
+    },
+    {
+      "environment": "staging",
+      "nodes": [
+        {
+          "health": {
+            "interval": "30s"
+          },
+          "limits": {
+            "maxCircuitBandwidth": "1Mbps",
+            "maxCircuitDuration": "2m",
+            "maxCircuits": 512
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9090"
+          },
+          "node": {
+            "announce": [
+              "/dns4/relay-staging-eu.aether.test/tcp/4301"
+            ],
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/4301",
+              "/ip4/0.0.0.0/udp/4301/quic-v1",
+              "/ip4/0.0.0.0/tcp/4302/ws"
+            ],
+            "name": "relay-staging-eu",
+            "region": "eu-central",
+            "role": "relay",
+            "tags": [
+              "relay",
+              "prototype"
+            ]
+          },
+          "sfu": {
+            "enabled": true,
+            "maxParticipants": 100,
+            "maxRooms": 50
+          },
+          "storeForward": {
+            "enabled": true,
+            "maxBytes": 536870912,
+            "maxMessages": 8192,
+            "storagePath": "/var/lib/aether/store",
+            "ttl": "30d"
+          }
+        },
+        {
+          "health": {
+            "interval": "30s"
+          },
+          "limits": {
+            "maxCircuitBandwidth": "1Mbps",
+            "maxCircuitDuration": "2m",
+            "maxCircuits": 512
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9090"
+          },
+          "node": {
+            "announce": [
+              "/dns4/relay-staging-us.aether.test/tcp/4401"
+            ],
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/4401",
+              "/ip4/0.0.0.0/udp/4401/quic-v1",
+              "/ip4/0.0.0.0/tcp/4402/ws"
+            ],
+            "name": "relay-staging-us",
+            "region": "us-west",
+            "role": "relay",
+            "tags": [
+              "relay",
+              "prototype"
+            ]
+          },
+          "sfu": {
+            "enabled": true,
+            "maxParticipants": 100,
+            "maxRooms": 50
+          },
+          "storeForward": {
+            "enabled": true,
+            "maxBytes": 536870912,
+            "maxMessages": 8192,
+            "storagePath": "/var/lib/aether/store",
+            "ttl": "30d"
+          }
+        }
+      ]
+    },
+    {
+      "environment": "production",
+      "nodes": [
+        {
+          "health": {
+            "interval": "30s"
+          },
+          "limits": {
+            "maxCircuitBandwidth": "1Mbps",
+            "maxCircuitDuration": "2m",
+            "maxCircuits": 512
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9090"
+          },
+          "node": {
+            "announce": [
+              "/dns4/relay-prod-eu.aether.chat/tcp/4501"
+            ],
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/4501",
+              "/ip4/0.0.0.0/udp/4501/quic-v1",
+              "/ip4/0.0.0.0/tcp/4502/ws"
+            ],
+            "name": "relay-prod-eu",
+            "region": "eu-central",
+            "role": "relay",
+            "tags": [
+              "relay",
+              "prototype"
+            ]
+          },
+          "sfu": {
+            "enabled": true,
+            "maxParticipants": 100,
+            "maxRooms": 50
+          },
+          "storeForward": {
+            "enabled": true,
+            "maxBytes": 536870912,
+            "maxMessages": 8192,
+            "storagePath": "/var/lib/aether/store",
+            "ttl": "30d"
+          }
+        },
+        {
+          "health": {
+            "interval": "30s"
+          },
+          "limits": {
+            "maxCircuitBandwidth": "1Mbps",
+            "maxCircuitDuration": "2m",
+            "maxCircuits": 512
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9090"
+          },
+          "node": {
+            "announce": [
+              "/dns4/relay-prod-us.aether.chat/tcp/4601"
+            ],
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/4601",
+              "/ip4/0.0.0.0/udp/4601/quic-v1",
+              "/ip4/0.0.0.0/tcp/4602/ws"
+            ],
+            "name": "relay-prod-us",
+            "region": "us-east",
+            "role": "relay",
+            "tags": [
+              "relay",
+              "prototype"
+            ]
+          },
+          "sfu": {
+            "enabled": true,
+            "maxParticipants": 100,
+            "maxRooms": 50
+          },
+          "storeForward": {
+            "enabled": true,
+            "maxBytes": 536870912,
+            "maxMessages": 8192,
+            "storagePath": "/var/lib/aether/store",
+            "ttl": "30d"
+          }
+        },
+        {
+          "health": {
+            "interval": "30s"
+          },
+          "limits": {
+            "maxCircuitBandwidth": "1Mbps",
+            "maxCircuitDuration": "2m",
+            "maxCircuits": 512
+          },
+          "metrics": {
+            "enabled": true,
+            "listenAddr": "0.0.0.0:9090"
+          },
+          "node": {
+            "announce": [
+              "/dns4/relay-prod-ap.aether.chat/tcp/4701"
+            ],
+            "environment": "dev",
+            "listen": [
+              "/ip4/0.0.0.0/tcp/4701",
+              "/ip4/0.0.0.0/udp/4701/quic-v1",
+              "/ip4/0.0.0.0/tcp/4702/ws"
+            ],
+            "name": "relay-prod-ap",
+            "region": "ap-south",
+            "role": "relay",
+            "tags": [
+              "relay",
+              "prototype"
+            ]
+          },
+          "sfu": {
+            "enabled": true,
+            "maxParticipants": 100,
+            "maxRooms": 50
+          },
+          "storeForward": {
+            "enabled": true,
+            "maxBytes": 536870912,
+            "maxMessages": 8192,
+            "storagePath": "/var/lib/aether/store",
+            "ttl": "30d"
+          }
+        }
+      ]
+    }
+  ]
+}

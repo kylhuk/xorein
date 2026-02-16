@@ -316,11 +316,11 @@ func TestVoiceSessionManagerJoinLeaveAndCap(t *testing.T) {
 	peer2 := &testPeerConnection{id: "peer-2"}
 	peer3 := &testPeerConnection{id: "peer-3"}
 
-	if err := manager.Join(ctx, "session-a", codec, transport, peer1); err != nil {
-		t.Fatalf("Join(peer-1) error = %v", err)
+	if joinErr := manager.Join(ctx, "session-a", codec, transport, peer1); joinErr != nil {
+		t.Fatalf("Join(peer-1) error = %v", joinErr)
 	}
-	if err := manager.Join(ctx, "session-a", codec, transport, peer2); err != nil {
-		t.Fatalf("Join(peer-2) error = %v", err)
+	if joinErr := manager.Join(ctx, "session-a", codec, transport, peer2); joinErr != nil {
+		t.Fatalf("Join(peer-2) error = %v", joinErr)
 	}
 	if got := manager.ParticipantCount(); got != 2 {
 		t.Fatalf("ParticipantCount() = %d, want 2", got)

@@ -1,19 +1,26 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
 	"strings"
 	"time"
 
+	phase11 "github.com/aether/code_aether/pkg/phase11"
 	phase6 "github.com/aether/code_aether/pkg/phase6"
 	phase9 "github.com/aether/code_aether/pkg/phase9"
 )
 
 var (
+	dispatchScenarioFn = dispatchScenario
+
 	runMode           = flag.String("mode", "client", "runtime mode: client|relay|bootstrap")
-	scenario          = flag.String("scenario", "", "optional scenario: create-server|join-deeplink")
+	scenario          = flag.String("scenario", "", "optional scenario: create-server|join-deeplink|first-contact")
+	firstContactRuns  = flag.Int("first-contact-runs", 3, "number of repeated first-contact runs")
+	firstContactOut   = flag.String("first-contact-output", "artifacts/generated/first-contact", "output directory for first-contact scenario artifacts")
+	firstContactGoal  = flag.Duration("first-contact-target", 5*time.Minute, "target duration for each first-contact run")
 	serverID          = flag.String("server-id", "aether-server", "server identifier for manifest scenarios")
 	identity          = flag.String("identity", "aether-identity", "identity string used when signing manifests and joining")
 	description       = flag.String("description", "phase6 stub server", "server description for manifest metadata")
@@ -30,31 +37,89 @@ var (
 	relayMaxBytesSec  = flag.Int64("relay-max-bytes-per-sec", 1_000_000, "per-session relay bandwidth budget in bytes/sec")
 )
 
+type scenarioHandlers struct {
+	runCreateServer func(*phase6.ManifestStore)
+	runJoinDeepLink func(*phase6.ManifestStore)
+	runFirstContact func()
+	runRelayMode    func()
+}
+
+func defaultScenarioHandlers() scenarioHandlers {
+	return scenarioHandlers{
+		runCreateServer: runCreateServer,
+		runJoinDeepLink: runJoinDeepLink,
+		runFirstContact: runFirstContactScenario,
+		runRelayMode:    runRelayMode,
+	}
+}
+
 func main() {
 	flag.Parse()
-	switch *runMode {
+	store := phase6.NewManifestStore(0)
+	exitCode := dispatchScenarioFn(*runMode, *scenario, store, defaultScenarioHandlers())
+	if exitCode != 0 {
+		os.Exit(exitCode)
+	}
+}
+
+func dispatchScenario(mode string, scenario string, store *phase6.ManifestStore, handlers scenarioHandlers) int {
+	switch mode {
 	case "client", "relay", "bootstrap":
 		// valid modes maintained for compatibility.
 	default:
-		fmt.Fprintf(os.Stderr, "invalid --mode %q; expected client|relay|bootstrap\n", *runMode)
-		os.Exit(2)
+		fmt.Fprintf(os.Stderr, "invalid --mode %q; expected client|relay|bootstrap\n", mode)
+		return 2
 	}
 
-	store := phase6.NewManifestStore(0)
-	switch strings.ToLower(*scenario) {
+	switch strings.ToLower(scenario) {
 	case "":
-		if *runMode == "relay" {
-			runRelayMode()
-			return
+		if mode == "relay" {
+			handlers.runRelayMode()
+			return 0
 		}
-		fmt.Printf("Phase 2 foundation stub: cmd/aether mode=%s\n", *runMode)
+		fmt.Printf("Phase 2 foundation stub: cmd/aether mode=%s\n", mode)
+		return 0
 	case "create-server":
-		runCreateServer(store)
+		handlers.runCreateServer(store)
+		return 0
 	case "join-deeplink":
-		runJoinDeepLink(store)
+		handlers.runJoinDeepLink(store)
+		return 0
+	case "first-contact":
+		handlers.runFirstContact()
+		return 0
 	default:
-		fmt.Fprintf(os.Stderr, "unknown scenario %q; valid scenarios: create-server, join-deeplink\n", *scenario)
-		os.Exit(3)
+		fmt.Fprintf(os.Stderr, "unknown scenario %q; valid scenarios: create-server, join-deeplink, first-contact\n", scenario)
+		return 3
+	}
+}
+
+func runFirstContactScenario() {
+	summary, runs, err := phase11.RunFirstContact(context.Background(), phase11.Options{
+		Runs:           *firstContactRuns,
+		OutputDir:      *firstContactOut,
+		ServerIDPrefix: *serverID,
+		IdentityPrefix: *identity,
+		TargetDuration: *firstContactGoal,
+	})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "first-contact scenario failed: %v\n", err)
+		os.Exit(15)
+	}
+
+	fmt.Printf("First-contact baseline generated: runs=%d passed=%d failed=%d pass_rate=%.2f output=%s\n",
+		summary.RunsCompleted,
+		summary.PassedRuns,
+		summary.FailedRuns,
+		summary.PassRate,
+		*firstContactOut,
+	)
+	fmt.Printf("Duration metrics: target=%s mean_ms=%d median_ms=%d\n", summary.TargetDuration, summary.MeanDurationMS, summary.MedianDurationMS)
+	for _, run := range runs {
+		fmt.Printf("Run %02d success=%t target_met=%t duration=%s\n", run.RunID, run.Success, run.TargetMet, run.Duration)
+		if !run.Success {
+			fmt.Printf("  failure: %s (owner: %s)\n", run.FailureReason, run.FailureOwner)
+		}
 	}
 }
 

@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-02-16T12:21:39.604756822Z",
+  "runs_requested": 3,
+  "runs_completed": 3,
+  "passed_runs": 3,
+  "failed_runs": 0,
+  "pass_rate": 1,
+  "target_duration": "5m0s",
+  "mean_duration_ms": 0,
+  "median_duration_ms": 0,
+  "event_counts": {
+    "chat_roundtrip": 3,
+    "relay_snapshot": 3,
+    "voice_connect": 3
+  },
+  "reason_code_counts": {
+    "chat_ok": 3,
+    "relay_path_ok": 3,
+    "voice_ok": 3
+  },
+  "fallback_counts": {},
+  "failures": []
+}

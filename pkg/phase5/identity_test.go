@@ -3,7 +3,12 @@ package phase5
 import (
 	"bytes"
 	"crypto/ed25519"
+	"errors"
+	"math"
+	"reflect"
+	"runtime"
 	"testing"
+	"unsafe"
 )
 
 func cloneEnvelope(env StorageEnvelope) StorageEnvelope {
@@ -421,4 +426,58 @@ func TestStorageEnvelopeRecoveryFailures(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestStorageEnvelopeLengthWithinBounds(t *testing.T) {
+	if !storageEnvelopeLengthWithinBounds(math.MaxUint32) {
+		t.Fatalf("expected MaxUint32 to be within bounds")
+	}
+	if storageEnvelopeLengthWithinBounds(uint64(math.MaxUint32) + 1) {
+		t.Fatalf("expected MaxUint32+1 to be out of bounds")
+	}
+}
+
+func TestStorageEnvelopeMarshalLengthsWithinBounds(t *testing.T) {
+	if !storageEnvelopeMarshalLengthsWithinBounds(16, 12, 1) {
+		t.Fatalf("expected normal envelope lengths to be within bounds")
+	}
+	if storageEnvelopeMarshalLengthsWithinBounds(uint64(math.MaxUint32)+1, 12, 1) {
+		t.Fatalf("expected salt length overflow to be out of bounds")
+	}
+	if storageEnvelopeMarshalLengthsWithinBounds(16, uint64(math.MaxUint32)+1, 1) {
+		t.Fatalf("expected nonce length overflow to be out of bounds")
+	}
+	if storageEnvelopeMarshalLengthsWithinBounds(16, 12, uint64(math.MaxUint32)+1) {
+		t.Fatalf("expected ciphertext length overflow to be out of bounds")
+	}
+}
+
+func TestStorageEnvelopeMarshalReturnsInvalidEnvelopeForSyntheticLengthOverflow(t *testing.T) {
+	overflowLen := uint64(math.MaxUint32) + 1
+	if storageEnvelopeMarshalLengthsWithinBounds(uint64(saltSize), uint64(nonceSize), overflowLen) {
+		t.Fatalf("expected helper to reject out-of-range ciphertext length")
+	}
+
+	syntheticCiphertext, keepAlive := syntheticByteSliceWithLength(int(overflowLen))
+	env := StorageEnvelope{
+		Salt:       bytes.Repeat([]byte{0x01}, saltSize),
+		Nonce:      bytes.Repeat([]byte{0x02}, nonceSize),
+		Ciphertext: syntheticCiphertext,
+	}
+
+	_, err := env.Marshal()
+	runtime.KeepAlive(keepAlive)
+	if !errors.Is(err, errInvalidEnvelope) {
+		t.Fatalf("Marshal() error = %v, want errInvalidEnvelope", err)
+	}
+}
+
+func syntheticByteSliceWithLength(length int) ([]byte, []byte) {
+	backing := []byte{0xAA}
+	hdr := &reflect.SliceHeader{
+		Data: uintptr(unsafe.Pointer(&backing[0])),
+		Len:  length,
+		Cap:  length,
+	}
+	return *(*[]byte)(unsafe.Pointer(hdr)), backing
 }

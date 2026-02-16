@@ -138,7 +138,7 @@ func (c *LocalPeerCache) readRecord() (PeerCacheFile, error) {
 }
 
 func (c *LocalPeerCache) writeEntries(entries []PeerCacheEntry) error {
-	if err := os.MkdirAll(filepath.Dir(c.path), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(c.path), 0o750); err != nil {
 		return err
 	}
 	record := PeerCacheFile{

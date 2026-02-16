@@ -2,7 +2,7 @@
 
 Status: ✅ Completed during v0.1 execution slice on 2026-02-15.
 
-## 1. Dhall Schema
+## 1. Dhall Schema (Relay + Bootstrap)
 
 Relay configuration is now modeled directly in Dhall to keep all node traits deterministic and source controlled. The schema lives in [`config/dhall/types.dhall`](config/dhall/types.dhall) and introduces the following records:
 
@@ -16,6 +16,11 @@ Relay configuration is now modeled directly in Dhall to keep all node traits det
 | `Relay.Health` | Interval string for liveness/health hints surfaced via logs. |
 | `Relay.Config` | Aggregate structure that combines Node + service policies. |
 | `Relay.Environment` | Multi-node collection keyed by deployment environment name. |
+| `Bootstrap.Node` | Minimal bootstrap identity (name, region, listen/announce, maintenance tags, point of contact). |
+| `Bootstrap.Metrics` | On/off switch and bind address for bootstrap observability. |
+| `Bootstrap.Health` | Expected peer-count hint plus log/sample interval. |
+| `Bootstrap.Config` | Aggregate bootstrap-node configuration. |
+| `Bootstrap.Environment` | Environment-scoped list of bootstrap nodes. |
 
 The base single-node template is defined in [`config/dhall/default.dhall`](config/dhall/default.dhall) under `relay.base`. This template ensures the following defaults:
 
@@ -25,7 +30,7 @@ The base single-node template is defined in [`config/dhall/default.dhall`](confi
 * SFU enabled with 50 rooms and 100 participants per room (offline-friendly baseline).
 * Metrics and health probes are explicit and environment-agnostic.
 
-Environment overlays reside in [`config/dhall/env.dhall`](config/dhall/env.dhall). They define concrete node instances for `dev`, `staging`, and `production` along with environment-specific ports and announce addresses. Each environment list references the shared base template via `mkRelay`, guaranteeing consistent defaults while allowing region- and env-specific port overrides.
+Environment overlays reside in [`config/dhall/env.dhall`](config/dhall/env.dhall). They define concrete node instances for `dev`, `staging`, and `production` along with environment-specific ports and announce addresses. Each environment list references the shared base templates via `mkRelay` and `mkBootstrap`, guaranteeing consistent defaults while allowing region- and env-specific overrides for both relay and bootstrap fleets.
 
 ## 2. Generated Config Validation
 

@@ -7,8 +7,11 @@ RELAY_CONTAINERFILE := containers/relay/Containerfile
 RELAY_IMAGE_REPO ?= localhost/aether-relay
 RELAY_IMAGE_TAG ?= v0.1.0
 RELAY_IMAGE := $(RELAY_IMAGE_REPO):$(RELAY_IMAGE_TAG)
+RELEASE_PACK_DIR := $(GENERATED_DIR)/release-pack
+RELEASE_PACK_SIGN_DIR := $(RELEASE_PACK_DIR)/signing
+RELEASE_SIGNING_IMAGE ?= docker.io/library/golang:1.24.8
 
-.PHONY: all pipeline check-fast check-full generate compile lint test scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check
+.PHONY: all pipeline check-fast check-full generate compile lint test scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify
 
 STAGE_ORDER := generate compile lint test scan
 
@@ -42,9 +45,16 @@ test:
 	@./scripts/repro-checksums.sh
 
 scan:
-	@echo "[scan] compliance scan placeholder"
-	@set -euo pipefail
-	@podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/library/busybox:1.36.1 sh -c "echo scan placeholder && test -f docs/v0.1/phase2/repro-policy.md"
+	@echo "[scan] running security suite"
+	@set -euo pipefail; \
+	ART_DIR="$(GENERATED_DIR)/security"; \
+	mkdir -p "$$ART_DIR"; \
+	echo "[scan] govulncheck ./..."; \
+	podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/library/golang:1.24.8 bash -lc 'set -euo pipefail; export PATH="/usr/local/go/bin:/go/bin:$$PATH"; export GOMODCACHE=/tmp/gomodcache; go install golang.org/x/vuln/cmd/govulncheck@v1.1.4; govulncheck ./...' | tee "$$ART_DIR/govulncheck.txt"; \
+	echo "[scan] gosec ./..."; \
+	podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/library/golang:1.24.8 bash -lc 'set -euo pipefail; export PATH="/usr/local/go/bin:/go/bin:$$PATH"; export GOMODCACHE=/tmp/gomodcache; go install github.com/securego/gosec/v2/cmd/gosec@v2.22.2; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test ./... >/tmp/gotest.log; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 gosec -fmt text -severity medium -confidence medium ./...' | tee "$$ART_DIR/gosec.txt"; \
+	echo "[scan] trivy filesystem (vuln+secret)"; \
+	podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/aquasec/trivy:0.50.0 fs --scanners vuln,secret --security-checks vuln,secret --skip-dirs /workspace/.git --no-progress --exit-code 1 --severity HIGH,CRITICAL --format json /workspace | tee "$$ART_DIR/trivy-fs.json"
 
 build:
 	@echo "[build] packaging binaries into $(BUILD_BIN)"
@@ -99,3 +109,7 @@ relay-container-publish-check:
 		'- Re-point deployment manifests from candidate digest to prior digest.' \
 		'- Confirm rollback digest health before unpausing rollout.' \
 		> "$(RELAY_ARTIFACTS_DIR)/publication-checklist.txt"
+
+release-pack-verify:
+	@echo "[release-pack] generating reproducible verification bundle"
+	@./scripts/release-pack-verify.sh

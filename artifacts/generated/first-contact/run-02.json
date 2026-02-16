@@ -1,0 +1,58 @@
+{
+  "run_id": 2,
+  "started_at": "2026-02-16T12:21:39.604317495Z",
+  "ended_at": "2026-02-16T12:21:39.604486978Z",
+  "duration": "169.483µs",
+  "duration_ms": 0,
+  "target": "5m0s",
+  "target_met": true,
+  "success": true,
+  "stages": [
+    {
+      "name": "manifest_publish",
+      "started_at": "2026-02-16T12:21:39.604343675Z",
+      "ended_at": "2026-02-16T12:21:39.604346415Z",
+      "duration": "2.74µs",
+      "success": true
+    },
+    {
+      "name": "join_deeplink",
+      "started_at": "2026-02-16T12:21:39.604346915Z",
+      "ended_at": "2026-02-16T12:21:39.604363406Z",
+      "duration": "16.491µs",
+      "success": true
+    },
+    {
+      "name": "relay_snapshot",
+      "started_at": "2026-02-16T12:21:39.604363796Z",
+      "ended_at": "2026-02-16T12:21:39.604364036Z",
+      "duration": "240ns",
+      "success": true
+    },
+    {
+      "name": "chat_roundtrip",
+      "started_at": "2026-02-16T12:21:39.604364356Z",
+      "ended_at": "2026-02-16T12:21:39.604478667Z",
+      "duration": "114.311µs",
+      "success": true
+    },
+    {
+      "name": "voice_connect",
+      "started_at": "2026-02-16T12:21:39.604479127Z",
+      "ended_at": "2026-02-16T12:21:39.604486568Z",
+      "duration": "7.441µs",
+      "success": true
+    }
+  ],
+  "event_counts": {
+    "chat_roundtrip": 1,
+    "relay_snapshot": 1,
+    "voice_connect": 1
+  },
+  "reason_code_counts": {
+    "chat_ok": 1,
+    "relay_path_ok": 1,
+    "voice_ok": 1
+  },
+  "fallback_counts": {}
+}

@@ -42,6 +42,8 @@ var (
 	ErrDiagnosticLimitInvalid              = errors.New("diagnostic retention limit invalid")
 	ErrDiagnosticCategoryMissing           = errors.New("diagnostic category missing")
 	ErrDiagnosticExportUserTriggerRequired = errors.New("diagnostic export requires explicit user trigger")
+	ErrMessageRenderEmpty                  = errors.New("message render input empty")
+	ErrReplyReferenceIDMissing             = errors.New("reply reference id missing")
 )
 
 const DefaultComposerMaxLength = 4000
@@ -110,6 +112,48 @@ type ComposerKeyResult struct {
 	InsertedNew bool
 }
 
+// MarkdownTokenType captures the supported markdown subset render primitives.
+type MarkdownTokenType string
+
+const (
+	MarkdownTokenText      MarkdownTokenType = "text"
+	MarkdownTokenBold      MarkdownTokenType = "bold"
+	MarkdownTokenItalic    MarkdownTokenType = "italic"
+	MarkdownTokenCode      MarkdownTokenType = "code"
+	MarkdownTokenLineBreak MarkdownTokenType = "line_break"
+)
+
+// MarkdownToken is a deterministic render token for message text.
+type MarkdownToken struct {
+	Type  MarkdownTokenType
+	Value string
+}
+
+// ReplyReference stores deterministic reply metadata for UI rendering.
+type ReplyReference struct {
+	MessageID      string
+	AuthorDisplay  string
+	Excerpt        string
+	Truncated      bool
+	DisplaySummary string
+}
+
+// RenderedMessage is the deterministic markdown+reply render payload for a chat message.
+type RenderedMessage struct {
+	PlainText           string
+	Tokens              []MarkdownToken
+	UnsupportedMarkdown bool
+	Reply               *ReplyReference
+}
+
+var htmlEscapeReplacer = strings.NewReplacer(
+	"&", "&amp;",
+	"<", "&lt;",
+	">", "&gt;",
+	`"`, "&quot;",
+	"'", "&#39;",
+)
+
 // HandleComposerEnter applies Enter/Shift+Enter behavior to a composer draft.
 func HandleComposerEnter(draft string, shiftHeld bool) ComposerKeyResult {
 	if shiftHeld {
@@ -131,6 +175,173 @@ func ValidateComposerMessage(draft string, maxLength int) (string, error) {
 		return "", fmt.Errorf("%w: max=%d", ErrComposerMessageTooLong, maxLength)
 	}
 	return normalized, nil
+}
+
+// RenderMessageMarkdownSubset renders a deterministic markdown subset for v0.1.
+// Supported inline tokens: **bold**, *italic*, and `code`.
+// Unsupported markdown constructs degrade to escaped literal text and set UnsupportedMarkdown=true.
+func RenderMessageMarkdownSubset(input string) (RenderedMessage, error) {
+	normalized := strings.TrimSpace(input)
+	if normalized == "" {
+		return RenderedMessage{}, ErrMessageRenderEmpty
+	}
+
+	lines := strings.Split(normalized, "\n")
+	tokens := make([]MarkdownToken, 0, len(lines)*2)
+	plainLines := make([]string, 0, len(lines))
+	unsupported := false
+
+	for i, line := range lines {
+		lineTokens, linePlain, lineUnsupported := parseMarkdownLine(line)
+		tokens = append(tokens, lineTokens...)
+		plainLines = append(plainLines, linePlain)
+		unsupported = unsupported || lineUnsupported
+		if i < len(lines)-1 {
+			tokens = append(tokens, MarkdownToken{Type: MarkdownTokenLineBreak, Value: "\n"})
+		}
+	}
+
+	return RenderedMessage{
+		PlainText:           strings.Join(plainLines, "\n"),
+		Tokens:              tokens,
+		UnsupportedMarkdown: unsupported,
+	}, nil
+}
+
+// BuildReplyReference produces deterministic reply metadata with sanitization and excerpt truncation.
+func BuildReplyReference(messageID, authorDisplay, excerpt string, maxExcerptRunes int) (*ReplyReference, error) {
+	messageID = strings.TrimSpace(messageID)
+	if messageID == "" {
+		return nil, ErrReplyReferenceIDMissing
+	}
+	authorDisplay = strings.TrimSpace(authorDisplay)
+	if authorDisplay == "" {
+		authorDisplay = "unknown"
+	}
+	excerpt = strings.TrimSpace(excerpt)
+	if maxExcerptRunes <= 0 {
+		maxExcerptRunes = 80
+	}
+
+	truncatedExcerpt, truncated := truncateRunes(excerpt, maxExcerptRunes)
+	escapedAuthor := sanitizeMarkdownLiteral(authorDisplay)
+	escapedExcerpt := sanitizeMarkdownLiteral(truncatedExcerpt)
+	summary := "↪ " + escapedAuthor
+	if escapedExcerpt != "" {
+		summary += ": " + escapedExcerpt
+	}
+	if truncated {
+		summary += "…"
+	}
+
+	return &ReplyReference{
+		MessageID:      messageID,
+		AuthorDisplay:  escapedAuthor,
+		Excerpt:        escapedExcerpt,
+		Truncated:      truncated,
+		DisplaySummary: summary,
+	}, nil
+}
+
+func parseMarkdownLine(line string) ([]MarkdownToken, string, bool) {
+	runes := []rune(line)
+	tokens := make([]MarkdownToken, 0, 8)
+	plain := strings.Builder{}
+	var segment strings.Builder
+	unsupported := false
+
+	flushText := func() {
+		if segment.Len() == 0 {
+			return
+		}
+		text := sanitizeMarkdownLiteral(segment.String())
+		tokens = append(tokens, MarkdownToken{Type: MarkdownTokenText, Value: text})
+		plain.WriteString(text)
+		segment.Reset()
+	}
+
+	for i := 0; i < len(runes); {
+		if runes[i] == '*' && i+1 < len(runes) && runes[i+1] == '*' {
+			end := findMarker(runes, i+2, "**")
+			if end > i+2 {
+				flushText()
+				content := sanitizeMarkdownLiteral(string(runes[i+2 : end]))
+				tokens = append(tokens, MarkdownToken{Type: MarkdownTokenBold, Value: content})
+				plain.WriteString(content)
+				i = end + 2
+				continue
+			}
+		}
+		if runes[i] == '*' {
+			end := findMarker(runes, i+1, "*")
+			if end > i+1 {
+				flushText()
+				content := sanitizeMarkdownLiteral(string(runes[i+1 : end]))
+				tokens = append(tokens, MarkdownToken{Type: MarkdownTokenItalic, Value: content})
+				plain.WriteString(content)
+				i = end + 1
+				continue
+			}
+		}
+		if runes[i] == '`' {
+			end := findMarker(runes, i+1, "`")
+			if end > i+1 {
+				flushText()
+				content := sanitizeMarkdownLiteral(string(runes[i+1 : end]))
+				tokens = append(tokens, MarkdownToken{Type: MarkdownTokenCode, Value: content})
+				plain.WriteString(content)
+				i = end + 1
+				continue
+			}
+		}
+
+		if i == 0 {
+			trimmed := strings.TrimSpace(string(runes))
+			if strings.HasPrefix(trimmed, "#") || strings.HasPrefix(trimmed, ">") || strings.HasPrefix(trimmed, "-") {
+				unsupported = true
+			}
+		}
+		if runes[i] == '[' || runes[i] == ']' || runes[i] == '(' || runes[i] == ')' {
+			unsupported = true
+		}
+		segment.WriteRune(runes[i])
+		i++
+	}
+
+	flushText()
+	return tokens, plain.String(), unsupported
+}
+
+func findMarker(runes []rune, start int, marker string) int {
+	if marker == "*" || marker == "`" {
+		m := rune(marker[0])
+		for i := start; i < len(runes); i++ {
+			if runes[i] == m {
+				return i
+			}
+		}
+		return -1
+	}
+	if marker == "**" {
+		for i := start; i+1 < len(runes); i++ {
+			if runes[i] == '*' && runes[i+1] == '*' {
+				return i
+			}
+		}
+	}
+	return -1
+}
+
+func sanitizeMarkdownLiteral(v string) string {
+	return htmlEscapeReplacer.Replace(v)
+}
+
+func truncateRunes(input string, maxRunes int) (string, bool) {
+	runes := []rune(input)
+	if len(runes) <= maxRunes {
+		return input, false
+	}
+	return string(runes[:maxRunes]), true
 }
 
 // ServerSummary captures server rail state used by the shell baseline.
@@ -221,6 +432,31 @@ type VoiceBarState struct {
 	ServerID     string
 	ChannelID    string
 	Participants []VoiceParticipantTileState
+}
+
+// VoiceParticipantViewState models the participant panel component for the active voice scope.
+type VoiceParticipantViewState struct {
+	Visible           bool
+	HiddenReason      VoiceBarHiddenReason
+	ServerID          string
+	ChannelID         string
+	Participants      []VoiceParticipantTileState
+	ParticipantCount  int
+	ActiveRoute       Route
+	SessionRouteBound bool
+}
+
+// VoiceBarComponentState models the persistent voice bar component payload.
+type VoiceBarComponentState struct {
+	Visible          bool
+	HiddenReason     VoiceBarHiddenReason
+	ServerID         string
+	ChannelID        string
+	Participants     []VoiceParticipantTileState
+	ParticipantCount int
+	SelfMuted        bool
+	SelfDeafened     bool
+	PushToTalkMode   VoicePushToTalkMode
 }
 
 // VoicePushToTalkMode describes push-to-talk interaction semantics.
@@ -868,6 +1104,45 @@ func (s *Shell) PersistentVoiceBar() VoiceBarState {
 		ServerID:     s.state.VoiceSession.ServerID,
 		ChannelID:    s.state.VoiceSession.ChannelID,
 		Participants: append([]VoiceParticipantTileState(nil), s.state.VoiceSession.Participants...),
+	}
+}
+
+// VoiceParticipantView returns a deterministic participant panel model for the active voice scope.
+func (s *Shell) VoiceParticipantView() VoiceParticipantViewState {
+	if s == nil {
+		return VoiceParticipantViewState{HiddenReason: VoiceBarHiddenReasonNoActiveSession}
+	}
+	bar := s.PersistentVoiceBar()
+	view := VoiceParticipantViewState{
+		Visible:           bar.Visible,
+		HiddenReason:      bar.HiddenReason,
+		ServerID:          bar.ServerID,
+		ChannelID:         bar.ChannelID,
+		Participants:      append([]VoiceParticipantTileState(nil), bar.Participants...),
+		ParticipantCount:  len(bar.Participants),
+		ActiveRoute:       s.state.CurrentRoute,
+		SessionRouteBound: s.state.VoiceSession.Active && s.state.CurrentRoute == RouteChannelView && s.state.SelectedServerID == s.state.VoiceSession.ServerID && s.state.SelectedChannelID == s.state.VoiceSession.ChannelID,
+	}
+	return view
+}
+
+// VoiceBarComponent returns a deterministic persistent voice bar component payload.
+func (s *Shell) VoiceBarComponent() VoiceBarComponentState {
+	if s == nil {
+		return VoiceBarComponentState{HiddenReason: VoiceBarHiddenReasonNoActiveSession}
+	}
+	bar := s.PersistentVoiceBar()
+	controls := normalizeVoiceControlState(s.state.VoiceControls)
+	return VoiceBarComponentState{
+		Visible:          bar.Visible,
+		HiddenReason:     bar.HiddenReason,
+		ServerID:         bar.ServerID,
+		ChannelID:        bar.ChannelID,
+		Participants:     append([]VoiceParticipantTileState(nil), bar.Participants...),
+		ParticipantCount: len(bar.Participants),
+		SelfMuted:        controls.SelfMuted,
+		SelfDeafened:     controls.SelfDeafened,
+		PushToTalkMode:   controls.PushToTalkMode,
 	}
 }
 

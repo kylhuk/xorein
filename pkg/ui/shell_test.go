@@ -391,6 +391,156 @@ func TestValidateComposerMessage(t *testing.T) {
 	}
 }
 
+func TestRenderMessageMarkdownSubset(t *testing.T) {
+	tests := []struct {
+		name            string
+		input           string
+		wantPlain       string
+		wantTypes       []MarkdownTokenType
+		wantUnsupported bool
+		wantErr         error
+	}{
+		{
+			name:      "supports basic inline markdown tokens",
+			input:     "hello **bold** *italic* `code`",
+			wantPlain: "hello bold italic code",
+			wantTypes: []MarkdownTokenType{MarkdownTokenText, MarkdownTokenBold, MarkdownTokenText, MarkdownTokenItalic, MarkdownTokenText, MarkdownTokenCode},
+		},
+		{
+			name:            "unsupported headings degrade gracefully",
+			input:           "# heading",
+			wantPlain:       "# heading",
+			wantTypes:       []MarkdownTokenType{MarkdownTokenText},
+			wantUnsupported: true,
+		},
+		{
+			name:      "multiline inserts line break token",
+			input:     "line1\nline2",
+			wantPlain: "line1\nline2",
+			wantTypes: []MarkdownTokenType{MarkdownTokenText, MarkdownTokenLineBreak, MarkdownTokenText},
+		},
+		{
+			name:    "empty normalized input rejected",
+			input:   "  \n\t  ",
+			wantErr: ErrMessageRenderEmpty,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := RenderMessageMarkdownSubset(tc.input)
+			if tc.wantErr != nil {
+				if !errors.Is(err, tc.wantErr) {
+					t.Fatalf("expected error %v, got %v", tc.wantErr, err)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if got.PlainText != tc.wantPlain {
+				t.Fatalf("plain text mismatch: got %q want %q", got.PlainText, tc.wantPlain)
+			}
+			if got.UnsupportedMarkdown != tc.wantUnsupported {
+				t.Fatalf("unsupported flag mismatch: got %v want %v", got.UnsupportedMarkdown, tc.wantUnsupported)
+			}
+			if len(got.Tokens) != len(tc.wantTypes) {
+				t.Fatalf("token count mismatch: got %d want %d (%+v)", len(got.Tokens), len(tc.wantTypes), got.Tokens)
+			}
+			for i := range tc.wantTypes {
+				if got.Tokens[i].Type != tc.wantTypes[i] {
+					t.Fatalf("token[%d] type mismatch: got %q want %q", i, got.Tokens[i].Type, tc.wantTypes[i])
+				}
+			}
+		})
+	}
+}
+
+func TestRenderMessageMarkdownSubsetEscapesHTML(t *testing.T) {
+	got, err := RenderMessageMarkdownSubset("<b>unsafe</b>")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if got.PlainText != "&lt;b&gt;unsafe&lt;/b&gt;" {
+		t.Fatalf("expected escaped plain text, got %q", got.PlainText)
+	}
+	if len(got.Tokens) != 1 || got.Tokens[0].Value != "&lt;b&gt;unsafe&lt;/b&gt;" {
+		t.Fatalf("expected escaped single text token, got %+v", got.Tokens)
+	}
+}
+
+func TestBuildReplyReference(t *testing.T) {
+	tests := []struct {
+		name            string
+		messageID       string
+		author          string
+		excerpt         string
+		maxRunes        int
+		wantErr         error
+		wantAuthor      string
+		wantExcerpt     string
+		wantTruncated   bool
+		wantSummaryPart string
+	}{
+		{
+			name:            "builds sanitized summary",
+			messageID:       "msg-1",
+			author:          "Alice <admin>",
+			excerpt:         "hello <world>",
+			maxRunes:        40,
+			wantAuthor:      "Alice &lt;admin&gt;",
+			wantExcerpt:     "hello &lt;world&gt;",
+			wantSummaryPart: "↪ Alice &lt;admin&gt;: hello &lt;world&gt;",
+		},
+		{
+			name:            "truncates excerpt by rune count",
+			messageID:       "msg-2",
+			author:          "Bob",
+			excerpt:         "abcdef",
+			maxRunes:        3,
+			wantAuthor:      "Bob",
+			wantExcerpt:     "abc",
+			wantTruncated:   true,
+			wantSummaryPart: "↪ Bob: abc…",
+		},
+		{
+			name:      "missing message id rejected",
+			messageID: "   ",
+			wantErr:   ErrReplyReferenceIDMissing,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := BuildReplyReference(tc.messageID, tc.author, tc.excerpt, tc.maxRunes)
+			if tc.wantErr != nil {
+				if !errors.Is(err, tc.wantErr) {
+					t.Fatalf("expected error %v, got %v", tc.wantErr, err)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if got.MessageID != strings.TrimSpace(tc.messageID) {
+				t.Fatalf("message id mismatch: got %q", got.MessageID)
+			}
+			if got.AuthorDisplay != tc.wantAuthor {
+				t.Fatalf("author mismatch: got %q want %q", got.AuthorDisplay, tc.wantAuthor)
+			}
+			if got.Excerpt != tc.wantExcerpt {
+				t.Fatalf("excerpt mismatch: got %q want %q", got.Excerpt, tc.wantExcerpt)
+			}
+			if got.Truncated != tc.wantTruncated {
+				t.Fatalf("truncated mismatch: got %v want %v", got.Truncated, tc.wantTruncated)
+			}
+			if got.DisplaySummary != tc.wantSummaryPart {
+				t.Fatalf("summary mismatch: got %q want %q", got.DisplaySummary, tc.wantSummaryPart)
+			}
+		})
+	}
+}
+
 func TestDraftPersistenceAcrossServerChannelSwitches(t *testing.T) {
 	shell := newShellWithIdentity(t)
 	for _, server := range []string{"srv-1", "srv-2"} {
@@ -845,6 +995,129 @@ func TestVoiceSessionSwitchAndLeaveBehavior(t *testing.T) {
 	}
 }
 
+func TestVoiceParticipantViewAndVoiceBarComponent(t *testing.T) {
+	shell := newShellWithIdentity(t)
+	if err := shell.UpsertServer("srv-1", "Alpha"); err != nil {
+		t.Fatalf("upsert server: %v", err)
+	}
+	if err := shell.UpsertChannelWithType("srv-1", "voice", "Voice", ChannelTypeVoice); err != nil {
+		t.Fatalf("upsert voice channel: %v", err)
+	}
+	if err := shell.SelectServer("srv-1"); err != nil {
+		t.Fatalf("select server: %v", err)
+	}
+	if err := shell.SelectChannel("voice"); err != nil {
+		t.Fatalf("select channel: %v", err)
+	}
+	if err := shell.StartVoiceSession(); err != nil {
+		t.Fatalf("start voice session: %v", err)
+	}
+	if err := shell.VoiceParticipantJoin("user-b", "Beta", false); err != nil {
+		t.Fatalf("join user-b: %v", err)
+	}
+	if err := shell.VoiceParticipantJoin("user-a", "Alpha", true); err != nil {
+		t.Fatalf("join user-a: %v", err)
+	}
+	if err := shell.UpdateVoiceParticipantStatus("user-a", false, true, true, VoiceConnectionConnected); err != nil {
+		t.Fatalf("update user-a: %v", err)
+	}
+	if err := shell.SetPushToTalkMode(VoicePushToTalkHold); err != nil {
+		t.Fatalf("set push-to-talk mode: %v", err)
+	}
+	if err := shell.SetSelfMute(true); err != nil {
+		t.Fatalf("set self mute: %v", err)
+	}
+	if err := shell.SetSelfDeafen(true); err != nil {
+		t.Fatalf("set self deafen: %v", err)
+	}
+
+	participantView := shell.VoiceParticipantView()
+	if !participantView.Visible {
+		t.Fatalf("expected participant view visible, got hidden reason=%s", participantView.HiddenReason)
+	}
+	if participantView.ServerID != "srv-1" || participantView.ChannelID != "voice" {
+		t.Fatalf("unexpected participant view scope: %+v", participantView)
+	}
+	if participantView.ActiveRoute != RouteChannelView {
+		t.Fatalf("expected active route channel view, got %s", participantView.ActiveRoute)
+	}
+	if !participantView.SessionRouteBound {
+		t.Fatalf("expected session route bound for matching selection")
+	}
+	if participantView.ParticipantCount != 2 || len(participantView.Participants) != 2 {
+		t.Fatalf("expected 2 participants in participant view, got count=%d len=%d", participantView.ParticipantCount, len(participantView.Participants))
+	}
+	if participantView.Participants[0].ID != "user-a" || participantView.Participants[1].ID != "user-b" {
+		t.Fatalf("expected deterministic participant order, got %+v", participantView.Participants)
+	}
+
+	if err := shell.Navigate(RouteSettings); err != nil {
+		t.Fatalf("navigate settings: %v", err)
+	}
+	participantView = shell.VoiceParticipantView()
+	if participantView.ActiveRoute != RouteSettings {
+		t.Fatalf("expected route settings in participant view, got %s", participantView.ActiveRoute)
+	}
+	if participantView.SessionRouteBound {
+		t.Fatalf("expected session route bound false after navigating away")
+	}
+
+	barComponent := shell.VoiceBarComponent()
+	if !barComponent.Visible {
+		t.Fatalf("expected voice bar component visible, got hidden reason=%s", barComponent.HiddenReason)
+	}
+	if barComponent.ServerID != "srv-1" || barComponent.ChannelID != "voice" {
+		t.Fatalf("unexpected voice bar component scope: %+v", barComponent)
+	}
+	if barComponent.ParticipantCount != 2 || len(barComponent.Participants) != 2 {
+		t.Fatalf("expected 2 participants in voice bar component, got count=%d len=%d", barComponent.ParticipantCount, len(barComponent.Participants))
+	}
+	if !barComponent.SelfMuted || !barComponent.SelfDeafened {
+		t.Fatalf("expected voice bar component to reflect self mute/deafen, got %+v", barComponent)
+	}
+	if barComponent.PushToTalkMode != VoicePushToTalkHold {
+		t.Fatalf("expected hold push-to-talk mode, got %s", barComponent.PushToTalkMode)
+	}
+
+	if err := shell.LeaveVoiceSession(); err != nil {
+		t.Fatalf("leave voice session: %v", err)
+	}
+	participantView = shell.VoiceParticipantView()
+	if participantView.Visible {
+		t.Fatalf("expected participant view hidden after leave")
+	}
+	if participantView.HiddenReason != VoiceBarHiddenReasonNoActiveSession {
+		t.Fatalf("expected hidden reason no_active_session, got %s", participantView.HiddenReason)
+	}
+	barComponent = shell.VoiceBarComponent()
+	if barComponent.Visible {
+		t.Fatalf("expected voice bar component hidden after leave")
+	}
+	if barComponent.HiddenReason != VoiceBarHiddenReasonNoActiveSession {
+		t.Fatalf("expected hidden reason no_active_session for bar component, got %s", barComponent.HiddenReason)
+	}
+}
+
+func TestVoiceParticipantViewAndVoiceBarComponentNilShell(t *testing.T) {
+	var nilShell *Shell
+
+	participantView := nilShell.VoiceParticipantView()
+	if participantView.Visible {
+		t.Fatalf("expected nil-shell participant view hidden")
+	}
+	if participantView.HiddenReason != VoiceBarHiddenReasonNoActiveSession {
+		t.Fatalf("unexpected nil-shell participant view hidden reason: %s", participantView.HiddenReason)
+	}
+
+	barComponent := nilShell.VoiceBarComponent()
+	if barComponent.Visible {
+		t.Fatalf("expected nil-shell voice bar component hidden")
+	}
+	if barComponent.HiddenReason != VoiceBarHiddenReasonNoActiveSession {
+		t.Fatalf("unexpected nil-shell voice bar component hidden reason: %s", barComponent.HiddenReason)
+	}
+}
+
 func TestVoiceSessionGuards(t *testing.T) {
 	var nilShell *Shell
 	if err := nilShell.StartVoiceSession(); !errors.Is(err, ErrShellRequired) {
@@ -1040,5 +1313,139 @@ func TestVoiceControlAndDeviceValidationGuards(t *testing.T) {
 	}
 	if err := shell.SetVoiceDevices([]string{"mic-a"}, []string{}); !errors.Is(err, ErrVoiceOutputDeviceUnknown) {
 		t.Fatalf("expected ErrVoiceOutputDeviceUnknown for empty output list, got %v", err)
+	}
+}
+
+func TestFirstLaunchGuidedFlowFromBlankState(t *testing.T) {
+	shell := NewShell()
+
+	if got := shell.State().CurrentRoute; got != RouteIdentitySetup {
+		t.Fatalf("expected blank state to start at identity setup, got %q", got)
+	}
+	if err := shell.Navigate(RouteServerList); !errors.Is(err, ErrIdentitySetupRequired) {
+		t.Fatalf("expected identity guard before server list, got %v", err)
+	}
+
+	if err := shell.SetIdentity("alice"); err != nil {
+		t.Fatalf("set identity: %v", err)
+	}
+	if err := shell.Navigate(RouteServerList); err != nil {
+		t.Fatalf("navigate server list after identity: %v", err)
+	}
+
+	if err := shell.UpsertServer("srv-1", "Alpha"); err != nil {
+		t.Fatalf("upsert server: %v", err)
+	}
+	if err := shell.UpsertChannelWithType("srv-1", "general", "General", ChannelTypeText); err != nil {
+		t.Fatalf("upsert text channel: %v", err)
+	}
+	if err := shell.UpsertChannelWithType("srv-1", "voice", "Voice", ChannelTypeVoice); err != nil {
+		t.Fatalf("upsert voice channel: %v", err)
+	}
+
+	if err := shell.Navigate(RouteChannelView); !errors.Is(err, ErrServerSelectionRequired) {
+		t.Fatalf("expected server selection guard for channel view, got %v", err)
+	}
+	if err := shell.SelectServer("srv-1"); err != nil {
+		t.Fatalf("select server: %v", err)
+	}
+	if err := shell.Navigate(RouteChannelView); !errors.Is(err, ErrChannelSelectionMissing) {
+		t.Fatalf("expected channel selection guard for channel view, got %v", err)
+	}
+	if err := shell.SelectChannel("general"); err != nil {
+		t.Fatalf("select text channel: %v", err)
+	}
+	if err := shell.Navigate(RouteChannelView); err != nil {
+		t.Fatalf("navigate channel view: %v", err)
+	}
+
+	if err := shell.StartVoiceSessionForScope("srv-1", "voice"); err != nil {
+		t.Fatalf("start voice session for scoped channel: %v", err)
+	}
+	bar := shell.PersistentVoiceBar()
+	if !bar.Visible {
+		t.Fatalf("expected persistent voice bar to be visible with active scoped session, hidden reason=%s", bar.HiddenReason)
+	}
+	if bar.ServerID != "srv-1" || bar.ChannelID != "voice" {
+		t.Fatalf("unexpected voice bar scope: %+v", bar)
+	}
+
+	if err := shell.Navigate(RouteSettings); err != nil {
+		t.Fatalf("navigate settings: %v", err)
+	}
+	settings := shell.SettingsView()
+	if settings.Profile.DisplayName != "" || settings.Audio.InputVolume != DefaultAudioVolume {
+		t.Fatalf("unexpected default settings payload after first-launch flow: %+v", settings)
+	}
+}
+
+func TestFirstLaunchInterruptedFlowRecovery(t *testing.T) {
+	shell := NewShell()
+	if err := shell.SetIdentity("alice"); err != nil {
+		t.Fatalf("set identity: %v", err)
+	}
+	if err := shell.UpsertServer("srv-1", "Alpha"); err != nil {
+		t.Fatalf("upsert server: %v", err)
+	}
+	if err := shell.UpsertServer("srv-2", "Beta"); err != nil {
+		t.Fatalf("upsert server: %v", err)
+	}
+	if err := shell.UpsertChannelWithType("srv-1", "general", "General", ChannelTypeText); err != nil {
+		t.Fatalf("upsert srv-1/general: %v", err)
+	}
+	if err := shell.UpsertChannelWithType("srv-1", "voice", "Voice", ChannelTypeVoice); err != nil {
+		t.Fatalf("upsert srv-1/voice: %v", err)
+	}
+	if err := shell.UpsertChannelWithType("srv-2", "ops", "Ops", ChannelTypeText); err != nil {
+		t.Fatalf("upsert srv-2/ops: %v", err)
+	}
+
+	if err := shell.SaveDraft("srv-1", "general", "draft-msg"); err != nil {
+		t.Fatalf("save draft: %v", err)
+	}
+	if err := shell.SelectServer("srv-1"); err != nil {
+		t.Fatalf("select srv-1: %v", err)
+	}
+	if err := shell.SelectChannel("voice"); err != nil {
+		t.Fatalf("select srv-1/voice: %v", err)
+	}
+	if err := shell.StartVoiceSession(); err != nil {
+		t.Fatalf("start voice session: %v", err)
+	}
+	if err := shell.Navigate(RouteSettings); err != nil {
+		t.Fatalf("navigate settings: %v", err)
+	}
+
+	if err := shell.SelectServer("srv-2"); err != nil {
+		t.Fatalf("switch to srv-2: %v", err)
+	}
+	bar := shell.PersistentVoiceBar()
+	if bar.Visible {
+		t.Fatalf("expected voice session to terminate when switching server, got visible bar: %+v", bar)
+	}
+	if bar.HiddenReason != VoiceBarHiddenReasonNoActiveSession {
+		t.Fatalf("expected no_active_session hidden reason after interruption, got %s", bar.HiddenReason)
+	}
+
+	if err := shell.SelectServer("srv-1"); err != nil {
+		t.Fatalf("recover srv-1 selection: %v", err)
+	}
+	if err := shell.SelectChannel("general"); err != nil {
+		t.Fatalf("recover text channel selection: %v", err)
+	}
+	draft, err := shell.LoadDraft("srv-1", "general")
+	if err != nil {
+		t.Fatalf("load recovered draft: %v", err)
+	}
+	if draft != "draft-msg" {
+		t.Fatalf("expected recovered draft to persist across interruption, got %q", draft)
+	}
+
+	if err := shell.Navigate(RouteChannelView); err != nil {
+		t.Fatalf("recover navigation to channel view: %v", err)
+	}
+	state := shell.State()
+	if state.Subscription.ServerID != "srv-1" || state.Subscription.ChannelID != "general" {
+		t.Fatalf("expected recovered subscription on srv-1/general, got %+v", state.Subscription)
 	}
 }

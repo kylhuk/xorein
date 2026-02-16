@@ -49,14 +49,50 @@ let Relay =
 
       let Environment = { environment : Text, nodes : List Config }
 
+       in  { Node = Node
+           , Limits = Limits
+           , StoreForward = StoreForward
+           , Sfu = Sfu
+           , Metrics = Metrics
+           , Health = Health
+           , Config = Config
+           , Environment = Environment
+           }
+
+let Bootstrap =
+      let Node =
+            { name : Text
+            , region : Text
+            , environment : Text
+            , listen : List Text
+            , announce : List Text
+            , tags : List Text
+            , contact : Text
+            }
+
+      let Metrics =
+            { enabled : Bool
+            , listenAddr : Text
+            }
+
+      let Health =
+            { expectPeers : Natural
+            , interval : Text
+            }
+
+      let Config =
+            { node : Node
+            , metrics : Metrics
+            , health : Health
+            }
+
+      let Environment = { environment : Text, nodes : List Config }
+
       in  { Node = Node
-          , Limits = Limits
-          , StoreForward = StoreForward
-          , Sfu = Sfu
           , Metrics = Metrics
           , Health = Health
           , Config = Config
           , Environment = Environment
           }
 
-in  { ConfigType = ConfigType, Relay = Relay }
+in  { ConfigType = ConfigType, Relay = Relay, Bootstrap = Bootstrap }

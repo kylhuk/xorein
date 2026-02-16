@@ -282,8 +282,8 @@ func TestGossipSignalingRuntimeReceiveValidationAndTimeout(t *testing.T) {
 	if err != nil {
 		t.Fatalf("proto.Marshal() error = %v", err)
 	}
-	if _, _, err := runtime.ReceiveAndDispatch(encoded); err != nil {
-		t.Fatalf("ReceiveAndDispatch(ice1) error = %v", err)
+	if _, _, dispatchErr := runtime.ReceiveAndDispatch(encoded); dispatchErr != nil {
+		t.Fatalf("ReceiveAndDispatch(ice1) error = %v", dispatchErr)
 	}
 
 	now = 102
@@ -295,8 +295,8 @@ func TestGossipSignalingRuntimeReceiveValidationAndTimeout(t *testing.T) {
 	if err != nil {
 		t.Fatalf("proto.Marshal() error = %v", err)
 	}
-	if _, _, err := runtime.ReceiveAndDispatch(staleEncoded); !errors.Is(err, ErrSignalSequenceStale) {
-		t.Fatalf("expected ErrSignalSequenceStale, got %v", err)
+	if _, _, dispatchErr := runtime.ReceiveAndDispatch(staleEncoded); !errors.Is(dispatchErr, ErrSignalSequenceStale) {
+		t.Fatalf("expected ErrSignalSequenceStale, got %v", dispatchErr)
 	}
 
 	now = 103
@@ -309,8 +309,8 @@ func TestGossipSignalingRuntimeReceiveValidationAndTimeout(t *testing.T) {
 		t.Fatalf("proto.Marshal() error = %v", err)
 	}
 	now = 104
-	if _, _, err := runtime.ReceiveAndDispatch(encoded2); err != nil {
-		t.Fatalf("ReceiveAndDispatch(ice2) error = %v", err)
+	if _, _, dispatchErr := runtime.ReceiveAndDispatch(encoded2); dispatchErr != nil {
+		t.Fatalf("ReceiveAndDispatch(ice2) error = %v", dispatchErr)
 	}
 
 	now = 107
@@ -323,8 +323,8 @@ func TestGossipSignalingRuntimeReceiveValidationAndTimeout(t *testing.T) {
 		t.Fatalf("proto.Marshal() error = %v", err)
 	}
 	now = 109
-	if _, _, err := runtime.ReceiveAndDispatch(encoded3); !errors.Is(err, ErrSignalICEUpdateLimit) {
-		t.Fatalf("expected ErrSignalICEUpdateLimit, got %v", err)
+	if _, _, dispatchErr := runtime.ReceiveAndDispatch(encoded3); !errors.Is(dispatchErr, ErrSignalICEUpdateLimit) {
+		t.Fatalf("expected ErrSignalICEUpdateLimit, got %v", dispatchErr)
 	}
 
 	machine2, err := NewSignalingSessionMachine(ref, policy, clock)
@@ -344,8 +344,8 @@ func TestGossipSignalingRuntimeReceiveValidationAndTimeout(t *testing.T) {
 	if err != nil {
 		t.Fatalf("proto.Marshal() error = %v", err)
 	}
-	if _, _, err := runtime2.ReceiveAndDispatch(iceFreshEnc); err != nil {
-		t.Fatalf("ReceiveAndDispatch(iceFresh) error = %v", err)
+	if _, _, dispatchErr := runtime2.ReceiveAndDispatch(iceFreshEnc); dispatchErr != nil {
+		t.Fatalf("ReceiveAndDispatch(iceFresh) error = %v", dispatchErr)
 	}
 	now = 103
 	answer, err := NewVoiceSignalFrame(ref, apb.VoiceSignalType_VOICE_SIGNAL_TYPE_ANSWER, 2, []byte("enc:answer"), now, 5, policy)
@@ -359,5 +359,45 @@ func TestGossipSignalingRuntimeReceiveValidationAndTimeout(t *testing.T) {
 	now = 106
 	if _, _, err := runtime2.ReceiveAndDispatch(answerEnc); !errors.Is(err, ErrSignalICEUpdateTimeout) {
 		t.Fatalf("expected ErrSignalICEUpdateTimeout, got %v", err)
+	}
+}
+
+func TestSignalingSessionMachineStateReturnsDeepClone(t *testing.T) {
+	sessionRef := &apb.VoiceSignalSessionRef{
+		SignalSessionId:     "sig-clone",
+		VoiceSessionId:      "voice-clone",
+		ServerId:            "server-a",
+		ChannelId:           "channel-a",
+		LocalParticipantId:  "local-a",
+		RemoteParticipantId: "remote-a",
+	}
+	machine, err := NewSignalingSessionMachine(sessionRef, DefaultVoiceSignalRetryPolicy(), func() uint64 { return 123 })
+	if err != nil {
+		t.Fatalf("NewSignalingSessionMachine() error = %v", err)
+	}
+
+	state1 := machine.State()
+	if state1.GetSessionRef() == nil {
+		t.Fatalf("expected state session ref")
+	}
+	state1.Status = apb.VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_FAILED
+	state1.SessionRef.SignalSessionId = "mutated-signal-id"
+	state1.SessionRef.ServerId = "mutated-server"
+
+	state2 := machine.State()
+	if state1 == state2 {
+		t.Fatalf("expected state clone pointer to differ")
+	}
+	if state1.GetSessionRef() == state2.GetSessionRef() {
+		t.Fatalf("expected nested SessionRef pointer to differ")
+	}
+	if state2.GetStatus() != apb.VoiceSignalSessionStatus_VOICE_SIGNAL_SESSION_STATUS_IDLE {
+		t.Fatalf("state status was aliased: got %v, want IDLE", state2.GetStatus())
+	}
+	if state2.GetSessionRef().GetSignalSessionId() != "sig-clone" {
+		t.Fatalf("signal session id was aliased: got %q", state2.GetSessionRef().GetSignalSessionId())
+	}
+	if state2.GetSessionRef().GetServerId() != "server-a" {
+		t.Fatalf("server id was aliased: got %q", state2.GetSessionRef().GetServerId())
 	}
 }
