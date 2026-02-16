@@ -1,0 +1,10 @@
+Publication gates:
+1. Build uses pinned source commit and records image digest.
+2. Digest checksum is present (image-digest.txt.sha256).
+3. SBOM + SBOM checksum are present.
+4. Signing command is recorded and must be executed before push.
+
+Rollback:
+- Re-deploy previous known-good digest from release history.
+- Re-point deployment manifests from candidate digest to prior digest.
+- Confirm rollback digest health before unpausing rollout.

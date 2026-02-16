@@ -1,0 +1,14 @@
+P11-T2 integrated regression report
+generated_at: 2026-02-16T12:21:39.604876114Z
+runs: 3
+
+per-run matrix:
+- run=01 status=PASS target_met=true duration=1.467365ms
+  event_counts: chat_roundtrip=1 relay_snapshot=1 voice_connect=1
+  reason_codes: chat_ok=1 relay_path_ok=1 voice_ok=1
+- run=02 status=PASS target_met=true duration=169.483µs
+  event_counts: chat_roundtrip=1 relay_snapshot=1 voice_connect=1
+  reason_codes: chat_ok=1 relay_path_ok=1 voice_ok=1
+- run=03 status=PASS target_met=true duration=139.712µs
+  event_counts: chat_roundtrip=1 relay_snapshot=1 voice_connect=1
+  reason_codes: chat_ok=1 relay_path_ok=1 voice_ok=1

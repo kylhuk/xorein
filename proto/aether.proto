@@ -1,0 +1,343 @@
+syntax = "proto3";
+
+package aether;
+
+option go_package = "github.com/aether/code_aether/gen/go/aether;apb";
+
+// CapabilityFlag enumerates the primitive features that a participant can
+// advertise or request inside manifests or invitations.
+enum CapabilityFlag {
+  CAPABILITY_FLAG_UNSPECIFIED = 0;
+  CAPABILITY_FLAG_CHAT = 1;
+  CAPABILITY_FLAG_VOICE = 2;
+  CAPABILITY_FLAG_MANAGEMENT = 3;
+
+  reserved 100 to 199;
+}
+
+// PayloadType identifies the structured type carried inside SignedEnvelope.
+enum PayloadType {
+  PAYLOAD_TYPE_UNSPECIFIED = 0;
+  PAYLOAD_TYPE_IDENTITY = 1;
+  PAYLOAD_TYPE_SERVER_MANIFEST = 2;
+  PAYLOAD_TYPE_CHAT_MESSAGE = 3;
+  PAYLOAD_TYPE_VOICE_STATE = 4;
+  PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE = 5;
+  PAYLOAD_TYPE_VOICE_SIGNAL_FRAME = 6;
+  PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE = 7;
+
+  reserved 100 to 199;
+}
+
+// VoiceCodec enumerates codec families allowed for v0.1 voice baseline.
+enum VoiceCodec {
+  VOICE_CODEC_UNSPECIFIED = 0;
+  VOICE_CODEC_OPUS = 1;
+
+  reserved 100 to 199;
+}
+
+// VoiceLifecycleState captures peer-connection lifecycle checkpoints.
+enum VoiceLifecycleState {
+  VOICE_LIFECYCLE_STATE_UNSPECIFIED = 0;
+  VOICE_LIFECYCLE_STATE_INITIALIZING = 1;
+  VOICE_LIFECYCLE_STATE_READY = 2;
+  VOICE_LIFECYCLE_STATE_DEGRADING = 3;
+  VOICE_LIFECYCLE_STATE_RECONNECTING = 4;
+  VOICE_LIFECYCLE_STATE_CLOSED = 5;
+
+  reserved 100 to 199;
+}
+
+// VoiceReconnectClass classifies deterministic reconnect/error behaviors.
+enum VoiceReconnectClass {
+  VOICE_RECONNECT_CLASS_UNSPECIFIED = 0;
+  VOICE_RECONNECT_CLASS_ICE_DISCONNECTED = 1;
+  VOICE_RECONNECT_CLASS_TRANSPORT_FAILURE = 2;
+  VOICE_RECONNECT_CLASS_REMOTE_RESTART = 3;
+  VOICE_RECONNECT_CLASS_LOCAL_DEVICE_CHANGE = 4;
+  VOICE_RECONNECT_CLASS_AUTHENTICATION_FAILURE = 5;
+
+  reserved 100 to 199;
+}
+
+// VoiceSignalType classifies encrypted signaling messages exchanged over
+// GossipSub channels for voice setup and maintenance.
+enum VoiceSignalType {
+  VOICE_SIGNAL_TYPE_UNSPECIFIED = 0;
+  VOICE_SIGNAL_TYPE_OFFER = 1;
+  VOICE_SIGNAL_TYPE_ANSWER = 2;
+  VOICE_SIGNAL_TYPE_ICE_CANDIDATE = 3;
+  VOICE_SIGNAL_TYPE_ICE_COMPLETE = 4;
+  VOICE_SIGNAL_TYPE_RESTART = 5;
+  VOICE_SIGNAL_TYPE_TERMINATE = 6;
+
+  reserved 100 to 199;
+}
+
+// VoiceSignalSessionStatus tracks finite session-state transitions for
+// signaling orchestration.
+enum VoiceSignalSessionStatus {
+  VOICE_SIGNAL_SESSION_STATUS_UNSPECIFIED = 0;
+  VOICE_SIGNAL_SESSION_STATUS_IDLE = 1;
+  VOICE_SIGNAL_SESSION_STATUS_OFFER_SENT = 2;
+  VOICE_SIGNAL_SESSION_STATUS_OFFER_RECEIVED = 3;
+  VOICE_SIGNAL_SESSION_STATUS_ANSWER_SENT = 4;
+  VOICE_SIGNAL_SESSION_STATUS_ESTABLISHING = 5;
+  VOICE_SIGNAL_SESSION_STATUS_ESTABLISHED = 6;
+  VOICE_SIGNAL_SESSION_STATUS_RESTARTING = 7;
+  VOICE_SIGNAL_SESSION_STATUS_TERMINATED = 8;
+  VOICE_SIGNAL_SESSION_STATUS_FAILED = 9;
+
+  reserved 100 to 199;
+}
+
+// SignatureAlgorithm tracks how the signature bytes should be verified.
+enum SignatureAlgorithm {
+  SIGNATURE_ALGORITHM_UNSPECIFIED = 0;
+  SIGNATURE_ALGORITHM_ED25519 = 1;
+  SIGNATURE_ALGORITHM_P256 = 2;
+
+  reserved 100 to 199;
+}
+
+// EnvelopeVerificationError enumerates canonical validation failures for
+// envelopes. Detailed descriptions are documented in
+// docs/v0.1/phase3/p3-t4-envelope-spec.md.
+enum EnvelopeVerificationError {
+  ENVELOPE_VERIFICATION_ERROR_UNSPECIFIED = 0;
+  ENVELOPE_VERIFICATION_ERROR_SIGNATURE_MISMATCH = 1;
+  ENVELOPE_VERIFICATION_ERROR_UNSIGNED_PAYLOAD = 2;
+  ENVELOPE_VERIFICATION_ERROR_UNSUPPORTED_PAYLOAD_TYPE = 3;
+  ENVELOPE_VERIFICATION_ERROR_CANONICALIZATION_MISMATCH = 4;
+  ENVELOPE_VERIFICATION_ERROR_EXPIRED_SIGNATURE = 5;
+  ENVELOPE_VERIFICATION_ERROR_UNTRUSTED_SIGNER = 6;
+
+  reserved 100 to 199;
+}
+
+// VerificationStatus is an aggregate decision derived from the error list.
+enum VerificationStatus {
+  VERIFICATION_STATUS_UNSPECIFIED = 0;
+  VERIFICATION_STATUS_ACCEPTED = 1;
+  VERIFICATION_STATUS_REJECTED = 2;
+
+  reserved 100 to 199;
+}
+
+// CapabilitySet represents the strongly typed capability flags alongside custom
+// opaque attributes for future extensions.
+message CapabilitySet {
+  reserved 100 to 199;
+
+  repeated CapabilityFlag flags = 1;
+  map<string, string> custom_claims = 2;
+}
+
+// IdentityProfile captures cryptographic material and descriptive metadata.
+message IdentityProfile {
+  reserved 100 to 199;
+
+  string identity_id = 1;
+  string display_name = 2;
+  bytes signing_public_key = 3;
+  bytes profile_signature = 4;
+  CapabilitySet advertised_capabilities = 5;
+}
+
+// MembershipState records per-member enablement toggles within manifests.
+message MembershipState {
+  reserved 100 to 199;
+
+  IdentityProfile member = 1;
+  bool chat_enabled = 2;
+  bool voice_enabled = 3;
+  CapabilitySet granted_capabilities = 4;
+}
+
+// ServerManifest v0.1 conveys the bootstrap state for a deployment.
+message ServerManifest {
+  reserved 100 to 199;
+
+  string manifest_id = 1;
+  IdentityProfile owner = 2;
+  string server_description = 3;
+  repeated MembershipState members = 4;
+  CapabilitySet server_capabilities = 5;
+  uint64 published_at = 6; // unix seconds
+}
+
+// ChatMessage represents a minimal text payload propagated via envelopes.
+message ChatMessage {
+  reserved 100 to 199;
+
+  string message_id = 1;
+  IdentityProfile sender = 2;
+  string room_id = 3;
+  string body = 4;
+  uint64 sent_at = 5; // unix seconds
+}
+
+// VoiceState tracks participant mute/deafen state for signaling.
+message VoiceState {
+  reserved 100 to 199;
+
+  string session_id = 1;
+  IdentityProfile participant = 2;
+  bool muted = 3;
+  bool deafened = 4;
+  uint64 updated_at = 5; // unix seconds
+}
+
+// VoiceCodecProfile defines codec and frame defaults for pipeline bootstrap.
+message VoiceCodecProfile {
+  reserved 100 to 199;
+
+  VoiceCodec codec = 1;
+  uint32 frame_duration_ms = 2;
+  uint32 sample_rate_hz = 3;
+  uint32 channels = 4;
+  bool dtx_enabled = 5;
+  bool fec_enabled = 6;
+  uint32 max_bitrate_bps = 7;
+}
+
+// VoiceTransportProfile captures transport setup controls for v0.1.
+message VoiceTransportProfile {
+  reserved 100 to 199;
+
+  string transport = 1;
+  bool rtcp_mux = 2;
+  bool ice_restart_enabled = 3;
+  bool continual_gathering = 4;
+}
+
+// VoiceReconnectPolicy defines bounded retry behavior for recoverable failures.
+message VoiceReconnectPolicy {
+  reserved 100 to 199;
+
+  uint32 max_attempts = 1;
+  uint32 initial_backoff_ms = 2;
+  uint32 max_backoff_ms = 3;
+  repeated VoiceReconnectClass retryable_classes = 4;
+}
+
+// VoiceLifecycleHook records an observed peer lifecycle transition.
+message VoiceLifecycleHook {
+  reserved 100 to 199;
+
+  VoiceLifecycleState state = 1;
+  string peer_id = 2;
+  uint64 occurred_at = 3; // unix seconds
+  string detail = 4;
+}
+
+// VoicePipelineBaseline bundles codec, transport, lifecycle, and reconnect
+// settings for voice-pipeline bootstrap in v0.1.
+message VoicePipelineBaseline {
+  reserved 100 to 199;
+
+  string session_id = 1;
+  VoiceCodecProfile codec_profile = 2;
+  VoiceTransportProfile transport_profile = 3;
+  VoiceReconnectPolicy reconnect_policy = 4;
+  repeated VoiceLifecycleHook lifecycle_hooks = 5;
+  uint64 configured_at = 6; // unix seconds
+}
+
+// VoiceSignalSessionRef carries deterministic identifiers used by signaling
+// sessions.
+message VoiceSignalSessionRef {
+  reserved 100 to 199;
+
+  string signal_session_id = 1;
+  string voice_session_id = 2;
+  string server_id = 3;
+  string channel_id = 4;
+  string local_participant_id = 5;
+  string remote_participant_id = 6;
+}
+
+// VoiceSignalRetryPolicy defines bounded offer/answer retry behavior and ICE
+// update timeout handling.
+message VoiceSignalRetryPolicy {
+  reserved 100 to 199;
+
+  uint32 max_offer_attempts = 1;
+  uint32 offer_retry_backoff_ms = 2;
+  uint32 max_answer_attempts = 3;
+  uint32 answer_retry_backoff_ms = 4;
+  uint32 max_ice_updates = 5;
+  uint32 ice_update_timeout_ms = 6;
+}
+
+// VoiceSignalFrame is the encrypted signaling envelope exchanged over
+// GossipSub. The encrypted_payload bytes carry SDP/ICE material encrypted by
+// the channel pipeline.
+message VoiceSignalFrame {
+  reserved 100 to 199;
+
+  string signal_id = 1;
+  VoiceSignalSessionRef session_ref = 2;
+  VoiceSignalType signal_type = 3;
+  uint64 sequence = 4;
+  bytes encrypted_payload = 5;
+  uint64 sent_at = 6; // unix seconds
+  uint64 expires_at = 7; // unix seconds
+  VoiceSignalRetryPolicy retry_policy = 8;
+}
+
+// VoiceSignalSessionState records signaling state-machine progress and bounded
+// retry counters.
+message VoiceSignalSessionState {
+  reserved 100 to 199;
+
+  VoiceSignalSessionRef session_ref = 1;
+  VoiceSignalSessionStatus status = 2;
+  uint32 offer_attempt = 3;
+  uint32 answer_attempt = 4;
+  uint32 ice_update_count = 5;
+  uint64 last_transition_at = 6; // unix seconds
+  string terminal_reason = 7;
+}
+
+// SignedEnvelope standardizes canonical serialization and signatures.
+message SignedEnvelope {
+  reserved 100 to 199;
+
+  string envelope_id = 1;
+  PayloadType payload_type = 2;
+  bytes payload = 3;
+  IdentityProfile signer = 4;
+  SignatureAlgorithm signature_algorithm = 5;
+  bytes signature = 6;
+  bytes canonical_payload = 7;
+  uint64 signed_at = 8; // unix seconds
+}
+
+// VerificationError contains a taxonomy code plus human-readable detail.
+message VerificationError {
+  reserved 100 to 199;
+
+  EnvelopeVerificationError code = 1;
+  string detail = 2;
+}
+
+// EnvelopeVerification is a helper wrapper for API responses.
+message EnvelopeVerification {
+  reserved 100 to 199;
+
+  SignedEnvelope envelope = 1;
+  VerificationStatus status = 2;
+  repeated VerificationError errors = 3;
+  bytes canonical_bytes = 4;
+}
+
+// AetherPlaceholder remains for backward compatibility with initial scaffolds.
+message AetherPlaceholder {
+  // Reserved numbers ensure additive-safe expansion as specified in docs/v0.1/phase2/proto-reservation-policy.md
+  reserved 100;
+  reserved "legacy_port";
+
+  string placeholder_message = 1;
+}

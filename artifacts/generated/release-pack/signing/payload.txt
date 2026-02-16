@@ -1,0 +1,5 @@
+artifact=artifacts/generated/release-pack/checksums.txt
+artifact=artifacts/generated/release-pack/sbom/sbom.spdx.json
+artifact=artifacts/generated/release-pack/sbom/sbom.spdx.json.sha256
+sbom_sha256=ebbe05af50cdf044fb605e4a6be9ccd41867ffe37d77c72f9e0094c42af2e270
+checksums_sha256=452ad300fdafad44f5616da929f92faded7f1a3b264b342dce5db6d3c597d2a0
