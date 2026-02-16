@@ -428,6 +428,100 @@ func TestVoiceSessionManagerJoinEnforcesMaxPeersConcurrently(t *testing.T) {
 	}
 }
 
+func TestVoiceSessionManagerCongestionRemainsDuringPendingJoin(t *testing.T) {
+	manager, err := NewVoiceSessionManager(1, nil)
+	if err != nil {
+		t.Fatalf("NewVoiceSessionManager() error = %v", err)
+	}
+
+	codec := DefaultCodecProfile()
+	transport := DefaultTransportProfile()
+	ctx := context.Background()
+	firstPeer := newBlockingPeerConnection("peer-1")
+
+	var wg sync.WaitGroup
+	var firstErr error
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		firstErr = manager.Join(ctx, "session-a", codec, transport, firstPeer)
+	}()
+
+	select {
+	case <-firstPeer.connectStarted:
+	case <-time.After(2 * time.Second):
+		t.Fatalf("first join did not reach Connect")
+	}
+
+	secondErr := manager.Join(ctx, "session-a", codec, transport, &testPeerConnection{id: "peer-2"})
+	if !errors.Is(secondErr, ErrPeerLimit) {
+		t.Fatalf("second Join() error = %v, want ErrPeerLimit", secondErr)
+	}
+	if !manager.IsCongested() {
+		t.Fatalf("IsCongested() = false, want true after concurrent refused join")
+	}
+
+	close(firstPeer.releaseCh)
+	wg.Wait()
+
+	if firstErr != nil {
+		t.Fatalf("first Join() unexpected error = %v", firstErr)
+	}
+	if !manager.IsCongested() {
+		t.Fatalf("IsCongested() = false, want true when max peers are connected")
+	}
+	if got := manager.ParticipantCount(); got != 1 {
+		t.Fatalf("ParticipantCount() = %d, want 1", got)
+	}
+}
+
+func TestVoiceSessionManagerTeardownClearsPendingJoin(t *testing.T) {
+	manager, err := NewVoiceSessionManager(1, nil)
+	if err != nil {
+		t.Fatalf("NewVoiceSessionManager() error = %v", err)
+	}
+
+	codec := DefaultCodecProfile()
+	transport := DefaultTransportProfile()
+	ctx := context.Background()
+	firstPeer := newBlockingPeerConnection("peer-1")
+
+	var wg sync.WaitGroup
+	var firstErr error
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		firstErr = manager.Join(ctx, "session-a", codec, transport, firstPeer)
+	}()
+
+	select {
+	case <-firstPeer.connectStarted:
+	case <-time.After(2 * time.Second):
+		t.Fatalf("first join did not reach Connect")
+	}
+
+	if err := manager.Teardown(ctx, "session-a"); err != nil {
+		t.Fatalf("Teardown() error = %v", err)
+	}
+
+	if err := manager.Join(ctx, "session-a", codec, transport, &testPeerConnection{id: "peer-2"}); err != nil {
+		t.Fatalf("Join(peer-2) error after Teardown = %v", err)
+	}
+	if got := manager.ParticipantCount(); got != 1 {
+		t.Fatalf("ParticipantCount() = %d, want 1", got)
+	}
+
+	close(firstPeer.releaseCh)
+	wg.Wait()
+
+	if firstErr != nil {
+		t.Fatalf("first Join() unexpected error = %v", firstErr)
+	}
+	if err := manager.Teardown(ctx, "session-a"); err != nil {
+		t.Fatalf("Teardown() cleanup error = %v", err)
+	}
+}
+
 func TestVoiceSessionManagerValidationAndTeardown(t *testing.T) {
 	t.Run("constructor validation", func(t *testing.T) {
 		if _, err := NewVoiceSessionManager(0, nil); err == nil {
