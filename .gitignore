@@ -5,9 +5,5 @@
 .kilocode/
 .opencode/
 opencode.json
-aether*.md
-TODO*.md
-SPRINT*.md
-AGENTS.md
 *.gen.yaml
 .config/

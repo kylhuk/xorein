@@ -5,7 +5,6 @@ import (
 	"crypto/ed25519"
 	"errors"
 	"math"
-	"reflect"
 	"runtime"
 	"testing"
 	"unsafe"
@@ -474,10 +473,5 @@ func TestStorageEnvelopeMarshalReturnsInvalidEnvelopeForSyntheticLengthOverflow(
 
 func syntheticByteSliceWithLength(length int) ([]byte, []byte) {
 	backing := []byte{0xAA}
-	hdr := &reflect.SliceHeader{
-		Data: uintptr(unsafe.Pointer(&backing[0])),
-		Len:  length,
-		Cap:  length,
-	}
-	return *(*[]byte)(unsafe.Pointer(hdr)), backing
+	return unsafe.Slice((*byte)(unsafe.Pointer(&backing[0])), length), backing
 }

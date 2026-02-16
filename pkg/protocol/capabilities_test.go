@@ -79,3 +79,27 @@ func TestNegotiateCapabilities(t *testing.T) {
 		}
 	})
 }
+
+func TestNegotiateConversationSecurityModeV02(t *testing.T) {
+	result := NegotiateConversationSecurityMode(
+		[]SecurityMode{SecurityModeSeal, SecurityModeTree},
+		[]SecurityMode{SecurityModeTree, SecurityModeClear},
+	)
+	if result.Mode != SecurityModeTree {
+		t.Fatalf("unexpected mode: %q", result.Mode)
+	}
+	if result.Reason != ModeNegotiationReasonMatched {
+		t.Fatalf("unexpected reason: %q", result.Reason)
+	}
+
+	rejected := NegotiateConversationSecurityMode(
+		[]SecurityMode{SecurityModeSeal},
+		[]SecurityMode{SecurityModeClear},
+	)
+	if rejected.Mode != SecurityModeUnspecified {
+		t.Fatalf("expected unspecified mode, got %q", rejected.Mode)
+	}
+	if rejected.Reason != ModeNegotiationReasonUnsupported {
+		t.Fatalf("unexpected reason: %q", rejected.Reason)
+	}
+}

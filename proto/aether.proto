@@ -11,6 +11,13 @@ enum CapabilityFlag {
   CAPABILITY_FLAG_CHAT = 1;
   CAPABILITY_FLAG_VOICE = 2;
   CAPABILITY_FLAG_MANAGEMENT = 3;
+  CAPABILITY_FLAG_DM = 4;
+  CAPABILITY_FLAG_GROUP_DM = 5;
+  CAPABILITY_FLAG_FRIENDS = 6;
+  CAPABILITY_FLAG_PRESENCE = 7;
+  CAPABILITY_FLAG_NOTIFY = 8;
+  CAPABILITY_FLAG_MODERATION = 9;
+  CAPABILITY_FLAG_GOVERNANCE = 10;
 
   reserved 100 to 199;
 }
@@ -25,6 +32,30 @@ enum PayloadType {
   PAYLOAD_TYPE_VOICE_PIPELINE_BASELINE = 5;
   PAYLOAD_TYPE_VOICE_SIGNAL_FRAME = 6;
   PAYLOAD_TYPE_VOICE_SIGNAL_SESSION_STATE = 7;
+  PAYLOAD_TYPE_DM_PREKEY_BUNDLE = 8;
+  PAYLOAD_TYPE_DM_MESSAGE = 9;
+  PAYLOAD_TYPE_DM_TRANSPORT_DECISION = 10;
+  PAYLOAD_TYPE_DM_DELIVERY_RECEIPT = 11;
+  PAYLOAD_TYPE_GROUP_DM_MEMBERSHIP_EVENT = 12;
+  PAYLOAD_TYPE_FRIEND_REQUEST = 13;
+  PAYLOAD_TYPE_PRESENCE_STATE = 14;
+  PAYLOAD_TYPE_PRESENCE_EVENT = 15;
+  PAYLOAD_TYPE_NOTIFICATION = 16;
+  PAYLOAD_TYPE_MENTION_TOKEN = 17;
+  PAYLOAD_TYPE_MENTION_DECISION = 18;
+  PAYLOAD_TYPE_ROLE_STATE = 19;
+  PAYLOAD_TYPE_POLICIES = 20;
+  PAYLOAD_TYPE_MODERATION_EVENT = 21;
+  PAYLOAD_TYPE_SLOW_MODE_DECISION = 22;
+  PAYLOAD_TYPE_GOVERNANCE_METADATA = 23;
+  PAYLOAD_TYPE_FRIEND_IDENTITY_SHARE = 24;
+  PAYLOAD_TYPE_FRIEND_INVITE_PAYLOAD = 25;
+  PAYLOAD_TYPE_PRESENCE_DISSEMINATION_POLICY = 26;
+  PAYLOAD_TYPE_DM_DIRECT_SESSION_LIFECYCLE = 27;
+  PAYLOAD_TYPE_GROUP_DM_SENDER_KEY_ENVELOPE = 28;
+  PAYLOAD_TYPE_GROUP_DM_REKEY_DECISION = 29;
+  PAYLOAD_TYPE_GROUP_DM_HISTORY_SYNC_DECISION = 30;
+  PAYLOAD_TYPE_GROUP_DM_GROWTH_DECISION = 31;
 
   reserved 100 to 199;
 }
@@ -112,6 +143,313 @@ enum EnvelopeVerificationError {
   ENVELOPE_VERIFICATION_ERROR_CANONICALIZATION_MISMATCH = 4;
   ENVELOPE_VERIFICATION_ERROR_EXPIRED_SIGNATURE = 5;
   ENVELOPE_VERIFICATION_ERROR_UNTRUSTED_SIGNER = 6;
+
+  reserved 100 to 199;
+}
+
+// SecurityMode encodes conversation mode negotiation for v0.2 envelopes.
+enum SecurityMode {
+  SECURITY_MODE_UNSPECIFIED = 0;
+  SECURITY_MODE_SEAL = 1;
+  SECURITY_MODE_TREE = 2;
+  SECURITY_MODE_CLEAR = 3;
+
+  reserved 100 to 199;
+}
+
+// DmDeliveryPath declares deterministic transport selection for DM attempts.
+enum DmDeliveryPath {
+  DM_DELIVERY_PATH_UNSPECIFIED = 0;
+  DM_DELIVERY_PATH_DIRECT = 1;
+  DM_DELIVERY_PATH_OFFLINE = 2;
+  DM_DELIVERY_PATH_REJECT = 3;
+
+  reserved 100 to 199;
+}
+
+// DmTransportReason is a closed taxonomy for transport path decisions.
+enum DmTransportReason {
+  DM_TRANSPORT_REASON_UNSPECIFIED = 0;
+  DM_TRANSPORT_REASON_DIRECT_AVAILABLE = 1;
+  DM_TRANSPORT_REASON_PEER_OFFLINE = 2;
+  DM_TRANSPORT_REASON_DIRECT_UNSUPPORTED = 3;
+  DM_TRANSPORT_REASON_UNSUPPORTED_SECURITY_MODE = 4;
+
+  reserved 100 to 199;
+}
+
+// DmDirectSessionState tracks direct stream lifecycle state.
+enum DmDirectSessionState {
+  DM_DIRECT_SESSION_STATE_UNSPECIFIED = 0;
+  DM_DIRECT_SESSION_STATE_CLOSED = 1;
+  DM_DIRECT_SESSION_STATE_OPENING = 2;
+  DM_DIRECT_SESSION_STATE_OPEN = 3;
+  DM_DIRECT_SESSION_STATE_RETRYING = 4;
+
+  reserved 100 to 199;
+}
+
+// DmDirectSessionEvent classifies direct stream lifecycle triggers.
+enum DmDirectSessionEvent {
+  DM_DIRECT_SESSION_EVENT_UNSPECIFIED = 0;
+  DM_DIRECT_SESSION_EVENT_OPEN_REQUESTED = 1;
+  DM_DIRECT_SESSION_EVENT_OPEN_CONFIRMED = 2;
+  DM_DIRECT_SESSION_EVENT_CLOSE = 3;
+  DM_DIRECT_SESSION_EVENT_TIMEOUT = 4;
+  DM_DIRECT_SESSION_EVENT_RETRY_TICK = 5;
+
+  reserved 100 to 199;
+}
+
+// DmReceiptStatus classifies offline delivery receipt progression.
+enum DmReceiptStatus {
+  DM_RECEIPT_STATUS_UNSPECIFIED = 0;
+  DM_RECEIPT_STATUS_PENDING = 1;
+  DM_RECEIPT_STATUS_RETRY_SCHEDULED = 2;
+  DM_RECEIPT_STATUS_DELIVERED = 3;
+  DM_RECEIPT_STATUS_EXPIRED = 4;
+
+  reserved 100 to 199;
+}
+
+// GroupDmMemberState tracks baseline group membership lifecycle states.
+enum GroupDmMemberState {
+  GROUP_DM_MEMBER_STATE_UNSPECIFIED = 0;
+  GROUP_DM_MEMBER_STATE_NONE = 1;
+  GROUP_DM_MEMBER_STATE_INVITED = 2;
+  GROUP_DM_MEMBER_STATE_MEMBER = 3;
+  GROUP_DM_MEMBER_STATE_LEFT = 4;
+  GROUP_DM_MEMBER_STATE_REMOVED = 5;
+
+  reserved 100 to 199;
+}
+
+// GroupDmMembershipEventType tracks minimal event kinds for state transition.
+enum GroupDmMembershipEventType {
+  GROUP_DM_MEMBERSHIP_EVENT_TYPE_UNSPECIFIED = 0;
+  GROUP_DM_MEMBERSHIP_EVENT_TYPE_INVITE = 1;
+  GROUP_DM_MEMBERSHIP_EVENT_TYPE_JOIN = 2;
+  GROUP_DM_MEMBERSHIP_EVENT_TYPE_LEAVE = 3;
+  GROUP_DM_MEMBERSHIP_EVENT_TYPE_REMOVE = 4;
+
+  reserved 100 to 199;
+}
+
+// GroupDmMemberCapReason is the deterministic cap response for membership operations.
+enum GroupDmMemberCapReason {
+  GROUP_DM_MEMBER_CAP_REASON_UNSPECIFIED = 0;
+  GROUP_DM_MEMBER_CAP_REASON_OK = 1;
+  GROUP_DM_MEMBER_CAP_REASON_WARNING = 2;
+  GROUP_DM_MEMBER_CAP_REASON_EXCEEDED = 3;
+
+  reserved 100 to 199;
+}
+
+// GroupDmKeyDistributionReason classifies sender-key distribution outcomes.
+enum GroupDmKeyDistributionReason {
+  GROUP_DM_KEY_DISTRIBUTION_REASON_UNSPECIFIED = 0;
+  GROUP_DM_KEY_DISTRIBUTION_REASON_ACCEPTED = 1;
+  GROUP_DM_KEY_DISTRIBUTION_REASON_INVALID_ENVELOPE = 2;
+  GROUP_DM_KEY_DISTRIBUTION_REASON_UNAUTHORIZED_SENDER = 3;
+  GROUP_DM_KEY_DISTRIBUTION_REASON_MISSING_SIGNATURE = 4;
+  GROUP_DM_KEY_DISTRIBUTION_REASON_REPLAY_UNPROTECTED = 5;
+  GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_SCHEDULED = 6;
+  GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_EXHAUSTED = 7;
+  GROUP_DM_KEY_DISTRIBUTION_REASON_RETRY_TERMINAL_FAILURE = 8;
+
+  reserved 100 to 199;
+}
+
+// GroupDmRekeyTrigger classifies mandatory rekey events.
+enum GroupDmRekeyTrigger {
+  GROUP_DM_REKEY_TRIGGER_UNSPECIFIED = 0;
+  GROUP_DM_REKEY_TRIGGER_MEMBER_ADDED = 1;
+  GROUP_DM_REKEY_TRIGGER_MEMBER_REMOVED = 2;
+  GROUP_DM_REKEY_TRIGGER_MEMBER_LEFT = 3;
+  GROUP_DM_REKEY_TRIGGER_COMPROMISE_SUSPECTED = 4;
+  GROUP_DM_REKEY_TRIGGER_REJOIN_AFTER_REMOVAL = 5;
+
+  reserved 100 to 199;
+}
+
+// GroupDmRekeyReason classifies deterministic rekey decisions.
+enum GroupDmRekeyReason {
+  GROUP_DM_REKEY_REASON_UNSPECIFIED = 0;
+  GROUP_DM_REKEY_REASON_REQUIRED_MEMBERSHIP_CHANGE = 1;
+  GROUP_DM_REKEY_REASON_REQUIRED_COMPROMISE = 2;
+  GROUP_DM_REKEY_REASON_REQUIRED_REJOIN_GATE = 3;
+  GROUP_DM_REKEY_REASON_NOT_REQUIRED = 4;
+
+  reserved 100 to 199;
+}
+
+// GroupDmTransportPath identifies direct/offline routing outcomes.
+enum GroupDmTransportPath {
+  GROUP_DM_TRANSPORT_PATH_UNSPECIFIED = 0;
+  GROUP_DM_TRANSPORT_PATH_DIRECT = 1;
+  GROUP_DM_TRANSPORT_PATH_OFFLINE = 2;
+  GROUP_DM_TRANSPORT_PATH_REJECT = 3;
+
+  reserved 100 to 199;
+}
+
+// GroupDmTransportReason classifies deterministic transport routing reasons.
+enum GroupDmTransportReason {
+  GROUP_DM_TRANSPORT_REASON_UNSPECIFIED = 0;
+  GROUP_DM_TRANSPORT_REASON_DIRECT_AVAILABLE = 1;
+  GROUP_DM_TRANSPORT_REASON_OFFLINE_FALLBACK = 2;
+  GROUP_DM_TRANSPORT_REASON_REJECTED = 3;
+
+  reserved 100 to 199;
+}
+
+// GroupDmHistorySyncReason classifies history visibility/sync outcomes.
+enum GroupDmHistorySyncReason {
+  GROUP_DM_HISTORY_SYNC_REASON_UNSPECIFIED = 0;
+  GROUP_DM_HISTORY_SYNC_REASON_OK = 1;
+  GROUP_DM_HISTORY_SYNC_REASON_LOCKED = 2;
+  GROUP_DM_HISTORY_SYNC_REASON_WINDOW_BOUNDED = 3;
+  GROUP_DM_HISTORY_SYNC_REASON_INVALID_RANGE = 4;
+
+  reserved 100 to 199;
+}
+
+// GroupDmGrowthReason classifies member-cap growth decisions.
+enum GroupDmGrowthReason {
+  GROUP_DM_GROWTH_REASON_UNSPECIFIED = 0;
+  GROUP_DM_GROWTH_REASON_OK = 1;
+  GROUP_DM_GROWTH_REASON_WARNING = 2;
+  GROUP_DM_GROWTH_REASON_CONVERT_REQUIRED = 3;
+
+  reserved 100 to 199;
+}
+
+// FriendRequestState tracks friend request lifecycle states.
+enum FriendRequestState {
+  FRIEND_REQUEST_STATE_UNSPECIFIED = 0;
+  FRIEND_REQUEST_STATE_PENDING = 1;
+  FRIEND_REQUEST_STATE_ACCEPTED = 2;
+  FRIEND_REQUEST_STATE_DECLINED = 3;
+  FRIEND_REQUEST_STATE_CANCELED = 4;
+  FRIEND_REQUEST_STATE_BLOCKED = 5;
+
+  reserved 100 to 199;
+}
+
+// FriendRequestAction maps locally executable request actions.
+enum FriendRequestAction {
+  FRIEND_REQUEST_ACTION_UNSPECIFIED = 0;
+  FRIEND_REQUEST_ACTION_ACCEPT = 1;
+  FRIEND_REQUEST_ACTION_DECLINE = 2;
+  FRIEND_REQUEST_ACTION_CANCEL = 3;
+  FRIEND_REQUEST_ACTION_BLOCK = 4;
+
+  reserved 100 to 199;
+}
+
+// FriendExchangeEntryPath identifies how a friend invitation payload is transported.
+enum FriendExchangeEntryPath {
+  FRIEND_EXCHANGE_ENTRY_PATH_UNSPECIFIED = 0;
+  FRIEND_EXCHANGE_ENTRY_PATH_PUBLIC_KEY = 1;
+  FRIEND_EXCHANGE_ENTRY_PATH_QR = 2;
+  FRIEND_EXCHANGE_ENTRY_PATH_DEEP_LINK = 3;
+
+  reserved 100 to 199;
+}
+
+// PresenceState captures current presence visibility.
+enum PresenceState {
+  PRESENCE_STATE_UNSPECIFIED = 0;
+  PRESENCE_STATE_ONLINE = 1;
+  PRESENCE_STATE_IDLE = 2;
+  PRESENCE_STATE_DND = 3;
+  PRESENCE_STATE_INVISIBLE = 4;
+  PRESENCE_STATE_OFFLINE = 5;
+
+  reserved 100 to 199;
+}
+
+// PresenceEvent is the deterministic event driver for presence transitions.
+enum PresenceEvent {
+  PRESENCE_EVENT_UNSPECIFIED = 0;
+  PRESENCE_EVENT_IDLE_TIMEOUT = 1;
+  PRESENCE_EVENT_ACTIVITY = 2;
+  PRESENCE_EVENT_DISCONNECT = 3;
+
+  reserved 100 to 199;
+}
+
+// PresenceTransitionReason classifies why a presence transition was applied.
+enum PresenceTransitionReason {
+  PRESENCE_TRANSITION_REASON_UNSPECIFIED = 0;
+  PRESENCE_TRANSITION_REASON_APPLIED = 1;
+  PRESENCE_TRANSITION_REASON_IGNORED_BY_PRECEDENCE = 2;
+
+  reserved 100 to 199;
+}
+
+// MentionType is a baseline v0.2 mention taxonomy.
+enum MentionType {
+  MENTION_TYPE_UNSPECIFIED = 0;
+  MENTION_TYPE_USER = 1;
+  MENTION_TYPE_ROLE = 2;
+  MENTION_TYPE_EVERYONE = 3;
+  MENTION_TYPE_HERE = 4;
+
+  reserved 100 to 199;
+}
+
+// PolicyReason provides deterministic outcomes for role gates and moderation.
+enum PolicyReason {
+  POLICY_REASON_UNSPECIFIED = 0;
+  POLICY_REASON_MENTION_AUTHORIZED = 1;
+  POLICY_REASON_MENTION_UNAUTHORIZED = 2;
+  POLICY_REASON_SLOW_MODE_ACTIVE = 3;
+  POLICY_REASON_SLOW_MODE_BYPASS = 4;
+  POLICY_REASON_SLOW_MODE_PASS = 5;
+  POLICY_REASON_MODERATION_ALLOWED = 6;
+  POLICY_REASON_MODERATION_FORBIDDEN_TARGET = 7;
+  POLICY_REASON_SLOW_MODE_REPLAY_DUPLICATE = 8;
+  POLICY_REASON_SLOW_MODE_REPLAY_STALE_EVENT = 9;
+  POLICY_REASON_MODERATION_MISSING_SIGNATURE = 10;
+  POLICY_REASON_MODERATION_INVALID_SIGNER = 11;
+  POLICY_REASON_MODERATION_INVALID_SIGNATURE = 12;
+  POLICY_REASON_MODERATION_NON_COMPLIANT = 13;
+
+  reserved 100 to 199;
+}
+
+// NotificationKind captures in-app notification categories in v0.2.
+enum NotificationKind {
+  NOTIFICATION_KIND_UNSPECIFIED = 0;
+  NOTIFICATION_KIND_DM = 1;
+  NOTIFICATION_KIND_GROUP_DM = 2;
+  NOTIFICATION_KIND_FRIEND = 3;
+  NOTIFICATION_KIND_PRESENCE = 4;
+  NOTIFICATION_KIND_MODERATION = 5;
+  NOTIFICATION_KIND_SYSTEM = 6;
+
+  reserved 100 to 199;
+}
+
+// ModerationAction defines baseline moderation commands.
+enum ModerationAction {
+  MODERATION_ACTION_UNSPECIFIED = 0;
+  MODERATION_ACTION_REDACT = 1;
+  MODERATION_ACTION_DELETE = 2;
+  MODERATION_ACTION_TIMEOUT = 3;
+  MODERATION_ACTION_BAN = 4;
+
+  reserved 100 to 199;
+}
+
+// Role defines baseline v0.2 RBAC hierarchy.
+enum V02Role {
+  V02_ROLE_UNSPECIFIED = 0;
+  V02_ROLE_MEMBER = 1;
+  V02_ROLE_MODERATOR = 2;
+  V02_ROLE_ADMIN = 3;
+  V02_ROLE_OWNER = 4;
 
   reserved 100 to 199;
 }
@@ -340,4 +678,397 @@ message AetherPlaceholder {
   reserved "legacy_port";
 
   string placeholder_message = 1;
+}
+
+// ProtocolMetadata adds deterministic wire-contract metadata for v0.2 families.
+message ProtocolMetadata {
+  reserved 100 to 199;
+
+  string protocol_id = 1;
+  uint32 protocol_major = 2;
+  uint32 protocol_minor = 3;
+  SecurityMode security_mode = 4;
+  string mode_epoch_id = 5;
+  repeated string required_flags = 6;
+  repeated string advertised_flags = 7;
+}
+
+// DmPrekeyRecord carries additive prekey publication contract data.
+message DmPrekeyRecord {
+  reserved 100 to 199;
+
+  string identity_id = 1;
+  string signed_prekey_id = 2;
+  uint32 one_time_prekey_count = 3;
+  uint64 published_at_unix = 4;
+  uint64 expires_at_unix = 5;
+  bytes signature = 6;
+}
+
+// DmMessageEnvelope defines the direct/offline encrypted DM payload contract.
+message DmMessageEnvelope {
+  reserved 100 to 199;
+
+  string message_id = 1;
+  string conversation_id = 2;
+  bytes ciphertext = 3;
+  SecurityMode security_mode = 4;
+  string mode_epoch_id = 5;
+  string sender_id = 6;
+  string recipient_id = 7;
+  string session_id = 8;
+  bytes integrity_tag = 9;
+  uint32 metadata_field_count = 10;
+}
+
+// DmQueuedMessage mirrors offline mailbox payload contract.
+message DmQueuedMessage {
+  reserved 100 to 199;
+
+  string message_id = 1;
+  string recipient_id = 2;
+  bytes ciphertext = 3;
+  SecurityMode security_mode = 4;
+  string mode_epoch_id = 5;
+  string mailbox_address = 6;
+  uint64 expires_at_unix = 7;
+  uint32 replication_factor = 8;
+}
+
+// DmTransportDecision is the wire representation of deterministic transport selection.
+message DmTransportDecision {
+  reserved 100 to 199;
+
+  DmDeliveryPath path = 1;
+  DmTransportReason reason = 2;
+  DmDirectSessionState session_state = 3;
+  string session_id = 4;
+}
+
+// DmDirectSessionLifecycle records deterministic direct-stream transitions.
+message DmDirectSessionLifecycle {
+  reserved 100 to 199;
+
+  string session_id = 1;
+  string conversation_id = 2;
+  DmDirectSessionState current_state = 3;
+  DmDirectSessionState next_state = 4;
+  DmDirectSessionEvent event = 5;
+  DmTransportReason reason = 6;
+  uint64 occurred_at_unix = 7;
+}
+
+// DmDeliveryReceipt captures deterministic DM receipt semantics.
+message DmDeliveryReceipt {
+  reserved 100 to 199;
+
+  string message_id = 1;
+  string recipient_id = 2;
+  DmDeliveryPath path = 3;
+  bool acknowledged = 4;
+  uint64 acknowledged_at_unix = 5;
+  DmReceiptStatus status = 6;
+  uint32 attempts = 7;
+  uint64 retry_after_unix = 8;
+  string mailbox_address = 9;
+}
+
+// GroupDmMemberCap models cap checks for add/remove flows.
+message GroupDmMemberCap {
+  reserved 100 to 199;
+
+  bool allowed = 1;
+  bool warning = 2;
+  GroupDmMemberCapReason reason = 3;
+}
+
+// GroupDmMembershipEvent records member-state transitions.
+message GroupDmMembershipEvent {
+  reserved 100 to 199;
+
+  string event_id = 1;
+  uint64 sequence = 2;
+  GroupDmMemberState current_state = 3;
+  GroupDmMemberState next_state = 4;
+  GroupDmMembershipEventType event_type = 5;
+  string member_id = 6;
+  SecurityMode security_mode = 7;
+  string mode_epoch_id = 8;
+}
+
+// GroupDmSenderKeyEnvelope captures initial sender-key handoff payloads.
+message GroupDmSenderKeyEnvelope {
+  reserved 100 to 199;
+
+  string envelope_id = 1;
+  string group_id = 2;
+  string sender_id = 3;
+  string recipient_id = 4;
+  uint64 epoch = 5;
+  string nonce = 6;
+  bytes ciphertext = 7;
+  SignatureAlgorithm signature_algorithm = 8;
+  bytes signature = 9;
+  string replay_protection_tag = 10;
+  uint32 retry_attempt = 11;
+}
+
+// GroupDmKeyDistributionDecision captures deterministic sender-key distribution outcomes.
+message GroupDmKeyDistributionDecision {
+  reserved 100 to 199;
+
+  bool accepted = 1;
+  bool retry = 2;
+  GroupDmKeyDistributionReason reason = 3;
+  uint32 retry_after_seconds = 4;
+}
+
+// GroupDmRekeyDecision captures mandatory rekey outcomes and rejoin constraints.
+message GroupDmRekeyDecision {
+  reserved 100 to 199;
+
+  GroupDmRekeyTrigger trigger = 1;
+  bool mandatory = 2;
+  bool rejoin_allowed = 3;
+  GroupDmRekeyReason reason = 4;
+  uint64 removed_epoch = 5;
+  uint64 current_epoch = 6;
+  bool rekey_completed = 7;
+}
+
+// GroupDmTransportDecision captures deterministic direct/offline routing decisions.
+message GroupDmTransportDecision {
+  reserved 100 to 199;
+
+  GroupDmTransportPath path = 1;
+  GroupDmTransportReason reason = 2;
+  bool offline_retrieval = 3;
+}
+
+// GroupDmHistorySyncDecision captures history visibility and sync boundary outcomes.
+message GroupDmHistorySyncDecision {
+  reserved 100 to 199;
+
+  uint64 join_sequence = 1;
+  uint64 request_from_sequence = 2;
+  uint64 request_to_sequence = 3;
+  uint64 bounded_from_sequence = 4;
+  uint64 bounded_to_sequence = 5;
+  bool locked_history = 6;
+  bool from_join_time = 7;
+  GroupDmHistorySyncReason reason = 8;
+}
+
+// GroupDmConvertPlan captures deterministic convert-to-server wizard steps.
+message GroupDmConvertPlan {
+  reserved 100 to 199;
+
+  bool create_server = 1;
+  bool create_initial_channel = 2;
+  bool migrate_member_list = 3;
+  bool post_system_notice = 4;
+  bool history_transferable = 5;
+  string disclosure_code = 6;
+}
+
+// GroupDmGrowthDecision captures member-cap growth and conversion disclosures.
+message GroupDmGrowthDecision {
+  reserved 100 to 199;
+
+  uint32 member_cap = 1;
+  uint32 warning_threshold = 2;
+  uint32 current_members = 3;
+  uint32 adding_members = 4;
+  bool allowed = 5;
+  bool warning = 6;
+  bool convert_to_server = 7;
+  GroupDmGrowthReason reason = 8;
+  string disclosure_code = 9;
+  GroupDmConvertPlan convert_plan = 10;
+}
+
+// FriendRequest represents a minimal friend edge lifecycle event.
+message FriendRequest {
+  reserved 100 to 199;
+
+  string from_id = 1;
+  string to_id = 2;
+  FriendRequestState state = 3;
+  FriendRequestAction action = 4;
+  string request_id = 5;
+  string nonce = 6;
+  uint64 created_at_unix = 7;
+  uint64 expires_at_unix = 8;
+  string signer_id = 9;
+  SignatureAlgorithm signature_algorithm = 10;
+  bytes signature = 11;
+  VerificationStatus verification_status = 12;
+  bool replay_detected = 13;
+}
+
+// FriendIdentityShare is the canonical friend key-share representation.
+message FriendIdentityShare {
+  reserved 100 to 199;
+
+  string format_version = 1;
+  string identity_id = 2;
+  bytes public_key = 3;
+  string public_key_checksum = 4;
+  string encoded_share = 5;
+}
+
+// FriendInvitePayload normalizes QR and deep-link invitation payloads.
+message FriendInvitePayload {
+  reserved 100 to 199;
+
+  FriendIdentityShare identity_share = 1;
+  FriendExchangeEntryPath entry_path = 2;
+  string nonce = 3;
+  uint64 expires_at_unix = 4;
+  SignatureAlgorithm signature_algorithm = 5;
+  bytes signature = 6;
+}
+
+// FriendConcurrentResolution captures deterministic tie-breaking output.
+message FriendConcurrentResolution {
+  reserved 100 to 199;
+
+  FriendRequestState state = 1;
+  string canonical_requester = 2;
+  string canonical_recipient = 3;
+}
+
+// PresenceStateEntry stores compact presence snapshot data.
+message PresenceStateEntry {
+  reserved 100 to 199;
+
+  string identity_id = 1;
+  PresenceState state = 2;
+  string status = 3;
+  uint64 last_updated_unix = 4;
+  uint32 ttl_seconds = 5;
+  PresenceTransitionReason transition_reason = 6;
+  uint64 status_version = 7;
+  bool status_redacted = 8;
+  uint64 published_at_unix = 9;
+}
+
+// PresenceEventRecord stores event-driven transition traces.
+message PresenceEventRecord {
+  reserved 100 to 199;
+
+  PresenceState previous_state = 1;
+  PresenceState next_state = 2;
+  PresenceEvent event = 3;
+  PresenceTransitionReason reason = 4;
+  uint64 occurred_at = 5;
+  uint64 sequence = 6;
+  uint64 debounce_until_unix = 7;
+  uint64 throttle_until_unix = 8;
+  bool heartbeat = 9;
+}
+
+// PresenceDisseminationPolicy defines cadence and convergence windows.
+message PresenceDisseminationPolicy {
+  reserved 100 to 199;
+
+  uint32 debounce_seconds = 1;
+  uint32 min_publish_interval_seconds = 2;
+  uint32 heartbeat_interval_seconds = 3;
+  uint32 max_status_latency_seconds = 4;
+}
+
+// NotificationEvent defines v0.2 attention-surface payloads.
+message NotificationEvent {
+  reserved 100 to 199;
+
+  NotificationKind kind = 1;
+  string actor_id = 2;
+  string subject_id = 3;
+  bool unread = 4;
+  uint32 unread_count = 5;
+  string source_id = 6;
+  string source_url = 7;
+  string mode_epoch_id = 8;
+}
+
+// MentionToken carries parse output from policy tokens.
+message MentionToken {
+  reserved 100 to 199;
+
+  MentionType type = 1;
+  string raw = 2;
+}
+
+// PolicyDecision communicates mention/moderation/slow-mode outcomes.
+message PolicyDecision {
+  reserved 100 to 199;
+
+  bool allowed = 1;
+  PolicyReason reason = 2;
+}
+
+// SlowModeActorState stores compact actor last-activity state.
+message SlowModeActorState {
+  reserved 100 to 199;
+
+  string actor_id = 1;
+  uint64 last_activity_unix = 2;
+}
+
+// SlowModeDecision is the wire representation of delay-window decisions.
+message SlowModeDecision {
+  reserved 100 to 199;
+
+  bool allowed = 1;
+  PolicyReason reason = 2;
+  repeated SlowModeActorState actors = 3;
+  string scope_id = 4;
+  string event_id = 5;
+  string actor_id = 6;
+  uint64 evaluated_at_unix = 7;
+  bool replay = 8;
+  bool reconciled = 9;
+}
+
+// ModerationEvent captures baseline moderation command execution outcomes.
+message ModerationEvent {
+  reserved 100 to 199;
+
+  string actor_id = 1;
+  string target_id = 2;
+  ModerationAction action = 3;
+  bool allowed = 4;
+  PolicyReason reason = 5;
+  string event_id = 6;
+  string signer_id = 7;
+  SignatureAlgorithm signature_algorithm = 8;
+  bytes signature = 9;
+  VerificationStatus verification_status = 10;
+  bool enforcement_required = 11;
+  string non_compliance_reason = 12;
+}
+
+// RoleState is the additive wire model for v0.2 RBAC convergence.
+message RoleState {
+  reserved 100 to 199;
+
+  string identity_id = 1;
+  V02Role role = 2;
+  uint64 version = 3;
+  uint64 updated_at_unix = 4;
+}
+
+// GovernanceMetadata stores protocol version and mode metadata for negotiation.
+message GovernanceMetadata {
+  reserved 100 to 199;
+
+  string protocol_id = 1;
+  uint32 protocol_major = 2;
+  uint32 protocol_minor = 3;
+  repeated string required_flags = 4;
+  repeated string advertised_flags = 5;
+  SecurityMode security_mode = 6;
+  string mode_epoch_id = 7;
+  uint64 policy_version = 8;
 }

@@ -63,8 +63,8 @@ func TestP3T7SignedEnvelopeUnknownFieldForwardCompat(t *testing.T) {
 	unknown = protowire.AppendVarint(unknown, 0x42)
 	withUnknown := append(data, unknown...)
 	var decoded pb.SignedEnvelope
-	if err := proto.Unmarshal(withUnknown, &decoded); err != nil {
-		t.Fatalf("unexpected error parsing unknown field: %v", err)
+	if unmarshalErr := proto.Unmarshal(withUnknown, &decoded); unmarshalErr != nil {
+		t.Fatalf("unexpected error parsing unknown field: %v", unmarshalErr)
 	}
 	if decoded.EnvelopeId != base.EnvelopeId {
 		t.Fatalf("envelope id changed: got %q want %q", decoded.EnvelopeId, base.EnvelopeId)

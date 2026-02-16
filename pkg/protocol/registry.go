@@ -12,20 +12,23 @@ const multistreamNamespace = "/aether"
 type ProtocolFamily string
 
 const (
-	FamilyChat     ProtocolFamily = "chat"
-	FamilyVoice    ProtocolFamily = "voice"
-	FamilyManifest ProtocolFamily = "manifest"
-	FamilyIdentity ProtocolFamily = "identity"
-	FamilySync     ProtocolFamily = "sync"
+	FamilyChat       ProtocolFamily = "chat"
+	FamilyVoice      ProtocolFamily = "voice"
+	FamilyManifest   ProtocolFamily = "manifest"
+	FamilyIdentity   ProtocolFamily = "identity"
+	FamilySync       ProtocolFamily = "sync"
+	FamilyDM         ProtocolFamily = "dm"
+	FamilyGroupDM    ProtocolFamily = "groupdm"
+	FamilyFriends    ProtocolFamily = "friends"
+	FamilyPresence   ProtocolFamily = "presence"
+	FamilyNotify     ProtocolFamily = "notify"
+	FamilyModeration ProtocolFamily = "moderation"
+	FamilyGovernance ProtocolFamily = "governance"
 )
 
 type ProtocolVersion struct {
 	Major int
 	Minor int
-}
-
-func (v ProtocolVersion) satisfies(other ProtocolVersion) bool {
-	return v.Major == other.Major && v.Minor >= other.Minor
 }
 
 type ProtocolID struct {
@@ -59,6 +62,13 @@ var (
 	manifestV01 = ProtocolID{Family: FamilyManifest, Version: ProtocolVersion{Major: 0, Minor: 1}, Name: "manifest/v0.1"}
 	identityV01 = ProtocolID{Family: FamilyIdentity, Version: ProtocolVersion{Major: 0, Minor: 1}, Name: "identity/v0.1"}
 	syncV01     = ProtocolID{Family: FamilySync, Version: ProtocolVersion{Major: 0, Minor: 1}, Name: "sync/v0.1"}
+	dmV02       = ProtocolID{Family: FamilyDM, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "dm/v0.2"}
+	groupDMV02  = ProtocolID{Family: FamilyGroupDM, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "groupdm/v0.2"}
+	friendsV02  = ProtocolID{Family: FamilyFriends, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "friends/v0.2"}
+	presenceV02 = ProtocolID{Family: FamilyPresence, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "presence/v0.2"}
+	notifyV02   = ProtocolID{Family: FamilyNotify, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "notify/v0.2"}
+	modV02      = ProtocolID{Family: FamilyModeration, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "moderation/v0.2"}
+	govV02      = ProtocolID{Family: FamilyGovernance, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "governance/v0.2"}
 )
 
 func init() {
@@ -67,12 +77,29 @@ func init() {
 	registerCanonical(manifestV01)
 	registerCanonical(identityV01)
 	registerCanonical(syncV01)
+	registerCanonical(dmV02)
+	registerCanonical(groupDMV02)
+	registerCanonical(friendsV02)
+	registerCanonical(presenceV02)
+	registerCanonical(notifyV02)
+	registerCanonical(modV02)
+	registerCanonical(govV02)
 }
 
 func CanonicalByFamily(family ProtocolFamily) []ProtocolID {
 	slice := make([]ProtocolID, len(canonicalRegistry[family]))
 	copy(slice, canonicalRegistry[family])
 	return slice
+}
+
+// CanonicalProtocolByVersion returns the canonical entry for exactly matching family and version.
+func CanonicalProtocolByVersion(family ProtocolFamily, version ProtocolVersion) (ProtocolID, bool) {
+	for _, id := range canonicalRegistry[family] {
+		if id.Version == version {
+			return id, true
+		}
+	}
+	return ProtocolID{}, false
 }
 
 func ParseProtocolID(input string) (ProtocolID, error) {

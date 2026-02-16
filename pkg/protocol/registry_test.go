@@ -30,6 +30,37 @@ func TestCanonicalRegistryEntries(t *testing.T) {
 	}
 }
 
+func TestCanonicalRegistryContainsV02Families(t *testing.T) {
+	v02Families := []ProtocolFamily{
+		FamilyDM,
+		FamilyGroupDM,
+		FamilyFriends,
+		FamilyPresence,
+		FamilyNotify,
+		FamilyModeration,
+		FamilyGovernance,
+	}
+	for _, family := range v02Families {
+		ids := CanonicalByFamily(family)
+		if len(ids) == 0 {
+			t.Fatalf("missing canonical IDs for %s", family)
+		}
+		if ids[0].Version.Major != 0 || ids[0].Version.Minor < 2 {
+			t.Fatalf("unexpected top version for %s: %+v", family, ids[0].Version)
+		}
+	}
+}
+
+func TestCanonicalProtocolByVersion(t *testing.T) {
+	id, ok := CanonicalProtocolByVersion(FamilyDM, ProtocolVersion{Major: 0, Minor: 2})
+	if !ok {
+		t.Fatal("expected canonical v0.2 DM protocol")
+	}
+	if id != dmV02 {
+		t.Fatalf("unexpected protocol id: %+v", id)
+	}
+}
+
 func TestParseProtocolID(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		id, err := ParseProtocolID("/aether/chat/0.1")
