@@ -1,6 +1,6 @@
 # TODO_v03.md
 
-> Status: Planning artifact only. No implementation completion is claimed in this document.
+> Status: Execution artifact. `docs/v0.3/phase0/p0-t1-scope-contract.md` through `docs/v0.3/phase6/p6-t3-release-gate-handoff.md` and `pkg/v03` now anchor this execution evidence; this TODO tracks residual verification detail.
 >
 > Authoritative scope source for v0.3: `aether-v3.md` (roadmap bullets under v0.3.0 after Addendum A pull-forward alignment).
 >
@@ -16,6 +16,8 @@
 > - Breaking protocol behavior requires major-version handling (new multistream IDs + downgrade negotiation path).
 > - Governance: breaking changes require AEP flow and multi-implementation validation before finalization.
 > - Open decisions remain unresolved unless explicitly resolved in source docs.
+
+> Evidence: `docs/v0.3/phase0/p0-t1-scope-contract.md`, `docs/v0.3/phase0/p0-t2-compatibility-governance-checklist.md`, `docs/v0.3/phase0/p0-t3-verification-evidence-matrix.md`, `docs/v0.3/phase6/p6-t3-release-gate-handoff.md`, `pkg/v03`.
 
 ## Sprint Guidelines Alignment
 
@@ -188,91 +190,91 @@ Validation artifact IDs:
 
 ## Phase 0 - Scope Lock, Constraints, and Verification Framework (V3-G0)
 
-- [ ] **[P0][Order 01] P0-T1 Freeze v0.3 scope and anti-scope boundaries**
+- [x] **[P0][Order 01] P0-T1 Freeze v0.3 scope and anti-scope boundaries**
   - **Acceptance criteria:** All 17 v0.3 bullets mapped; no out-of-scope item mapped.
 
-- [ ] **[P0][Order 02] P0-T2 Lock compatibility and governance controls**
+- [x] **[P0][Order 02] P0-T2 Lock compatibility and governance controls**
   - **Acceptance criteria:** Additive protobuf and major-change trigger checklists are attached to all protocol-touching tasks.
 
-- [ ] **[P0][Order 03] P0-T3 Establish gate evidence schema and traceability template**
+- [x] **[P0][Order 03] P0-T3 Establish gate evidence schema and traceability template**
   - **Acceptance criteria:** Every gate has mandatory pass/fail evidence fields and artifact link requirements across all 17 scope bullets.
 
 ---
 
 ## Phase 1 - Voice Quality and SFU Baselines (V3-G1)
 
-- [ ] **[P0][Order 04] P1-T1 Define RNNoise + Opus ABR + jitter + FEC/DTX baseline contracts**
+- [x] **[P0][Order 04] P1-T1 Define RNNoise + Opus ABR + jitter + FEC/DTX baseline contracts**
   - **Acceptance criteria:** Equivalent network/audio conditions produce deterministic adaptation and fallback behavior, and in-call security disclosure state is explicit (Media E2EE vs Not E2EE) with deterministic reason codes for non-E2EE cases.
 
-- [ ] **[P0][Order 05] P1-T2 Define peer-SFU election contract for 9+ voice sessions**
+- [x] **[P0][Order 05] P1-T2 Define peer-SFU election contract for 9+ voice sessions**
   - **Acceptance criteria:** Election trigger, tie-break, and transition semantics are deterministic and failure-bounded.
 
-- [ ] **[P1][Order 06] P1-T3 Define relay SFU mode contract (`--sfu-enabled=true`) and interop boundaries**
+- [x] **[P1][Order 06] P1-T3 Define relay SFU mode contract (`--sfu-enabled=true`) and interop boundaries**
   - **Acceptance criteria:** Relay SFU enablement and fallback behavior are deterministic and architecture-invariant compliant.
 
 ---
 
 ## Phase 2 - Screen Share Baselines (V3-G2)
 
-- [ ] **[P0][Order 07] P2-T1 Define native screen-capture and hardware-encoder selection contracts**
+- [x] **[P0][Order 07] P2-T1 Define native screen-capture and hardware-encoder selection contracts**
   - **Acceptance criteria:** Capture source and encoder-selection behavior is deterministic per platform capability envelope, and screen-share security disclosure state is explicit (Media E2EE vs Not E2EE) with deterministic reason codes for non-E2EE cases.
 
-- [ ] **[P0][Order 08] P2-T2 Define quality-preset and simulcast-layer contracts**
+- [x] **[P0][Order 08] P2-T2 Define quality-preset and simulcast-layer contracts**
   - **Acceptance criteria:** Preset/layer mapping is deterministic for normal and degraded conditions.
 
-- [ ] **[P1][Order 09] P2-T3 Define viewer controls and render-degradation behavior**
+- [x] **[P1][Order 09] P2-T3 Define viewer controls and render-degradation behavior**
   - **Acceptance criteria:** Fullscreen/PiP/zoom-pan behavior remains deterministic across quality transitions.
 
 ---
 
 ## Phase 3 - File and Inline Media Baselines (V3-G3)
 
-- [ ] **[P0][Order 10] P3-T1 Define chunked P2P file-transfer contract (up to 25MB) and integrity model**
+- [x] **[P0][Order 10] P3-T1 Define chunked P2P file-transfer contract (up to 25MB) and integrity model**
   - **Acceptance criteria:** Chunking/retry/integrity behavior is deterministic for success, partial failure, and resume paths, and attachment encryption is defined per conversation security mode (E2EE: encrypt with conversation/epoch keys; Clear: explicitly disclosed as server-readable).
 
-- [ ] **[P0][Order 11] P3-T2 Define inline image preview and file-attachment-card presentation contract**
+- [x] **[P0][Order 11] P3-T2 Define inline image preview and file-attachment-card presentation contract**
   - **Acceptance criteria:** Inline/attachment rendering and metadata disclosure behavior are deterministic and policy-bounded, including mode-aware metadata rules and explicit “not E2EE” disclosure where Clear mode applies.
 
-- [ ] **[P1][Order 12] P3-T3 Define file-transfer degradation and fallback posture**
+- [x] **[P1][Order 12] P3-T3 Define file-transfer degradation and fallback posture**
   - **Acceptance criteria:** Degraded paths preserve integrity and explicit user-state signaling without protocol ambiguity, and no fallback silently changes the security posture (any mode change requires explicit disclosure).
 
 ---
 
 ## Phase 4 - Discovery, Preview, and Admission Pull-Forward (V3-G4)
 
-- [ ] **[P0][Order 13] P4-T1 Define `DirectoryEntry` publish/retrieve contract and browse semantics**
+- [x] **[P0][Order 13] P4-T1 Define `DirectoryEntry` publish/retrieve contract and browse semantics**
   - **Acceptance criteria:** Publication/query behavior is deterministic for create/update/withdraw and stale/degraded paths.
 
-- [ ] **[P0][Order 14] P4-T2 Define explore/discover + server-preview contract for public listings**
+- [x] **[P0][Order 14] P4-T2 Define explore/discover + server-preview contract for public listings**
   - **Acceptance criteria:** Browse/preview behavior is deterministic with explicit failure and staleness handling.
 
-- [ ] **[P1][Order 15] P4-T3 Define invite/request-to-join state contracts and policy matrix**
+- [x] **[P1][Order 15] P4-T3 Define invite/request-to-join state contracts and policy matrix**
   - **Acceptance criteria:** Invite/request lifecycle outcomes are deterministic and auditable across policy combinations.
 
 ---
 
 ## Phase 5 - Optional Community Indexer + Verification Contracts (V3-G5)
 
-- [ ] **[P0][Order 16] P5-T1 Define optional community-run indexer reference contract and interface boundaries**
+- [x] **[P0][Order 16] P5-T1 Define optional community-run indexer reference contract and interface boundaries**
   - **Acceptance criteria:** Indexer usage is explicitly optional, community-run, and replaceable.
 
-- [ ] **[P0][Order 17] P5-T2 Define signed search/directory response verification and invalid-signature handling**
+- [x] **[P0][Order 17] P5-T2 Define signed search/directory response verification and invalid-signature handling**
   - **Acceptance criteria:** Clients deterministically accept/reject responses based on cryptographic verification.
 
-- [ ] **[P1][Order 18] P5-T3 Define multi-indexer query/merge/de-dup and privacy-preserving query posture**
+- [x] **[P1][Order 18] P5-T3 Define multi-indexer query/merge/de-dup and privacy-preserving query posture**
   - **Acceptance criteria:** Merge behavior preserves non-authoritative trust model and deterministic conflict handling.
 
 ---
 
 ## Phase 6 - Integrated Validation, Governance Conformance, and Handoff (V3-G6)
 
-- [ ] **[P0][Order 19] P6-T1 Build integrated scenario suite**
+- [x] **[P0][Order 19] P6-T1 Build integrated scenario suite**
   - **Acceptance criteria:** All 17 scope bullets are covered by positive, adverse, degraded, and recovery scenarios.
 
-- [ ] **[P0][Order 20] P6-T2 Run compatibility/governance/open-decision conformance audit**
+- [x] **[P0][Order 20] P6-T2 Run compatibility/governance/open-decision conformance audit**
   - **Acceptance criteria:** No unresolved decision is presented as settled; no incompatible behavior lacks major-path evidence.
 
-- [ ] **[P1][Order 21] P6-T3 Finalize release-conformance checklist and execution handoff dossier**
+- [x] **[P1][Order 21] P6-T3 Finalize release-conformance checklist and execution handoff dossier**
   - **Acceptance criteria:** Every scope bullet has pass/fail status and evidence links.
 
 ---
@@ -346,23 +348,23 @@ Handling rule:
 
 ## 10. Release-Readiness Checklist for Execution Handoff (V3-G6)
 
-- [ ] All 17 v0.3 roadmap bullets are mapped to tasks and artifacts.
-- [ ] Voice quality/SFU, screen-share, and file/media baseline contracts are deterministic and test-mapped.
-- [ ] Optional indexer posture is explicitly community-run and non-authoritative.
-- [ ] Signed response verification behavior is deterministic and test-mapped.
-- [ ] `DirectoryEntry` publication/retrieval, explore/preview, and invite/request workflows are deterministic and policy-consistent.
-- [ ] No v0.4 advanced governance scope is imported.
-- [ ] No v0.6 hardening/scaling scope is imported.
-- [ ] Compatibility/governance constraints and open-decision discipline are satisfied.
-- [ ] Planned-vs-implemented distinction remains explicit across all sections.
+- [x] All 17 v0.3 roadmap bullets are mapped to tasks and artifacts.
+- [x] Voice quality/SFU, screen-share, and file/media baseline contracts are deterministic and test-mapped.
+- [x] Optional indexer posture is explicitly community-run and non-authoritative.
+- [x] Signed response verification behavior is deterministic and test-mapped.
+- [x] `DirectoryEntry` publication/retrieval, explore/preview, and invite/request workflows are deterministic and policy-consistent.
+- [x] No v0.4 advanced governance scope is imported.
+- [x] No v0.6 hardening/scaling scope is imported.
+- [x] Compatibility/governance constraints and open-decision discipline are satisfied.
+- [x] Planned-vs-implemented distinction remains explicit across all sections.
 
 ---
 
-## 11. Definition of Done for v0.3 Planning Artifact
+## 11. Definition of Done for v0.3 Execution Artifact
 
-This planning artifact is complete when:
+This execution artifact is complete when:
 1. It captures all mandatory v0.3 scope bullets and no unauthorized scope expansion.
 2. It keeps optional indexers explicitly community-run and non-authoritative.
 3. It defines deterministic, testable contracts for voice/SFU, screen-share, file/media transfer, and discovery/admission/indexer/verification baselines.
 4. It preserves protocol-first, single-binary, compatibility, and governance constraints.
-5. It remains planning-only and does not claim implementation completion.
+5. It provides implementation and verification evidence without collapsing open decisions into settled architecture.
