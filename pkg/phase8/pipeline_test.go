@@ -3,7 +3,9 @@ package phase8
 import (
 	"context"
 	"errors"
+	"sync"
 	"testing"
+	"time"
 
 	apb "github.com/aether/code_aether/gen/go/proto"
 )
@@ -61,6 +63,37 @@ func (p *testPeerConnection) Disconnect(_ context.Context, _ string) error {
 	p.disconnectCalled++
 	return p.disconnectErr
 }
+
+type blockingPeerConnection struct {
+	id             string
+	connectStarted chan struct{}
+	releaseCh      chan struct{}
+}
+
+func newBlockingPeerConnection(id string) *blockingPeerConnection {
+	return &blockingPeerConnection{
+		id:             id,
+		connectStarted: make(chan struct{}, 1),
+		releaseCh:      make(chan struct{}),
+	}
+}
+
+func (p *blockingPeerConnection) ID() string { return p.id }
+
+func (p *blockingPeerConnection) Connect(_ context.Context, _ string, _ *apb.VoiceCodecProfile, _ *apb.VoiceTransportProfile) error {
+	select {
+	case p.connectStarted <- struct{}{}:
+	default:
+	}
+	select {
+	case <-p.releaseCh:
+		return nil
+	case <-time.After(5 * time.Second):
+		return errors.New("connect release timed out")
+	}
+}
+
+func (p *blockingPeerConnection) Disconnect(_ context.Context, _ string) error { return nil }
 
 func TestNewVoicePipelineBaselineDefaults(t *testing.T) {
 	baseline, err := NewVoicePipelineBaseline("session-a", 1700000000)
@@ -352,6 +385,46 @@ func TestVoiceSessionManagerJoinLeaveAndCap(t *testing.T) {
 	}
 	if peer3.connectCalled != 1 {
 		t.Fatalf("peer-3 connect calls = %d, want 1", peer3.connectCalled)
+	}
+}
+
+func TestVoiceSessionManagerJoinEnforcesMaxPeersConcurrently(t *testing.T) {
+	manager, err := NewVoiceSessionManager(1, nil)
+	if err != nil {
+		t.Fatalf("NewVoiceSessionManager() error = %v", err)
+	}
+
+	codec := DefaultCodecProfile()
+	transport := DefaultTransportProfile()
+	ctx := context.Background()
+	firstPeer := newBlockingPeerConnection("peer-1")
+	var firstJoinErr error
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		firstJoinErr = manager.Join(ctx, "session-a", codec, transport, firstPeer)
+	}()
+
+	select {
+	case <-firstPeer.connectStarted:
+	case <-time.After(2 * time.Second):
+		t.Fatalf("first join did not reach Connect")
+	}
+
+	if err := manager.Join(ctx, "session-a", codec, transport, &testPeerConnection{id: "peer-2"}); !errors.Is(err, ErrPeerLimit) {
+		t.Fatalf("second Join() error = %v, want ErrPeerLimit", err)
+	}
+
+	close(firstPeer.releaseCh)
+	wg.Wait()
+
+	if firstJoinErr != nil {
+		t.Fatalf("first Join() unexpected error = %v", firstJoinErr)
+	}
+	if got := manager.ParticipantCount(); got != 1 {
+		t.Fatalf("ParticipantCount() = %d, want 1", got)
 	}
 }
 

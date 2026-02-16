@@ -362,6 +362,71 @@ func TestGossipSignalingRuntimeReceiveValidationAndTimeout(t *testing.T) {
 	}
 }
 
+func TestGossipSignalingRuntimeSkipsICETimeoutBeforeCandidate(t *testing.T) {
+	now := uint64(2000)
+	clock := func() uint64 { return now }
+	ref := &apb.VoiceSignalSessionRef{SignalSessionId: "sig-no-ice", VoiceSessionId: "voice-no-ice"}
+	policy := &apb.VoiceSignalRetryPolicy{
+		MaxOfferAttempts:     1,
+		OfferRetryBackoffMs:  10,
+		MaxAnswerAttempts:    1,
+		AnswerRetryBackoffMs: 10,
+		MaxIceUpdates:        2,
+		IceUpdateTimeoutMs:   1000,
+	}
+	machine, err := NewSignalingSessionMachine(ref, policy, clock)
+	if err != nil {
+		t.Fatalf("NewSignalingSessionMachine() error = %v", err)
+	}
+	runtime, err := NewGossipSignalingRuntime(machine, testSignalCipher{}, &testSignalPublisher{}, "topic")
+	if err != nil {
+		t.Fatalf("NewGossipSignalingRuntime() error = %v", err)
+	}
+
+	frame, err := NewVoiceSignalFrame(ref, apb.VoiceSignalType_VOICE_SIGNAL_TYPE_OFFER, 1, []byte("enc:offer"), now, 20, policy)
+	if err != nil {
+		t.Fatalf("NewVoiceSignalFrame() error = %v", err)
+	}
+	encoded, err := proto.Marshal(frame)
+	if err != nil {
+		t.Fatalf("proto.Marshal() error = %v", err)
+	}
+	if _, _, dispatchErr := runtime.ReceiveAndDispatch(encoded); dispatchErr != nil {
+		if errors.Is(dispatchErr, ErrSignalICEUpdateTimeout) {
+			t.Fatalf("ReceiveAndDispatch() returned ErrSignalICEUpdateTimeout even though no ICE candidate was seen")
+		}
+		t.Fatalf("ReceiveAndDispatch() error = %v", dispatchErr)
+	}
+}
+
+func TestGossipSignalingRuntimeDecryptFailureConsumesSequence(t *testing.T) {
+	now := uint64(100)
+	clock := func() uint64 { return now }
+	ref := &apb.VoiceSignalSessionRef{SignalSessionId: "sig-decrypt", VoiceSessionId: "voice-decrypt"}
+	machine, err := NewSignalingSessionMachine(ref, DefaultVoiceSignalRetryPolicy(), clock)
+	if err != nil {
+		t.Fatalf("NewSignalingSessionMachine() error = %v", err)
+	}
+	runtime, err := NewGossipSignalingRuntime(machine, testSignalCipher{decryptErr: errors.New("boom")}, &testSignalPublisher{}, "topic")
+	if err != nil {
+		t.Fatalf("NewGossipSignalingRuntime() error = %v", err)
+	}
+	frame, err := NewVoiceSignalFrame(ref, apb.VoiceSignalType_VOICE_SIGNAL_TYPE_OFFER, 1, []byte("enc:offer"), now, 5, DefaultVoiceSignalRetryPolicy())
+	if err != nil {
+		t.Fatalf("NewVoiceSignalFrame() error = %v", err)
+	}
+	encoded, err := proto.Marshal(frame)
+	if err != nil {
+		t.Fatalf("proto.Marshal() error = %v", err)
+	}
+	if _, _, err := runtime.ReceiveAndDispatch(encoded); !errors.Is(err, ErrSignalDecryptFailed) {
+		t.Fatalf("expected ErrSignalDecryptFailed, got %v", err)
+	}
+	if _, _, err := runtime.ReceiveAndDispatch(encoded); !errors.Is(err, ErrSignalSequenceStale) {
+		t.Fatalf("expected ErrSignalSequenceStale, got %v", err)
+	}
+}
+
 func TestSignalingSessionMachineStateReturnsDeepClone(t *testing.T) {
 	sessionRef := &apb.VoiceSignalSessionRef{
 		SignalSessionId:     "sig-clone",

@@ -56,6 +56,7 @@ type PeerConnection interface {
 type VoiceSessionManager struct {
 	mux        sync.Mutex
 	peers      map[string]PeerConnection
+	pending    map[string]struct{}
 	maxPeers   int
 	congested  bool
 	fallbackFn func() error
@@ -70,6 +71,7 @@ func NewVoiceSessionManager(maxPeers int, fallbackFn func() error) (*VoiceSessio
 	}
 	return &VoiceSessionManager{
 		peers:      make(map[string]PeerConnection, maxPeers),
+		pending:    make(map[string]struct{}, maxPeers),
 		maxPeers:   maxPeers,
 		fallbackFn: fallbackFn,
 	}, nil
@@ -89,7 +91,11 @@ func (m *VoiceSessionManager) Join(ctx context.Context, sessionID string, codec 
 		m.mux.Unlock()
 		return ErrPeerExists
 	}
-	if len(m.peers) >= m.maxPeers {
+	if _, ok := m.pending[peerID]; ok {
+		m.mux.Unlock()
+		return ErrPeerExists
+	}
+	if len(m.peers)+len(m.pending) >= m.maxPeers {
 		m.congested = true
 		fallback := m.fallbackFn
 		m.mux.Unlock()
@@ -100,13 +106,21 @@ func (m *VoiceSessionManager) Join(ctx context.Context, sessionID string, codec 
 		}
 		return ErrPeerLimit
 	}
+	m.pending[peerID] = struct{}{}
 	m.mux.Unlock()
 
 	if err := peer.Connect(ctx, sessionID, codec, transport); err != nil {
+		m.mux.Lock()
+		delete(m.pending, peerID)
+		if len(m.peers)+len(m.pending) < m.maxPeers {
+			m.congested = false
+		}
+		m.mux.Unlock()
 		return fmt.Errorf("phase8: connect peer %s: %w", peerID, err)
 	}
 
 	m.mux.Lock()
+	delete(m.pending, peerID)
 	m.peers[peerID] = peer
 	m.congested = false
 	m.mux.Unlock()

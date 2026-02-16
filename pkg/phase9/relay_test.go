@@ -2,6 +2,7 @@ package phase9
 
 import (
 	"strings"
+	"sync"
 	"testing"
 	"time"
 )
@@ -127,6 +128,61 @@ func TestServiceReservationAndSnapshotCounters(t *testing.T) {
 	}
 	if snap.Established != 2 {
 		t.Fatalf("Snapshot().Established = %d, want 2", snap.Established)
+	}
+}
+
+func TestServiceReserveHonorsLimitUnderConcurrency(t *testing.T) {
+	const limit = 3
+	svc, err := NewService(Config{ReservationLimit: limit, SessionTimeout: 30 * time.Second, MaxBytesPerSec: 64_000})
+	if err != nil {
+		t.Fatalf("NewService() unexpected error: %v", err)
+	}
+	const attempts = limit * 4
+	var wg sync.WaitGroup
+	results := make(chan bool, attempts)
+	startCh := make(chan struct{})
+	readyCh := make(chan struct{}, attempts)
+	for i := 0; i < attempts; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			readyCh <- struct{}{}
+			<-startCh
+			results <- svc.Reserve()
+		}()
+	}
+	for i := 0; i < attempts; i++ {
+		select {
+		case <-readyCh:
+		case <-time.After(2 * time.Second):
+			t.Fatalf("reserve goroutine not ready")
+		}
+	}
+	close(startCh)
+	wg.Wait()
+	close(results)
+
+	success := 0
+	for ok := range results {
+		if ok {
+			success++
+		}
+	}
+	snap := svc.Snapshot()
+	if success != limit {
+		t.Fatalf("expected %d successful reservations, got %d", limit, success)
+	}
+	if snap.Active > snap.ReservationLimit {
+		t.Fatalf("Snapshot().Active = %d, want <= %d", snap.Active, snap.ReservationLimit)
+	}
+	if snap.Established != uint64(success) {
+		t.Fatalf("Snapshot().Established = %d, want %d", snap.Established, success)
+	}
+	if snap.Rejected != uint64(attempts-success) {
+		t.Fatalf("Snapshot().Rejected = %d, want %d", snap.Rejected, attempts-success)
+	}
+	if uint64(snap.Active) != snap.Established {
+		t.Fatalf("Snapshot().Active (%d) and Established (%d) mismatch", snap.Active, snap.Established)
 	}
 }
 
