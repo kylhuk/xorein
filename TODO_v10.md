@@ -6,7 +6,7 @@
 >
 > Authoritative v1.0 scope source: `aether-v3.md` roadmap bullets under **v1.0.0 — Genesis (Public Release)**.
 >
-> Inputs used for sequencing, dependency posture, closure patterns, and guardrail carry-forward: `aether-v3.md`, `TODO_v01.md`, `TODO_v02.md`, `TODO_v03.md`, `TODO_v04.md`, `TODO_v05.md`, `TODO_v06.md`, `TODO_v07.md`, `TODO_v08.md`, `TODO_v09.md`, and `AGENTS.md`.
+> Inputs used for sequencing, dependency posture, closure patterns, and guardrail carry-forward: `aether-v3.md`, `aether-addendum-qol-discovery.md`, `open_decisions.md`, `open_decisions_proposals.md`, `TODO_v01.md`, `TODO_v02.md`, `TODO_v03.md`, `TODO_v04.md`, `TODO_v05.md`, `TODO_v06.md`, `TODO_v07.md`, `TODO_v08.md`, `TODO_v09.md`, and `AGENTS.md`.
 >
 > Guardrails that are mandatory throughout this plan:
 > - Maintain strict planned-vs-implemented separation: specs remain explicit, and completion requires shipped binaries/images + validation evidence.
@@ -15,7 +15,7 @@
 > - Compatibility invariant remains mandatory: protobuf minor evolution is additive-only.
 > - Breaking protocol behavior requires major-path governance evidence: new multistream IDs, downgrade negotiation, AEP flow, and validation by at least two independent implementations.
 > - Open decisions remain unresolved unless source documentation explicitly resolves them.
-> - Licensing alignment remains explicit: code licensing permissive MIT-like and protocol specification licensing CC-BY-SA.
+> - Licensing alignment remains explicit: code licensing AGPL and protocol specification licensing CC-BY-SA.
 > - Post-v1 capability is not promoted into v1.0 by implication, convenience, or adjacency.
 
 ## Sprint Guidelines Alignment
@@ -53,21 +53,25 @@ This document is a v1.0 execution-release-execution plan for scope control, sequ
 - Compatibility and governance constraints apply to all protocol-touching release-band deltas.
 - Open decisions remain explicitly open unless resolved by authoritative source documents.
 - No section in this plan may imply implemented completion.
+- Naming and branding controls are locked for this phase: the client app surfaces as "Harmolyn" while the protocol/back-end release materializes as the "xorein" family (legacy "Aether" references retained only where backward-traceability is required).
 
 ---
 
 ## B. v1.0 Objective and Measurable Success Outcomes
 
 ### B.1 Objective
-Deliver **v1.0 Genesis** as a protocol-first public release that ships the final launch posture by executing:
+Deliver **v1.0 Genesis** as a protocol-first public release that launches the Harmolyn client and the xorein protocol/back-end family, executing:
 - External security-audit readiness and audit evidence lifecycle.
-- Aether Protocol Specification v1.0 publication as open standard.
+- xorein Protocol Specification v1.0 publication as open standard (with legacy "Aether" traceability markers).
 - Publication-readiness for user, admin, developer, and API references.
 - Landing and comparison web-surface readiness.
 - Multi-store client distribution readiness.
 - Bootstrap infrastructure expansion readiness to 10+ global nodes.
 - Community relay program launch readiness.
 - Reproducible build and binary-verification readiness.
+- Documentation and tracking of the governance/legal transition path (open-source v1.0 baseline, future consortium track) including minimal liability language and approval artifacts.
+- Relay/network governance built on reliability scoring, allowlist posture, and explicit non-token incentive controls (no economic incentives baseline).
+- Explicit validation of v0.9 scale-limit evidence and SecurityMode transition evidence before release-claims are published (carry-forward evidence for overstated scale claims prevention).
 
 ### B.2 Measurable success outcomes
 1. External security audit scope, evidence package, and finding-governance workflow are fully specified and auditable.
@@ -77,11 +81,15 @@ Deliver **v1.0 Genesis** as a protocol-first public release that ships the final
 5. Landing page and comparison site content governance rules are complete, evidence-linked, and non-misleading.
 6. App store submission dossiers for Google Play, App Store, Microsoft Store, and Flathub are complete with platform policy mapping.
 7. Bootstrap expansion model defines topology, capacity, rollout, and operations runbooks for 10+ globally distributed nodes.
-8. Community relay program defines eligibility, onboarding, operations, abuse response, and governance controls.
+8. Community relay program defines eligibility, onboarding, operations, abuse response, governance controls, and non-token incentive policies grounded in reliability scoring and operator allowlisting.
 9. Reproducible build, signing, checksums, provenance, and independent rebuild verification contracts are complete and audit-ready.
-10. Integrated validation covers positive, adverse, degraded, and recovery pathways across all eight v1.0 bullets.
+10. Integrated validation covers positive, adverse, degraded, and recovery pathways across all eight v1.0 bullets, including SecurityMode transition evidence.
 11. Go/no-go governance criteria are deterministic with explicit pass/fail and evidence-link requirements.
 12. Final release-conformance and handoff dossier is complete with explicit deferral mapping to post-v1 roadmap bands.
+13. Naming governance confirms Harmolyn/xorein consistency across product, protocol, and spec artifacts, with legacy "Aether" references maintained only for backward traceability.
+14. Governance/legal transition artifacts document the open-source v1.0 baseline, minimal liability text, and the planned consortium track without pre-emptive commitments.
+15. v0.9 scale-limit evidence is validated prior to publishing launch claims to avoid overstated scale guarantees, and any deviations are documented with impact statement.
+16. Decentralized topology and operator succession continuity pathways are documented for bootstrap and relay handover resiliency.
 
 ### B.3 QoL integration contract for v1.0 public-release readiness (planning-level)
 
@@ -91,6 +99,12 @@ Deliver **v1.0 Genesis** as a protocol-first public release that ships the final
 - **Global no-limbo invariant at launch readiness:** public-release flows (first-run, reconnect, message attention resume, call recovery, cross-device resume) must expose deterministic state, reason class, and next action.
   - **Verification evidence:** integrated go/no-go matrix proves zero ambiguous terminal states across launch-critical journeys.
 
+### B.4 Decision-derived risks
+- **Naming drift risk:** Without strict naming/terminology governance, downstream materials may diverge between Harmolyn, xorein, and legacy Aether references, confusing implementers and regulators.
+- **Legal/governance mismatch risk:** Open-source v1.0 licensing and future consortium governance must stay aligned; missing minimal liability text could trigger compliance questions or delay the consortium track.
+- **Decentralization handover failure risk:** Relay/bootstrap continuity depends on operator succession controls; failed handovers create centralized chokepoints that contradict RM-05.
+- **Overstated scale-claims risk:** Publishing scale narratives without v0.9 scale-limit evidence risks broken trust and must be blocked via V10-G10 carry-forward validation.
+
 ---
 
 ## C. Exact v1.0 Scope Derivation from `aether-v3.md`
@@ -98,7 +112,7 @@ Deliver **v1.0 Genesis** as a protocol-first public release that ships the final
 The following roadmap bullets in `aether-v3.md` define v1.0 scope and are treated as exact inclusions:
 
 1. External security audit (E2EE, P2P networking, key management, DHT security)
-2. Aether Protocol Specification v1.0 published as open standard
+2. xorein (Aether legacy) Protocol Specification v1.0 published as open standard with terminology migration controls.
 3. User guide, admin guide, developer guide, API reference
 4. Landing page and comparison site
 5. App store submissions (Google Play, App Store, Microsoft Store, Flathub)
@@ -178,6 +192,8 @@ v1.0 planning assumes prior-version contract outputs are available as dependenci
 - Performance, stress, relay-load, battery, and scale-contract outputs exist for final release evidence posture.
 - v0.9 governance and traceability closure patterns are direct templates for v1.0 release handoff.
 - A1/A3-aligned quality evidence posture exists as dependency input: reliability/latency/recovery thresholds, regression guardrails, NAT-transport-mobility matrix evidence, and canary-call operational evidence.
+- v0.9 scale-limit evidence (throughput/voice thresholds, reliability roofs) is a mandatory input for any v1.0 scale claim, and the same evidence must feed V10-G10 carry-forward validations.
+- SecurityMode transition evidence from v0.9 (mode gating, lock-step migrations) remains a required dependency to satisfy integrated go/no-go energy and to document upgrade/resilience behavior.
 
 ### E.10 Carry-back dependency rule
 - Missing prerequisites are blocking dependencies for affected v1.0 tasks.
@@ -195,14 +211,14 @@ v1.0 planning assumes prior-version contract outputs are available as dependenci
 | V10-G0 | Scope guardrails and evidence lock | v1.0 planning initiated | Scope lock, exclusions, prerequisites, compatibility controls, and evidence schema approved |
 | V10-G1 | Final protocol freeze and compatibility closure | V10-G0 passed | Protocol surface inventory, compatibility matrix, downgrade-path evidence, and governance triggers approved |
 | V10-G2 | External security audit readiness and governance | V10-G1 passed | Audit scope, threat model, auditor engagement package, and finding lifecycle governance complete |
-| V10-G3 | Protocol Specification v1.0 publication readiness | V10-G2 passed | Normative spec package, versioning chapter, governance chapter, and publication workflow complete |
+| V10-G3 | Protocol Specification v1.0 publication readiness | V10-G2 passed | Normative spec package, versioning chapter, governance chapter, xorein/Harmolyn naming governance, terminology migration controls, and publication workflow complete |
 | V10-G4 | Documentation suite publication readiness | V10-G3 passed | User/admin/developer/API guide structures, quality gates, and publication runbooks complete |
 | V10-G5 | Public web launch surface readiness | V10-G4 passed | Landing and comparison content governance and launch checklists complete |
 | V10-G6 | Client distribution readiness | V10-G5 passed | App-store submission dossiers, compliance mappings, and rejection workflows complete |
-| V10-G7 | Bootstrap infrastructure expansion readiness | V10-G6 passed | 10+ node topology, rollout runbooks, SRE monitoring, and rollback controls complete |
-| V10-G8 | Community relay program launch readiness | V10-G7 passed | Relay policy, onboarding, certification, operations, and abuse-response controls complete |
+| V10-G7 | Bootstrap infrastructure expansion readiness | V10-G6 passed | 10+ node topology, rollout runbooks, SRE monitoring, rollback controls, and decentralized operator succession/continuity planning complete |
+| V10-G8 | Community relay program launch readiness | V10-G7 passed | Relay policy, onboarding, certification, non-token incentive posture (reliability scoring/allowlist), operations, abuse-response controls, and operator handover continuity documentation complete |
 | V10-G9 | Reproducible build and binary verification readiness | V10-G8 passed | Deterministic build, signing/checksum/provenance, and independent rebuild verification contracts complete |
-| V10-G10 | Integrated go no go governance and release handoff | V10-G9 passed | Integrated validation, A1/A3 quality-gate traceability package, conformance checklist, scope closure, open-decision handling, and handoff dossier complete |
+| V10-G10 | Integrated go no go governance and release handoff | V10-G9 passed | Integrated validation, A1/A3 quality-gate traceability package, conformance checklist, scope closure, open-decision handling, v0.9 scale-limit + SecurityMode transition evidence carry-forward verification, decentralized operator handover validation, and handoff dossier complete |
 
 ### F.2 Gate flow diagram
 
@@ -245,8 +261,24 @@ Validation artifact taxonomy IDs for v1.0:
 - `VA-A*` app store submission and client-readiness controls
 - `VA-N*` bootstrap and community-relay network readiness controls
 - `VA-R*` reproducible build and verification controls
+- `VA-B*` release-candidate artifact build/distribution proof controls
 - `VA-X*` integrated validation and governance conformance controls
 - `VA-H*` release conformance and handoff controls
+
+### G.1 Artifact-to-path map (agent execution defaults)
+
+| Artifact Prefix | Primary paths | Expected file patterns |
+|---|---|---|
+| `VA-G*` | `docs/v1.0/phase0/`, `pkg/v10/conformance/` | `docs/v1.0/phase0/*.md`, `pkg/v10/conformance/*.go` |
+| `VA-P*` | `docs/v1.0/phase1/`, `docs/v1.0/spec/` | `docs/v1.0/phase1/*.md`, `docs/v1.0/spec/*.md` |
+| `VA-S*` | `docs/v1.0/phase2/` | `docs/v1.0/phase2/*.md` |
+| `VA-D*` | `docs/v1.0/phase4/`, `docs/v1.0/guides/` | `docs/v1.0/phase4/*.md`, `docs/v1.0/guides/**/*.md` |
+| `VA-W*` | `docs/v1.0/phase5/`, `website/` | `docs/v1.0/phase5/*.md`, `website/**/*` |
+| `VA-A*` | `docs/v1.0/phase6/`, `releases/` | `docs/v1.0/phase6/*.md`, `releases/**/*` |
+| `VA-N*` | `docs/v1.0/phase7/`, `docs/v1.0/phase8/` | `docs/v1.0/phase7/*.md`, `docs/v1.0/phase8/*.md` |
+| `VA-R*` | `docs/v1.0/phase9/`, `containers/v1.0/` | `docs/v1.0/phase9/*.md`, `containers/v1.0/**/*` |
+| `VA-B*` | `releases/`, `containers/v1.0/` | `releases/**/*`, `containers/v1.0/**/*` |
+| `VA-X*` / `VA-H*` | `docs/v1.0/phase10/`, `tests/e2e/v1.0/`, `tests/perf/` | `docs/v1.0/phase10/*.md`, `tests/e2e/v1.0/**/*.go`, `tests/perf/**/*.go` |
 
 ### Phase 0 - Scope, Governance, and Evidence Foundation (V10-G0)
 
@@ -500,6 +532,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Core terms are unambiguous and globally referenced.
       - **Suggested priority/order:** P0, Order 10.2.
       - **Risks/notes:** Terminology inconsistency creates implementation divergence.
+      - **Expanded naming controls:** Canonical term list must include the Harmolyn client/product name, the xorein protocol/back-end family, alias mappings for legacy "Aether" references, and migration-control workflows so downstream docs and clients can track naming drift.
   - **Dependencies/prerequisites:** P1 phase outputs.
   - **Deliverables/artifacts:** Spec IA package (`VA-P7`, `VA-P8`).
   - **Acceptance criteria:** V10-G3 architecture criteria met.
@@ -542,6 +575,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Bundle checklist supports deterministic pass/fail.
       - **Suggested priority/order:** P1, Order 12.1.
       - **Risks/notes:** Missing checks create publication risk.
+      - **Naming compliance:** Checklist must verify Harmolyn/xorein labeling in published materials along with legacy "Aether" trace statements, and confirm migration-control messaging is included in the licensing/governance sections.
     - [ ] **P3-T3-ST2 Define publication approval workflow and change-freeze after signoff**
       - **Objective:** Prevent uncontrolled post-approval drift.
       - **Concrete actions:** Define approval roles, signoff stages, and post-signoff exception handling.
@@ -800,6 +834,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Policy supports auditable 10+ placement planning.
       - **Suggested priority/order:** P0, Order 22.1.
       - **Risks/notes:** Poor diversity can concentrate outage risk.
+      - **Governance alignment:** Include reliability scoring/allowlist posture for bootstrap nodes so their operational posture mirrors the non-token relay program governance.
     - [ ] **P7-T1-ST2 Define node capacity profile and baseline service assumptions**
       - **Objective:** Standardize resource expectations for bootstrap operations.
       - **Concrete actions:** Define capacity classes, performance assumptions, and scaling thresholds.
@@ -808,7 +843,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Capacity assumptions are deterministic and test-mappable.
       - **Suggested priority/order:** P0, Order 22.2.
       - **Risks/notes:** Under-specified capacity causes unstable rollout plans.
-  - **Dependencies/prerequisites:** P6-T1, P6-T2, P6-T3, v0.9 scale baselines.
+  - **Dependencies/prerequisites:** P6-T1, P6-T2, P6-T3, v0.9 scale-limit evidence baselines.
   - **Deliverables/artifacts:** Bootstrap topology package (`VA-N1`, `VA-N2`).
   - **Acceptance criteria:** V10-G7 topology/capacity criteria met.
   - **Suggested priority/order:** P0, Order 22.
@@ -877,6 +912,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Policy is deterministic, transparent, and architecture-invariant compliant.
       - **Suggested priority/order:** P0, Order 25.1.
       - **Risks/notes:** Policy ambiguity can cause uneven relay quality.
+      - **Relay incentive posture:** Policy must document explicit non-token incentive controls, reliability scoring, and allowlist posture to encourage decentralized participation without economic rewards.
     - [ ] **P8-T1-ST2 Define program governance and support-boundary model**
       - **Objective:** Clarify ownership and support expectations for community operators.
       - **Concrete actions:** Define governance roles, escalation paths, and support scope boundaries.
@@ -885,6 +921,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Governance model maps to explicit owner roles and decision paths.
       - **Suggested priority/order:** P0, Order 25.2.
       - **Risks/notes:** Unclear support model increases program fragility.
+      - **Operator continuity:** Model must include explicit operator succession and handover continuity controls plus the minimal legal/liability text artifact that tracks the open-source / future consortium transition narrative.
   - **Dependencies/prerequisites:** P7-T1, P7-T2, P7-T3.
   - **Deliverables/artifacts:** Relay governance package (`VA-N7`, `VA-N8`).
   - **Acceptance criteria:** V10-G8 governance criteria met.
@@ -910,6 +947,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Certification criteria are deterministic and governance-auditable.
       - **Suggested priority/order:** P0, Order 26.2.
       - **Risks/notes:** Inconsistent certification can erode reliability.
+      - **Reliability gating:** Workflow must include reliability scoring, allowlist checks, and documentation that no economic incentives are granted for program participation.
   - **Dependencies/prerequisites:** P8-T1.
   - **Deliverables/artifacts:** Relay onboarding and certification package (`VA-N9`, `VA-N10`).
   - **Acceptance criteria:** V10-G8 onboarding/certification criteria met.
@@ -927,6 +965,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Runbook covers nominal, degraded, and incident states.
       - **Suggested priority/order:** P1, Order 27.1.
       - **Risks/notes:** Missing operations guidance increases outage risk.
+      - **Successor readiness:** Include operator succession/handover continuity steps so new community operators can assume responsibility without central dependencies.
     - [ ] **P8-T3-ST2 Define abuse-report handling and de-listing-reinstatement governance**
       - **Objective:** Bound trust-and-safety response within program operations.
       - **Concrete actions:** Define abuse classes, investigation workflow, de-listing criteria, and reinstatement policy.
@@ -1031,6 +1070,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Every scope bullet appears in integrated coverage.
       - **Suggested priority/order:** P0, Order 31.1.
       - **Risks/notes:** Missing interactions conceal systemic launch risks.
+      - **Carry-forward evidence:** Each matrix row must cite v0.9 scale-limit evidence and SecurityMode transition artifacts when relevant, ensuring go/no-go decisions guard against overstated scale claims and unverified mode migrations.
     - [ ] **P10-T1-ST2 Define integrated pass/fail thresholds and evidence-link requirements**
       - **Objective:** Standardize integrated gate-readiness judgments.
       - **Concrete actions:** Define threshold taxonomy, unresolved-item policy, and evidence-link completeness rules.
@@ -1047,6 +1087,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Threshold matrix includes pass/fail fields and evidence-link slots for each quality gate row.
       - **Suggested priority/order:** P0, Order 31.3.
       - **Risks/notes:** Missing explicit thresholds weakens final launch-governance confidence.
+      - **SecurityMode transitions:** Rows must cover SecurityMode transition evidence from prior phases so go/no-go thresholds account for mode gating behavior.
     - [ ] **P10-T1-ST4 Define NAT/transport/mobility evidence matrix and canary-call operational validation contract**
       - **Objective:** Ensure network-condition evidence is explicit before handoff.
       - **Concrete actions:** Define required NAT classes, transport variants, mobility transitions, and canary-call run/alert/review evidence fields.
@@ -1134,7 +1175,7 @@ Validation artifact taxonomy IDs for v1.0:
     - [ ] **P10-T4-ST1 Produce reproducible build pipeline for client + relay + auxiliary services**
       - **Objective:** Ensure the same source produces identical artifacts under a defined build environment.
       - **Concrete actions:** Pin toolchains; define build container; build `aether` and any auxiliary binaries (push relay, SFU, indexer as applicable); emit build manifest.
-      - **Dependencies/prerequisites:** Reproducible-build plan `P7-T1`, supply-chain guidance `P7-T2`.
+      - **Dependencies/prerequisites:** Reproducible-build plan `P9-T1`, supply-chain guidance `P9-T2`.
       - **Deliverables/artifacts:** Build pipeline scripts + build manifest (`VA-B1`).
       - **Acceptance criteria:** Two independent builds match (or mismatch is explained and bounded).
       - **Suggested priority/order:** P0, Order 34.1.
@@ -1142,12 +1183,12 @@ Validation artifact taxonomy IDs for v1.0:
     - [ ] **P10-T4-ST2 Sign artifacts and publish checksums/SBOM**
       - **Objective:** Provide verifiable integrity for public distribution.
       - **Concrete actions:** Generate checksums; generate SBOM; sign release manifest; store signatures in `releases/v1.0/`.
-      - **Dependencies/prerequisites:** `P7-T3` (artifact signing), audit posture `P1-T1`.
+      - **Dependencies/prerequisites:** `P9-T2` (artifact signing workflow), audit posture `P2-T1`.
       - **Deliverables/artifacts:** Signed manifests, checksums, SBOM (`VA-B2`).
       - **Acceptance criteria:** Verification procedure is documented and works on a fresh machine.
       - **Suggested priority/order:** P0, Order 34.2.
       - **Risks/notes:** Keep signing keys operationally separated and documented.
-  - **Dependencies/prerequisites:** `P7-T1` through `P7-T3`.
+  - **Dependencies/prerequisites:** `P9-T1` through `P9-T3`.
   - **Deliverables/artifacts:** v1.0 RC artifacts (`VA-B1`-`VA-B2`).
   - **Acceptance criteria:** A complete set of shippable artifacts exists and is verifiable.
   - **Suggested priority/order:** P0, Order 34.
@@ -1159,7 +1200,7 @@ Validation artifact taxonomy IDs for v1.0:
     - [ ] **P10-T5-ST1 Create a minimal “reference network” deployment bundle**
       - **Objective:** Provide the smallest useful public network posture.
       - **Concrete actions:** Define bootstrap nodes; define relay deployment; include push relay and SFU where required; provide config templates and secrets handling.
-      - **Dependencies/prerequisites:** `P5-T3` (bootstrap nodes), `P6-T1` (relay program), v0.7 push relay (`P6-T9` in v0.7).
+      - **Dependencies/prerequisites:** `P7-T3` (bootstrap reliability), `P8-T1` (relay governance), and the v0.7 push-relay baseline task (phase 6, task 9).
       - **Deliverables/artifacts:** `containers/v1.0/*` (docker/helm), `docs/v1.0/runbooks/*` (`VA-E1`).
       - **Acceptance criteria:** A new operator can deploy the reference network using only the bundle and docs.
       - **Suggested priority/order:** P0, Order 35.1.
@@ -1206,7 +1247,7 @@ Validation artifact taxonomy IDs for v1.0:
 - [ ] **[P0][Order 37] P10-T7 Execute public distribution steps with smoke verification**
   - **Objective:** Ensure the published artifacts (website, app stores, packages) match the validated release candidate.
   - **Concrete actions:** Upload/distribute artifacts; verify download/install; verify signatures; verify first-run onboarding against reference network.
-  - **Dependencies/prerequisites:** `P2-T3` (docs), `P4-T2` (website), `P5-T2` (app stores), `P10-T4`-`P10-T6`.
+  - **Dependencies/prerequisites:** `P4-T3` (docs publication), `P5-T3` (website launch), `P6-T2` (app stores), `P10-T4`-`P10-T6`.
   - **Deliverables/artifacts:** Distribution smoke evidence (`VA-B3`, `VA-E5`).
   - **Acceptance criteria:** Fresh installs can connect to the reference network and complete a basic chat+call flow.
   - **Suggested priority/order:** P0, Order 37.
@@ -1214,9 +1255,27 @@ Validation artifact taxonomy IDs for v1.0:
 
 - [ ] **[P1][Order 38] P10-T8 Post-release operational readiness (monitoring, incident response, rollback notes)**
   - **Objective:** Ensure the public network and key services are operable under real usage.
-  - **Concrete actions:** Define on-call runbook; define incident categories; define emergency config toggles; define rollback constraints and user comms templates.
-  - **Dependencies/prerequisites:** Operator program (`P6-T1`), governance signoff (`P10-T2`).
-  - **Deliverables/artifacts:** Ops readiness runbook (`VA-H4`).
+  - **Concrete actions:**
+    - [ ] **P10-T8-ST1 Define on-call operations runbook and incident taxonomy.**
+      - **Objective:** Make operator response behavior deterministic across common production incidents.
+      - **Concrete actions:** Define on-call rotation expectations, incident severity classes, triage steps, and escalation paths.
+      - **Deliverables/artifacts:** Ops readiness runbook draft (`VA-H4`).
+      - **Acceptance criteria:** Runbook supports deterministic triage for at least nominal, degraded, and emergency classes.
+      - **Suggested priority/order:** P1, Order 38.1.
+    - [ ] **P10-T8-ST2 Define emergency toggles, rollback constraints, and user communication templates.**
+      - **Objective:** Ensure degraded-state response preserves user clarity and governance traceability.
+      - **Concrete actions:** Specify emergency config toggles, rollback limitations, notification templates, and post-incident evidence requirements.
+      - **Deliverables/artifacts:** Incident-response annex (`VA-H4`).
+      - **Acceptance criteria:** Annex includes deterministic operator actions and communication pathways.
+      - **Suggested priority/order:** P1, Order 38.2.
+    - [ ] **P10-T8-ST3 Add deterministic CLI witness scenario `v10-genesis` and bind it to final go/no-go evidence capture.**
+      - **Objective:** Back the `V10-G10` command matrix requirement with an explicit implementation task.
+      - **Concrete actions:** Define scenario success/failure output contract, scenario dispatcher wiring, and transcript-capture requirement for handoff bundles.
+      - **Deliverables/artifacts:** Scenario hook specification + execution evidence template (`VA-E5`, `VA-H4`).
+      - **Acceptance criteria:** `go run ./cmd/aether --mode=client --scenario=v10-genesis` is documented as deterministic and mandatory for final handoff evidence.
+      - **Suggested priority/order:** P1, Order 38.3.
+  - **Dependencies/prerequisites:** Operator program (`P8-T1`), governance signoff (`P10-T2`).
+  - **Deliverables/artifacts:** Ops readiness runbook + scenario witness evidence contract (`VA-H4`, `VA-E5`).
   - **Acceptance criteria:** On-call operator can follow the runbook to triage and mitigate common incidents.
   - **Suggested priority/order:** P1, Order 38.
   - **Risks/notes:** This reduces the probability of “v1.0 launch day” outages.
@@ -1225,6 +1284,12 @@ Validation artifact taxonomy IDs for v1.0:
 ---
 
 ## H. Validation Artifact Taxonomy and Evidence Model
+
+### H.0 A1/A3 shorthand glossary
+
+- **A1:** Addendum-A reliability and recovery threshold expectations (quantitative pass/fail rows for reliability, latency, and recovery behavior).
+- **A3:** Addendum-A operational evidence expectations (regression guardrails, NAT/transport/mobility matrix, canary-call evidence, diagnostics/privacy posture).
+- **Usage rule:** Any `A1/A3` reference in this file must map to explicit evidence rows with owner and pass/fail state.
 
 ### H.1 Artifact taxonomy
 - `VA-G*` scope, governance, and evidence-framework controls.
@@ -1235,6 +1300,7 @@ Validation artifact taxonomy IDs for v1.0:
 - `VA-A*` app-store and client distribution controls.
 - `VA-N*` bootstrap expansion and community relay operations controls.
 - `VA-R*` reproducible build, signing, and independent verification controls.
+- `VA-B*` release-candidate artifact build/distribution proof controls.
 - `VA-X*` integrated validation and governance conformance controls.
 - `VA-H*` final go/no-go checklist and handoff dossier controls.
 
@@ -1248,6 +1314,26 @@ Validation artifact taxonomy IDs for v1.0:
 7. Every unresolved decision remains explicitly open and linked to revisit gate.
 8. Any artifact row without owner or evidence link is incomplete and blocks gate exit.
 9. Any launch-critical quality-gate row without A1/A3 trace tags (threshold + evidence + owner) is incomplete and blocks V10-G10.
+
+### H.2A Gate command matrix (agent execution minimum)
+
+| Gate | Minimum command set (captured verbatim in evidence) | Expected pass pattern |
+|---|---|---|
+| `V10-G0` | `go test ./pkg/v10/...` | Exit code `0`; scope/governance package tests present in output. |
+| `V10-G1` | `go test ./pkg/v10/...` and `go test ./tests/e2e/v1.0/...` | Exit code `0`; protocol freeze and compatibility rows linked in evidence. |
+| `V10-G2` | `go test ./pkg/v10/...` | Exit code `0`; security-audit readiness artifacts attached with owner signoff. |
+| `V10-G3` | `go test ./pkg/v10/...` | Exit code `0`; spec/naming governance checks linked to `VA-P*`. |
+| `V10-G4` | `go test ./tests/e2e/v1.0/...` | Exit code `0`; docs publication checks mapped to `VA-D*`. |
+| `V10-G5` | `go test ./tests/e2e/v1.0/...` | Exit code `0`; web launch-governance evidence mapped to `VA-W*`. |
+| `V10-G6` | `go test ./tests/e2e/v1.0/...` | Exit code `0`; app-store dossier validation rows mapped to `VA-A*`. |
+| `V10-G7` | `go test ./tests/perf/...` | Exit code `0`; bootstrap resilience and handover evidence linked. |
+| `V10-G8` | `go test ./tests/e2e/v1.0/...` and `go test ./tests/perf/...` | Exit code `0`; relay onboarding/certification/abuse-response evidence linked. |
+| `V10-G9` | `go test ./...` | Exit code `0`; reproducible-build/signing/provenance evidence attached. |
+| `V10-G10` | `go test ./...` and `go run ./cmd/aether --mode=client --scenario=v10-genesis` | Exit code `0`; handoff bundle includes full transcripts + carry-forward validation links. |
+
+If a command returns only `[no test files]`, gate owners must attach alternate evidence and explicit justification; otherwise the gate remains incomplete.
+
+If a listed command cannot run because a required path/tool/scenario is missing, gate owners must capture the failing output, execute a nearest scope-equivalent substitute command set, create a remediation task with owner + due gate, and keep gate status at conditional-fail until the canonical command is restored.
 
 ### H.3 Gate evidence bundle mandatory sections
 - Scope and exclusions reference.
@@ -1265,13 +1351,13 @@ Validation artifact taxonomy IDs for v1.0:
 | Scope Item ID | v1.0 Scope Bullet | Primary Tasks | Validation Artifacts | Acceptance Anchor |
 |---|---|---|---|---|
 | S10-01 | External security audit E2EE P2P key management DHT security | P2-T1, P2-T2, P2-T3, P10-T1 | VA-S1, VA-S2, VA-S3, VA-S4, VA-S5, VA-S6, VA-X1 | P2-T1/P2-T2 acceptance plus integrated coverage in P10-T1 |
-| S10-02 | Aether Protocol Specification v1.0 published as open standard | P1-T1, P1-T2, P1-T3, P3-T1, P3-T2, P3-T3 | VA-P1 through VA-P12, VA-X1 | P1 and P3 acceptance plus governance closure in P10-T2 |
+| S10-02 | xorein Protocol Specification v1.0 published as open standard (Aether legacy traceability) | P1-T1, P1-T2, P1-T3, P3-T1, P3-T2, P3-T3 | VA-P1 through VA-P12, VA-X1 | P1 and P3 acceptance plus governance closure in P10-T2 |
 | S10-03 | User guide admin guide developer guide API reference | P4-T1, P4-T2, P4-T3 | VA-D1, VA-D2, VA-D3, VA-D4, VA-D5, VA-D6, VA-X1 | P4 acceptance plus checklist coverage in P10-T3 |
 | S10-04 | Landing page and comparison site | P5-T1, P5-T2, P5-T3 | VA-W1, VA-W2, VA-W3, VA-W4, VA-W5, VA-W6, VA-X1 | P5 acceptance plus go/no-go mapping in P10-T3 |
 | S10-05 | App store submissions Google Play App Store Microsoft Store Flathub | P6-T1, P6-T2, P6-T3 | VA-A1, VA-A2, VA-A3, VA-A4, VA-A5, VA-A6, VA-X1 | P6 acceptance plus release checklist in P10-T3 |
 | S10-06 | Expand bootstrap infrastructure to 10 plus global nodes | P7-T1, P7-T2, P7-T3 | VA-N1, VA-N2, VA-N3, VA-N4, VA-N5, VA-N6, VA-X1 | P7 acceptance plus integrated resilience review in P10-T1 |
-| S10-07 | Reproducible builds, signed releases | P7-T1 P7-T2 P7-T3 P10-T4 P10-T7 | VA-R1 VA-R2 VA-R3 VA-R4 VA-B1 VA-B2 VA-B3 | P10-T4 acceptance + distribution smoke |
-| S10-08 | Integrated go/no-go governance + release execution | P10-T1 P10-T2 P10-T3 P10-T5 P10-T6 P10-T7 P10-T8 | VA-H1 VA-H2 VA-H3 VA-H4 VA-E1 VA-E2 VA-E3 VA-E4 VA-E5 | Ship decision backed by VA-B* and VA-E* evidence |
+| S10-07 | Reproducible builds, signed releases | P9-T1 P9-T2 P9-T3 P10-T4 P10-T7 | VA-R1 VA-R2 VA-R3 VA-R4 VA-R5 VA-R6 VA-B1 VA-B2 VA-B3 | P9/P10 acceptance + distribution smoke |
+| S10-08 | Integrated go/no-go governance + release execution | P10-T1 P10-T2 P10-T3 P10-T4 P10-T5 P10-T6 P10-T7 P10-T8 | VA-H1 VA-H2 VA-H3 VA-H4 VA-E1 VA-E2 VA-E3 VA-E4 VA-E5 VA-B1 VA-B2 VA-B3 | Ship decision backed by VA-H*, VA-E*, and VA-B* evidence |
 
 ### I.1 Traceability closure rules
 - Any scope item without task mapping blocks V10-G10.
@@ -1287,13 +1373,13 @@ v1.0 is considered **launched** only when the steps below are satisfied with lin
 
 ### J.1 Release-candidate artifact readiness
 - [ ] Release-candidate binaries and container images are built and versioned (`P10-T4` / `VA-B*`).
-- [ ] Integrity metadata exists: checksums, signatures, SBOM, and verification instructions (`VA-B2`).
-- [ ] Reproducible-build posture is documented and independently validated (to the degree feasible) (`P7-T1`-`P7-T3`).
+- [ ] Integrity metadata exists: checksums, signatures, SBOM, and verification instructions (`VA-B2`, `VA-R2`, `VA-R3`).
+- [ ] Reproducible-build posture is documented and independently validated (to the degree feasible) (`P9-T1`-`P9-T3`).
 
 ### J.2 Reference deployment readiness (public network posture)
 - [ ] Reference deployment as code exists and matches docs (`P10-T5` / `VA-E1`).
-- [ ] Bootstrap nodes are provisioned and health-verified (`P5-T3`).
-- [ ] Community relay program is ready (operator intake, moderation, abuse response) (`P6-T1`).
+- [ ] Bootstrap nodes are provisioned and health-verified (`P7-T3`).
+- [ ] Community relay program is ready (operator intake, moderation, abuse response) (`P8-T1`-`P8-T3`).
 - [ ] Auxiliary services required by shipped features are deployable (push relay, SFU, indexers, TURN if required).
 
 ### J.3 End-to-end “working system” proof
@@ -1302,17 +1388,23 @@ v1.0 is considered **launched** only when the steps below are satisfied with lin
 - [ ] Upgrade tests (v0.9 → v1.0) and rollback posture are documented with evidence (`VA-E4`).
 
 ### J.4 Security and privacy readiness
-- [ ] Security audit is completed; findings are dispositioned with severity and remediation status (`P1-T1`, `P1-T2`).
+- [ ] Security audit is completed; findings are dispositioned with severity and remediation status (`P2-T1`, `P2-T2`, `P2-T3`).
 - [ ] Privacy posture is documented (logs, retention, metadata, operator visibility) and aligns with the implementation.
 
 ### J.5 Distribution readiness
-- [ ] Website and docs are published and match shipped behavior (`P2-T3`, `P4-T2`).
-- [ ] App store submissions are live (or scheduled) and install/first-run smoke is verified (`P5-T2`, `P10-T7`).
+- [ ] Website and docs are published and match shipped behavior (`P4-T3`, `P5-T3`).
+- [ ] App store submissions are live (or scheduled) and install/first-run smoke is verified (`P6-T2`, `P10-T7`).
 - [ ] Package distribution (if applicable) is live and signature verification works on a fresh machine.
 
 ### J.6 Operational readiness (minimal)
 - [ ] Monitoring and alerting for reference network components is documented and enabled where feasible.
 - [ ] Incident response runbook exists (triage, mitigations, comms, rollback constraints) (`P10-T8`).
+
+### J.7 Decision alignment verification
+- [ ] Naming governance artifacts for Harmolyn/xorein are verified across spec, docs, and web surfaces with legacy "Aether" references limited to traceability statements.
+- [ ] Governance/legal transition artifact (open-source v1.0 baseline, minimal liability text, future consortium path) is published and linked in handoff dossiers.
+- [ ] Relay/bootstrap program materials enforce non-token incentive controls, reliability scoring/allowlist posture, and operator handover continuity.
+- [ ] v0.9 scale-limit and SecurityMode transition evidence are cited in release claims/assertions and flagged if carry-forward evidence gaps remain.
 
 ---
 
@@ -1324,3 +1416,33 @@ v1.0 is complete when:
 3. A reference deployment is runnable and documented.
 4. A v1.0 end-to-end acceptance suite passes and covers the core user journeys (join, chat, DM, file, voice, offline delivery, search, notifications) under realistic connectivity conditions.
 5. Any remaining gaps are explicitly documented as post-v1 work items with owners and target bands (no implicit missing features).
+
+## L. Decision Closure
+
+### L.1 Resolved decisions adopted for v1.0 baseline
+- **RM-01 (naming):** Harmolyn is the client product name while the protocol/back-end family is the xorein specification; legacy "Aether" references survive only for traceability and migration controls.
+- **RM-02 (relay incentives):** Relay/bootstrap governance is non-token, relying on reliability scoring and allowlist posture recorded in the community relay/bootstrapping runbooks.
+- **RM-03 (scale targets):** v0.9 scale-limit evidence is a mandatory input for any v1.0 scale claim and is featured in V10-G10 carry-forward validations.
+- **RM-04 (governance/licensing):** v1.0 remains open-source while the plan documents the minimal legal text artifact and signals the future consortium track without pre-commitments.
+- **RM-05 (decentralization continuity):** Bootstrap and relay programs are built on decentralized topology assumptions with explicit operator succession/handover continuity controls.
+
+### L.2 Adopted carry-forward decisions (closed for v1.0 baseline)
+
+| Decision ID(s) | v1.0 status | v1.0 handling path |
+|---|---|---|
+| OD3-02, OD3-03, OD3-04 | Adopted carry-forward defaults from `open_decisions_proposals.md` | Treated as inherited discovery/media baselines through `E.6`/`E.9` and validated via `P10-T2` governance checks. |
+| OD4-03 | Adopted carry-forward default | Enforced as moderation-governance baseline via documentation/security/governance closure (`P4-T1`, `P10-T2`). |
+| OD5-01..OD5-05 | Adopted carry-forward defaults | Reflected in developer/API and governance publication controls (`P4-T2`, `P10-T2`). |
+| OD6-01..OD6-03 | Adopted carry-forward defaults | Treated as trust/safety baseline inputs for audit and release-governance readiness (`P2-T1`, `P2-T3`, `P10-T2`). |
+| OD7-01..OD7-04 | Adopted carry-forward defaults | Used as inherited relay/persistence/search assumptions for bootstrap and community-relay readiness (`P7-T1`, `P8-T1`, `P10-T2`). |
+| OD8-01..OD8-05 | Adopted carry-forward defaults | Validated as UX/runtime continuity constraints in launch docs and go/no-go validation (`P4-T1`, `P10-T1`). |
+| OD9-01..OD9-07 | Adopted v0.9 planning defaults; require carry-forward verification in v1.0 | Closure evidence must be present in `E.9`, `P10-T1-ST3`, `P10-T2-ST2`, and `P10-T3-ST2` before final ship approval. |
+
+### L.3 Remaining open decisions and deferrals
+
+| Decision ID(s) | v1.0 status | v1.0 handling path |
+|---|---|---|
+| OD3-01, OD4-01, OD4-02 | Still open | Remain explicitly open in `open_decisions.md`; v1.0 artifacts must not present them as settled architecture, and handoff must list revisit gates in `P10-T3-ST2`. |
+| RM-03 characterization remainder | Under characterization | v0.9 incremental +50 campaign output is mandatory input; unresolved security-floor details are tracked as residual governance risk until evidence is complete (`P10-T1-ST3`, `P10-T2-ST2`). |
+
+- No additional v1.0-specific open decisions are introduced beyond the carry-forward set above; unresolved items remain owned by the governance working group and must stay explicitly open unless an authoritative source document resolves them.

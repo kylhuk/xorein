@@ -11,13 +11,14 @@ import (
 	phase11 "github.com/aether/code_aether/pkg/phase11"
 	phase6 "github.com/aether/code_aether/pkg/phase6"
 	phase9 "github.com/aether/code_aether/pkg/phase9"
+	v08scenario "github.com/aether/code_aether/pkg/v08/scenario"
 )
 
 var (
 	dispatchScenarioFn = dispatchScenario
 
 	runMode           = flag.String("mode", "client", "runtime mode: client|relay|bootstrap")
-	scenario          = flag.String("scenario", "", "optional scenario: create-server|join-deeplink|first-contact")
+	scenario          = flag.String("scenario", "", "optional scenario: create-server|join-deeplink|first-contact|v08-echo")
 	firstContactRuns  = flag.Int("first-contact-runs", 3, "number of repeated first-contact runs")
 	firstContactOut   = flag.String("first-contact-output", "artifacts/generated/first-contact", "output directory for first-contact scenario artifacts")
 	firstContactGoal  = flag.Duration("first-contact-target", 5*time.Minute, "target duration for each first-contact run")
@@ -43,6 +44,7 @@ type scenarioHandlers struct {
 	runJoinDeepLink func(*phase6.ManifestStore)
 	runFirstContact func()
 	runRelayMode    func()
+	runV08Echo      func() error
 }
 
 func defaultScenarioHandlers() scenarioHandlers {
@@ -51,6 +53,7 @@ func defaultScenarioHandlers() scenarioHandlers {
 		runJoinDeepLink: runJoinDeepLink,
 		runFirstContact: runFirstContactScenario,
 		runRelayMode:    runRelayMode,
+		runV08Echo:      runV08EchoScenario,
 	}
 }
 
@@ -89,8 +92,15 @@ func dispatchScenario(mode string, scenario string, store *phase6.ManifestStore,
 	case "first-contact":
 		handlers.runFirstContact()
 		return 0
+	case "v08-echo":
+		if err := handlers.runV08Echo(); err != nil {
+			fmt.Fprintf(os.Stderr, "v0.8 echo: FAIL: %v\n", err)
+			return 6
+		}
+		fmt.Println("v0.8 echo: PASS")
+		return 0
 	default:
-		fmt.Fprintf(os.Stderr, "unknown scenario %q; valid scenarios: create-server, join-deeplink, first-contact\n", scenario)
+		fmt.Fprintf(os.Stderr, "unknown scenario %q; valid scenarios: create-server, join-deeplink, first-contact, v08-echo\n", scenario)
 		return 3
 	}
 }
@@ -192,6 +202,10 @@ func runCreateServer(store *phase6.ManifestStore) {
 	fmt.Printf("Created server manifest for %s\n", manifest.ServerID)
 	fmt.Printf("Signed at %s with signature %s\n", manifest.UpdatedAt.Format(time.RFC3339Nano), sig)
 	fmt.Printf("Local state metadata: %+v\n", state.LocalMetadata)
+}
+
+func runV08EchoScenario() error {
+	return v08scenario.RunEchoContracts()
 }
 
 func runJoinDeepLink(store *phase6.ManifestStore) {

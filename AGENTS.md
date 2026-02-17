@@ -9,6 +9,11 @@ This repository is a protocol-first system. Treat wire formats, cryptography, an
 - Keep changes minimal and scoped to the requested task.
 - If the repo is in a planning/spec-only phase, maintain strict planned-vs-implemented separation (no implied completion).
 
+## Licensing baseline
+- Runtime/client/backend code uses AGPL licensing.
+- Protocol specification and normative protocol docs use CC-BY-SA licensing.
+- If any plan or doc still references older permissive MIT-like wording, treat it as migration debt and update it explicitly.
+
 ## Protocol / Protobuf compatibility
 - Prefer additive-only evolution (new fields/messages, never renumber existing fields).
 - Never reuse removed field numbers; mark removed names/numbers as `reserved`.

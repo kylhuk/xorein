@@ -6,7 +6,7 @@
 >
 > Authoritative v0.9 scope source: `aether-v3.md` roadmap bullets under **v0.9.0 — Forge**.
 >
-> Inputs used for sequencing, dependency posture, closure patterns, and guardrail carry-forward: `aether-v3.md`, `TODO_v01.md`, `TODO_v02.md`, `TODO_v03.md`, `TODO_v04.md`, `TODO_v05.md`, `TODO_v06.md`, `TODO_v07.md`, `TODO_v08.md`, and `AGENTS.md`.
+> Inputs used for sequencing, dependency posture, closure patterns, and guardrail carry-forward: `aether-v3.md`, `ENCRYPTION_PLUS.md`, `open_decisions.md`, `open_decisions_proposals.md`, `TODO_v01.md`, `TODO_v02.md`, `TODO_v03.md`, `TODO_v04.md`, `TODO_v05.md`, `TODO_v06.md`, `TODO_v07.md`, `TODO_v08.md`, and `AGENTS.md`.
 >
 > Guardrails that are mandatory throughout this plan:
 > - Maintain strict planned-vs-implemented separation: specs remain explicit, and completion requires runnable implementations + tests + evidence.
@@ -15,7 +15,7 @@
 > - Compatibility invariant remains mandatory: protobuf minor evolution is additive-only.
 > - Breaking protocol behavior requires major-path governance evidence: new multistream IDs, downgrade negotiation, AEP flow, and validation by at least two independent implementations.
 > - Open decisions remain unresolved unless source documentation explicitly resolves them.
-> - Licensing alignment remains explicit: code licensing permissive MIT-like and protocol specification licensing CC-BY-SA.
+> - Licensing alignment remains explicit: code licensing AGPL and protocol specification licensing CC-BY-SA.
 > - v1.0+ and post-v1 capability is not promoted into v0.9 by implication, convenience, or adjacency.
 
 ## Sprint Guidelines Alignment
@@ -52,6 +52,7 @@ This document is a v0.9 execution plan for scope control, sequencing, validation
 - Single-binary deployment model remains unchanged (`--mode=client|relay|bootstrap`).
 - Compatibility/governance constraints apply to all protocol-touching deltas.
 - Open decisions remain open unless explicitly resolved by source docs.
+- RM-01 naming baseline: the v0.9 client/experience continues under the working name **Harmolyn** (traceable to the `Aether` bullet in `aether-v3.md`), and the protocol/backend stack proceeds under **xorein**, ensuring downstream documentation records both names without losing historical traceability.
 
 ---
 
@@ -63,21 +64,23 @@ Deliver **v0.9 Forge** as a protocol-first implementation increment that ships p
 - Large-server operation model including hierarchical GossipSub and lazy member loading.
 - Cascading SFU mesh contract for 200+ participant voice scenarios.
 - Cross-platform performance profiling and optimization planning envelope.
-- Stress-testing contract for 1000-member server, 50-person voice, and latency benchmarks.
+- Stress-testing contract for baseline 1000-member server, 50-person voice, and latency benchmarks, followed by +50 participant increments per encryption/security mode until hard limits are characterized.
 - Relay-node performance optimization and load-testing contract.
 - Mobile battery optimization strategy via background-activity reduction constraints.
+- Scale-driven SecurityMode transition triggers and sharding guidance for huge interactive channels.
 
 ### B.2 Measurable success outcomes
 1. Persistent-hosting contract defines deterministic IPFS pinning responsibilities, retention boundaries, and availability semantics for server-owner-managed pinning.
 2. Hierarchical GossipSub and lazy-member-loading contracts define deterministic fanout and member-state loading behavior suitable for large-server planning targets.
 3. Cascading SFU mesh contract defines deterministic topology transitions and relay/SFU layering behavior for 200+ participant voice planning scenarios.
 4. Cross-platform profiling model defines measurement taxonomy, platform baselines, and optimization decision thresholds with repeatable evidence requirements.
-5. Stress-test contract defines deterministic scenario classes and pass/fail thresholds for 1000-member server and 50-person voice benchmark campaigns.
+5. Stress-test contract defines deterministic scenario classes and pass/fail thresholds for 1000-member server and 50-person voice baseline campaigns, plus incremental +50 expansions per encryption/security mode until hard limits are documented.
 6. Relay performance/load contract defines capacity envelopes, saturation behaviors, and degradation handling under load.
 7. Mobile battery optimization contract defines background-activity budgets, wakeup boundaries, and energy-impact verification criteria.
-8. Compatibility/governance controls and evidence model are complete and gate-auditable.
-9. Integrated validation phase covers positive, adverse, saturation, and recovery pathways across all eight v0.9 bullets.
-10. Release/handoff package provides complete traceability, explicit deferrals, and planned-vs-implemented language integrity.
+8. SecurityMode transition and sharding contract defines deterministic thresholding, hysteresis, mode-epoch behavior, and stress-validated fallback posture.
+9. Compatibility/governance controls and evidence model are complete and gate-auditable.
+10. Integrated validation phase covers positive, adverse, saturation, and recovery pathways across all eight v0.9 bullets.
+11. Release/handoff package provides complete traceability, explicit deferrals, and planned-vs-implemented language integrity.
 
 ### B.3 QoL integration contract for v0.9 scale-performance journeys (planning-level)
 
@@ -88,6 +91,14 @@ Deliver **v0.9 Forge** as a protocol-first implementation increment that ships p
   - **Verification evidence:** `V9-G3` and integrated validation include explicit recovery-path evidence with deterministic pass/fail criteria.
 - **Cross-device continuity under performance constraints:** attention resume, read continuity, and interaction handoff remain deterministic despite profiling-driven optimizations.
   - **Verification evidence:** battery/perf optimization gates include continuity-regression checks with explicit fail conditions.
+
+### B.4 Accepted defaults from `open_decisions_proposals.md`
+
+- Thread depth stays capped at 2 levels of replies (OD8-01) and inherits the 2-level UX baseline for all downstream docs and tests.
+- Open Graph metadata precedence (OG primary, Twitter secondary) is the default card source order (OD8-02) with deterministic conflict logging before presenting values.
+- Locale fallback follows OD8-04: language-level fallback then `en-US`, ensuring consistent i18n behavior across profiling/battery work.
+- DTLN is the preferred runtime with RNNoise fallback under constrained compute/power budgets (OD8-05); this appears across profiling/perf tasks without speculation.
+- OD9-01 through OD9-07 defaults are adopted as v0.9 planning baselines in the relevant phase tasks (pin retention, hierarchy depth, cascade aggressiveness, optimization confidence, relay overload priority, mobile battery policy, multi-provider wake failover), with final closure still requiring V9-G8/V9-G9 evidence signoff.
 
 ---
 
@@ -128,10 +139,11 @@ No additional capability outside these eight bullets is promoted into v0.9 in th
 3. Large-server optimization scope is bounded to hierarchical GossipSub and lazy member loading; no unrelated feature expansion is imported.
 4. Cascading voice topology scope is bounded to SFU mesh behavior for 200+ planning target; unrelated media-feature expansion is excluded.
 5. Profiling/optimization scope is bounded to measurement and optimization planning across platforms; it does not import v1.0 publication tracks.
-6. Stress-testing scope is bounded to the stated targets (1000-member server, 50-person voice, latency benchmarks).
+6. Stress-testing scope is bounded to the baseline targets (1000-member server, 50-person voice, latency benchmarks) plus explicit +50 increment campaigns used to characterize hard limits per encryption/security mode.
 7. Relay optimization scope is bounded to performance/load behavior; governance and role models remain consistent with prior constraints.
 8. Mobile battery scope is bounded to background activity reduction and energy-budget planning constraints.
 9. Any incompatible protocol behavior discovered during planning must enter major-path governance flow and cannot be silently absorbed into minor evolution.
+10. Relay operations remain incentive-free volunteers; no tokens/economic rewards are spun up (RM-02), so the plan layers explicit operator-transfer continuity preparation and multi-provider wake failover posture (RM-05) to avoid single-operator failure modes.
 
 ---
 
@@ -186,7 +198,7 @@ v0.9 planning assumes prior-version contract outputs are available as dependenci
 | V9-G2 | Large-server optimization contract freeze | V9-G1 passed | Hierarchical GossipSub and lazy-member-loading contracts complete |
 | V9-G3 | Cascading SFU mesh contract freeze | V9-G2 passed | 200+ participant cascading SFU topology and transition contracts complete |
 | V9-G4 | Cross-platform profiling/optimization contract freeze | V9-G3 passed | Platform profiling taxonomy, baselines, and optimization decision rules complete |
-| V9-G5 | Stress-testing contract freeze | V9-G4 passed | 1000-member/50-voice/latency benchmark scenario and threshold contracts complete |
+| V9-G5 | Stress-testing contract freeze | V9-G4 passed | 1000-member/50-voice/latency baseline scenario contracts complete and +50 increment hard-limit characterization plan/evidence defined |
 | V9-G6 | Relay performance/load contract freeze | V9-G5 passed | Relay capacity, load-behavior, and degradation-handling contracts complete |
 | V9-G7 | Mobile battery-optimization contract freeze | V9-G6 passed | Background-activity reduction and energy-budget validation contracts complete |
 | V9-G8 | Integrated validation/governance readiness | V9-G7 passed | Cross-domain validation matrix, compatibility/governance audits, open-decision discipline complete |
@@ -236,6 +248,26 @@ Validation artifact taxonomy IDs for v0.9:
 - `VA-H*` release-conformance/handoff artifacts
 - `VA-C*` reference implementation code and unit/integration tests
 - `VA-E*` executable perf/stress harness evidence (commands, reports, and reproducible runs)
+- `VA-LG*` legal/governance preparation artifacts (licensing framing + alpha/beta/live policy hardening planning)
+- `VA-T7` encryption-method security-floor campaign artifacts
+- `VA-R7` operator continuity plan artifacts for relay/mobile governance
+- `VA-B7` adaptive battery policy + multi-provider wake failover posture evidence
+- `VA-X7`/`VA-X8` policy hardening and governance/legal transition packages
+
+### G.1 Artifact-to-path map (agent execution defaults)
+
+| Artifact Prefix | Primary paths | Expected file patterns |
+|---|---|---|
+| `VA-G*` | `docs/v0.9/phase0/`, `pkg/v09/conformance/` | `docs/v0.9/phase0/*.md`, `pkg/v09/conformance/*.go` |
+| `VA-I*` | `docs/v0.9/phase1/`, `pkg/v09/ipfs/` | `docs/v0.9/phase1/*.md`, `pkg/v09/ipfs/*.go` |
+| `VA-L*` | `docs/v0.9/phase2/`, `pkg/v09/scale/` | `docs/v0.9/phase2/*.md`, `pkg/v09/scale/*.go` |
+| `VA-S*` | `docs/v0.9/phase3/`, `pkg/v09/sfu/` | `docs/v0.9/phase3/*.md`, `pkg/v09/sfu/*.go` |
+| `VA-P*` | `docs/v0.9/phase4/`, `tests/perf/v09/` | `docs/v0.9/phase4/*.md`, `tests/perf/v09/**/*.go` |
+| `VA-T*` / `VA-T7` | `docs/v0.9/phase5/`, `tests/perf/v09/` | `docs/v0.9/phase5/*.md`, `tests/perf/v09/**/*.{go,md}` |
+| `VA-R*` / `VA-R7` | `docs/v0.9/phase6/`, `pkg/v09/relay/` | `docs/v0.9/phase6/*.md`, `pkg/v09/relay/*.go` |
+| `VA-B*` / `VA-B7` | `docs/v0.9/phase7/`, `pkg/v09/mobile/` | `docs/v0.9/phase7/*.md`, `pkg/v09/mobile/*.go` |
+| `VA-X*` / `VA-X7` / `VA-X8` | `docs/v0.9/phase8/`, `pkg/v09/governance/` | `docs/v0.9/phase8/*.md`, `pkg/v09/governance/*.go` |
+| `VA-H*` / `VA-E*` / `VA-C*` | `docs/v0.9/phase9/`, `tests/e2e/v09/`, `tests/perf/v09/`, `pkg/v09/` | `docs/v0.9/phase9/*.md`, `tests/e2e/v09/**/*.go`, `pkg/v09/**/*.go` |
 
 ### Phase 0 - Scope, Governance, and Evidence Foundation (V9-G0)
 
@@ -313,6 +345,21 @@ Validation artifact taxonomy IDs for v0.9:
   - **Acceptance criteria:** V9-G0 exits only with approved evidence model.
   - **Suggested priority/order:** P0, Order 03.
   - **Risks/notes:** Missing evidence discipline creates rework later.
+
+- [ ] **[P0][Order 03.4] P0-T4 Capture legal/governance transition posture for RM-04**
+  - **Objective:** Document planning-level legal guardrails for open-source v0.9 while preparing the minimal text required for the later consortium transition.
+  - **Concrete actions:**
+    - [ ] **P0-T4-ST1 Document current open-source/licensing posture and liability disclaimer requirements**, referencing AGPL code + CC-BY-SA specification defaults and mapping required legal-text artifacts for the planned consortium transition.
+      - **Dependencies/prerequisites:** AGENTS.md constraints, legal input.
+      - **Deliverables/artifacts:** Legal posture note (`VA-LG1`).
+      - **Acceptance criteria:** Note lists current AGPL/CC-BY-SA defaults, required disclaimers, and explicit evidence anchors for future review.
+      - **Suggested priority/order:** P0, Order 03.4.1.
+    - [ ] **P0-T4-ST2 Outline alpha/beta/live policy hardening assumptions and required revisit triggers** to frame the future consortium governance path.
+      - **Dependencies/prerequisites:** RM-04 policy expectations, P8-T3 evidence requirements.
+      - **Deliverables/artifacts:** Policy hardening timeline (`VA-LG2`).
+      - **Acceptance criteria:** Timeline links alpha/beta/live stages to concrete hardening tasks, evidence needs, and legal review triggers.
+      - **Suggested priority/order:** P0, Order 03.4.2.
+  - **Exposure:** Plan remains at documentation level; no implementation claim is made.
 
 ### Phase 1 - IPFS Persistent Hosting Contracts (V9-G1)
 
@@ -440,7 +487,7 @@ Validation artifact taxonomy IDs for v0.9:
     - [ ] **P2-T2-ST3 Define scale-driven `SecurityMode` transition triggers and sharding guidance for huge interactive channels**
       - **Objective:** Provide a deterministic, performance-aware contract for when and how very large channels change encryption posture and/or shard.
       - **Concrete actions:** Specify default thresholds + hysteresis, writer/reader semantics (interactive vs broadcast), shard model (naming, membership, fanout), and invariants (no silent downgrade; mode change = new `mode_epoch_id`).
-      - **Dependencies/prerequisites:** P2-T2-ST2, v0.4 SecurityMode baseline, ENCRYPTION_PLUS scaling guidance.
+      - **Dependencies/prerequisites:** P2-T2-ST2, v0.4 SecurityMode baseline, `ENCRYPTION_PLUS.md` scaling guidance (threshold profiles + hysteresis envelopes).
       - **Deliverables/artifacts:** Mode-transition + sharding guidance contract (`VA-L7`).
       - **Acceptance criteria:** Guidance is deterministic, testable via stress profiles, and includes explicit “cannot migrate history” fallback posture where applicable.
       - **Suggested priority/order:** P1, Order 08.3.
@@ -707,6 +754,21 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P1, Order 18.
   - **Risks/notes:** Keep all wording planned-vs-implemented.
 
+- [ ] **[P0][Order 18.5] P5-T4 Characterize security-floor limits per encryption method (RM-03)**
+  - **Objective:** Execute incremental +50 participant campaigns for each encryption/security mode until the hard limit of that method is documented, ensure no silent downgrade occurs, and capture resilience evidence.
+  - **Concrete actions:**
+    - [ ] **P5-T4-ST1 Run cascaded stress campaigns per applicable encryption method, starting from baseline and adding 50 participants per run, documenting the precise point each method reaches its hard limit and the triggered mitigation (security-mode transition or shard split).**
+      - **Dependencies/prerequisites:** P5-T1, P2-T2, P4-T1.
+      - **Deliverables/artifacts:** Security-floor campaign log (`VA-T7`).
+      - **Acceptance criteria:** Each method has a reproducible +50 incremental run series plus documented decision on how thresholds translate to safeguards.
+      - **Suggested priority/order:** P0, Order 18.5.
+    - [ ] **P5-T4-ST2 Summarize security-floor findings, highlight explicit non-silent downgrade guidance, and reference gating evidence for each mode.**
+      - **Dependencies/prerequisites:** P5-T4-ST1.
+      - **Deliverables/artifacts:** Security-floor summary (`VA-T7`).
+      - **Acceptance criteria:** Summary links each threshold to deterministic behavior (no silent downgrade) and policy references.
+      - **Suggested priority/order:** P1, Order 18.6.
+  - **Risks/notes:** Campaigns must terminate before exposing insecure fallback; document residual uncertainties as open decision evidence.
+
 ### Phase 6 - Relay Performance and Load-Testing Contracts (V9-G6)
 
 - [ ] **[P0][Order 19] P6-T1 Define relay capacity model and saturation boundaries**
@@ -720,12 +782,12 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Workload classes map deterministically to resource budget dimensions.
       - **Suggested priority/order:** P0, Order 19.1.
       - **Risks/notes:** Poor modeling leads to unstable capacity assumptions.
-    - [ ] **P6-T1-ST2 Define saturation behavior and service-priority policies**
+    - [ ] **P6-T1-ST2 Define saturation behavior and fixed service-priority policies**
       - **Objective:** Bound degraded behavior under relay overload.
-      - **Concrete actions:** Define priority semantics, shedding policies, and degradation classes.
+      - **Concrete actions:** Define priority semantics, shedding policies, and degradation classes with the priority order: control plane -> active media -> store-forward -> bulk sync baked in as the default sequence.
       - **Dependencies/prerequisites:** P6-T1-ST1.
       - **Deliverables/artifacts:** Saturation policy contract (`VA-R2`).
-      - **Acceptance criteria:** Overload behavior is deterministic and policy-consistent.
+      - **Acceptance criteria:** Overload behavior is deterministic, policy-consistent, and follows the mandated priority order.
       - **Suggested priority/order:** P0, Order 19.2.
       - **Risks/notes:** Undefined overload policy can cause cascading failures.
   - **Dependencies/prerequisites:** P4-T1, P4-T2, P4-T3, v0.1 relay baseline.
@@ -784,22 +846,37 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P1, Order 21.
   - **Risks/notes:** Preserve single-binary mode invariant throughout.
 
+- [ ] **[P1][Order 21.5] P6-T4 Plan operator handover continuity for relay governance (RM-05)**
+  - **Objective:** Ensure the single-operator startup phase can transition to new operator(s) without loss of continuity or telemetry.
+  - **Concrete actions:**
+    - [ ] **P6-T4-ST1 Document the initial operator-to-successor handoff playbook (credentials, config, monitoring handover, emergency rollback)** with explicit roles and evidence anchors.
+      - **Dependencies/prerequisites:** P6-T1 through P6-T3.
+      - **Deliverables/artifacts:** Operator handover plan (`VA-R7`).
+      - **Acceptance criteria:** Playbook describes every step required to transfer authority, ensure no single operator lock-in, and preserve security keys.
+      - **Suggested priority/order:** P1, Order 21.5a.
+    - [ ] **P6-T4-ST2 Validate continuity plan with multi-provider-wake/backstop assumptions to guard against single-operator downtime.**
+      - **Dependencies/prerequisites:** P7-T1, P7-T4.
+      - **Deliverables/artifacts:** Continuity validation note (`VA-R7`).
+      - **Acceptance criteria:** Simulation covers failure of the initial operator and resumption under successor or multi-provider architecture with no missing state.
+      - **Suggested priority/order:** P1, Order 21.5b.
+  - **Risks/notes:** Operator transfer must not imply new privileged node classes; align with economic incentive constraint.
+
 ### Phase 7 - Mobile Battery Optimization Contracts (V9-G7)
 
 - [ ] **[P0][Order 22] P7-T1 Define mobile background-activity budget and wakeup policy contract**
   - **Objective:** Specify deterministic background activity reduction boundaries for mobile.
   - **Concrete actions:**
-    - [ ] **P7-T1-ST1 Define background task classes and energy budget envelopes**
-      - **Objective:** Bound background workloads to explicit budgets.
-      - **Concrete actions:** Define task categories, periodicity assumptions, and budget envelopes for networking/sync/activity updates.
+    - [ ] **P7-T1-ST1 Define adaptive background task classes and energy budget envelopes**
+      - **Objective:** Bound background workloads with adaptive policies that scale with battery level and multi-provider wake/notification risk.
+      - **Concrete actions:** Define task categories, periodicity assumptions, and envelope adjustments for networking/sync/activity updates when additional provider wake paths become available.
       - **Dependencies/prerequisites:** P4-T1, v0.7 notification context, v0.8 platform context.
       - **Deliverables/artifacts:** Background budget contract (`VA-B1`).
       - **Acceptance criteria:** Background workloads map deterministically to budget classes.
       - **Suggested priority/order:** P0, Order 22.1.
       - **Risks/notes:** Unbounded tasks can degrade battery unpredictably.
-    - [ ] **P7-T1-ST2 Define wakeup triggers, suppression rules, and fallback behavior**
-      - **Objective:** Control wake frequency while preserving protocol continuity assumptions.
-      - **Concrete actions:** Define wake trigger taxonomy, suppression precedence, and safe fallback when wake budget is exceeded.
+    - [ ] **P7-T1-ST2 Define wakeup triggers, suppression rules, and multi-provider failover behavior**
+      - **Objective:** Control wake frequency while preserving protocol continuity assumptions and ensuring multi-provider delivery failover.
+      - **Concrete actions:** Define wake trigger taxonomy, suppression precedence, safe fallback when wake budget is exceeded, and provider failover/handoff mock-ups for multi-provider wake paths.
       - **Dependencies/prerequisites:** P7-T1-ST1.
       - **Deliverables/artifacts:** Wakeup/suppression contract (`VA-B2`).
       - **Acceptance criteria:** Wake behavior is deterministic and budget-aligned.
@@ -860,6 +937,21 @@ Validation artifact taxonomy IDs for v0.9:
   - **Acceptance criteria:** V9-G7 exits with battery tradeoff governance complete.
   - **Suggested priority/order:** P1, Order 24.
   - **Risks/notes:** Preserve protocol-first and compatibility posture.
+
+- [ ] **[P1][Order 24.5] P7-T4 Plan mobile operator continuity and multi-provider wake failover (RM-05)**
+  - **Objective:** Document how the initial mobile operator (single-server coordinator) hands over responsibilities and how clients fail over to alternative providers for wake paths.
+  - **Concrete actions:**
+    - [ ] **P7-T4-ST1 Capture handover roles, secrets/keys, monitoring updates, and recovery procedures when the initial operator exits or fails.**
+      - **Dependencies/prerequisites:** P7-T1, P7-T2, P6-T4.
+      - **Deliverables/artifacts:** Mobile operator continuity plan (`VA-B7`).
+      - **Acceptance criteria:** Plan describes rekeying steps, config sync, and evidence that clients can bootstrap from new operators with no lost messages.
+      - **Suggested priority/order:** P1, Order 24.5a.
+    - [ ] **P7-T4-ST2 Define multi-provider wake failover testing posture, including provider discovery, jittered retries, and policy constraints to preserve decentralization.**
+      - **Dependencies/prerequisites:** P7-T1-ST2, P5-T4-ST2.
+      - **Deliverables/artifacts:** Wake failover validation note (`VA-B7`).
+      - **Acceptance criteria:** Multi-provider test plan demonstrates seamless failover when one provider drops.
+      - **Suggested priority/order:** P1, Order 24.5b.
+  - **Risks/notes:** Continuity plan must not introduce new centralized control points.
 
 ### Phase 8 - Integrated Validation and Governance Readiness (V9-G8)
 
@@ -925,7 +1017,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Suggested priority/order:** P1, Order 27.1.
       - **Risks/notes:** Wording drift can create false certainty.
     - [ ] **P8-T3-ST2 Validate licensing and repository-state language alignment**
-      - **Objective:** Preserve MIT-like/CC-BY-SA alignment and documentation-only framing.
+      - **Objective:** Preserve AGPL/CC-BY-SA alignment and documentation-only framing.
       - **Concrete actions:** Audit artifacts for licensing and planned-vs-implemented language consistency.
       - **Dependencies/prerequisites:** P8-T3-ST1.
       - **Deliverables/artifacts:** Licensing/repository-language conformance note (`VA-X6`).
@@ -937,6 +1029,21 @@ Validation artifact taxonomy IDs for v0.9:
   - **Acceptance criteria:** V9-G8 exits with governance-readiness integrity confirmed.
   - **Suggested priority/order:** P1, Order 27.
   - **Risks/notes:** Keep unresolved policy questions visible.
+
+- [ ] **[P1][Order 27.5] P8-T4 Document alpha/beta/live policy hardening and legal transition assumptions (RM-04)**
+  - **Objective:** Prepare governance/legal artifacts clarifying how the open-source v0.9 posture evolves toward a future consortium while capturing alpha/beta/live policy hardening assumptions.
+  - **Concrete actions:**
+    - [ ] **P8-T4-ST1 Summarize legal transition assumptions, required liability text, and triggers for consortium-level review without claiming any license change is complete.**
+      - **Dependencies/prerequisites:** P0-T4-ST1, legal/governance counsel.
+      - **Deliverables/artifacts:** Legal transition summary (`VA-X7`).
+      - **Acceptance criteria:** Summary references current hosting/licensing posture, outlines minimal liability text needs, and enumerates evidence triggers for future consortium formation.
+      - **Suggested priority/order:** P1, Order 27.5a.
+    - [ ] **P8-T4-ST2 Align alpha/beta/live policy hardening assumptions with gate checkpoints and revisit triggers (OD4-02).**
+      - **Dependencies/prerequisites:** P8-T3-ST1, OD4-02 inputs.
+      - **Deliverables/artifacts:** Policy hardening plan (`VA-X8`).
+      - **Acceptance criteria:** Plan ties each stage to measurable hardening tasks, evidence links, and revisit triggers, while explicitly treating the stages as in-progress.
+      - **Suggested priority/order:** P1, Order 27.5b.
+  - **Risks/notes:** Remain in planning language; do not assert the consortium or policy hardening is already in place.
 
 ### Phase 9 - Reference Implementation, Perf/Stress Validation, and v0.9 Shipping (V9-G9)
 
@@ -1129,9 +1236,21 @@ Validation artifact taxonomy IDs for v0.9:
 
 - [ ] **[P0][Order 38] P9-T11 Publish v0.9 benchmark suite, thresholds, and reproducibility runbook**
   - **Objective:** Make v0.9 performance claims reproducible and reviewable.
-  - **Concrete actions:** Document how to run perf/stress suites; define hardware profiles; define thresholds; publish known limitations.
+  - **Concrete actions:**
+    - [ ] **P9-T11-ST1 Add deterministic CLI witness scenario `v09-forge` in `cmd/aether` and bind it to the gate evidence flow.**
+      - **Objective:** Ensure the `V9-G9` command matrix requirement is backed by an explicit implementation task.
+      - **Concrete actions:** Define scenario success/failure output contract; wire scenario dispatch; ensure it validates core v0.9 benchmark/evidence readiness checks without hidden side effects.
+      - **Deliverables/artifacts:** Scenario hook specification + implementation plan (`VA-E7`).
+      - **Acceptance criteria:** `go run ./cmd/aether --mode=client --scenario=v09-forge` is documented as deterministic and gate-auditable.
+      - **Suggested priority/order:** P1, Order 38.1.
+    - [ ] **P9-T11-ST2 Publish benchmark reproducibility runbook and threshold registry.**
+      - **Objective:** Keep performance claims reproducible by independent reviewers.
+      - **Concrete actions:** Document perf/stress suite invocation, hardware profiles, threshold rationale, and known limitations.
+      - **Deliverables/artifacts:** `docs/v0.9/perf-runbook.md` + threshold config (`VA-H3`, `VA-E7`).
+      - **Acceptance criteria:** A reviewer can reproduce key benchmarks end-to-end with the same command set.
+      - **Suggested priority/order:** P1, Order 38.2.
   - **Dependencies/prerequisites:** `P9-T4` through `P9-T10`.
-  - **Deliverables/artifacts:** `docs/v0.9/perf-runbook.md` + threshold config (`VA-H3`, `VA-E7`).
+  - **Deliverables/artifacts:** Scenario witness + perf runbook + threshold config (`VA-H3`, `VA-E7`).
   - **Acceptance criteria:** A reviewer can reproduce key benchmarks end-to-end.
   - **Suggested priority/order:** P1, Order 38.
   - **Risks/notes:** Benchmarks without reproducibility are not credible.
@@ -1145,59 +1264,64 @@ Validation artifact taxonomy IDs for v0.9:
 1. P0-T1
 2. P0-T2
 3. P0-T3
+4. P0-T4
 
 ### Wave B - IPFS persistent hosting contracts (V9-G1)
-4. P1-T1
-5. P1-T2
-6. P1-T3
+5. P1-T1
+6. P1-T2
+7. P1-T3
 
 ### Wave C - Large-server optimization contracts (V9-G2)
-7. P2-T1
-8. P2-T2
-9. P2-T3
+8. P2-T1
+9. P2-T2
+10. P2-T3
 
 ### Wave D - Cascading SFU mesh contracts (V9-G3)
-10. P3-T1
-11. P3-T2
-12. P3-T3
+11. P3-T1
+12. P3-T2
+13. P3-T3
 
 ### Wave E - Cross-platform profiling/optimization contracts (V9-G4)
-13. P4-T1
-14. P4-T2
-15. P4-T3
+14. P4-T1
+15. P4-T2
+16. P4-T3
 
 ### Wave F - Stress-testing contracts (V9-G5)
-16. P5-T1
-17. P5-T2
-18. P5-T3
+17. P5-T1
+18. P5-T2
+19. P5-T3
+20. P5-T4
 
 ### Wave G - Relay performance/load contracts (V9-G6)
-19. P6-T1
-20. P6-T2
-21. P6-T3
+21. P6-T1
+22. P6-T2
+23. P6-T3
+24. P6-T4
 
 ### Wave H - Mobile battery optimization contracts (V9-G7)
-22. P7-T1
-23. P7-T2
-24. P7-T3
+25. P7-T1
+26. P7-T2
+27. P7-T3
+28. P7-T4
 
 ### Wave I - Integrated validation/governance readiness (V9-G8)
-25. P8-T1
-26. P8-T2
-27. P8-T3
+29. P8-T1
+30. P8-T2
+31. P8-T3
+32. P8-T4
 
 ### Wave J - Shipping work: implementation + perf/stress evidence + release conformance (V9-G9)
-28. P9-T1
-29. P9-T2
-30. P9-T3
-31. P9-T4
-32. P9-T5
-33. P9-T6
-34. P9-T7
-35. P9-T8
-36. P9-T9
-37. P9-T10
-38. P9-T11
+33. P9-T1
+34. P9-T2
+35. P9-T3
+36. P9-T4
+37. P9-T5
+38. P9-T6
+39. P9-T7
+40. P9-T8
+41. P9-T9
+42. P9-T10
+43. P9-T11
 
 ---
 
@@ -1210,6 +1334,25 @@ Validation artifact taxonomy IDs for v0.9:
 4. Every compatibility-sensitive delta includes additive and major-path checklist evidence.
 5. Every unresolved decision remains explicitly open and linked to revisit gate.
 
+### I.1A Gate command matrix (agent execution minimum)
+
+| Gate | Minimum command set (captured verbatim in evidence) | Expected pass pattern |
+|---|---|---|
+| `V9-G0` | `go test ./pkg/v09/...` | Exit code `0`; conformance/governance package rows present in output. |
+| `V9-G1` | `go test ./pkg/v09/...` and `go test ./tests/e2e/v09/...` | Exit code `0`; evidence links include `S9-01` scenarios. |
+| `V9-G2` | `go test ./pkg/v09/...` and `go test ./tests/perf/v09/...` | Exit code `0`; large-server stress/baseline rows attached. |
+| `V9-G3` | `go test ./pkg/v09/...` and `go test ./tests/perf/v09/...` | Exit code `0`; cascade failover and recovery cases linked. |
+| `V9-G4` | `go test ./tests/perf/v09/...` | Exit code `0`; baseline and post-optimization reports attached. |
+| `V9-G5` | `go test ./tests/perf/v09/...` | Exit code `0`; baseline + incremental `+50` campaign outputs (`VA-T7`) attached. |
+| `V9-G6` | `go test ./pkg/v09/...` and `go test ./tests/perf/v09/...` | Exit code `0`; overload-priority evidence includes control/media/store-forward/bulk ordering. |
+| `V9-G7` | `go test ./pkg/v09/...` and `go test ./tests/e2e/v09/...` | Exit code `0`; battery + wake-failover evidence linked. |
+| `V9-G8` | `go test ./pkg/v09/...` + `go test ./tests/e2e/v09/...` + `go test ./tests/perf/v09/...` | Exit code `0`; integrated matrix rows mapped to all `S9-*` items. |
+| `V9-G9` | `go test ./...` and `go run ./cmd/aether --mode=client --scenario=v09-forge` | Exit code `0`; release handoff bundle includes full command transcripts. |
+
+If any command returns only `[no test files]`, gate owners must attach alternate evidence and an explicit justification; otherwise the gate remains incomplete.
+
+If a listed command cannot run because a required path/tool/scenario is missing, gate owners must record the failed command output, execute the nearest scope-equivalent substitute command set, create a remediation task with owner + due gate, and keep the gate in conditional-fail state until the canonical command is restored.
+
 ### I.2 Traceability mapping: v0.9 scope to tasks/artifacts/acceptance anchors
 
 | Scope Item ID | v0.9 Scope Bullet | Primary Tasks | Validation Artifacts | Acceptance Anchor |
@@ -1218,10 +1361,10 @@ Validation artifact taxonomy IDs for v0.9:
 | S9-02 | Large server optimization: hierarchical GossipSub, lazy member loading | P2-T1 P2-T2 P2-T3 P9-T5 P9-T8 P9-T11 | VA-L1 VA-L2 VA-L3 VA-L4 VA-L5 VA-L6 VA-L7 VA-C3 VA-C4 VA-E1 VA-E4 VA-E7 | P9-T5 acceptance + P9-T8 campaign evidence |
 | S9-03 | Cascading SFU mesh for 200+ participant voice | P3-T1 P3-T2 P3-T3 P9-T6 P9-T8 P9-T11 | VA-S1 VA-S2 VA-S3 VA-S4 VA-S5 VA-S6 VA-C5 VA-C6 VA-E2 VA-E4 VA-E7 | P9-T6 acceptance + P9-T8 campaign evidence |
 | S9-04 | Performance profiling and optimization across all platforms | P4-T1 P4-T2 P4-T3 P9-T7 P9-T11 | VA-P1 VA-P2 VA-P3 VA-P4 VA-P5 VA-P6 VA-E3 VA-E7 | P9-T7 baseline reports + P9-T11 runbook |
-| S9-05 | Stress testing: 1000-member server, 50-person voice, latency benchmarks | P5-T1 P5-T2 P5-T3 P9-T8 P9-T11 | VA-T1 VA-T2 VA-T3 VA-T4 VA-T5 VA-T6 VA-E4 VA-E7 | P9-T8 campaign reports + thresholds |
-| S9-06 | Relay node performance optimization and load testing | P6-T1 P6-T2 P6-T3 P9-T9 P9-T11 | VA-R1 VA-R2 VA-R3 VA-R4 VA-R5 VA-R6 VA-C7 VA-E5 VA-E7 | P9-T9 load test reports + sizing guidance |
-| S9-07 | Battery optimization on mobile (background activity reduction) | P7-T1 P7-T2 P7-T3 P9-T10 P9-T11 | VA-B1 VA-B2 VA-B3 VA-B4 VA-B5 VA-B6 VA-C8 VA-E6 VA-E7 | P9-T10 measurement evidence + policy docs |
-| S9-08 | Scale-driven security-mode transitions + sharding guidance for huge interactive channels | P2-T2 P5-T1 P9-T5 P9-T8 P9-T11 | VA-L7 VA-T1 VA-T2 VA-C3 VA-E4 VA-E7 | P9-T5 sharding behavior + P9-T8 stress evidence |
+| S9-05 | Stress testing: 1000-member server, 50-person voice, latency benchmarks | P5-T1 P5-T2 P5-T3 P5-T4 P9-T8 P9-T11 | VA-T1 VA-T2 VA-T3 VA-T4 VA-T5 VA-T6 VA-T7 VA-E4 VA-E7 | P9-T8 campaign reports + thresholds |
+| S9-06 | Relay node performance optimization and load testing | P6-T1 P6-T2 P6-T3 P6-T4 P9-T9 P9-T11 | VA-R1 VA-R2 VA-R3 VA-R4 VA-R5 VA-R6 VA-R7 VA-C7 VA-E5 VA-E7 | P9-T9 load test reports + sizing guidance |
+| S9-07 | Battery optimization on mobile (background activity reduction) | P7-T1 P7-T2 P7-T3 P7-T4 P9-T10 P9-T11 | VA-B1 VA-B2 VA-B3 VA-B4 VA-B5 VA-B6 VA-B7 VA-C8 VA-E6 VA-E7 | P9-T10 measurement evidence + policy docs |
+| S9-08 | Scale-driven security-mode transitions + sharding guidance for huge interactive channels | P2-T2 P5-T1 P5-T4 P9-T5 P9-T8 P9-T11 | VA-L7 VA-T1 VA-T2 VA-T7 VA-C3 VA-E4 VA-E7 | P9-T5 sharding behavior + P9-T8 stress evidence |
 
 ### I.3 Traceability closure rules
 - Any scope item without task mapping blocks V9-G9.
@@ -1247,23 +1390,38 @@ Validation artifact taxonomy IDs for v0.9:
 | R9-10 | Breaking behavior introduced without governance pathway | High | All | VA-G4 + VA-X4 mandatory audits | V9-G8 owner |
 | R9-11 | Single-binary mode invariant erodes through wording drift | Medium | All | Invariant conformance checks in V9-G8 | V9-G8 owner |
 | R9-12 | Open decisions are presented as settled architecture | Medium | All | VA-X5 open-decision conformance audit | V9-G8 owner |
+| R9-13 | Encryption-method scale limit is under-characterized, leaving unclear downgrade boundaries | High | S9-05, S9-08 | VA-T7 incremental +50 campaigns + security-floor summary | V9-G5 owner |
+| R9-14 | Relay adoption slows because hosting has no economic incentives | Medium | S9-06 | Relay onboarding playbooks, explicit non-economic value messaging, and VA-R1/VA-R2 governance packages | V9-G6 owner |
+| R9-15 | Operator continuity gap during handoff creates downtime, especially for mobile wake paths | High | S9-06, S9-07 | VA-R7 + VA-B7 operator handover and wake failover plans | V9-G6/V9-G7 owner |
+| R9-16 | Governance/legal transition to future consortium lacks documentation, risking inconsistent policy hardening | Medium | All | VA-LG* + VA-X7/VA-X8 policy/legal plans | V9-G8 owner |
 
 ---
 
 ## K. Open Decisions Tracking
 
+### K.1 Adopted carry-forward defaults from `open_decisions_proposals.md`
+
+- **OD3-02 (ranking tie-break):** provisionally adopted as `relevance -> trust -> recency -> deterministic lexical tie-break`; integrated into large-server/discovery validation in `P2-T2`, `P2-T3`, and `P8-T1`.
+- **OD3-03 (RNNoise fallback):** adopted as mandatory fallback posture through v0.9; reflected in cascade and battery/perf interaction checks (`P3-T2`, `P7-T1`, `P8-T1`).
+- **OD3-04 (single-indexer default + rotation):** adopted with latency-watch trigger; integrated into discovery/privacy assumptions and revisited if profiling evidence indicates user-harmful slowness (`P4-T1`, `P4-T2`, `P8-T1`).
+- **OD4-03 (conservative auto-mod thresholds):** adopted as moderation dependency baseline; enforced through governance and regression checks (`E.4`, `P8-T2`).
+- **OD5-01..OD5-05 (bot/webhook/SDK/ecosystem defaults):** adopted as prerequisite baseline and enforced through compatibility/governance validation (`E.5`, `P8-T2`).
+- **OD6-01..OD6-03 (discovery hardening, PoW adaptation, sparse-graph trust):** adopted as inherited safety/perf baseline (`E.6`, `P2-T3`, `P4-T2`, `P8-T1`).
+- **OD7-01..OD7-04 (replica/chunk/search/relay defaults):** adopted as inherited persistence/relay baseline and verified in relay/load tasks (`E.7`, `P6-T1`-`P6-T4`, `P8-T1`).
+- **OD8-01..OD8-05 (thread depth, preview precedence, contrast policy, locale fallback, DTLN policy):** adopted as v0.8 carry-forward constraints for profiling, stress, and battery regressions (`E.8`, `P4-T1`, `P5-T4`, `P7-T1`).
+- **OD9-01..OD9-07 (v0.9 defaults):** adopted as planning defaults in v0.9 phase tasks, with final closure requiring explicit V9-G8/V9-G9 evidence signoff.
+
+### K.2 Remaining open decisions
+
 | Open Decision ID | Open Question | Status | Owner Role | Revisit Gate | Trigger for Revisit | Handling Rule |
 |---|---|---|---|---|---|---|
-| OD9-01 | Preferred default retention expectation for server-owner pinning when storage availability is heterogeneous. | Open | Persistent Hosting Contract Lead | V9-G1 | Validation evidence reveals unresolved retention tradeoffs not resolved in source docs. | Keep defaults bounded and explicit; do not present one as final unless source docs resolve it. |
-| OD9-02 | Preferred hierarchy depth profile for large-server GossipSub under mixed network quality conditions. | Open | Large-Server Topology Lead | V9-G2 | Scale validation shows unresolved hierarchy tradeoffs not fixed by source docs. | Keep depth profile as open decision with explicit owner and revisit gate. |
-| OD9-03 | Preferred cascade split/merge aggressiveness for 200+ participant voice stability. | Open | Realtime Topology Lead | V9-G3 | Stress scenarios expose unresolved transition tradeoffs absent source-level resolution. | Keep aggressiveness open with deterministic safety boundaries. |
-| OD9-04 | Cross-platform baseline confidence threshold for optimization go/no-go decisions. | Open | Performance Governance Lead | V9-G4 | Profiling variance indicates unresolved confidence policy tradeoffs. | Keep threshold policy open until evidence narrows acceptable range. |
-| OD9-05 | Relay overload priority policy when circuit relay, store-forward, and SFU forwarding compete. | Open | Relay Operations Contract Lead | V9-G6 | Load testing identifies unresolved policy tradeoffs not decided by source docs. | Keep policy options explicit; avoid declaring final priority order prematurely. |
-| OD9-06 | Mobile battery policy aggressiveness under constrained power modes vs responsiveness expectations. | Open | Mobile Runtime Contract Lead | V9-G7 | Battery/performance tradeoff evidence reveals unresolved boundaries. | Keep aggressiveness open and bounded; do not present as settled final policy. |
-| OD9-07 | Preferred mobile wake-policy topology to minimize centralization risk while preserving delivery reliability. | Open | Mobile Runtime Governance Lead | V9-G7 | Battery and delivery validation reveals unresolved decentralization vs reliability tradeoffs. | Keep wake-policy topology options explicit and unresolved; do not present centralized defaults as settled architecture. |
+| OD3-01 | Server directory freshness: what is the retention cliff/TTL and how are stale states flagged when storage availability is heterogeneous? | Pending | Persistent Hosting Contract Lead | V9-G1 | Retention/retrieval validation still shows ambiguity in stale-state behavior. | Keep retention bands explicit; revisit when `VA-I3`/`VA-I4` evidence fully captures stale-handling behavior.
+| OD4-01 | Manual moderation vs auto-mod race-window threshold: what exact timing differentiates manual overrides from auto enforcement? | Pending | Moderation Interaction Lead | V9-G4 | Validation exposes continuing ambiguity in race outcomes without a concrete threshold. | Log both actions, keep timing window under review, and avoid declaring a final threshold until evidence fully resolves the ambiguity.
+| OD4-02 | Policy rollback horizon per alpha/beta/live stages: what are the exact windows and privileged override allowances? | Pending | Policy Governance Lead | V9-G8 | Policy-hardening planning still lacks deterministic stage-specific rollback windows. | Treat each stage as in-progress; revisit once `VA-LG2`/`VA-X8` tie the stage to documented rollback-horizon data.
+| RM-03 | How do we capture per-encryption-method security floors after the incremental +50 participant campaigns, and how is non-silent downgrade messaging defined? | Under characterization | Stress/Scale Lead | V9-G5 | `VA-T7` logs highlight remaining ambiguity in downgrade descriptions or threshold clarity. | Keep wording as planning guidance; document remaining questions in evidence and avoid claiming full characterization.
 
 Handling rule:
-- Open decisions remain in `Open` status, include owner role and revisit gate, and are never represented as settled architecture in v0.9 artifacts.
+- Open decisions remain tied to an owner, revisit gate, and trigger, and are never represented as settled architecture in v0.9 artifacts.
 
 ---
 
@@ -1279,6 +1437,7 @@ v0.9 is considered **shipped** only when the scalability and performance scope i
 ### L.2 Reproducible perf/stress evidence (mandatory)
 - [ ] A perf/stress runbook exists (`P9-T11`) with exact commands, hardware profiles, and expected outputs.
 - [ ] 1000-member stress campaigns have been executed and results are versioned (`P9-T8`).
+- [ ] +50 increment encryption/security-mode campaigns are executed to hard-limit characterization with explicit no-silent-downgrade outcomes (`P5-T4` / `VA-T7` / `P9-T8`).
 - [ ] Relay load tests meet the defined 10k-client target within the stated hardware profile (`P9-T9`).
 - [ ] Voice scalability tests (cascading SFU) are executed and recorded (`P9-T6`).
 

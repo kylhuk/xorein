@@ -243,10 +243,10 @@ Validation artifact ID taxonomy for v0.8:
 
 ### Phase 0 - Scope, Governance, and Evidence Foundation (V8-G0)
 
-- [ ] **[P0][Order 01] P0-T1 Freeze v0.8 scope contract and anti-scope boundaries**
+- [x] **[P0][Order 01] P0-T1 Freeze v0.8 scope contract and anti-scope boundaries**
   - **Objective:** Create one-to-one mapping from the seven v0.8 bullets to planned tasks and validation artifacts.
   - **Concrete actions:**
-    - [ ] **P0-T1-ST1 Build v0.8 scope trace base (7 bullets to task IDs)**
+    - [x] **P0-T1-ST1 Build v0.8 scope trace base (7 bullets to task IDs)**
       - **Objective:** Ensure zero ambiguity in v0.8 inclusion boundaries.
       - **Concrete actions:** Map each bullet to at least one primary task, one acceptance anchor, and one validation artifact ID.
       - **Dependencies/prerequisites:** v0.8 bullet extraction completed.
@@ -254,7 +254,7 @@ Validation artifact ID taxonomy for v0.8:
       - **Acceptance criteria:** All 7 bullets mapped; no orphan bullet; no extra capability included.
       - **Suggested priority/order:** P0, Order 01.1.
       - **Risks/notes:** Incomplete mapping introduces hidden execution gaps.
-    - [ ] **P0-T1-ST2 Lock exclusions and scope-escalation pathway**
+    - [x] **P0-T1-ST2 Lock exclusions and scope-escalation pathway**
       - **Objective:** Prevent v0.9+ scope leakage into v0.8 tasks.
       - **Concrete actions:** Define exclusion checklist, escalation trigger, and governance approval path for newly proposed capabilities.
       - **Dependencies/prerequisites:** P0-T1-ST1.
@@ -268,10 +268,10 @@ Validation artifact ID taxonomy for v0.8:
   - **Suggested priority/order:** P0, Order 01.
   - **Risks/notes:** Scope drift here invalidates downstream planning quality.
 
-- [ ] **[P0][Order 02] P0-T2 Lock compatibility and governance controls for v0.8 protocol-touching deltas**
+- [x] **[P0][Order 02] P0-T2 Lock compatibility and governance controls for v0.8 protocol-touching deltas**
   - **Objective:** Embed compatibility and governance invariants before domain contract-freeze work begins.
   - **Concrete actions:**
-    - [ ] **P0-T2-ST1 Define additive-only protobuf checklist for v0.8 schema-touching surfaces**
+    - [x] **P0-T2-ST1 Define additive-only protobuf checklist for v0.8 schema-touching surfaces**
       - **Objective:** Prevent destructive schema evolution in minor-version pathways.
       - **Concrete actions:** Create checklist covering field-addition constraints, reserved-field handling, compatibility annotations, and downgrade-safe defaults.
       - **Dependencies/prerequisites:** P0-T1.
@@ -279,7 +279,7 @@ Validation artifact ID taxonomy for v0.8:
       - **Acceptance criteria:** All schema-touching tasks attach completed checklist evidence.
       - **Suggested priority/order:** P0, Order 02.1.
       - **Risks/notes:** Silent incompatibilities destabilize multi-client interoperability.
-    - [ ] **P0-T2-ST2 Define major-path trigger checklist for behavior-breaking proposals**
+    - [x] **P0-T2-ST2 Define major-path trigger checklist for behavior-breaking proposals**
       - **Objective:** Enforce governance pathway for any breaking behavior.
       - **Concrete actions:** Define mandatory evidence for new multistream IDs, downgrade negotiation, AEP path, two-implementation validation, and N+2 legacy protocol-ID support where relevant.
       - **Dependencies/prerequisites:** P0-T2-ST1.
@@ -320,10 +320,10 @@ Validation artifact ID taxonomy for v0.8:
 
 ### Phase 1 - Conversation Depth Contracts: Threads, Pinning, Bookmarks (V8-G1)
 
-- [ ] **[P0][Order 04] P1-T1 Define threaded reply conversation model and lifecycle**
+- [x] **[P0][Order 04] P1-T1 Define threaded reply conversation model and lifecycle**
   - **Objective:** Specify deterministic threaded-reply behavior as sub-conversation contracts.
   - **Concrete actions:**
-    - [ ] **P1-T1-ST1 Define thread relationship model (parent message, reply lineage, scope boundaries)**
+    - [x] **P1-T1-ST1 Define thread relationship model (parent message, reply lineage, scope boundaries)**
       - **Objective:** Standardize thread structure and association semantics.
       - **Concrete actions:** Define parent reference rules, allowed depth/shape semantics, orphan handling, canonical thread identifiers, and SecurityMode inheritance rules (threads inherit `security_mode` and `mode_epoch_id` from their parent conversation context).
       - **Dependencies/prerequisites:** P0-T1, v0.7 history/message baselines.
@@ -331,7 +331,7 @@ Validation artifact ID taxonomy for v0.8:
       - **Acceptance criteria:** Thread relationships resolve deterministically across clients.
       - **Suggested priority/order:** P0, Order 04.1.
       - **Risks/notes:** Ambiguous lineage semantics produce interop divergence.
-    - [ ] **P1-T1-ST2 Define thread lifecycle and failure semantics**
+    - [x] **P1-T1-ST2 Define thread lifecycle and failure semantics**
       - **Objective:** Ensure deterministic behavior for create/read/update/delete-adjacent thread states.
       - **Concrete actions:** Specify thread activation, archival visibility behavior, deleted-parent handling, degraded fallback rendering, and mode-transition behavior (threads must not silently cross `mode_epoch_id` boundaries; locked-history states must be representable).
       - **Dependencies/prerequisites:** P1-T1-ST1.
@@ -345,10 +345,10 @@ Validation artifact ID taxonomy for v0.8:
   - **Suggested priority/order:** P0, Order 04.
   - **Risks/notes:** Thread semantics must remain scope-bounded and protocol-consistent.
 
-- [ ] **[P0][Order 05] P1-T2 Define message pinning and personal bookmark semantics**
+- [x] **[P0][Order 05] P1-T2 Define message pinning and personal bookmark semantics**
   - **Objective:** Specify deterministic behavior for shared pinning and user-scoped bookmarks.
   - **Concrete actions:**
-    - [ ] **P1-T2-ST1 Define pinning scope and authority boundaries**
+    - [x] **P1-T2-ST1 Define pinning scope and authority boundaries**
       - **Objective:** Ensure consistent pin visibility and role-governed mutation behavior.
       - **Concrete actions:** Define pin ownership model, actor authorization assumptions, per-scope limits (server/channel/thread context), order semantics, and epoch-aware pin references (pins must reference the target message + `mode_epoch_id` and support locked-history rendering).
       - **Dependencies/prerequisites:** P1-T1, v0.4 role/permission baseline.
@@ -356,7 +356,7 @@ Validation artifact ID taxonomy for v0.8:
       - **Acceptance criteria:** Pin lifecycle and visibility behavior are deterministic.
       - **Suggested priority/order:** P0, Order 05.1.
       - **Risks/notes:** Authorization ambiguity can cause moderation conflict.
-    - [ ] **P1-T2-ST2 Define personal bookmark lifecycle and privacy boundaries**
+    - [x] **P1-T2-ST2 Define personal bookmark lifecycle and privacy boundaries**
       - **Objective:** Ensure user-scoped bookmark behavior is deterministic and isolated.
       - **Concrete actions:** Specify local/user scope, sync expectations, bookmark metadata shape, and deletion/recovery semantics.
       - **Dependencies/prerequisites:** P1-T2-ST1.
@@ -397,10 +397,10 @@ Validation artifact ID taxonomy for v0.8:
 
 ### Phase 2 - OpenGraph/Twitter Link Preview Contracts (V8-G2)
 
-- [ ] **[P0][Order 07] P2-T1 Define client-side fetch envelope and metadata acquisition boundaries**
+- [x] **[P0][Order 07] P2-T1 Define client-side fetch envelope and metadata acquisition boundaries**
   - **Objective:** Specify deterministic behavior for client-side preview fetch as required by roadmap scope.
   - **Concrete actions:**
-    - [ ] **P2-T1-ST1 Define URL eligibility normalization and fetch initiation rules**
+    - [x] **P2-T1-ST1 Define URL eligibility normalization and fetch initiation rules**
       - **Objective:** Ensure consistent candidate detection and fetch triggering behavior.
       - **Concrete actions:** Define URL normalization, protocol allow/deny assumptions, dedupe behavior, and non-fetch fallback states.
       - **Dependencies/prerequisites:** P0-T1, P1-T1.
@@ -408,7 +408,7 @@ Validation artifact ID taxonomy for v0.8:
       - **Acceptance criteria:** Fetch trigger behavior is deterministic across clients.
       - **Suggested priority/order:** P0, Order 07.1.
       - **Risks/notes:** Ambiguous eligibility rules produce inconsistent preview behavior.
-    - [ ] **P2-T1-ST2 Define client-side fetch boundary and safety constraints**
+    - [x] **P2-T1-ST2 Define client-side fetch boundary and safety constraints**
       - **Objective:** Keep preview acquisition bounded and privacy-aware without introducing unsourced infrastructure.
       - **Concrete actions:** Specify fetch timeout, redirect-handling envelope, request metadata minimization, and local failure handling.
       - **Dependencies/prerequisites:** P2-T1-ST1, v0.6 trust/safety baseline.
@@ -422,10 +422,10 @@ Validation artifact ID taxonomy for v0.8:
   - **Suggested priority/order:** P0, Order 07.
   - **Risks/notes:** Preview behavior must remain client-side per roadmap wording.
 
-- [ ] **[P0][Order 08] P2-T2 Define OpenGraph/Twitter-card normalization and render-data contract**
+- [x] **[P0][Order 08] P2-T2 Define OpenGraph/Twitter-card normalization and render-data contract**
   - **Objective:** Standardize extraction and canonicalization behavior for OG/Twitter metadata.
   - **Concrete actions:**
-    - [ ] **P2-T2-ST1 Define metadata precedence and canonical field mapping**
+    - [x] **P2-T2-ST1 Define metadata precedence and canonical field mapping**
       - **Objective:** Ensure deterministic mapping from fetched metadata to preview model.
       - **Concrete actions:** Specify OG vs Twitter-card precedence, missing-field handling, canonical title/description/image/url fields.
       - **Dependencies/prerequisites:** P2-T1.
@@ -433,7 +433,7 @@ Validation artifact ID taxonomy for v0.8:
       - **Acceptance criteria:** Equivalent inputs yield equivalent preview models.
       - **Suggested priority/order:** P0, Order 08.1.
       - **Risks/notes:** Inconsistent precedence causes user-visible divergence.
-    - [ ] **P2-T2-ST2 Define invalid/malicious metadata handling and safe fallback**
+    - [x] **P2-T2-ST2 Define invalid/malicious metadata handling and safe fallback**
       - **Objective:** Bound malformed data behavior and avoid unsafe rendering assumptions.
       - **Concrete actions:** Define malformed-field handling, oversized-content trimming, and null-preview fallback semantics.
       - **Dependencies/prerequisites:** P2-T2-ST1.
@@ -447,10 +447,10 @@ Validation artifact ID taxonomy for v0.8:
   - **Suggested priority/order:** P0, Order 08.
   - **Risks/notes:** Must remain within exact OpenGraph/Twitter-card scope.
 
-- [ ] **[P1][Order 09] P2-T3 Define preview rendering lifecycle and cache/degraded behavior**
+- [x] **[P1][Order 09] P2-T3 Define preview rendering lifecycle and cache/degraded behavior**
   - **Objective:** Define user-surface stability for preview rendering without expanding scope.
   - **Concrete actions:**
-    - [ ] **P2-T3-ST1 Define render states and transition rules**
+    - [x] **P2-T3-ST1 Define render states and transition rules**
       - **Objective:** Standardize loading/success/failure/no-preview state behavior.
       - **Concrete actions:** Document rendering states, transition triggers, stale-data handling, and deterministic placeholder semantics.
       - **Dependencies/prerequisites:** P2-T2.
@@ -458,7 +458,7 @@ Validation artifact ID taxonomy for v0.8:
       - **Acceptance criteria:** State transitions are deterministic and testable.
       - **Suggested priority/order:** P1, Order 09.1.
       - **Risks/notes:** Unclear state model causes UX inconsistency.
-    - [ ] **P2-T3-ST2 Define local cache boundaries and invalidation semantics**
+    - [x] **P2-T3-ST2 Define local cache boundaries and invalidation semantics**
       - **Objective:** Stabilize preview behavior under repeated-view scenarios.
       - **Concrete actions:** Specify cache key model, freshness assumptions, invalidation events, and offline fallback behavior.
       - **Dependencies/prerequisites:** P2-T3-ST1.
@@ -551,10 +551,10 @@ Validation artifact ID taxonomy for v0.8:
 
 ### Phase 4 - Accessibility Contracts (V8-G4)
 
-- [ ] **[P0][Order 13] P4-T1 Define screen-reader semantics and announcement behavior**
+- [x] **[P0][Order 13] P4-T1 Define screen-reader semantics and announcement behavior**
   - **Objective:** Specify deterministic screen-reader support behavior across key surfaces.
   - **Concrete actions:**
-    - [ ] **P4-T1-ST1 Define accessible role/label state model for v0.8 surfaces**
+    - [x] **P4-T1-ST1 Define accessible role/label state model for v0.8 surfaces**
       - **Objective:** Establish minimal complete semantics for message, thread, pin/bookmark, and preview elements.
       - **Concrete actions:** Define role and label expectations, dynamic-state announcements, and missing-state fallback semantics.
       - **Dependencies/prerequisites:** P1-T1, P1-T2, P2-T3.
@@ -562,7 +562,7 @@ Validation artifact ID taxonomy for v0.8:
       - **Acceptance criteria:** Required surfaces have deterministic role/label semantics.
       - **Suggested priority/order:** P0, Order 13.1.
       - **Risks/notes:** Missing semantics create accessibility regressions.
-    - [ ] **P4-T1-ST2 Define announcement throttling and dedupe rules**
+    - [x] **P4-T1-ST2 Define announcement throttling and dedupe rules**
       - **Objective:** Prevent excessive or contradictory assistive announcements.
       - **Concrete actions:** Specify dedupe strategy, timing assumptions, and degraded fallback behavior.
       - **Dependencies/prerequisites:** P4-T1-ST1.
@@ -576,10 +576,10 @@ Validation artifact ID taxonomy for v0.8:
   - **Suggested priority/order:** P0, Order 13.
   - **Risks/notes:** Accessibility semantics must stay aligned with protocol-surface behavior.
 
-- [ ] **[P0][Order 14] P4-T2 Define high-contrast mode behavior and theme interaction**
+- [x] **[P0][Order 14] P4-T2 Define high-contrast mode behavior and theme interaction**
   - **Objective:** Specify deterministic high-contrast behavior that coexists with theme contracts.
   - **Concrete actions:**
-    - [ ] **P4-T2-ST1 Define high-contrast token override model and fallback rules**
+    - [x] **P4-T2-ST1 Define high-contrast token override model and fallback rules**
       - **Objective:** Ensure readable contrast outcomes under all built-in/custom themes.
       - **Concrete actions:** Define override precedence, required contrast boundaries, and fallback to safe baseline tokens.
       - **Dependencies/prerequisites:** P3-T1, P3-T2, P4-T1.
@@ -587,7 +587,7 @@ Validation artifact ID taxonomy for v0.8:
       - **Acceptance criteria:** Contrast behavior is deterministic with defined fallback path.
       - **Suggested priority/order:** P0, Order 14.1.
       - **Risks/notes:** Poor precedence rules can invalidate high-contrast behavior.
-    - [ ] **P4-T2-ST2 Define degraded-mode behavior for incomplete theme/high-contrast combinations**
+    - [x] **P4-T2-ST2 Define degraded-mode behavior for incomplete theme/high-contrast combinations**
       - **Objective:** Ensure deterministic safe behavior when theme inputs are incomplete.
       - **Concrete actions:** Specify degraded render states, substitution strategy, and user-visible diagnostics.
       - **Dependencies/prerequisites:** P4-T2-ST1.
@@ -601,10 +601,10 @@ Validation artifact ID taxonomy for v0.8:
   - **Suggested priority/order:** P0, Order 14.
   - **Risks/notes:** Must remain within v0.8 accessibility bullet scope.
 
-- [ ] **[P1][Order 15] P4-T3 Define keyboard navigation graph and deterministic focus behavior**
+- [x] **[P1][Order 15] P4-T3 Define keyboard navigation graph and deterministic focus behavior**
   - **Objective:** Specify deterministic keyboard traversal across v0.8-relevant interactive surfaces.
   - **Concrete actions:**
-    - [ ] **P4-T3-ST1 Define focus-order graph for core surfaces**
+    - [x] **P4-T3-ST1 Define focus-order graph for core surfaces**
       - **Objective:** Standardize focus progression for threads, previews, pins/bookmarks, and settings surfaces.
       - **Concrete actions:** Document focus graph, cycle behavior, modal boundaries, and escape semantics.
       - **Dependencies/prerequisites:** P1-T3, P2-T3, P3-T2.
@@ -612,7 +612,7 @@ Validation artifact ID taxonomy for v0.8:
       - **Acceptance criteria:** Focus progression is deterministic and auditable.
       - **Suggested priority/order:** P1, Order 15.1.
       - **Risks/notes:** Non-deterministic focus behavior undermines accessibility guarantees.
-    - [ ] **P4-T3-ST2 Define keyboard shortcut collision and fallback handling**
+    - [x] **P4-T3-ST2 Define keyboard shortcut collision and fallback handling**
       - **Objective:** Prevent ambiguous command handling across contexts.
       - **Concrete actions:** Specify precedence rules, collision resolution, and fallback-to-safe-navigation behavior.
       - **Dependencies/prerequisites:** P4-T3-ST1.
@@ -1110,10 +1110,10 @@ Validation artifact ID taxonomy for v0.8:
   - **Suggested priority/order:** P0, Order 34.
   - **Risks/notes:** Treat crashes or unstable audio pipelines as release blockers.
 
-- [ ] **[P0][Order 35] P8-T11 Build v0.8 end-to-end UX smoke tests and release harness**
+- [x] **[P0][Order 35] P8-T11 Build v0.8 end-to-end UX smoke tests and release harness**
   - **Objective:** Provide a reproducible proof that v0.8 UX features (threads, pins, previews, themes, a11y, i18n, DTLN) are actually working.
   - **Concrete actions:**
-    - [ ] **P8-T11-ST1 Add scenario suite that exercises each UX feature deterministically**
+    - [x] **P8-T11-ST1 Add scenario suite that exercises each UX feature deterministically**
       - **Objective:** Convert UX scope bullets into regressions.
       - **Concrete actions:** Add scenarios for: thread reply flow, pin/bookmark flow, link preview fetch policy, theme load/invalid theme, keyboard nav focus path, locale switch, and DTLN toggle.
       - **Dependencies/prerequisites:** `P7-T1`, `P8-T4`-`P8-T10`.
@@ -1265,8 +1265,8 @@ Handling rule:
 v0.8 is considered **shipped** only when the UX features in scope are implemented and validated with runnable evidence (not merely specified).
 
 ### 11.1 Build and test integrity
-- [ ] `go test ./...` passes for supported platforms/build tags.
-- [ ] Each v0.8 feature has unit/integration coverage (`VA-B*`) and at least one deterministic scenario in `tests/e2e/v08/*` (`VA-E*`).
+- [x] `go test ./...` passes for supported platforms/build tags.
+- [x] Each v0.8 feature has unit/integration coverage (`VA-B*`) and at least one deterministic scenario in `tests/e2e/v08/*` (`VA-E*`).
 - [ ] Privacy constraints are verified for link previews (bounded fetch, opt-out, sanitization, no unexpected network calls).
 
 ### 11.2 UX end-to-end acceptance (must be reproducible)
@@ -1279,8 +1279,8 @@ v0.8 is considered **shipped** only when the UX features in scope are implemente
 - [ ] DTLN: noise cancellation can be toggled; fallback works; call pipeline remains stable.
 
 ### 11.3 One-command validation harness
-- [ ] `tests/e2e/v08/*` can be run via a single documented command and passes locally and in CI (`VA-E1`).
-- [ ] If full UI automation is not feasible, a headless scenario runner is provided and exercises the same state transitions.
+- [x] `tests/e2e/v08/*` can be run via a single documented command and passes locally and in CI (`VA-E1`).
+- [x] If full UI automation is not feasible, a headless scenario runner is provided and exercises the same state transitions.
 
 ### 11.4 Release communication
 - [ ] Release notes enumerate shipped behavior and explicitly list deferred items/known limitations.
