@@ -1,6 +1,8 @@
 # TODO_v04.md
 
-> Status: Planning artifact only. No implementation completion is claimed in this document.
+> Status: Execution artifact. `docs/v0.4/phase0/p0-t1-scope-contract.md` through `docs/v0.4/phase5/p5-t3-release-gate-handoff.md` and `pkg/v04` anchor this execution evidence; `TODO_v04.md` tracks residual verification detail.
+>
+> Evidence: `docs/v0.4/phase0/p0-t1-scope-contract.md`, `docs/v0.4/phase0/p0-t2-compatibility-governance-checklist.md`, `docs/v0.4/phase0/p0-t3-verification-evidence-matrix.md`, `docs/v0.4/phase5/p5-t3-release-gate-handoff.md`, `pkg/v04`
 >
 > Authoritative v0.4 scope source: `aether-v3.md` roadmap bullets under **v0.4.0 — Dominion** after Addendum A pull-forward alignment.
 >
@@ -155,36 +157,36 @@ Validation artifacts:
 - `VA-X*` cross-feature conformance
 
 ### Phase 0 (V4-G0): Scope, compatibility, and evidence controls
-- [ ] **P0-T1** Scope trace mapping for all seven v0.4 bullets.
-- [ ] **P0-T2** Additive protobuf + major-change trigger checklist pack.
-- [ ] **P0-T3** Evidence schema and gate pass/fail template.
+- [x] **P0-T1** Scope trace mapping for all seven v0.4 bullets.
+- [x] **P0-T2** Additive protobuf + major-change trigger checklist pack.
+- [x] **P0-T3** Evidence schema and gate pass/fail template.
 
 ### Phase 1 (V4-G1): Custom roles and override hardening
-- [ ] **P1-T1** Custom-role CRUD/order conflict-resolution contract (`VA-R1`).
-- [ ] **P1-T2** Permission-evaluation and channel-override merge contract (`VA-R2`).
-- [ ] **P1-T3** Concurrency and stale-state reconciliation tests for authorization (`VA-R3`).
-- [ ] **P1-T4** Channel `SecurityMode` schema, defaults, and per-channel policy/override interaction contract (Tree/Crowd/Channel/Clear) (`VA-R4`).
+- [x] **P1-T1** Custom-role CRUD/order conflict-resolution contract (`VA-R1`).
+- [x] **P1-T2** Permission-evaluation and channel-override merge contract (`VA-R2`).
+- [x] **P1-T3** Concurrency and stale-state reconciliation tests for authorization (`VA-R3`).
+- [x] **P1-T4** Channel `SecurityMode` schema, defaults, and per-channel policy/override interaction contract (Tree/Crowd/Channel/Clear) (`VA-R4`).
 
 ### Phase 2 (V4-G2): Moderation policy versioning governance
-- [ ] **P2-T1** Policy version schema + immutability/integrity rules (`VA-M1`).
-- [ ] **P2-T2** Policy migration/compatibility contract (`VA-M2`).
-- [ ] **P2-T3** Policy rollback contract with deterministic fallback behavior (`VA-M3`).
+- [x] **P2-T1** Policy version schema + immutability/integrity rules (`VA-M1`).
+- [x] **P2-T2** Policy migration/compatibility contract (`VA-M2`).
+- [x] **P2-T3** Policy rollback contract with deterministic fallback behavior (`VA-M3`).
 
 ### Phase 3 (V4-G3): Auto-moderation hook contracts
-- [ ] **P3-T1** Trigger model (rate/keyword/extensible hooks) and precedence rules, including mode-aware gating (Clear vs E2EE channels) (`VA-M4`).
-- [ ] **P3-T2** Action model (warn/quarantine/block/escalate) with reason taxonomy, including E2EE-compatible evidence expectations (`VA-M5`).
-- [ ] **P3-T3** Bypass/appeal/failure semantics and deterministic recovery behavior (`VA-M6`).
+- [x] **P3-T1** Trigger model (rate/keyword/extensible hooks) and precedence rules, including mode-aware gating (Clear vs E2EE channels) (`VA-M4`).
+- [x] **P3-T2** Action model (warn/quarantine/block/escalate) with reason taxonomy, including E2EE-compatible evidence expectations (`VA-M5`).
+- [x] **P3-T3** Bypass/appeal/failure semantics and deterministic recovery behavior (`VA-M6`).
 
 ### Phase 4 (V4-G4): Signed audit-log expansion and policy traceability
-- [ ] **P4-T1** Signed audit entry expansion with policy-version references (`VA-A1`).
-- [ ] **P4-T2** Authorized visibility and deterministic query behavior (`VA-A2`).
-- [ ] **P4-T3** Coverage matrix for policy + auto-mod + manual moderation actions (`VA-A3`).
-- [ ] **P4-T4** Signed `ModeChange` audit event schema + traceability to channel `SecurityMode` decisions (`VA-A4`).
+- [x] **P4-T1** Signed audit entry expansion with policy-version references (`VA-A1`).
+- [x] **P4-T2** Authorized visibility and deterministic query behavior (`VA-A2`).
+- [x] **P4-T3** Coverage matrix for policy + auto-mod + manual moderation actions (`VA-A3`).
+- [x] **P4-T4** Signed `ModeChange` audit event schema + traceability to channel `SecurityMode` decisions (`VA-A4`).
 
 ### Phase 5 (V4-G5 → V4-G6): Integrated validation and release handoff
-- [ ] **P5-T1** Cross-feature scenario pack (positive/negative/recovery) (`VA-X1`).
-- [ ] **P5-T2** Compatibility/governance/open-decision conformance audit (`VA-X2`).
-- [ ] **P5-T3** Final release checklist + execution handoff dossier (`VA-X3`).
+- [x] **P5-T1** Cross-feature scenario pack (positive/negative/recovery) (`VA-X1`).
+- [x] **P5-T2** Compatibility/governance/open-decision conformance audit (`VA-X2`).
+- [x] **P5-T3** Final release checklist + execution handoff dossier (`VA-X3`).
 
 ---
 
@@ -198,6 +200,7 @@ Validation artifacts:
 | S4-04 | Moderation policy versioning/migration/rollback | P2-T1, P2-T2, P2-T3 | VA-M1, VA-M2, VA-M3, VA-X1 |
 | S4-05 | Auto-moderation hooks | P3-T1, P3-T2, P3-T3 | VA-M4, VA-M5, VA-M6, VA-X1 |
 | S4-06 | Audit-log expansion + policy traceability | P4-T1, P4-T2, P4-T3 | VA-A1, VA-A2, VA-A3, VA-X1 |
+| S4-07 | Channel security modes + disclosure + auditable mode transitions | P1-T4, P4-T4 | VA-R4, VA-A4, VA-X1 |
 
 ---
 
@@ -215,13 +218,13 @@ Handling rule: open decisions remain `Open` and are not presented as settled arc
 
 ## 9. Release-Conformance Checklist (V4-G6)
 
-- [ ] All six v0.4 scope bullets are mapped to tasks and artifacts.
-- [ ] No earlier-version baseline capability is re-introduced as first-introduction scope in v0.4.
-- [ ] No v0.6 hardening/scaling scope is imported.
-- [ ] Role/override, policy versioning, and auto-mod contracts are deterministic and test-mapped.
-- [ ] Audit traceability includes signed policy linkage and authorized visibility rules.
-- [ ] Compatibility/governance/open-decision checks are complete.
-- [ ] Planned-vs-implemented distinction remains explicit.
+- [x] All seven v0.4 scope bullets are mapped to tasks and artifacts.
+- [x] No earlier-version baseline capability is re-introduced as first-introduction scope in v0.4.
+- [x] No v0.6 hardening/scaling scope is imported.
+- [x] Role/override, policy versioning, and auto-mod contracts are deterministic and test-mapped.
+- [x] Audit traceability includes signed policy linkage and authorized visibility rules.
+- [x] Compatibility/governance/open-decision checks are complete.
+- [x] Planned-vs-implemented distinction remains explicit.
 
 ---
 
