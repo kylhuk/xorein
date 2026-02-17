@@ -11,7 +11,7 @@ RELEASE_PACK_DIR := $(GENERATED_DIR)/release-pack
 RELEASE_PACK_SIGN_DIR := $(RELEASE_PACK_DIR)/signing
 RELEASE_SIGNING_IMAGE ?= docker.io/library/golang:1.24.8
 
-.PHONY: all pipeline check-fast check-full generate compile lint test scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify
+.PHONY: all pipeline check-fast check-full generate compile lint roadmap-verify test scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify
 
 STAGE_ORDER := generate compile lint test scan
 
@@ -33,10 +33,14 @@ compile:
 	@set -euo pipefail
 	@podman run --rm --userns=keep-id -v "$(PWD)":"/work":Z -w "/work" docker.io/library/busybox:1.36.1 sh -c "test -f cmd/aether/main.go && echo compile placeholder"
 
-lint:
+lint: roadmap-verify
 	@echo "[lint] running baseline checks"
 	@set -euo pipefail
 	@podman run --rm --userns=keep-id -v "$(PWD)":"/work":Z -w "/work" docker.io/library/busybox:1.36.1 sh -c "test -f .golangci.yml && echo golangci-lint placeholder"
+
+roadmap-verify:
+	@echo "[roadmap] verifying v11-v20 roadmap docs"
+	@./scripts/verify-roadmap-docs.sh
 
 test:
 	@echo "[test] running deterministic repro scaffolds"
