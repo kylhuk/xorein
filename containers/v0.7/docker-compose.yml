@@ -1,0 +1,72 @@
+version: '3.9'
+
+services:
+  bootstrap:
+    image: golang:1.25
+    working_dir: /workspace
+    volumes:
+      - ../..:/workspace
+    command:
+      - /bin/sh
+      - -c
+      - |
+        while true; do
+          go run ./cmd/aether --mode=bootstrap --profile=bootstrap
+          sleep 30
+        done
+    networks:
+      - v07-net
+
+  relay:
+    image: golang:1.25
+    working_dir: /workspace
+    volumes:
+      - ../..:/workspace
+    command:
+      - /bin/sh
+      - -c
+      - |
+        while true; do
+          go run ./cmd/aether --mode=relay --profile=relay
+          sleep 30
+        done
+    depends_on:
+      - bootstrap
+    networks:
+      - v07-net
+
+  push-relay:
+    image: golang:1.25
+    working_dir: /workspace
+    volumes:
+      - ../..:/workspace
+    command:
+      - /bin/sh
+      - -c
+      - |
+        while true; do
+          go run ./cmd/push-relay --profile=relay
+          sleep 30
+        done
+    depends_on:
+      - relay
+    networks:
+      - v07-net
+
+  test-harness:
+    image: golang:1.25
+    working_dir: /workspace
+    volumes:
+      - ../..:/workspace
+    command: ["go", "test", "./tests/e2e/v07", "-run", "TestE2EScenarios", "-v"]
+    depends_on:
+      - relay
+      - push-relay
+    profiles:
+      - test
+    networks:
+      - v07-net
+
+networks:
+  v07-net:
+    driver: bridge

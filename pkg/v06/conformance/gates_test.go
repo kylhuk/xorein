@@ -90,6 +90,18 @@ func TestGateChecklistSatisfactionAndCoverage(t *testing.T) {
 			wantSatisfied: false,
 			wantCoverage:  0.5,
 		},
+		{
+			name: "out of scope evidence ignored",
+			setup: func() GateChecklist {
+				g := NewGateChecklist(GateV6G0)
+				g.Completed = true
+				g.RecordEvidence("S6-01", "doc1")
+				g.RecordEvidence("S6-99", "notes")
+				return g
+			},
+			wantSatisfied: false,
+			wantCoverage:  0.5,
+		},
 	}
 
 	for _, tt := range tests {

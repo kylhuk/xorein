@@ -19,6 +19,9 @@ func TestNormalizeQuery(t *testing.T) {
 	if !strings.Contains(got, "has:file") {
 		t.Fatalf("expected has:file hint")
 	}
+	if !strings.Contains(got, "after:") || !strings.Contains(got, "before:") {
+		t.Fatalf("expected date range tokens in %s", got)
+	}
 }
 
 func TestNormalizeQueryInvalidRange(t *testing.T) {
@@ -53,5 +56,11 @@ func TestScopeAuthorized(t *testing.T) {
 	}
 	if ScopeAuthorized("X1", "bot:gamma") {
 		t.Fatalf("expected unauthorized for bot")
+	}
+	if ScopeAuthorized("S7-01", "guest:alpha") {
+		t.Fatalf("expected unauthorized for non-user actor")
+	}
+	if ScopeAuthorized("alpha", "user:delta") {
+		t.Fatalf("expected unauthorized for scope missing S7")
 	}
 }

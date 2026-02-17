@@ -22,6 +22,16 @@ func TestGateChecklistCoverage(t *testing.T) {
 	}
 }
 
+func TestGateCoverageScoreIgnoresNonRequiredScopes(t *testing.T) {
+	check := NewGateChecklist(GateV7G0)
+	check.RecordEvidence("S7-01", "required")
+	check.RecordEvidence("S7-99", "non-required")
+
+	if score := GateCoverageScore(check); score != 0.5 {
+		t.Fatalf("expected non-required evidence to be ignored, got %f", score)
+	}
+}
+
 func TestGateIsComplete(t *testing.T) {
 	check := NewGateChecklist(GateV7G0)
 	check.Completed = true

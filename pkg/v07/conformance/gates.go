@@ -93,11 +93,20 @@ func (g *GateChecklist) RecordEvidence(scope, detail string) {
 }
 
 func GateCoverageScore(g GateChecklist) float64 {
-	total := len(g.RequiredScopes())
+	required := g.RequiredScopes()
+	total := len(required)
 	if total == 0 {
 		return 0
 	}
-	return float64(len(g.Evidence)) / float64(total)
+
+	covered := 0
+	for _, scope := range required {
+		if _, ok := g.Evidence[scope]; ok {
+			covered++
+		}
+	}
+
+	return float64(covered) / float64(total)
 }
 
 func GateIsComplete(g GateChecklist) bool {

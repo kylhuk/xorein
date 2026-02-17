@@ -35,6 +35,7 @@ var (
 	relayReservations = flag.Int("relay-reservation-limit", 256, "maximum concurrent relay reservations")
 	relaySessionTTL   = flag.Duration("relay-session-timeout", 2*time.Minute, "maximum relay session lifetime")
 	relayMaxBytesSec  = flag.Int64("relay-max-bytes-per-sec", 1_000_000, "per-session relay bandwidth budget in bytes/sec")
+	profile           = flag.String("profile", "default", "operator profile for demos")
 )
 
 type scenarioHandlers struct {
@@ -77,7 +78,7 @@ func dispatchScenario(mode string, scenario string, store *phase6.ManifestStore,
 			handlers.runRelayMode()
 			return 0
 		}
-		fmt.Printf("Phase 2 foundation stub: cmd/aether mode=%s\n", mode)
+		fmt.Printf("Phase 2 foundation stub: cmd/aether mode=%s profile=%s\n", mode, *profile)
 		return 0
 	case "create-server":
 		handlers.runCreateServer(store)
@@ -149,7 +150,7 @@ func runRelayMode() {
 
 	startedAt := time.Now().UTC()
 	snapshot := service.Snapshot()
-	fmt.Printf("Relay runtime active mode=relay listen=%s store=%s\n", *relayListen, *relayStore)
+	fmt.Printf("Relay runtime active mode=relay listen=%s store=%s profile=%s\n", *relayListen, *relayStore, *profile)
 	fmt.Printf("Relay policy: reservation_limit=%d session_timeout=%s max_bytes_per_sec=%d active=%d rejected=%d timed_out=%d established=%d\n",
 		snapshot.ReservationLimit,
 		snapshot.SessionTimeout,

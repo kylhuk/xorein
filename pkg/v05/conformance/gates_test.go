@@ -30,6 +30,13 @@ func TestGateCoverageScore(t *testing.T) {
 	if score := GateCoverageScore(checklist); score != 1.0 {
 		t.Fatalf("score should remain 1.0 after evidence overwrite, got %f", score)
 	}
+
+	checklist = NewGateChecklist(GateV5G0)
+	checklist.RecordEvidence("S5-01", "required")
+	checklist.RecordEvidence("S5-99", "non-required")
+	if score := GateCoverageScore(checklist); score != 0.5 {
+		t.Fatalf("expected out-of-scope evidence to be ignored, got %f", score)
+	}
 }
 
 func TestRequiredScopesCopyAndScopeMapCoverage(t *testing.T) {
