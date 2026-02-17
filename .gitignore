@@ -7,3 +7,4 @@
 opencode.json
 *.gen.yaml
 .config/
+.beads/
