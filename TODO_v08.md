@@ -1,13 +1,15 @@
 # TODO_v08.md
 
-> Status: Planning artifact only. No implementation completion is claimed in this document.
+> Status: Execution plan (implementation required). Items are marked complete only when working code + validation evidence exist.
+>
+> Expected evidence anchors (update during execution): `docs/v0.8/`, `pkg/v08/`, `pkg/ui/`, `cmd/aether/`, `tests/e2e/v08/`.
 >
 > Authoritative v0.8 scope source: `aether-v3.md` roadmap bullets under **v0.8.0 — Echo**.
 >
 > Inputs used for sequencing, dependency posture, closure patterns, and constraint carry-forward: `aether-v3.md`, `TODO_v01.md`, `TODO_v02.md`, `TODO_v03.md`, `TODO_v04.md`, `TODO_v05.md`, `TODO_v06.md`, `TODO_v07.md`, and `AGENTS.md`.
 >
 > Guardrails that are mandatory throughout this plan:
-> - Repository snapshot is documentation-only; maintain strict planned-vs-implemented separation.
+> - Maintain strict planned-vs-implemented separation: specs remain explicit, and completion requires runnable implementations + tests + evidence.
 > - Protocol-first priority is non-negotiable: protocol and specification contract are the product; UI behavior is a downstream consumer.
 > - Network model invariant remains unchanged: single binary with mode flags `--mode=client|relay|bootstrap`; no privileged node classes.
 > - Compatibility invariant remains mandatory: protobuf minor evolution is additive-only.
@@ -37,8 +39,8 @@
 
 ## A. Status and Source-of-Truth Framing
 
-### A.1 Planning-only status
-This document is a planning artifact for v0.8 scope definition, sequencing, governance, and execution handoff readiness. It does not claim that any implementation task is complete.
+### A.1 Execution-plan status
+This document is a execution artifact for v0.8 scope definition, sequencing, governance, and execution handoff readiness. It does not claim that any implementation task is complete.
 
 ### A.2 Source-of-truth hierarchy
 1. `aether-v3.md` roadmap bullets for **v0.8.0 — Echo** are the sole source of in-scope capability.
@@ -56,7 +58,7 @@ This document is a planning artifact for v0.8 scope definition, sequencing, gove
 ## B. v0.8 Objective and Measurable Success Outcomes
 
 ### B.1 Objective
-Deliver **v0.8 Echo** as a protocol-first planning artifact that defines conversation-depth, rich-content presentation, personalization, accessibility, localization, and voice-noise-cancellation upgrade contracts on top of v0.1-v0.7 baselines by specifying:
+Deliver **v0.8 Echo** as a protocol-first execution artifact that defines conversation-depth, rich-content presentation, personalization, accessibility, localization, and voice-noise-cancellation upgrade contracts on top of v0.1-v0.7 baselines by specifying:
 - Threaded reply model and sub-conversation boundaries.
 - OpenGraph/Twitter link-preview contracts with client-side fetch boundaries.
 - Message pinning and personal-bookmark semantics.
@@ -75,7 +77,7 @@ Deliver **v0.8 Echo** as a protocol-first planning artifact that defines convers
 7. Voice-processing contract defines RNNoise-to-DTLN transition envelope, quality verification boundaries, and safe fallback strategy when DTLN path is unavailable.
 8. Compatibility/governance controls, evidence model, and scope traceability are complete and gate-auditable.
 9. Integrated validation package covers positive, negative, degraded, and recovery scenarios across all seven in-scope bullets.
-10. Release-conformance and execution-handoff package is complete with explicit planning-only wording and explicit deferrals to v0.9+, v1.0+, and post-v1 roadmap bands.
+10. Release-conformance and execution-handoff package is complete with explicit planned-vs-implemented wording and explicit deferrals to v0.9+, v1.0+, and post-v1 roadmap bands.
 
 ### B.3 QoL integration contract for v0.8 polish wave (planning-level)
 
@@ -214,7 +216,7 @@ graph LR
 ```
 
 ### F.3 Gate convergence rule
-- **Single convergence point:** V8-G8 is the only release-conformance exit for v0.8 planning handoff.
+- **Single convergence point:** V8-G8 is the only release-conformance exit for v0.8 (spec + reference implementation + validation).
 - No phase is complete without explicit acceptance evidence linked to gate exit criteria.
 
 ---
@@ -236,6 +238,8 @@ Validation artifact ID taxonomy for v0.8:
 - `VA-V*` voice noise-cancellation migration contracts
 - `VA-X*` integrated validation and governance-readiness artifacts
 - `VA-R*` release conformance and handoff artifacts
+- `VA-B*` reference implementation code and unit/integration tests
+- `VA-E*` end-to-end harness and runnable demo evidence
 
 ### Phase 0 - Scope, Governance, and Evidence Foundation (V8-G0)
 
@@ -672,7 +676,7 @@ Validation artifact ID taxonomy for v0.8:
   - **Deliverables/artifacts:** Runtime-localization package (`VA-N3`, `VA-N4`).
   - **Acceptance criteria:** V8-G5 runtime i18n criteria met with evidence links.
   - **Suggested priority/order:** P0, Order 17.
-  - **Risks/notes:** Must retain planning-only language for translation-quality expectations.
+  - **Risks/notes:** Must retain planned-vs-implemented language for translation-quality expectations.
 
 - [ ] **[P1][Order 18] P5-T3 Define localization governance and quality evidence model**
   - **Objective:** Establish repeatable localization review and change-control process for v0.8 surfaces.
@@ -840,7 +844,7 @@ Validation artifact ID taxonomy for v0.8:
       - **Suggested priority/order:** P1, Order 24.1.
       - **Risks/notes:** Wording drift can create false certainty.
     - [ ] **P7-T3-ST2 Validate licensing and repository-state language consistency**
-      - **Objective:** Preserve code-license/protocol-license and planning-only wording alignment.
+      - **Objective:** Preserve code-license/protocol-license and planned-vs-implemented wording alignment.
       - **Concrete actions:** Check all artifact language for MIT-like code license alignment, CC-BY-SA protocol-spec alignment, and documentation-only repository framing.
       - **Dependencies/prerequisites:** P7-T3-ST1.
       - **Deliverables/artifacts:** Licensing/repository-language conformance note (`VA-X6`).
@@ -853,7 +857,7 @@ Validation artifact ID taxonomy for v0.8:
   - **Suggested priority/order:** P1, Order 24.
   - **Risks/notes:** Keep unresolved policy questions visible and bounded.
 
-### Phase 8 - Release Conformance and Execution Handoff (V8-G8)
+### Phase 8 - Reference Implementation, E2E Validation, and v0.8 Shipping (V8-G8)
 
 - [ ] **[P0][Order 25] P8-T1 Close scope-to-task-to-artifact traceability**
   - **Objective:** Achieve complete auditable traceability for all v0.8 scope bullets.
@@ -903,17 +907,17 @@ Validation artifact ID taxonomy for v0.8:
   - **Deliverables/artifacts:** Final conformance package (`VA-R3`, `VA-R4`).
   - **Acceptance criteria:** V8-G8 conformance checklist criteria met with evidence links.
   - **Suggested priority/order:** P1, Order 26.
-  - **Risks/notes:** Checklist must preserve planning-only wording.
+  - **Risks/notes:** Checklist must preserve strict planned-vs-implemented separation and be truthful about shipped behavior.
 
 - [ ] **[P1][Order 27] P8-T3 Prepare execution handoff dossier and forward deferral register**
   - **Objective:** Finalize execution-ready handoff while preserving roadmap boundary discipline.
   - **Concrete actions:**
     - [ ] **P8-T3-ST1 Compile execution handoff dossier with gate outcomes and open decisions**
-      - **Objective:** Provide complete package for execution-mode orchestration without claiming implementation completion.
+      - **Objective:** Provide complete package for operators/reviewers with evidence for shipped behavior and explicit deferrals.
       - **Concrete actions:** Aggregate gate decisions, residual risks, open decisions, and evidence index.
       - **Dependencies/prerequisites:** P8-T2.
       - **Deliverables/artifacts:** Execution handoff dossier (`VA-R5`).
-      - **Acceptance criteria:** Dossier is complete, internally consistent, and planning-only.
+      - **Acceptance criteria:** Dossier is complete, internally consistent, and aligned to shipped behavior.
       - **Suggested priority/order:** P1, Order 27.1.
       - **Risks/notes:** Missing context in dossier causes execution ambiguity.
     - [ ] **P8-T3-ST2 Build v0.9+/v1+/post-v1 deferral register from v0.8 residuals**
@@ -928,7 +932,210 @@ Validation artifact ID taxonomy for v0.8:
   - **Deliverables/artifacts:** Handoff/deferral package (`VA-R5`, `VA-R6`).
   - **Acceptance criteria:** V8-G8 exit criteria satisfied with full handoff evidence.
   - **Suggested priority/order:** P1, Order 27.
-  - **Risks/notes:** Handoff artifacts must remain explicit about planned vs implemented status.
+  - **Risks/notes:** Handoff artifacts must remain explicit about what is shipped vs deferred.
+
+
+- [ ] **[P0][Order 28] P8-T4 Implement threaded replies (conversation depth) end-to-end**
+  - **Objective:** Implement the threaded reply model defined in `P1-T1` in both protocol handling and the reference client UI (rendering, navigation, and persistence).
+  - **Concrete actions:**
+    - [ ] **P8-T4-ST1 Implement message schema and storage fields required for threads**
+      - **Objective:** Ensure replies can be linked deterministically without breaking older clients.
+      - **Concrete actions:** Add/confirm `reply_to`/`thread_id` fields (additive-only); update local DB schema; ensure downgrade behavior is deterministic.
+      - **Dependencies/prerequisites:** `P1-T1`, additive-only checklist (`VA-G3`).
+      - **Deliverables/artifacts:** Thread schema + storage changes and tests (`VA-B1`).
+      - **Acceptance criteria:** Old clients render messages without crashing; new clients can reconstruct thread relationships.
+      - **Suggested priority/order:** P0, Order 28.1.
+      - **Risks/notes:** Thread identity must be canonical to avoid cross-client divergence.
+    - [ ] **P8-T4-ST2 Implement UI thread view and navigation (open thread, back, context jump)**
+      - **Objective:** Make threads usable without confusing the main timeline.
+      - **Concrete actions:** Add thread panel/view; implement “reply context” rendering; implement jump-to-parent; ensure deterministic focus order (ties to accessibility phase).
+      - **Dependencies/prerequisites:** `P1-T1`, `P4-T3`.
+      - **Deliverables/artifacts:** UI thread view implementation (`VA-B2`).
+      - **Acceptance criteria:** User can open a thread, reply, and return to channel without losing scroll/selection state.
+      - **Suggested priority/order:** P0, Order 28.2.
+      - **Risks/notes:** Thread UX regressions are high-visibility; add golden tests if available.
+  - **Dependencies/prerequisites:** `P1-T1` through `P1-T3`.
+  - **Deliverables/artifacts:** Thread end-to-end implementation (`VA-B1`-`VA-B2`).
+  - **Acceptance criteria:** Threads work in the reference client and are interoperable at the protocol level.
+  - **Suggested priority/order:** P0, Order 28.
+  - **Risks/notes:** Treat any downgrade crash or non-canonical thread behavior as a release blocker.
+
+- [ ] **[P0][Order 29] P8-T5 Implement message pinning and personal bookmarks end-to-end**
+  - **Objective:** Implement pin/bookmark semantics (`P1-T2`) including storage, sync semantics (if any), and UI affordances.
+  - **Concrete actions:**
+    - [ ] **P8-T5-ST1 Implement pin state persistence and authorization boundaries**
+      - **Objective:** Ensure server-scoped pins and personal bookmarks are not conflated.
+      - **Concrete actions:** Implement storage for pins/bookmarks; enforce permissions; ensure older clients degrade gracefully.
+      - **Dependencies/prerequisites:** `P1-T2`, `P1-T3`.
+      - **Deliverables/artifacts:** Pin/bookmark persistence + tests (`VA-B3`).
+      - **Acceptance criteria:** Pins are visible to authorized users; bookmarks remain private.
+      - **Suggested priority/order:** P0, Order 29.1.
+      - **Risks/notes:** Privacy boundary mistakes here are severe.
+    - [ ] **P8-T5-ST2 Implement UI pin list, bookmark list, and interaction rules with threads**
+      - **Objective:** Provide discoverable UX with deterministic behavior.
+      - **Concrete actions:** Add UI surfaces; implement sorting; implement “pinned in thread” behavior per `P1-T3`; add keyboard shortcuts as applicable.
+      - **Dependencies/prerequisites:** `P1-T3`, `P4-T3`.
+      - **Deliverables/artifacts:** Pin/bookmark UI implementation (`VA-B4`).
+      - **Acceptance criteria:** UX matches contract examples; no cross-scope leakage.
+      - **Suggested priority/order:** P0, Order 29.2.
+      - **Risks/notes:** Avoid “invisible pins” by ensuring caching/state sync is correct.
+  - **Dependencies/prerequisites:** `P1-T2`, `P1-T3`.
+  - **Deliverables/artifacts:** Pin/bookmark implementation (`VA-B3`-`VA-B4`).
+  - **Acceptance criteria:** Pinning and bookmarks are usable and consistent across restarts.
+  - **Suggested priority/order:** P0, Order 29.
+  - **Risks/notes:** Treat cross-scope leakage as a release blocker.
+
+- [ ] **[P0][Order 30] P8-T6 Implement rich link previews (client-side fetch + render) end-to-end**
+  - **Objective:** Implement OpenGraph/Twitter-card preview behavior defined in `P2-T1`-`P2-T3` with strict privacy and resource bounds.
+  - **Concrete actions:**
+    - [ ] **P8-T6-ST1 Implement URL detection, fetch gating, and privacy controls**
+      - **Objective:** Ensure link preview fetches do not become a tracking vector.
+      - **Concrete actions:** Implement opt-in/opt-out; implement per-domain allow/deny; enforce timeout, max-size, and redirect limits; prefer HEAD then bounded GET.
+      - **Dependencies/prerequisites:** `P2-T1`.
+      - **Deliverables/artifacts:** Fetch policy implementation + tests (`VA-B5`).
+      - **Acceptance criteria:** Fetches are bounded and can be disabled; tests cover redirects/timeouts.
+      - **Suggested priority/order:** P0, Order 30.1.
+      - **Risks/notes:** Unbounded fetch is a privacy + DoS risk.
+    - [ ] **P8-T6-ST2 Implement metadata normalization, sanitization, and cache lifecycle**
+      - **Objective:** Render previews deterministically and safely.
+      - **Concrete actions:** Parse OG/Twitter tags; sanitize text; validate image sizes/types; cache with TTL; implement degraded placeholders on failure.
+      - **Dependencies/prerequisites:** `P2-T2`, `P2-T3`.
+      - **Deliverables/artifacts:** Normalizer/sanitizer + cache tests (`VA-B6`).
+      - **Acceptance criteria:** No HTML injection; cache obeys TTL and size bounds; degraded mode is deterministic.
+      - **Suggested priority/order:** P0, Order 30.2.
+      - **Risks/notes:** Sanitization bugs are security issues.
+  - **Dependencies/prerequisites:** `P2-T1` through `P2-T3`.
+  - **Deliverables/artifacts:** Link preview implementation (`VA-B5`-`VA-B6`).
+  - **Acceptance criteria:** Previews render safely with bounded network behavior and deterministic degraded mode.
+  - **Suggested priority/order:** P0, Order 30.
+  - **Risks/notes:** Treat any privacy bypass as a release blocker.
+
+- [ ] **[P0][Order 31] P8-T7 Implement theme system (built-in + custom JSON themes) end-to-end**
+  - **Objective:** Ship built-in themes and validated custom themes per `P3-T1`-`P3-T3`.
+  - **Concrete actions:**
+    - [ ] **P8-T7-ST1 Implement theme tokens, default themes, and runtime switching**
+      - **Objective:** Ensure theme changes are immediate and safe.
+      - **Concrete actions:** Implement token set; provide default themes; implement runtime switching; ensure persistence across restarts.
+      - **Dependencies/prerequisites:** `P3-T1`.
+      - **Deliverables/artifacts:** Theme runtime + tests (`VA-B7`).
+      - **Acceptance criteria:** Switching themes does not require restart and does not break layout.
+      - **Suggested priority/order:** P0, Order 31.1.
+      - **Risks/notes:** Token drift creates UI inconsistency.
+    - [ ] **P8-T7-ST2 Implement custom JSON theme loader + schema validation**
+      - **Objective:** Prevent malformed themes from crashing clients.
+      - **Concrete actions:** Implement JSON schema; validate on load; provide error reporting; enforce accessibility constraints (contrast) where required.
+      - **Dependencies/prerequisites:** `P3-T2`, `P4-T2`.
+      - **Deliverables/artifacts:** Theme loader/validator + tests (`VA-B8`).
+      - **Acceptance criteria:** Invalid themes are rejected with clear errors; valid themes apply deterministically.
+      - **Suggested priority/order:** P0, Order 31.2.
+      - **Risks/notes:** Validation must be strict; permissive parsing causes ambiguous visuals.
+  - **Dependencies/prerequisites:** `P3-T1` through `P3-T3`.
+  - **Deliverables/artifacts:** Theme system implementation (`VA-B7`-`VA-B8`).
+  - **Acceptance criteria:** Themes are usable, persistent, and compatible with accessibility/i18n layers.
+  - **Suggested priority/order:** P0, Order 31.
+  - **Risks/notes:** Treat crashes on theme load as a release blocker.
+
+- [ ] **[P0][Order 32] P8-T8 Implement accessibility behavior (screen reader, high contrast, keyboard nav)**
+  - **Objective:** Implement accessibility contracts from `P4-T1`-`P4-T3` in the reference client.
+  - **Concrete actions:**
+    - [ ] **P8-T8-ST1 Implement keyboard navigation graph and deterministic focus order**
+      - **Objective:** Make core UI usable without a mouse.
+      - **Concrete actions:** Implement focus traversal; add shortcuts; ensure deterministic focus restoration after view changes (threads, search, pins).
+      - **Dependencies/prerequisites:** `P4-T3`.
+      - **Deliverables/artifacts:** Keyboard nav implementation + tests (`VA-B9`).
+      - **Acceptance criteria:** Focus order is deterministic and covers core flows end-to-end.
+      - **Suggested priority/order:** P0, Order 32.1.
+      - **Risks/notes:** Non-deterministic focus is a major accessibility failure.
+    - [ ] **P8-T8-ST2 Implement high-contrast mode + screen reader semantics where supported**
+      - **Objective:** Provide measurable accessibility improvements even with framework limitations.
+      - **Concrete actions:** Implement high-contrast palette; implement ARIA/semantics layer if framework supports; otherwise document limitations and provide keyboard-only alternatives.
+      - **Dependencies/prerequisites:** `P4-T1`, `P4-T2`.
+      - **Deliverables/artifacts:** Accessibility implementation + evidence notes (`VA-B10`).
+      - **Acceptance criteria:** High-contrast mode passes internal contrast checks; screen reader behavior is documented and tested where possible.
+      - **Suggested priority/order:** P1, Order 32.2.
+      - **Risks/notes:** Platform accessibility APIs vary; treat “documented limitation” as acceptable only if explicit.
+  - **Dependencies/prerequisites:** `P4-T1` through `P4-T3`.
+  - **Deliverables/artifacts:** Accessibility implementation evidence (`VA-B9`-`VA-B10`).
+  - **Acceptance criteria:** Keyboard-first accessibility is fully functional; other accessibility features are implemented or explicitly documented as limitations.
+  - **Suggested priority/order:** P0, Order 32.
+  - **Risks/notes:** Accessibility regressions should be covered by UI smoke tests.
+
+- [ ] **[P0][Order 33] P8-T9 Implement i18n localization runtime and initial language pack**
+  - **Objective:** Implement localization runtime behavior defined in `P5-T1`-`P5-T3`.
+  - **Concrete actions:**
+    - [ ] **P8-T9-ST1 Implement locale selection, fallback rules, and formatted strings**
+      - **Objective:** Ensure deterministic string selection and formatting.
+      - **Concrete actions:** Implement locale detection; implement fallback chain; implement date/number formatting; add tests.
+      - **Dependencies/prerequisites:** `P5-T2`.
+      - **Deliverables/artifacts:** i18n runtime + tests (`VA-B11`).
+      - **Acceptance criteria:** Locale switching works without restart (or is documented); formatting is correct.
+      - **Suggested priority/order:** P0, Order 33.1.
+      - **Risks/notes:** Formatting bugs damage trust.
+    - [ ] **P8-T9-ST2 Add translation file structure and initial translations for required locales**
+      - **Objective:** Provide real coverage, not scaffolding.
+      - **Concrete actions:** Add translation files; enforce completeness check; document contribution workflow.
+      - **Dependencies/prerequisites:** `P5-T1`, `P5-T3`.
+      - **Deliverables/artifacts:** Translation packs + completeness tooling (`VA-B12`).
+      - **Acceptance criteria:** Missing keys fail CI; runtime falls back deterministically.
+      - **Suggested priority/order:** P1, Order 33.2.
+      - **Risks/notes:** “Partial i18n” must be explicitly communicated.
+  - **Dependencies/prerequisites:** `P5-T1` through `P5-T3`.
+  - **Deliverables/artifacts:** i18n implementation evidence (`VA-B11`-`VA-B12`).
+  - **Acceptance criteria:** Client renders in at least one non-default locale with deterministic fallback.
+  - **Suggested priority/order:** P0, Order 33.
+  - **Risks/notes:** Avoid translating protocol strings; only UI strings.
+
+- [ ] **[P0][Order 34] P8-T10 Integrate DTLN noise cancellation with fallback behavior**
+  - **Objective:** Replace RNNoise with DTLN per `P6-T1`-`P6-T3` while keeping deterministic degraded behavior.
+  - **Concrete actions:**
+    - [ ] **P8-T10-ST1 Integrate DTLN runtime and validate CPU/latency budgets**
+      - **Objective:** Ensure the client remains usable on constrained hardware.
+      - **Concrete actions:** Add DTLN module; implement runtime selection; measure latency; add configuration flags.
+      - **Dependencies/prerequisites:** `P6-T1`.
+      - **Deliverables/artifacts:** DTLN integration + benchmarks (`VA-B13`).
+      - **Acceptance criteria:** DTLN can be enabled/disabled; CPU/latency metrics are recorded.
+      - **Suggested priority/order:** P0, Order 34.1.
+      - **Risks/notes:** DTLN model/runtime licensing must be validated.
+    - [ ] **P8-T10-ST2 Implement fallback and failure handling (RNNoise fallback or bypass)**
+      - **Objective:** Prevent call failures due to model/runtime issues.
+      - **Concrete actions:** Implement fallback order; implement safe bypass; surface UI indicator for current mode.
+      - **Dependencies/prerequisites:** `P6-T2`, `P6-T3`.
+      - **Deliverables/artifacts:** Fallback behavior tests (`VA-B14`).
+      - **Acceptance criteria:** Forced failure tests demonstrate deterministic fallback without crashing calls.
+      - **Suggested priority/order:** P0, Order 34.2.
+      - **Risks/notes:** Silent quality regression must be detectable.
+  - **Dependencies/prerequisites:** `P6-T1` through `P6-T3`.
+  - **Deliverables/artifacts:** Noise cancellation implementation evidence (`VA-B13`-`VA-B14`).
+  - **Acceptance criteria:** Calls use DTLN where supported and degrade deterministically where not.
+  - **Suggested priority/order:** P0, Order 34.
+  - **Risks/notes:** Treat crashes or unstable audio pipelines as release blockers.
+
+- [ ] **[P0][Order 35] P8-T11 Build v0.8 end-to-end UX smoke tests and release harness**
+  - **Objective:** Provide a reproducible proof that v0.8 UX features (threads, pins, previews, themes, a11y, i18n, DTLN) are actually working.
+  - **Concrete actions:**
+    - [ ] **P8-T11-ST1 Add scenario suite that exercises each UX feature deterministically**
+      - **Objective:** Convert UX scope bullets into regressions.
+      - **Concrete actions:** Add scenarios for: thread reply flow, pin/bookmark flow, link preview fetch policy, theme load/invalid theme, keyboard nav focus path, locale switch, and DTLN toggle.
+      - **Dependencies/prerequisites:** `P7-T1`, `P8-T4`-`P8-T10`.
+      - **Deliverables/artifacts:** `tests/e2e/v08/*` + runner hooks (`VA-E1`).
+      - **Acceptance criteria:** All scenarios pass locally and in CI.
+      - **Suggested priority/order:** P0, Order 35.1.
+      - **Risks/notes:** UI frameworks can be hard to test; headless scenario runner is acceptable if UI automation is not feasible.
+  - **Dependencies/prerequisites:** `P8-T4` through `P8-T10`.
+  - **Deliverables/artifacts:** E2E UX evidence (`VA-E1`).
+  - **Acceptance criteria:** A new contributor can validate v0.8 UX features with a deterministic command.
+  - **Suggested priority/order:** P0, Order 35.
+  - **Risks/notes:** Treat non-deterministic UI tests as a blocker; prefer scenario-level determinism.
+
+- [ ] **[P0][Order 36] P8-T12 Validate build/run targets and publish v0.8 release notes**
+  - **Objective:** Ensure v0.8 can be built and run as a working client, and communicate shipped behavior accurately.
+  - **Concrete actions:** Verify build scripts; verify client startup; publish release notes and “known limitations” (accessibility/i18n/DTLN) with explicit evidence.
+  - **Dependencies/prerequisites:** `P8-T11`.
+  - **Deliverables/artifacts:** Build/run smoke evidence + release notes (`VA-E2`, `VA-R7`).
+  - **Acceptance criteria:** Builds are reproducible for the supported platforms and release notes match reality.
+  - **Suggested priority/order:** P0, Order 36.
+  - **Risks/notes:** Release notes must not claim untested behavior.
+
 
 ---
 
@@ -974,10 +1181,19 @@ Validation artifact ID taxonomy for v0.8:
 23. P7-T2
 24. P7-T3
 
-### Wave I - Release conformance and handoff (V8-G8)
+### Wave I - Shipping work: implementation + E2E + release conformance (V8-G8)
 25. P8-T1
 26. P8-T2
 27. P8-T3
+28. P8-T4
+29. P8-T5
+30. P8-T6
+31. P8-T7
+32. P8-T8
+33. P8-T9
+34. P8-T10
+35. P8-T11
+36. P8-T12
 
 ---
 
@@ -994,13 +1210,13 @@ Validation artifact ID taxonomy for v0.8:
 
 | Scope Item ID | v0.8 Scope Bullet | Primary Tasks | Validation Artifacts | Acceptance Anchor |
 |---|---|---|---|---|
-| S8-01 | Threaded replies (sub-conversations) | P1-T1, P1-T3 | VA-C1, VA-C2, VA-C5, VA-X1 | P1-T1 acceptance + P7-T1 scenario coverage |
-| S8-02 | OpenGraph/Twitter card link previews (fetched client-side) | P2-T1, P2-T2, P2-T3 | VA-P1, VA-P2, VA-P3, VA-P4, VA-P5, VA-P6, VA-X1 | P2-T1/P2-T2/P2-T3 acceptance + P7-T1 scenario coverage |
-| S8-03 | Message pinning + personal bookmarks | P1-T2, P1-T3 | VA-C3, VA-C4, VA-C5, VA-X1 | P1-T2 acceptance + P7-T1 scenario coverage |
-| S8-04 | Theme system: Dark, Midnight, Light, AMOLED Black + custom JSON themes | P3-T1, P3-T2, P3-T3 | VA-T1, VA-T2, VA-T3, VA-T4, VA-T5, VA-T6, VA-X1 | P3-T1/P3-T2 acceptance + P7-T1 scenario coverage |
-| S8-05 | Accessibility: screen reader support, high contrast, keyboard nav | P4-T1, P4-T2, P4-T3 | VA-A1, VA-A2, VA-A3, VA-A4, VA-A5, VA-A6, VA-X1 | P4-T1/P4-T2/P4-T3 acceptance + P7-T1 scenario coverage |
-| S8-06 | i18n: English, Spanish, German, French, Japanese, Chinese, Portuguese | P5-T1, P5-T2, P5-T3 | VA-N1, VA-N2, VA-N3, VA-N4, VA-N5, VA-N6, VA-X1 | P5-T1/P5-T2/P5-T3 acceptance + P7-T1 scenario coverage |
-| S8-07 | Upgrade noise cancellation from RNNoise to DTLN | P6-T1, P6-T2, P6-T3 | VA-V1, VA-V2, VA-V3, VA-V4, VA-V5, VA-V6, VA-X1 | P6-T1/P6-T2/P6-T3 acceptance + P7-T1 scenario coverage |
+| S8-01 | Threaded replies (sub-conversations) | P1-T1 P1-T3 P8-T4 P8-T11 | VA-C1 VA-C2 VA-C5 VA-B1 VA-B2 VA-E1 | P8-T4 acceptance + P8-T11 scenario coverage |
+| S8-02 | OpenGraph/Twitter card link previews (fetched client-side) | P2-T1 P2-T2 P2-T3 P8-T6 P8-T11 | VA-P1 VA-P2 VA-P3 VA-P4 VA-P5 VA-P6 VA-B5 VA-B6 VA-E1 | P8-T6 acceptance + P8-T11 scenario coverage |
+| S8-03 | Message pinning + personal bookmarks | P1-T2 P1-T3 P8-T5 P8-T11 | VA-C3 VA-C4 VA-C5 VA-B3 VA-B4 VA-E1 | P8-T5 acceptance + P8-T11 scenario coverage |
+| S8-04 | Theme system: Dark, Midnight, Light, AMOLED Black + custom JSON themes | P3-T1 P3-T2 P3-T3 P8-T7 P8-T11 | VA-T1 VA-T2 VA-T3 VA-T4 VA-T5 VA-T6 VA-B7 VA-B8 VA-E1 | P8-T7 acceptance + P8-T11 scenario coverage |
+| S8-05 | Accessibility: screen reader support, high contrast, keyboard nav | P4-T1 P4-T2 P4-T3 P8-T8 P8-T11 | VA-A1 VA-A2 VA-A3 VA-A4 VA-A5 VA-A6 VA-B9 VA-B10 VA-E1 | P8-T8 acceptance + P8-T11 scenario coverage |
+| S8-06 | i18n: English, Spanish, German, French, Japanese, Chinese, Portuguese | P5-T1 P5-T2 P5-T3 P8-T9 P8-T11 | VA-N1 VA-N2 VA-N3 VA-N4 VA-N5 VA-N6 VA-B11 VA-B12 VA-E1 | P8-T9 acceptance + P8-T11 scenario coverage |
+| S8-07 | Upgrade noise cancellation from RNNoise to DTLN | P6-T1 P6-T2 P6-T3 P8-T10 P8-T11 | VA-V1 VA-V2 VA-V3 VA-V4 VA-V5 VA-V6 VA-B13 VA-B14 VA-E1 | P8-T10 acceptance + P8-T11 scenario coverage |
 
 ### 8.3 Traceability closure rules
 - Any scope item without task mapping blocks V8-G8.
@@ -1044,49 +1260,38 @@ Handling rule:
 
 ---
 
-## 11. Release-Conformance Checklist for Execution Handoff (V8-G8)
+## 11. Release-Conformance Checklist for v0.8 Shipping (V8-G8)
 
-v0.8 planning is execution-ready only when all items below are satisfied.
+v0.8 is considered **shipped** only when the UX features in scope are implemented and validated with runnable evidence (not merely specified).
 
-### 11.1 Scope and boundary integrity
-- [ ] All 7 v0.8 roadmap bullets are mapped to tasks, artifacts, and acceptance anchors.
-- [ ] Out-of-scope boundaries are documented and referenced in gate checklists.
-- [ ] No v0.9+, v1.0+, or post-v1 capabilities are imported into v0.8 tasks.
+### 11.1 Build and test integrity
+- [ ] `go test ./...` passes for supported platforms/build tags.
+- [ ] Each v0.8 feature has unit/integration coverage (`VA-B*`) and at least one deterministic scenario in `tests/e2e/v08/*` (`VA-E*`).
+- [ ] Privacy constraints are verified for link previews (bounded fetch, opt-out, sanitization, no unexpected network calls).
 
-### 11.2 Dependency and sequencing integrity
-- [ ] v0.1 through v0.7 prerequisite assumptions are linked to dependent tasks.
-- [ ] Task ordering is dependency-coherent across all phases.
-- [ ] Gate exit criteria are testable and evidence-backed.
+### 11.2 UX end-to-end acceptance (must be reproducible)
+- [ ] Threads: open thread → reply → jump to parent → return to channel, with state preserved.
+- [ ] Pins/bookmarks: pin/unpin and bookmark/unbookmark with correct scope boundaries.
+- [ ] Link previews: render safe preview, obey fetch policy, deterministic degraded mode on failures.
+- [ ] Themes: built-in themes load, custom JSON themes validate, invalid themes do not crash.
+- [ ] Accessibility: keyboard navigation covers primary flows; high-contrast mode usable; limitations are explicitly documented if framework-restricted.
+- [ ] i18n: at least one non-default locale renders correctly with deterministic fallback.
+- [ ] DTLN: noise cancellation can be toggled; fallback works; call pipeline remains stable.
 
-### 11.3 Compatibility and governance integrity
-- [ ] Additive-only protobuf discipline is applied to all schema-touching artifacts.
-- [ ] Any breaking candidate includes major-path governance evidence package.
-- [ ] New multistream IDs and downgrade negotiation requirements are preserved where applicable.
-- [ ] AEP process and validation by at least two independent implementations are referenced for breaking-change pathways.
-- [ ] N+2 legacy protocol-ID support expectations are documented where relevant.
-- [ ] Single-binary and protocol-first invariants are preserved in all artifacts.
+### 11.3 One-command validation harness
+- [ ] `tests/e2e/v08/*` can be run via a single documented command and passes locally and in CI (`VA-E1`).
+- [ ] If full UI automation is not feasible, a headless scenario runner is provided and exercises the same state transitions.
 
-### 11.4 Validation and traceability integrity
-- [ ] Evidence model rules are enforced for all tasks and gates.
-- [ ] Cross-feature positive/negative/degraded/recovery scenarios cover all seven scope bullets.
-- [ ] Traceability closure rules are satisfied with explicit evidence links.
-
-### 11.5 Documentation quality and handoff completeness
-- [ ] Planned-vs-implemented separation is explicit in all sections.
-- [ ] Open decisions remain unresolved and tracked with revisit gates.
-- [ ] Licensing language remains aligned: code permissive MIT-like and protocol specification CC-BY-SA.
-- [ ] Release-conformance checklist includes pass/fail status and evidence links per scope item.
-- [ ] Execution handoff dossier and v0.9+/v1+/post-v1 deferral register are complete and roadmap-aligned.
+### 11.4 Release communication
+- [ ] Release notes enumerate shipped behavior and explicitly list deferred items/known limitations.
+- [ ] Any framework constraints (accessibility/i18n/platform packaging) are documented without ambiguity.
 
 ---
 
-## 12. Definition of Done for v0.8 Planning Artifact
+## 12. Definition of Done for v0.8
 
-This planning artifact is complete when:
-1. It captures all mandatory v0.8 scope bullets and excludes unauthorized scope expansion.
-2. It provides gate, phase, task, and sub-task detail with objective, actions, dependencies, deliverables, acceptance criteria, order, and risks.
-3. It preserves protocol-first and single-binary architecture invariants.
-4. It embeds compatibility and governance constraints for additive evolution and breaking-change pathways, including new multistream IDs, downgrade negotiation, AEP path, and multi-implementation validation requirements.
-5. It includes deterministic verification evidence model and traceability closure rules.
-6. It includes integrated validation/governance-readiness phase plus final release-conformance and handoff phase suitable for execution orchestration.
-7. It remains planning-only and does not claim implementation completion.
+v0.8 is complete when:
+1. All v0.8 roadmap bullets are implemented in the reference client (threads, pins/bookmarks, link previews, themes, accessibility, i18n, DTLN).
+2. The v0.8 scenario suite passes deterministically in CI.
+3. Compatibility/governance constraints remain satisfied (additive-only protocol evolution).
+4. Release notes and docs accurately describe shipped behavior (no aspirational claims).

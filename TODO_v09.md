@@ -1,13 +1,15 @@
 # TODO_v09.md
 
-> Status: Planning artifact only. No implementation completion is claimed in this document.
+> Status: Execution plan (implementation required). Items are marked complete only when working code + validation evidence exist.
+>
+> Expected evidence anchors (update during execution): `docs/v0.9/`, `pkg/v09/`, `cmd/aether/`, `tests/perf/v09/`, `tests/e2e/v09/`.
 >
 > Authoritative v0.9 scope source: `aether-v3.md` roadmap bullets under **v0.9.0 — Forge**.
 >
 > Inputs used for sequencing, dependency posture, closure patterns, and guardrail carry-forward: `aether-v3.md`, `TODO_v01.md`, `TODO_v02.md`, `TODO_v03.md`, `TODO_v04.md`, `TODO_v05.md`, `TODO_v06.md`, `TODO_v07.md`, `TODO_v08.md`, and `AGENTS.md`.
 >
 > Guardrails that are mandatory throughout this plan:
-> - Repository snapshot is documentation-only; maintain strict planned-vs-implemented separation.
+> - Maintain strict planned-vs-implemented separation: specs remain explicit, and completion requires runnable implementations + tests + evidence.
 > - Protocol-first priority is non-negotiable: protocol/spec contract is the product; client/UI behavior is downstream.
 > - Network model invariant remains unchanged: single binary with mode flags `--mode=client|relay|bootstrap`; no privileged node classes.
 > - Compatibility invariant remains mandatory: protobuf minor evolution is additive-only.
@@ -37,8 +39,8 @@
 
 ## A. Status and Source-of-Truth Framing
 
-### A.1 Planning-only status
-This document is a v0.9 planning artifact for scope control, sequencing, validation design, and execution handoff readiness. It does not assert that implementation work has been completed.
+### A.1 Execution-plan status
+This document is a v0.9 execution plan for scope control, sequencing, validation design, and execution handoff readiness. It does not assert that implementation work has been completed.
 
 ### A.2 Source-of-truth hierarchy
 1. `aether-v3.md` roadmap bullets for **v0.9.0 — Forge** are the sole authority for in-scope capability.
@@ -56,7 +58,7 @@ This document is a v0.9 planning artifact for scope control, sequencing, validat
 ## B. v0.9 Objective and Measurable Success Outcomes
 
 ### B.1 Objective
-Deliver **v0.9 Forge** as a protocol-first planning artifact that defines performance and scale contracts on top of v0.1-v0.8 baselines by specifying:
+Deliver **v0.9 Forge** as a protocol-first implementation increment that ships performance and scale capabilities on top of v0.1-v0.8 baselines by delivering:
 - IPFS integration for persistent file hosting with server-owner pinning posture.
 - Large-server operation model including hierarchical GossipSub and lazy member loading.
 - Cascading SFU mesh contract for 200+ participant voice scenarios.
@@ -75,7 +77,7 @@ Deliver **v0.9 Forge** as a protocol-first planning artifact that defines perfor
 7. Mobile battery optimization contract defines background-activity budgets, wakeup boundaries, and energy-impact verification criteria.
 8. Compatibility/governance controls and evidence model are complete and gate-auditable.
 9. Integrated validation phase covers positive, adverse, saturation, and recovery pathways across all eight v0.9 bullets.
-10. Release/handoff package provides complete traceability, explicit deferrals, and planning-only language integrity.
+10. Release/handoff package provides complete traceability, explicit deferrals, and planned-vs-implemented language integrity.
 
 ### B.3 QoL integration contract for v0.9 scale-performance journeys (planning-level)
 
@@ -232,6 +234,8 @@ Validation artifact taxonomy IDs for v0.9:
 - `VA-B*` battery-optimization contracts
 - `VA-X*` integrated validation/governance artifacts
 - `VA-H*` release-conformance/handoff artifacts
+- `VA-C*` reference implementation code and unit/integration tests
+- `VA-E*` executable perf/stress harness evidence (commands, reports, and reproducible runs)
 
 ### Phase 0 - Scope, Governance, and Evidence Foundation (V9-G0)
 
@@ -624,7 +628,7 @@ Validation artifact taxonomy IDs for v0.9:
   - **Deliverables/artifacts:** Optimization evidence package (`VA-P5`, `VA-P6`).
   - **Acceptance criteria:** V9-G4 exits with complete reporting standards.
   - **Suggested priority/order:** P1, Order 15.
-  - **Risks/notes:** Preserve planning-only wording in all evidence templates.
+  - **Risks/notes:** Preserve planned-vs-implemented wording in all evidence templates.
 
 ### Phase 5 - Stress-Testing Contracts (V9-G5)
 
@@ -701,7 +705,7 @@ Validation artifact taxonomy IDs for v0.9:
   - **Deliverables/artifacts:** Stress governance package (`VA-T5`, `VA-T6`).
   - **Acceptance criteria:** V9-G5 exits with campaign governance controls complete.
   - **Suggested priority/order:** P1, Order 18.
-  - **Risks/notes:** Keep all wording planning-only.
+  - **Risks/notes:** Keep all wording planned-vs-implemented.
 
 ### Phase 6 - Relay Performance and Load-Testing Contracts (V9-G6)
 
@@ -830,7 +834,7 @@ Validation artifact taxonomy IDs for v0.9:
   - **Deliverables/artifacts:** Battery validation package (`VA-B3`, `VA-B4`).
   - **Acceptance criteria:** V9-G7 battery-validation criteria met.
   - **Suggested priority/order:** P0, Order 23.
-  - **Risks/notes:** Maintain planning-only framing, no completion claims.
+  - **Risks/notes:** Maintain planned-vs-implemented framing, no completion claims.
 
 - [ ] **[P1][Order 24] P7-T3 Define battery/performance tradeoff governance and user-impact boundaries**
   - **Objective:** Ensure battery reductions do not silently violate core performance assumptions.
@@ -922,7 +926,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Risks/notes:** Wording drift can create false certainty.
     - [ ] **P8-T3-ST2 Validate licensing and repository-state language alignment**
       - **Objective:** Preserve MIT-like/CC-BY-SA alignment and documentation-only framing.
-      - **Concrete actions:** Audit artifacts for licensing and planning-only language consistency.
+      - **Concrete actions:** Audit artifacts for licensing and planned-vs-implemented language consistency.
       - **Dependencies/prerequisites:** P8-T3-ST1.
       - **Deliverables/artifacts:** Licensing/repository-language conformance note (`VA-X6`).
       - **Acceptance criteria:** No section contradicts `AGENTS.md` constraints.
@@ -934,7 +938,7 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P1, Order 27.
   - **Risks/notes:** Keep unresolved policy questions visible.
 
-### Phase 9 - Release Conformance and Execution Handoff (V9-G9)
+### Phase 9 - Reference Implementation, Perf/Stress Validation, and v0.9 Shipping (V9-G9)
 
 - [ ] **[P0][Order 28] P9-T1 Close scope-to-task-to-artifact traceability**
   - **Objective:** Achieve complete auditable traceability for all v0.9 scope bullets.
@@ -961,7 +965,7 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 28.
   - **Risks/notes:** Primary release-conformance blocker set.
 
-- [ ] **[P1][Order 29] P9-T2 Build release-conformance checklist with evidence linkage**
+- [ ] **[P1][Order 29] P9-T2 Build release-conformance checklist with evidence linkage (including perf/stress reports)**
   - **Objective:** Provide deterministic go/no-go planning handoff checklist.
   - **Concrete actions:**
     - [ ] **P9-T2-ST1 Assemble gate-aligned conformance checklist sections**
@@ -984,9 +988,9 @@ Validation artifact taxonomy IDs for v0.9:
   - **Deliverables/artifacts:** Conformance checklist package (`VA-H3`, `VA-H4`).
   - **Acceptance criteria:** V9-G9 conformance checklist criteria met.
   - **Suggested priority/order:** P1, Order 29.
-  - **Risks/notes:** Keep planning-only language explicit.
+  - **Risks/notes:** Keep planned-vs-implemented language explicit.
 
-- [ ] **[P1][Order 30] P9-T3 Prepare execution handoff dossier and forward deferral register**
+- [ ] **[P1][Order 30] P9-T3 Prepare operator/reviewer dossier and forward deferral register**
   - **Objective:** Finalize execution-ready planning handoff with explicit future deferrals.
   - **Concrete actions:**
     - [ ] **P9-T3-ST1 Compile execution handoff dossier with gate outcomes and residual risks**
@@ -994,7 +998,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Concrete actions:** Aggregate gate outcomes, evidence index, unresolved decisions, and residual-risk summary.
       - **Dependencies/prerequisites:** P9-T2.
       - **Deliverables/artifacts:** Execution handoff dossier (`VA-H5`).
-      - **Acceptance criteria:** Dossier is complete, internally consistent, and planning-only.
+      - **Acceptance criteria:** Dossier is complete, internally consistent, and planned-vs-implemented.
       - **Suggested priority/order:** P1, Order 30.1.
       - **Risks/notes:** Missing context creates execution ambiguity.
     - [ ] **P9-T3-ST2 Build v1.0+/post-v1 deferral register from v0.9 residuals**
@@ -1010,6 +1014,128 @@ Validation artifact taxonomy IDs for v0.9:
   - **Acceptance criteria:** V9-G9 exit criteria satisfied with full handoff evidence.
   - **Suggested priority/order:** P1, Order 30.
   - **Risks/notes:** Preserve planned-vs-implemented distinction.
+
+
+- [ ] **[P0][Order 31] P9-T4 Implement IPFS persistent hosting for server attachments and history objects**
+  - **Objective:** Implement the IPFS hosting layer defined in `P1-T1`-`P1-T3` so servers can persist and retrieve large objects without central storage.
+  - **Concrete actions:**
+    - [ ] **P9-T4-ST1 Implement IPFS integration module (pin, unpin, fetch, GC) with bounded resources**
+      - **Objective:** Provide a deployable, testable IPFS adapter with safe defaults.
+      - **Concrete actions:** Implement client wrapper; enforce timeouts and size bounds; implement pinset management; add mock mode for tests.
+      - **Dependencies/prerequisites:** `P1-T1`, `P1-T2`.
+      - **Deliverables/artifacts:** `pkg/v09/ipfs/*` + unit tests (`VA-C1`).
+      - **Acceptance criteria:** Unit tests cover pin/fetch/GC; mock mode allows deterministic CI.
+      - **Suggested priority/order:** P0, Order 31.1.
+      - **Risks/notes:** Unbounded IPFS fetch can become a DoS vector.
+    - [ ] **P9-T4-ST2 Wire IPFS object addressing into attachment/history retrieval paths**
+      - **Objective:** Ensure client/relay can resolve objects deterministically with degraded modes.
+      - **Concrete actions:** Implement IPFS CID handling; implement fallback to direct transfer where allowed; implement “missing object” semantics.
+      - **Dependencies/prerequisites:** `P1-T3`.
+      - **Deliverables/artifacts:** Retrieval path integration + tests (`VA-C2`).
+      - **Acceptance criteria:** Integration tests show attachments resolve via IPFS when pinned; degraded mode is deterministic when missing.
+      - **Suggested priority/order:** P0, Order 31.2.
+      - **Risks/notes:** CID canonicalization errors will break interoperability.
+  - **Dependencies/prerequisites:** `P1-T1` through `P1-T3`.
+  - **Deliverables/artifacts:** IPFS hosting reference implementation (`VA-C1`-`VA-C2`).
+  - **Acceptance criteria:** A relay configured with IPFS can publish and retrieve attachments reliably with bounded resource use.
+  - **Suggested priority/order:** P0, Order 31.
+  - **Risks/notes:** Treat any unbounded resource behavior as release-blocking.
+
+- [ ] **[P0][Order 32] P9-T5 Implement hierarchical GossipSub tuning for large servers**
+  - **Objective:** Implement the large-server messaging scalability profile (`P2-T1`-`P2-T3`) including topic hierarchy and fanout controls.
+  - **Concrete actions:**
+    - [ ] **P9-T5-ST1 Implement topic hierarchy mapping and subscription policy**
+      - **Objective:** Prevent “everyone subscribes to everything” failure modes.
+      - **Concrete actions:** Implement topic naming; implement subscription rules by channel membership; implement join/leave churn handling.
+      - **Dependencies/prerequisites:** `P2-T1`.
+      - **Deliverables/artifacts:** Topic mapping implementation + tests (`VA-C3`).
+      - **Acceptance criteria:** Simulated membership changes do not cause message loss or uncontrolled fanout.
+      - **Suggested priority/order:** P0, Order 32.1.
+      - **Risks/notes:** Topic naming becomes a long-term compatibility surface.
+    - [ ] **P9-T5-ST2 Implement fanout/batching controls and measure baseline throughput**
+      - **Objective:** Achieve predictable throughput under load.
+      - **Concrete actions:** Tune GossipSub params; implement batching; capture baseline metrics; add regression thresholds.
+      - **Dependencies/prerequisites:** `P2-T2`, `P4-T1`.
+      - **Deliverables/artifacts:** Tuning config + perf harness runs (`VA-C4`, `VA-E1`).
+      - **Acceptance criteria:** Documented baseline throughput and latency numbers exist and are reproducible.
+      - **Suggested priority/order:** P0, Order 32.2.
+      - **Risks/notes:** Avoid tuning that only works in synthetic environments.
+  - **Dependencies/prerequisites:** `P2-T1` through `P2-T3`.
+  - **Deliverables/artifacts:** Large-server messaging implementation evidence (`VA-C3`-`VA-C4`, `VA-E1`).
+  - **Acceptance criteria:** Large-server profile can be enabled and demonstrates improved throughput/latency in reproducible tests.
+  - **Suggested priority/order:** P0, Order 32.
+  - **Risks/notes:** Treat uncontrolled resource amplification as a blocker.
+
+- [ ] **[P0][Order 33] P9-T6 Implement cascading SFU mesh for 200+ participant voice**
+  - **Objective:** Implement the cascading SFU topology defined in `P3-T1`-`P3-T3` with observable QoS and stable failure handling.
+  - **Concrete actions:**
+    - [ ] **P9-T6-ST1 Implement SFU-to-SFU federation handshake and stream routing rules**
+      - **Objective:** Make multi-SFU calls interoperable and stable.
+      - **Concrete actions:** Implement federation control plane; implement routing decisions; implement join/leave behavior; enforce encryption boundaries.
+      - **Dependencies/prerequisites:** `P3-T1`, existing SFU baseline.
+      - **Deliverables/artifacts:** Federation control-plane implementation + tests (`VA-C5`).
+      - **Acceptance criteria:** Simulation tests show stable routing under join/leave churn.
+      - **Suggested priority/order:** P0, Order 33.1.
+      - **Risks/notes:** Federation adds complexity; keep control plane minimal.
+    - [ ] **P9-T6-ST2 Implement QoS telemetry and failure recovery (dropouts, SFU failover)**
+      - **Objective:** Prevent “silent” call degradation.
+      - **Concrete actions:** Add telemetry; implement failover rules; define deterministic recovery states; add integration tests.
+      - **Dependencies/prerequisites:** `P3-T2`, `P4-T2`.
+      - **Deliverables/artifacts:** QoS metrics + failover tests (`VA-C6`, `VA-E2`).
+      - **Acceptance criteria:** Tests demonstrate deterministic recovery actions and bounded reconnection loops.
+      - **Suggested priority/order:** P0, Order 33.2.
+      - **Risks/notes:** Failover loops can melt networks; bound retries.
+  - **Dependencies/prerequisites:** `P3-T1` through `P3-T3`.
+  - **Deliverables/artifacts:** Cascading SFU implementation evidence (`VA-C5`-`VA-C6`, `VA-E2`).
+  - **Acceptance criteria:** A 200+ participant synthetic test run is reproducible and results are recorded.
+  - **Suggested priority/order:** P0, Order 33.
+  - **Risks/notes:** If 200+ is not reachable initially, ship with explicit staged thresholds and deferral.
+
+- [ ] **[P0][Order 34] P9-T7 Implement cross-platform profiling harness and optimization loop**
+  - **Objective:** Provide repeatable profiling runs for desktop and mobile and convert findings into prioritized fixes.
+  - **Concrete actions:** Add profiling build flags; add CPU/memory trace capture; define baseline metrics; produce “top 10 hotspots” log; land optimizations behind benchmarks.
+  - **Dependencies/prerequisites:** `P4-T1`, `P4-T2`.
+  - **Deliverables/artifacts:** Profiling harness scripts + baseline reports (`VA-E3`).
+  - **Acceptance criteria:** A new contributor can reproduce baseline profiles and see stable metric outputs.
+  - **Suggested priority/order:** P0, Order 34.
+  - **Risks/notes:** Without repeatability, profiling data is not actionable.
+
+- [ ] **[P0][Order 35] P9-T8 Build and run 1000-member stress test campaign**
+  - **Objective:** Convert the stress-test contracts (`P5-T1`-`P5-T3`) into executable campaigns with recorded results and regression thresholds.
+  - **Concrete actions:** Implement load generator; implement scenario scripting; run 1000-member campaigns; record CPU/mem/bw; produce pass/fail thresholds.
+  - **Dependencies/prerequisites:** `P5-T1` through `P5-T3`, `P9-T5`.
+  - **Deliverables/artifacts:** Stress harness + campaign reports (`VA-E4`).
+  - **Acceptance criteria:** Campaigns are reproducible; results are stored as versioned artifacts; thresholds are enforced in CI where feasible.
+  - **Suggested priority/order:** P0, Order 35.
+  - **Risks/notes:** Synthetic tests must be documented as synthetic; avoid overstating production equivalence.
+
+- [ ] **[P0][Order 36] P9-T9 Achieve relay performance target (10k simultaneous clients) with evidence**
+  - **Objective:** Implement optimizations and configuration required to support 10k clients per relay and provide reproducible evidence.
+  - **Concrete actions:** Profile relay; optimize hot paths; tune connection limits; add backpressure; run load tests; document recommended sizing.
+  - **Dependencies/prerequisites:** `P6-T1` through `P6-T3`, `P9-T7`.
+  - **Deliverables/artifacts:** Relay perf changes + load test reports (`VA-C7`, `VA-E5`).
+  - **Acceptance criteria:** Load test meets target within defined hardware profile; failure modes are bounded and documented.
+  - **Suggested priority/order:** P0, Order 36.
+  - **Risks/notes:** Define “10k clients” precisely (connected vs active) and keep evidence aligned.
+
+- [ ] **[P0][Order 37] P9-T10 Implement battery optimization policies and validate on mobile**
+  - **Objective:** Implement the mobile battery policies defined in `P7-T1`-`P7-T3` and validate against measurable budgets.
+  - **Concrete actions:** Add adaptive polling; implement wake budgeting; minimize background work; measure energy impact; document recommended settings.
+  - **Dependencies/prerequisites:** `P7-T1` through `P7-T3`, platform build pipeline.
+  - **Deliverables/artifacts:** Battery optimization code + measurement notes (`VA-C8`, `VA-E6`).
+  - **Acceptance criteria:** Measurements show improvement vs baseline with no message-loss regressions.
+  - **Suggested priority/order:** P1, Order 37.
+  - **Risks/notes:** Mobile OS policies are volatile; keep results platform-specific and date-stamped.
+
+- [ ] **[P0][Order 38] P9-T11 Publish v0.9 benchmark suite, thresholds, and reproducibility runbook**
+  - **Objective:** Make v0.9 performance claims reproducible and reviewable.
+  - **Concrete actions:** Document how to run perf/stress suites; define hardware profiles; define thresholds; publish known limitations.
+  - **Dependencies/prerequisites:** `P9-T4` through `P9-T10`.
+  - **Deliverables/artifacts:** `docs/v0.9/perf-runbook.md` + threshold config (`VA-H3`, `VA-E7`).
+  - **Acceptance criteria:** A reviewer can reproduce key benchmarks end-to-end.
+  - **Suggested priority/order:** P1, Order 38.
+  - **Risks/notes:** Benchmarks without reproducibility are not credible.
+
 
 ---
 
@@ -1060,10 +1186,18 @@ Validation artifact taxonomy IDs for v0.9:
 26. P8-T2
 27. P8-T3
 
-### Wave J - Release conformance/handoff (V9-G9)
+### Wave J - Shipping work: implementation + perf/stress evidence + release conformance (V9-G9)
 28. P9-T1
 29. P9-T2
 30. P9-T3
+31. P9-T4
+32. P9-T5
+33. P9-T6
+34. P9-T7
+35. P9-T8
+36. P9-T9
+37. P9-T10
+38. P9-T11
 
 ---
 
@@ -1080,14 +1214,14 @@ Validation artifact taxonomy IDs for v0.9:
 
 | Scope Item ID | v0.9 Scope Bullet | Primary Tasks | Validation Artifacts | Acceptance Anchor |
 |---|---|---|---|---|
-| S9-01 | IPFS integration for persistent file hosting (pinning by server owners) | P1-T1, P1-T2, P1-T3 | VA-I1, VA-I2, VA-I3, VA-I4, VA-I5, VA-I6, VA-X1 | P1-T1/P1-T2 acceptance + P8-T1 integrated coverage |
-| S9-02 | Large server optimization: hierarchical GossipSub, lazy member loading | P2-T1, P2-T2, P2-T3 | VA-L1, VA-L2, VA-L3, VA-L4, VA-L5, VA-L6, VA-L7, VA-X1 | P2-T1/P2-T2 acceptance + P8-T1 integrated coverage |
-| S9-03 | Cascading SFU mesh for 200+ participant voice | P3-T1, P3-T2, P3-T3 | VA-S1, VA-S2, VA-S3, VA-S4, VA-S5, VA-S6, VA-X1 | P3-T1/P3-T2 acceptance + P8-T1 integrated coverage |
-| S9-04 | Performance profiling and optimization across all platforms | P4-T1, P4-T2, P4-T3 | VA-P1, VA-P2, VA-P3, VA-P4, VA-P5, VA-P6, VA-X1 | P4-T1/P4-T2 acceptance + P8-T1 integrated coverage |
-| S9-05 | Stress testing: 1000-member server, 50-person voice, latency benchmarks | P5-T1, P5-T2, P5-T3 | VA-T1, VA-T2, VA-T3, VA-T4, VA-T5, VA-T6, VA-X1 | P5-T1/P5-T2 acceptance + P8-T1 integrated coverage |
-| S9-06 | Relay node performance optimization and load testing | P6-T1, P6-T2, P6-T3 | VA-R1, VA-R2, VA-R3, VA-R4, VA-R5, VA-R6, VA-X1 | P6-T1/P6-T2 acceptance + P8-T1 integrated coverage |
-| S9-07 | Battery optimization on mobile (background activity reduction) | P7-T1, P7-T2, P7-T3 | VA-B1, VA-B2, VA-B3, VA-B4, VA-B5, VA-B6, VA-X1 | P7-T1/P7-T2 acceptance + P8-T1 integrated coverage |
-| S9-08 | Scale-driven security-mode transitions + sharding guidance for huge interactive channels | P2-T2, P5-T1 | VA-L7, VA-T1, VA-T2, VA-X1 | P2-T2/P5-T1 acceptance + P8-T1 integrated coverage |
+| S9-01 | IPFS integration for persistent file hosting (pinning by server owners) | P1-T1 P1-T2 P1-T3 P9-T4 P9-T11 | VA-I1 VA-I2 VA-I3 VA-I4 VA-I5 VA-I6 VA-C1 VA-C2 VA-E1 VA-E7 | P9-T4 acceptance + P9-T11 reproducibility runbook |
+| S9-02 | Large server optimization: hierarchical GossipSub, lazy member loading | P2-T1 P2-T2 P2-T3 P9-T5 P9-T8 P9-T11 | VA-L1 VA-L2 VA-L3 VA-L4 VA-L5 VA-L6 VA-L7 VA-C3 VA-C4 VA-E1 VA-E4 VA-E7 | P9-T5 acceptance + P9-T8 campaign evidence |
+| S9-03 | Cascading SFU mesh for 200+ participant voice | P3-T1 P3-T2 P3-T3 P9-T6 P9-T8 P9-T11 | VA-S1 VA-S2 VA-S3 VA-S4 VA-S5 VA-S6 VA-C5 VA-C6 VA-E2 VA-E4 VA-E7 | P9-T6 acceptance + P9-T8 campaign evidence |
+| S9-04 | Performance profiling and optimization across all platforms | P4-T1 P4-T2 P4-T3 P9-T7 P9-T11 | VA-P1 VA-P2 VA-P3 VA-P4 VA-P5 VA-P6 VA-E3 VA-E7 | P9-T7 baseline reports + P9-T11 runbook |
+| S9-05 | Stress testing: 1000-member server, 50-person voice, latency benchmarks | P5-T1 P5-T2 P5-T3 P9-T8 P9-T11 | VA-T1 VA-T2 VA-T3 VA-T4 VA-T5 VA-T6 VA-E4 VA-E7 | P9-T8 campaign reports + thresholds |
+| S9-06 | Relay node performance optimization and load testing | P6-T1 P6-T2 P6-T3 P9-T9 P9-T11 | VA-R1 VA-R2 VA-R3 VA-R4 VA-R5 VA-R6 VA-C7 VA-E5 VA-E7 | P9-T9 load test reports + sizing guidance |
+| S9-07 | Battery optimization on mobile (background activity reduction) | P7-T1 P7-T2 P7-T3 P9-T10 P9-T11 | VA-B1 VA-B2 VA-B3 VA-B4 VA-B5 VA-B6 VA-C8 VA-E6 VA-E7 | P9-T10 measurement evidence + policy docs |
+| S9-08 | Scale-driven security-mode transitions + sharding guidance for huge interactive channels | P2-T2 P5-T1 P9-T5 P9-T8 P9-T11 | VA-L7 VA-T1 VA-T2 VA-C3 VA-E4 VA-E7 | P9-T5 sharding behavior + P9-T8 stress evidence |
 
 ### I.3 Traceability closure rules
 - Any scope item without task mapping blocks V9-G9.
@@ -1133,48 +1267,38 @@ Handling rule:
 
 ---
 
-## L. Release-Conformance Checklist for Execution Handoff (V9-G9)
+## L. Release-Conformance Checklist for v0.9 Shipping (V9-G9)
 
-v0.9 planning is execution-ready only when all items below are satisfied.
+v0.9 is considered **shipped** only when the scalability and performance scope is implemented and validated with reproducible evidence (benchmarks, stress campaigns, and documented thresholds).
 
-### L.1 Scope and boundary integrity
-- [ ] All 8 v0.9 roadmap bullets are mapped to tasks, artifacts, and acceptance anchors.
-- [ ] Out-of-scope boundaries are documented and referenced by gate checklists.
-- [ ] No v1.0+ or post-v1 capabilities are imported into v0.9 tasks.
+### L.1 Build and test integrity
+- [ ] `go test ./...` passes for supported platforms/build tags.
+- [ ] Each v0.9 capability has reference implementation evidence (`VA-C*`) and a reproducible harness/run (`VA-E*`).
+- [ ] Any tuning parameters are documented with safe defaults and rollback posture.
 
-### L.2 Dependency and sequencing integrity
-- [ ] v0.1 through v0.8 prerequisite assumptions are linked to dependent tasks.
-- [ ] Task ordering is dependency-coherent across all phases.
-- [ ] Gate exit criteria are deterministic and evidence-backed.
+### L.2 Reproducible perf/stress evidence (mandatory)
+- [ ] A perf/stress runbook exists (`P9-T11`) with exact commands, hardware profiles, and expected outputs.
+- [ ] 1000-member stress campaigns have been executed and results are versioned (`P9-T8`).
+- [ ] Relay load tests meet the defined 10k-client target within the stated hardware profile (`P9-T9`).
+- [ ] Voice scalability tests (cascading SFU) are executed and recorded (`P9-T6`).
 
-### L.3 Compatibility and governance integrity
-- [ ] Additive-only protobuf discipline is applied to all schema-touching artifacts.
-- [ ] Any breaking candidate includes major-path governance evidence.
-- [ ] New multistream IDs and downgrade negotiation requirements are preserved where applicable.
-- [ ] AEP flow and multi-implementation validation are referenced for breaking pathways.
-- [ ] Single-binary and protocol-first invariants are preserved across all artifacts.
+### L.3 Scope-bullet acceptance
+- [ ] IPFS hosting works end-to-end with bounded resource use and deterministic degraded modes when content is missing.
+- [ ] Hierarchical GossipSub tuning produces measurable throughput/latency improvements and does not regress correctness.
+- [ ] Profiling harness is repeatable and optimizations are linked to before/after metrics.
+- [ ] Battery optimizations show measurable improvement without message-loss regressions.
 
-### L.4 Validation and traceability integrity
-- [ ] Evidence model rules are enforced for all tasks and gates.
-- [ ] Cross-domain positive/adverse/saturation/recovery scenarios cover all eight scope bullets.
-- [ ] Traceability closure rules are satisfied with explicit evidence links.
-
-### L.5 Documentation quality and handoff completeness
-- [ ] Planned-vs-implemented separation is explicit in all sections.
-- [ ] Open decisions remain unresolved and tracked with revisit gates.
-- [ ] Licensing language remains aligned: code permissive MIT-like and protocol specification CC-BY-SA.
-- [ ] Release-conformance checklist includes pass/fail status and evidence links per scope item.
-- [ ] Execution handoff dossier and v1.0+/post-v1 deferral register are complete and roadmap-aligned.
+### L.4 Operational readiness
+- [ ] Sizing guidance exists for relays and SFU components (CPU/mem/bw and storage).
+- [ ] Monitoring and alert thresholds are documented for the perf-critical components.
+- [ ] Known limitations are explicitly listed (what scale is proven, what is aspirational).
 
 ---
 
-## M. Definition of Done for v0.9 Planning Artifact
+## M. Definition of Done for v0.9
 
-This planning artifact is complete when:
-1. It captures all mandatory v0.9 scope bullets and excludes unauthorized scope expansion.
-2. It provides gate/phase/task/sub-task detail with objective, concrete actions, dependencies, deliverables, acceptance criteria, order, priority, and risks.
-3. It preserves protocol-first and single-binary architecture invariants.
-4. It embeds compatibility/governance constraints for additive evolution and breaking-change pathways (new multistream IDs, downgrade negotiation, AEP, and multi-implementation validation).
-5. It includes deterministic verification evidence model and traceability closure rules.
-6. It includes integrated validation/governance-readiness and final release-conformance/handoff phases.
-7. It remains planning-only and does not claim implementation completion.
+v0.9 is complete when:
+1. All v0.9 roadmap bullets are implemented in reference components (IPFS hosting, large-server messaging optimization, cascading SFU, profiling+optimization, stress/load testing, relay perf, battery optimization).
+2. Performance claims are backed by reproducible harnesses and versioned reports.
+3. Configuration defaults are safe, documented, and rollbackable.
+4. Release notes and docs accurately describe validated scale limits and known constraints.

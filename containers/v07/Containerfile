@@ -1,0 +1,16 @@
+FROM docker.io/library/golang:1.23.4@sha256:ccdca3b3bde3bfee2518a087b467f2b452fad9ba3e378d3c1578db494c8cb13b AS builder
+
+WORKDIR /src
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o /out/aether-push-relay ./cmd/aether-push-relay
+
+FROM docker.io/library/alpine:3.20.3@sha256:029a752048e32e843bd6defe3841186fb8d19a28dae8ec287f433bb9d6d1ad85
+RUN addgroup -S aether && adduser -S -G aether aether
+WORKDIR /app
+COPY --from=builder /out/aether-push-relay /usr/local/bin/aether-push-relay
+USER aether
+ENTRYPOINT ["/usr/local/bin/aether-push-relay"]
+CMD ["--mode=relay"]

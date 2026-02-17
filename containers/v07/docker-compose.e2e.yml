@@ -1,0 +1,45 @@
+version: "3.9"
+services:
+  bootstrap:
+    build:
+      context: ../..
+      dockerfile: containers/relay/Containerfile
+    command: ["--mode=bootstrap"]
+
+  relay-a:
+    build:
+      context: ../..
+      dockerfile: containers/relay/Containerfile
+    command: ["--mode=relay"]
+    depends_on:
+      - bootstrap
+
+  relay-b:
+    build:
+      context: ../..
+      dockerfile: containers/relay/Containerfile
+    command: ["--mode=relay"]
+    depends_on:
+      - bootstrap
+
+  pushrelay:
+    build:
+      context: ../..
+      dockerfile: containers/v07/Containerfile
+    command: ["--mode=relay"]
+    ports:
+      - "4007:4000"
+    depends_on:
+      - bootstrap
+
+  client-a:
+    image: docker.io/library/alpine:3.20.3@sha256:029a752048e32e843bd6defe3841186fb8d19a28dae8ec287f433bb9d6d1ad85
+    command: ["/bin/sh", "-c", "while true; do sleep 3600; done"]
+    depends_on:
+      - relay-a
+
+  client-b:
+    image: docker.io/library/alpine:3.20.3@sha256:029a752048e32e843bd6defe3841186fb8d19a28dae8ec287f433bb9d6d1ad85
+    command: ["/bin/sh", "-c", "while true; do sleep 3600; done"]
+    depends_on:
+      - relay-b
