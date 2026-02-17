@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  bootstrap-node:
+    image: code_aether/xorein-bootstrap:v1.0
+    deploy:
+      replicas: 10
+      placement:
+        constraints: [node.role == manager]
+    environment:
+      - MODE=bootstrap
+      - PROFILE=harmolyn
+    labels:
+      com.release.anchor: "VA-N1"
+  relay-node:
+    image: code_aether/xorein-relay:v1.0
+    deploy:
+      replicas: 4
+      restart_policy:
+        condition: on-failure
+    environment:
+      - MODE=relay
+    labels:
+      com.release.anchor: "VA-N4"

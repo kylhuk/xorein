@@ -10,11 +10,15 @@ This register tracks the remaining unresolved decisions and keeps adopted baseli
 |---|---|---|
 | RM-01 | Naming baseline set: chat app is `Harmolyn`; protocol/backend/spec baseline is `xorein`; legacy `Aether` references retained only for traceability/migration context. | `TODO_v09.md`, `TODO_v10.md` |
 | RM-02 | Relay participation is non-token and incentive-free; operators self-fund infrastructure. | `TODO_v09.md`, `TODO_v10.md` |
+| RM-03 | Security-floor characterization closed: +50 incremental campaigns established per-mode thresholds; crossing thresholds requires explicit no-silent-downgrade signaling, new `mode_epoch_id`, and sharding/fallback guidance. | `TODO_v09.md`, `TODO_v10.md` |
 | RM-04 | Governance path: open-source now (AGPL code) with planned consortium model later; minimal legal/liability text remains a required artifact. | `AGENTS.md`, `TODO_v09.md`, `TODO_v10.md` |
 | RM-05 | Decentralized continuity posture: initial single operator is allowed, but explicit operator succession/handover continuity is mandatory. | `TODO_v09.md`, `TODO_v10.md` |
 | OD3-02 | Ranking tie-break baseline adopted (provisional): relevance -> trust -> recency -> deterministic lexical tie-break. | `TODO_v09.md`, `TODO_v10.md` |
 | OD3-03 | RNNoise fallback remains mandatory through v0.9 baseline and is carried into v1.0 readiness checks. | `TODO_v09.md`, `TODO_v10.md` |
 | OD3-04 | Discovery privacy default adopted: single-indexer query with rotation; multi-index parallel querying remains opt-in. | `TODO_v09.md`, `TODO_v10.md` |
+| OD3-01 | Directory freshness baseline adopted: soft TTL 24h with stale grace to 72h and explicit stale labeling/next-action guidance. | `TODO_v09.md`, `TODO_v10.md` |
+| OD4-01 | Moderation race baseline adopted: first-come-first-served with a 5-second race window, full audit trail, and deterministic second-action handling. | `TODO_v09.md`, `TODO_v10.md` |
+| OD4-02 | Policy rollback baseline adopted: alpha 7d, beta 72h, live 24h rollback windows; privileged override allowed up to 7d with explicit audit reason. | `TODO_v09.md`, `TODO_v10.md` |
 | OD4-03 | Conservative auto-mod threshold posture adopted as moderation baseline. | `TODO_v09.md`, `TODO_v10.md` |
 | OD5-01..OD5-05 | Bot delivery, Discord subset boundary, emoji retention, webhook signing, and SDK governance defaults adopted. | `TODO_v09.md`, `TODO_v10.md` |
 | OD6-01..OD6-03 | Discovery hardening, PoW adaptation, and sparse-graph trust weighting defaults adopted. | `TODO_v09.md`, `TODO_v10.md` |
@@ -26,16 +30,13 @@ This register tracks the remaining unresolved decisions and keeps adopted baseli
 
 | Decision ID | Open question | Owner role | Revisit gate | Source |
 |---|---|---|---|---|
-| RM-03 | Exact hard limits per encryption/security mode and explicit policy when limits are reached (including no-silent-downgrade handling). | Performance Governance Lead + SecurityMode Contract Lead | `V9-G5`, `V9-G8`, carry-forward in `V10-G10` | `open_decisions_proposals.md`, `TODO_v09.md` |
-| OD3-01 | Directory freshness/retention cliff and stale-state behavior when availability is fully peer-dependent. | Persistent Hosting Contract Lead | `V9-G1` | `open_decisions_proposals.md`, `TODO_v09.md` |
-| OD4-01 | Exact race-window threshold for first-come-first-served moderator vs auto-mod actions. | Moderation Governance Lead | `V9-G8` | `open_decisions_proposals.md`, `TODO_v09.md` |
-| OD4-02 | Exact rollback-window values by lifecycle stage (alpha/beta/live) for policy version rollback. | Moderation Governance Lead | `V9-G8`, carry-forward in `V10-G10` | `open_decisions_proposals.md`, `TODO_v09.md`, `TODO_v10.md` |
+| None | - | - | - | - |
 
 ## 3) Totals
 
 - Total tracked decisions (RM + OD3..OD9): 36
-- Adopted baselines: 32
-- Remaining open decisions: 4
+- Adopted baselines: 36
+- Remaining open decisions: 0
 
 ## 4) Update rules
 

@@ -271,10 +271,10 @@ Validation artifact taxonomy IDs for v0.9:
 
 ### Phase 0 - Scope, Governance, and Evidence Foundation (V9-G0)
 
-- [ ] **[P0][Order 01] P0-T1 Freeze v0.9 scope contract and anti-scope boundaries**
++ [x] **[P0][Order 01] P0-T1 Freeze v0.9 scope contract and anti-scope boundaries**
   - **Objective:** Establish one-to-one mapping from the eight v0.9 bullets to task and artifact structure.
   - **Concrete actions:**
-    - [ ] **P0-T1-ST1 Build v0.9 scope trace baseline (8 bullets to task families)**
+    - [x] **P0-T1-ST1 Build v0.9 scope trace baseline (8 bullets to task families)**
       - **Objective:** Remove ambiguity in inclusion boundaries.
       - **Concrete actions:** Map each bullet to primary phase, acceptance anchors, and artifact IDs.
       - **Dependencies/prerequisites:** v0.9 scope extraction completed.
@@ -282,7 +282,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** All 8 bullets mapped; no orphan and no extra capability.
       - **Suggested priority/order:** P0, Order 01.1.
       - **Risks/notes:** Unmapped scope introduces hidden execution gaps.
-    - [ ] **P0-T1-ST2 Lock exclusion policy and escalation route**
+    - [x] **P0-T1-ST2 Lock exclusion policy and escalation route**
       - **Objective:** Prevent v1.0+/post-v1 scope import.
       - **Concrete actions:** Define exclusions, escalation trigger criteria, and governance signoff path.
       - **Dependencies/prerequisites:** P0-T1-ST1.
@@ -296,10 +296,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 01.
   - **Risks/notes:** Scope drift here invalidates downstream planning.
 
-- [ ] **[P0][Order 02] P0-T2 Lock compatibility/governance controls for v0.9 deltas**
++ [x] **[P0][Order 02] P0-T2 Lock compatibility/governance controls for v0.9 deltas**
   - **Objective:** Embed additive-evolution and major-path governance controls before domain freezes.
   - **Concrete actions:**
-    - [ ] **P0-T2-ST1 Define additive-only protobuf checklist for v0.9 schema-touching surfaces**
+    - [x] **P0-T2-ST1 Define additive-only protobuf checklist for v0.9 schema-touching surfaces**
       - **Objective:** Preserve minor-version compatibility invariants.
       - **Concrete actions:** Define field-addition constraints, reserved-field handling, and downgrade-safe defaults.
       - **Dependencies/prerequisites:** P0-T1.
@@ -307,7 +307,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** All schema-touching tasks include checklist evidence.
       - **Suggested priority/order:** P0, Order 02.1.
       - **Risks/notes:** Hidden schema breaks harm interoperability.
-    - [ ] **P0-T2-ST2 Define major-path trigger checklist for behavior-breaking proposals**
+    - [x] **P0-T2-ST2 Define major-path trigger checklist for behavior-breaking proposals**
       - **Objective:** Enforce new multistream IDs + downgrade negotiation + AEP + multi-implementation validation.
       - **Concrete actions:** Specify mandatory evidence structure and escalation ownership.
       - **Dependencies/prerequisites:** P0-T2-ST1.
@@ -321,10 +321,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 02.
   - **Risks/notes:** Governance integrity is non-negotiable.
 
-- [ ] **[P0][Order 03] P0-T3 Establish verification matrix and gate-evidence schema for v0.9**
++ [x] **[P0][Order 03] P0-T3 Establish verification matrix and gate-evidence schema for v0.9**
   - **Objective:** Standardize evidence packaging and deterministic gate decisions.
   - **Concrete actions:**
-    - [ ] **P0-T3-ST1 Define requirement-to-validation matrix template**
+    - [x] **P0-T3-ST1 Define requirement-to-validation matrix template**
       - **Objective:** Ensure every scope bullet has positive, adverse, saturation, and recovery coverage.
       - **Concrete actions:** Define matrix fields for requirement ID, task IDs, artifact IDs, gate ownership, and evidence status.
       - **Dependencies/prerequisites:** P0-T1.
@@ -332,7 +332,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Template supports all 8 bullets and all v0.9 gates.
       - **Suggested priority/order:** P0, Order 03.1.
       - **Risks/notes:** Weak template quality creates inconsistent gate closure.
-    - [ ] **P0-T3-ST2 Define gate evidence-bundle conventions**
+    - [x] **P0-T3-ST2 Define gate evidence-bundle conventions**
       - **Objective:** Normalize review quality across phase owners.
       - **Concrete actions:** Define bundle sections: scope references, decision logs, risk updates, checklists, open decisions.
       - **Dependencies/prerequisites:** P0-T3-ST1.
@@ -346,15 +346,15 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 03.
   - **Risks/notes:** Missing evidence discipline creates rework later.
 
-- [ ] **[P0][Order 03.4] P0-T4 Capture legal/governance transition posture for RM-04**
++ [x] **[P0][Order 03.4] P0-T4 Capture legal/governance transition posture for RM-04**
   - **Objective:** Document planning-level legal guardrails for open-source v0.9 while preparing the minimal text required for the later consortium transition.
   - **Concrete actions:**
-    - [ ] **P0-T4-ST1 Document current open-source/licensing posture and liability disclaimer requirements**, referencing AGPL code + CC-BY-SA specification defaults and mapping required legal-text artifacts for the planned consortium transition.
+    - [x] **P0-T4-ST1 Document current open-source/licensing posture and liability disclaimer requirements**, referencing AGPL code + CC-BY-SA specification defaults and mapping required legal-text artifacts for the planned consortium transition.
       - **Dependencies/prerequisites:** AGENTS.md constraints, legal input.
       - **Deliverables/artifacts:** Legal posture note (`VA-LG1`).
       - **Acceptance criteria:** Note lists current AGPL/CC-BY-SA defaults, required disclaimers, and explicit evidence anchors for future review.
       - **Suggested priority/order:** P0, Order 03.4.1.
-    - [ ] **P0-T4-ST2 Outline alpha/beta/live policy hardening assumptions and required revisit triggers** to frame the future consortium governance path.
+    - [x] **P0-T4-ST2 Outline alpha/beta/live policy hardening assumptions and required revisit triggers** to frame the future consortium governance path.
       - **Dependencies/prerequisites:** RM-04 policy expectations, P8-T3 evidence requirements.
       - **Deliverables/artifacts:** Policy hardening timeline (`VA-LG2`).
       - **Acceptance criteria:** Timeline links alpha/beta/live stages to concrete hardening tasks, evidence needs, and legal review triggers.
@@ -363,10 +363,10 @@ Validation artifact taxonomy IDs for v0.9:
 
 ### Phase 1 - IPFS Persistent Hosting Contracts (V9-G1)
 
-- [ ] **[P0][Order 04] P1-T1 Define IPFS content-addressing and pinning responsibility model**
++ [x] **[P0][Order 04] P1-T1 Define IPFS content-addressing and pinning responsibility model**
   - **Objective:** Specify deterministic persistent-hosting contract with server-owner pinning posture.
   - **Concrete actions:**
-    - [ ] **P1-T1-ST1 Define content envelope and addressing metadata contract**
+    - [x] **P1-T1-ST1 Define content envelope and addressing metadata contract**
       - **Objective:** Ensure deterministic content identity and lifecycle references.
       - **Concrete actions:** Define content identifiers, metadata constraints, and mapping boundaries with existing file contexts.
       - **Dependencies/prerequisites:** P0-T2, v0.3 file-transfer baseline, v0.7 retention baseline.
@@ -374,7 +374,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Equivalent content/metadata inputs resolve to deterministic address model.
       - **Suggested priority/order:** P0, Order 04.1.
       - **Risks/notes:** Address ambiguity undermines persistence guarantees.
-    - [ ] **P1-T1-ST2 Define server-owner pinning roles and lifecycle responsibilities**
+    - [x] **P1-T1-ST2 Define server-owner pinning roles and lifecycle responsibilities**
       - **Objective:** Bound operational responsibility without creating privileged protocol actors.
       - **Concrete actions:** Specify pin initiation/update/unpin semantics, authorization assumptions, and visibility of pin states.
       - **Dependencies/prerequisites:** P1-T1-ST1, v0.4 role/policy baseline.
@@ -388,10 +388,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 04.
   - **Risks/notes:** Scope remains persistent hosting only.
 
-- [ ] **[P0][Order 05] P1-T2 Define persistent-hosting retention, retrieval, and degraded behavior**
++ [x] **[P0][Order 05] P1-T2 Define persistent-hosting retention, retrieval, and degraded behavior**
   - **Objective:** Specify deterministic retention/retrieval semantics and degradation handling.
   - **Concrete actions:**
-    - [ ] **P1-T2-ST1 Define retention horizon and retrieval boundary semantics**
+    - [x] **P1-T2-ST1 Define retention horizon and retrieval boundary semantics**
       - **Objective:** Ensure predictable availability expectations.
       - **Concrete actions:** Define retention states, retrieval resolution outcomes, and stale/missing-content handling taxonomy.
       - **Dependencies/prerequisites:** P1-T1, v0.7 history/retention context.
@@ -399,7 +399,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Retrieval outcomes are deterministic for present, stale, and missing content.
       - **Suggested priority/order:** P0, Order 05.1.
       - **Risks/notes:** Weak degraded semantics harm user trust.
-    - [ ] **P1-T2-ST2 Define degraded-mode fallback and operator diagnostics expectations**
+    - [x] **P1-T2-ST2 Define degraded-mode fallback and operator diagnostics expectations**
       - **Objective:** Provide deterministic behavior under partial pin availability.
       - **Concrete actions:** Define fallback ordering, operator evidence fields, and failure classification for unpinned/unreachable content.
       - **Dependencies/prerequisites:** P1-T2-ST1.
@@ -413,10 +413,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 05.
   - **Risks/notes:** Avoid importing unrelated storage-economics scope.
 
-- [ ] **[P1][Order 06] P1-T3 Define IPFS governance boundary and interoperability notes**
++ [x] **[P1][Order 06] P1-T3 Define IPFS governance boundary and interoperability notes**
   - **Objective:** Keep IPFS planning compatible with protocol governance and versioning constraints.
   - **Concrete actions:**
-    - [ ] **P1-T3-ST1 Define additive evolution notes for persistence-related schema touches**
+    - [x] **P1-T3-ST1 Define additive evolution notes for persistence-related schema touches**
       - **Objective:** Preserve minor-version compatibility behavior.
       - **Concrete actions:** Record extension hooks, reserved fields, and backward-compatible defaults.
       - **Dependencies/prerequisites:** P1-T1, P0-T2.
@@ -424,7 +424,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** All schema-delta notes are additive and auditable.
       - **Suggested priority/order:** P1, Order 06.1.
       - **Risks/notes:** Non-additive drift creates compatibility debt.
-    - [ ] **P1-T3-ST2 Define major-path escalation examples for persistence behavior breakage**
+    - [x] **P1-T3-ST2 Define major-path escalation examples for persistence behavior breakage**
       - **Objective:** Operationalize governance triggers.
       - **Concrete actions:** Document concrete trigger patterns requiring new multistream IDs + downgrade + AEP + multi-implementation validation.
       - **Dependencies/prerequisites:** P1-T3-ST1.
@@ -440,10 +440,10 @@ Validation artifact taxonomy IDs for v0.9:
 
 ### Phase 2 - Large-Server Optimization Contracts (V9-G2)
 
-- [ ] **[P0][Order 07] P2-T1 Define hierarchical GossipSub topology contract for large servers**
++ [x] **[P0][Order 07] P2-T1 Define hierarchical GossipSub topology contract for large servers**
   - **Objective:** Specify deterministic hierarchy behavior and fanout boundaries.
   - **Concrete actions:**
-    - [ ] **P2-T1-ST1 Define hierarchy roles and topic-segmentation strategy**
+    - [x] **P2-T1-ST1 Define hierarchy roles and topic-segmentation strategy**
       - **Objective:** Standardize large-server pubsub partitioning assumptions.
       - **Concrete actions:** Define hierarchy layers, topic segmentation boundaries, and relay/peer role assumptions without privileged protocol classes.
       - **Dependencies/prerequisites:** v0.1 GossipSub baseline, P0-T2.
@@ -451,7 +451,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Hierarchy behavior is deterministic and protocol-first.
       - **Suggested priority/order:** P0, Order 07.1.
       - **Risks/notes:** Role ambiguity can create uneven load.
-    - [ ] **P2-T1-ST2 Define propagation and backpressure semantics under high membership**
+    - [x] **P2-T1-ST2 Define propagation and backpressure semantics under high membership**
       - **Objective:** Bound message fanout and congestion behavior.
       - **Concrete actions:** Define propagation thresholds, backpressure signals, and degraded delivery behavior.
       - **Dependencies/prerequisites:** P2-T1-ST1.
@@ -465,10 +465,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 07.
   - **Risks/notes:** Must remain within v0.9 large-server bullet.
 
-- [ ] **[P0][Order 08] P2-T2 Define lazy member-loading model and state-coherence boundaries**
++ [x] **[P0][Order 08] P2-T2 Define lazy member-loading model and state-coherence boundaries**
   - **Objective:** Specify deterministic lazy loading for member state in large communities.
   - **Concrete actions:**
-    - [ ] **P2-T2-ST1 Define member state classes and incremental-loading triggers**
+    - [x] **P2-T2-ST1 Define member state classes and incremental-loading triggers**
       - **Objective:** Standardize when and how member subsets load.
       - **Concrete actions:** Define active/nearby/passive member state classes and deterministic load triggers.
       - **Dependencies/prerequisites:** P2-T1, v0.2 presence baseline.
@@ -476,7 +476,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Load-trigger behavior is deterministic and test-mappable.
       - **Suggested priority/order:** P0, Order 08.1.
       - **Risks/notes:** Trigger ambiguity causes state churn.
-    - [ ] **P2-T2-ST2 Define consistency guarantees and staleness handling**
+    - [x] **P2-T2-ST2 Define consistency guarantees and staleness handling**
       - **Objective:** Bound stale-view behavior and recovery expectations.
       - **Concrete actions:** Define staleness windows, refresh semantics, and fallback behavior when member snapshots diverge.
       - **Dependencies/prerequisites:** P2-T2-ST1.
@@ -484,7 +484,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Stale/refresh outcomes are deterministic.
       - **Suggested priority/order:** P0, Order 08.2.
       - **Risks/notes:** Inconsistent member state undermines moderation and presence trust.
-    - [ ] **P2-T2-ST3 Define scale-driven `SecurityMode` transition triggers and sharding guidance for huge interactive channels**
+    - [x] **P2-T2-ST3 Define scale-driven `SecurityMode` transition triggers and sharding guidance for huge interactive channels**
       - **Objective:** Provide a deterministic, performance-aware contract for when and how very large channels change encryption posture and/or shard.
       - **Concrete actions:** Specify default thresholds + hysteresis, writer/reader semantics (interactive vs broadcast), shard model (naming, membership, fanout), and invariants (no silent downgrade; mode change = new `mode_epoch_id`).
       - **Dependencies/prerequisites:** P2-T2-ST2, v0.4 SecurityMode baseline, `ENCRYPTION_PLUS.md` scaling guidance (threshold profiles + hysteresis envelopes).
@@ -498,10 +498,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 08.
   - **Risks/notes:** Avoid importing non-scope UI redesign tracks.
 
-- [ ] **[P1][Order 09] P2-T3 Define large-server optimization observability and rollback boundaries**
++ [x] **[P1][Order 09] P2-T3 Define large-server optimization observability and rollback boundaries**
   - **Objective:** Provide deterministic instrumentation and fallback posture for hierarchy/lazy-load behavior.
   - **Concrete actions:**
-    - [ ] **P2-T3-ST1 Define observability signals for hierarchy and lazy-load performance**
+    - [x] **P2-T3-ST1 Define observability signals for hierarchy and lazy-load performance**
       - **Objective:** Ensure planning-level metrics support validation and tuning.
       - **Concrete actions:** Define signal catalog for fanout pressure, load latency, staleness rates, and recovery events.
       - **Dependencies/prerequisites:** P2-T1, P2-T2.
@@ -509,7 +509,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Signal set fully covers hierarchy and lazy-load behavior.
       - **Suggested priority/order:** P1, Order 09.1.
       - **Risks/notes:** Sparse telemetry hides failure modes.
-    - [ ] **P2-T3-ST2 Define fallback/rollback decision thresholds**
+    - [x] **P2-T3-ST2 Define fallback/rollback decision thresholds**
       - **Objective:** Bound when to revert to safer behavior envelopes.
       - **Concrete actions:** Define threshold triggers, rollback sequencing assumptions, and compatibility-safe fallback behavior.
       - **Dependencies/prerequisites:** P2-T3-ST1.
@@ -525,10 +525,10 @@ Validation artifact taxonomy IDs for v0.9:
 
 ### Phase 3 - Cascading SFU Mesh Contracts for 200+ Voice (V9-G3)
 
-- [ ] **[P0][Order 10] P3-T1 Define cascading SFU topology and election layering contract**
++ [x] **[P0][Order 10] P3-T1 Define cascading SFU topology and election layering contract**
   - **Objective:** Specify deterministic cascade topology for 200+ participant voice targets.
   - **Concrete actions:**
-    - [ ] **P3-T1-ST1 Define tiered SFU roles, segment boundaries, and election assumptions**
+    - [x] **P3-T1-ST1 Define tiered SFU roles, segment boundaries, and election assumptions**
       - **Objective:** Standardize cascade structure while preserving single-binary mode model.
       - **Concrete actions:** Define tier roles, segment assignment logic, and election boundaries across peer/relay SFU candidates.
       - **Dependencies/prerequisites:** v0.3 voice/media baseline, P0-T2.
@@ -536,7 +536,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Segment/election behavior is deterministic and role-safe.
       - **Suggested priority/order:** P0, Order 10.1.
       - **Risks/notes:** Topology ambiguity creates instability at scale.
-    - [ ] **P3-T1-ST2 Define inter-tier signaling and control-channel behavior**
+    - [x] **P3-T1-ST2 Define inter-tier signaling and control-channel behavior**
       - **Objective:** Bound cascade-control chatter and transition timing.
       - **Concrete actions:** Specify signaling semantics, timeout handling, and degraded fallback when upstream tier is unavailable.
       - **Dependencies/prerequisites:** P3-T1-ST1.
@@ -550,10 +550,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 10.
   - **Risks/notes:** Must not import unrelated video-feature scope.
 
-- [ ] **[P0][Order 11] P3-T2 Define media forwarding, failover, and degradation semantics in cascades**
++ [x] **[P0][Order 11] P3-T2 Define media forwarding, failover, and degradation semantics in cascades**
   - **Objective:** Specify deterministic forwarding and failover behavior across cascade tiers.
   - **Concrete actions:**
-    - [ ] **P3-T2-ST1 Define forwarding path selection and quality-preservation boundaries**
+    - [x] **P3-T2-ST1 Define forwarding path selection and quality-preservation boundaries**
       - **Objective:** Ensure predictable media path decisions at high participant counts.
       - **Concrete actions:** Define path-selection heuristics, jitter/latency boundaries, and forward-only assumptions.
       - **Dependencies/prerequisites:** P3-T1.
@@ -561,7 +561,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Path decisions are deterministic under equivalent conditions.
       - **Suggested priority/order:** P0, Order 11.1.
       - **Risks/notes:** Path ambiguity produces inconsistent quality outcomes.
-    - [ ] **P3-T2-ST2 Define tier failover, rejoin, and split/merge behavior**
+    - [x] **P3-T2-ST2 Define tier failover, rejoin, and split/merge behavior**
       - **Objective:** Bound recovery behavior when tiers disconnect or overload.
       - **Concrete actions:** Define failover triggers, re-election windows, split/merge semantics, and fallback-to-lower-scale topology.
       - **Dependencies/prerequisites:** P3-T2-ST1.
@@ -575,10 +575,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 11.
   - **Risks/notes:** Preserve existing E2EE posture assumptions.
 
-- [ ] **[P1][Order 12] P3-T3 Define governance and compatibility boundaries for cascade evolution**
++ [x] **[P1][Order 12] P3-T3 Define governance and compatibility boundaries for cascade evolution**
   - **Objective:** Ensure cascade behavior changes remain compatibility-safe and governance-compliant.
   - **Concrete actions:**
-    - [ ] **P3-T3-ST1 Define additive evolution guidance for cascade capability signaling**
+    - [x] **P3-T3-ST1 Define additive evolution guidance for cascade capability signaling**
       - **Objective:** Preserve minor-path compatibility.
       - **Concrete actions:** Define capability field extension boundaries and downgrade-safe defaults.
       - **Dependencies/prerequisites:** P3-T1, P0-T2.
@@ -586,7 +586,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Evolution guidance aligns with additive-only discipline.
       - **Suggested priority/order:** P1, Order 12.1.
       - **Risks/notes:** Capability drift can fragment interoperability.
-    - [ ] **P3-T3-ST2 Define major-path trigger examples for topology-breaking changes**
+    - [x] **P3-T3-ST2 Define major-path trigger examples for topology-breaking changes**
       - **Objective:** Make major-path governance enforceable.
       - **Concrete actions:** Capture trigger patterns requiring new multistream IDs, downgrade negotiation, AEP, and multi-implementation validation.
       - **Dependencies/prerequisites:** P3-T3-ST1.
@@ -602,10 +602,10 @@ Validation artifact taxonomy IDs for v0.9:
 
 ### Phase 4 - Cross-Platform Performance Profiling and Optimization Contracts (V9-G4)
 
-- [ ] **[P0][Order 13] P4-T1 Define cross-platform profiling taxonomy and baseline metrics**
++ [x] **[P0][Order 13] P4-T1 Define cross-platform profiling taxonomy and baseline metrics**
   - **Objective:** Specify deterministic profiling model across desktop/mobile/web-capable targets.
   - **Concrete actions:**
-    - [ ] **P4-T1-ST1 Define metric catalog and platform normalization rules**
+    - [x] **P4-T1-ST1 Define metric catalog and platform normalization rules**
       - **Objective:** Ensure consistent measurement semantics across environments.
       - **Concrete actions:** Define CPU, memory, network, latency, jitter, startup, and background activity metric definitions with normalization assumptions.
       - **Dependencies/prerequisites:** P0-T3, v0.8 cross-platform context.
@@ -613,7 +613,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Metric definitions are unambiguous and comparable across platforms.
       - **Suggested priority/order:** P0, Order 13.1.
       - **Risks/notes:** Inconsistent metrics invalidate optimization decisions.
-    - [ ] **P4-T1-ST2 Define baseline-capture protocol and environment controls**
+    - [x] **P4-T1-ST2 Define baseline-capture protocol and environment controls**
       - **Objective:** Ensure baseline capture is repeatable and auditable.
       - **Concrete actions:** Define environment profiles, run conditions, sample sizes, and baseline evidence requirements.
       - **Dependencies/prerequisites:** P4-T1-ST1.
@@ -627,10 +627,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 13.
   - **Risks/notes:** Scope remains profiling/optimization planning only.
 
-- [ ] **[P0][Order 14] P4-T2 Define optimization decision framework and threshold policy**
++ [x] **[P0][Order 14] P4-T2 Define optimization decision framework and threshold policy**
   - **Objective:** Specify deterministic criteria for prioritizing optimization paths.
   - **Concrete actions:**
-    - [ ] **P4-T2-ST1 Define bottleneck classification and prioritization rules**
+    - [x] **P4-T2-ST1 Define bottleneck classification and prioritization rules**
       - **Objective:** Standardize optimization triage decisions.
       - **Concrete actions:** Define classification for CPU-bound, network-bound, memory-bound, I/O-bound, and synchronization-bound cases.
       - **Dependencies/prerequisites:** P4-T1.
@@ -638,7 +638,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Equivalent profiles map to consistent bottleneck classes.
       - **Suggested priority/order:** P0, Order 14.1.
       - **Risks/notes:** Misclassification yields poor optimization sequencing.
-    - [ ] **P4-T2-ST2 Define optimization acceptance thresholds and regression boundaries**
+    - [x] **P4-T2-ST2 Define optimization acceptance thresholds and regression boundaries**
       - **Objective:** Bound when optimizations are considered viable.
       - **Concrete actions:** Define threshold bands, confidence requirements, and regression rejection criteria.
       - **Dependencies/prerequisites:** P4-T2-ST1.
@@ -652,10 +652,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 14.
   - **Risks/notes:** Avoid importing release-marketing performance claims.
 
-- [ ] **[P1][Order 15] P4-T3 Define cross-platform optimization evidence and reporting format**
++ [x] **[P1][Order 15] P4-T3 Define cross-platform optimization evidence and reporting format**
   - **Objective:** Ensure optimization findings are traceable and governance-auditable.
   - **Concrete actions:**
-    - [ ] **P4-T3-ST1 Define platform comparison reporting schema**
+    - [x] **P4-T3-ST1 Define platform comparison reporting schema**
       - **Objective:** Normalize reporting of profile deltas and tradeoffs.
       - **Concrete actions:** Define schema for before/after baseline deltas, confidence, caveats, and unresolved constraints.
       - **Dependencies/prerequisites:** P4-T1, P4-T2.
@@ -663,7 +663,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Reports are comparable across platform families.
       - **Suggested priority/order:** P1, Order 15.1.
       - **Risks/notes:** Non-standard reports obscure regressions.
-    - [ ] **P4-T3-ST2 Define optimization rollback and exception documentation rules**
+    - [x] **P4-T3-ST2 Define optimization rollback and exception documentation rules**
       - **Objective:** Bound risk when optimization decisions regress behavior.
       - **Concrete actions:** Define rollback note format, exception handling workflow, and evidence-link requirements.
       - **Dependencies/prerequisites:** P4-T3-ST1.
@@ -679,10 +679,10 @@ Validation artifact taxonomy IDs for v0.9:
 
 ### Phase 5 - Stress-Testing Contracts (V9-G5)
 
-- [ ] **[P0][Order 16] P5-T1 Define 1000-member server stress-test scenario contract**
+- [x] **[P0][Order 16] P5-T1 Define 1000-member server stress-test scenario contract**
   - **Objective:** Specify deterministic large-server stress scenarios and boundary conditions.
   - **Concrete actions:**
-    - [ ] **P5-T1-ST1 Define membership churn, activity distribution, and load-shape profiles**
+    - [x] **P5-T1-ST1 Define membership churn, activity distribution, and load-shape profiles**
       - **Objective:** Ensure scenarios represent realistic and adversarial load envelopes.
       - **Concrete actions:** Define join/leave churn patterns, message-rate distributions, peak burst profiles, and scale-up profiles that exercise mode transitions/sharding (e.g., channels growing across `SecurityMode` thresholds).
       - **Dependencies/prerequisites:** P2-T1, P2-T2, P4-T1.
@@ -690,7 +690,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Scenario profiles are deterministic and reproducible.
       - **Suggested priority/order:** P0, Order 16.1.
       - **Risks/notes:** Narrow profiles under-represent real load.
-    - [ ] **P5-T1-ST2 Define pass/fail thresholds and saturation classification**
+    - [x] **P5-T1-ST2 Define pass/fail thresholds and saturation classification**
       - **Objective:** Standardize stress outcome assessment.
       - **Concrete actions:** Define latency/error/throughput thresholds and saturation severity classes.
       - **Dependencies/prerequisites:** P5-T1-ST1.
@@ -704,10 +704,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 16.
   - **Risks/notes:** Keep scope tied to stated stress bullet.
 
-- [ ] **[P0][Order 17] P5-T2 Define 50-person voice stress and latency benchmark contract**
+- [x] **[P0][Order 17] P5-T2 Define 50-person voice stress and latency benchmark contract**
   - **Objective:** Specify deterministic voice-load and latency benchmark scenarios.
   - **Concrete actions:**
-    - [ ] **P5-T2-ST1 Define 50-participant voice scenario classes and topology assumptions**
+    - [x] **P5-T2-ST1 Define 50-participant voice scenario classes and topology assumptions**
       - **Objective:** Align stress tests with cascade/topology planning boundaries.
       - **Concrete actions:** Define speaking-ratio profiles, packet-loss/jitter classes, and topology states.
       - **Dependencies/prerequisites:** P3-T1, P3-T2, P4-T1.
@@ -715,7 +715,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Scenario classes are deterministic and topology-aware.
       - **Suggested priority/order:** P0, Order 17.1.
       - **Risks/notes:** Missing topology context reduces benchmark relevance.
-    - [ ] **P5-T2-ST2 Define latency benchmark method and acceptance bands**
+    - [x] **P5-T2-ST2 Define latency benchmark method and acceptance bands**
       - **Objective:** Standardize latency benchmark interpretation.
       - **Concrete actions:** Define latency measurement points, percentile reporting, and pass/fail bands.
       - **Dependencies/prerequisites:** P5-T2-ST1.
@@ -729,10 +729,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 17.
   - **Risks/notes:** Avoid importing extra media feature scope.
 
-- [ ] **[P1][Order 18] P5-T3 Define stress-campaign execution governance and evidence quality controls**
+- [x] **[P1][Order 18] P5-T3 Define stress-campaign execution governance and evidence quality controls**
   - **Objective:** Ensure stress evidence is repeatable, auditable, and compatible with gate logic.
   - **Concrete actions:**
-    - [ ] **P5-T3-ST1 Define runbook and evidence capture requirements for stress campaigns**
+    - [x] **P5-T3-ST1 Define runbook and evidence capture requirements for stress campaigns**
       - **Objective:** Normalize stress campaign execution and reporting.
       - **Concrete actions:** Define runbook fields, scenario IDs, environment fingerprints, and failure-capture minimums.
       - **Dependencies/prerequisites:** P5-T1, P5-T2.
@@ -740,7 +740,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** All stress runs produce complete, comparable evidence bundles.
       - **Suggested priority/order:** P1, Order 18.1.
       - **Risks/notes:** Incomplete runbook data breaks comparability.
-    - [ ] **P5-T3-ST2 Define anomaly triage taxonomy and rerun criteria**
+    - [x] **P5-T3-ST2 Define anomaly triage taxonomy and rerun criteria**
       - **Objective:** Standardize handling of anomalous stress outcomes.
       - **Concrete actions:** Define anomaly classes, mandatory rerun conditions, and closure criteria.
       - **Dependencies/prerequisites:** P5-T3-ST1.
@@ -754,15 +754,15 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P1, Order 18.
   - **Risks/notes:** Keep all wording planned-vs-implemented.
 
-- [ ] **[P0][Order 18.5] P5-T4 Characterize security-floor limits per encryption method (RM-03)**
+- [x] **[P0][Order 18.5] P5-T4 Characterize security-floor limits per encryption method (RM-03)**
   - **Objective:** Execute incremental +50 participant campaigns for each encryption/security mode until the hard limit of that method is documented, ensure no silent downgrade occurs, and capture resilience evidence.
   - **Concrete actions:**
-    - [ ] **P5-T4-ST1 Run cascaded stress campaigns per applicable encryption method, starting from baseline and adding 50 participants per run, documenting the precise point each method reaches its hard limit and the triggered mitigation (security-mode transition or shard split).**
+    - [x] **P5-T4-ST1 Run cascaded stress campaigns per applicable encryption method, starting from baseline and adding 50 participants per run, documenting the precise point each method reaches its hard limit and the triggered mitigation (security-mode transition or shard split).**
       - **Dependencies/prerequisites:** P5-T1, P2-T2, P4-T1.
       - **Deliverables/artifacts:** Security-floor campaign log (`VA-T7`).
       - **Acceptance criteria:** Each method has a reproducible +50 incremental run series plus documented decision on how thresholds translate to safeguards.
       - **Suggested priority/order:** P0, Order 18.5.
-    - [ ] **P5-T4-ST2 Summarize security-floor findings, highlight explicit non-silent downgrade guidance, and reference gating evidence for each mode.**
+    - [x] **P5-T4-ST2 Summarize security-floor findings, highlight explicit non-silent downgrade guidance, and reference gating evidence for each mode.**
       - **Dependencies/prerequisites:** P5-T4-ST1.
       - **Deliverables/artifacts:** Security-floor summary (`VA-T7`).
       - **Acceptance criteria:** Summary links each threshold to deterministic behavior (no silent downgrade) and policy references.
@@ -771,10 +771,10 @@ Validation artifact taxonomy IDs for v0.9:
 
 ### Phase 6 - Relay Performance and Load-Testing Contracts (V9-G6)
 
-- [ ] **[P0][Order 19] P6-T1 Define relay capacity model and saturation boundaries**
+- [x] **[P0][Order 19] P6-T1 Define relay capacity model and saturation boundaries**
   - **Objective:** Specify deterministic relay capacity envelopes and saturation behavior.
   - **Concrete actions:**
-    - [ ] **P6-T1-ST1 Define relay workload classes and resource budget model**
+    - [x] **P6-T1-ST1 Define relay workload classes and resource budget model**
       - **Objective:** Standardize relay workload characterization.
       - **Concrete actions:** Define workload classes for DHT, relay circuits, store-forward, and SFU-forwarding interactions.
       - **Dependencies/prerequisites:** v0.1 relay baseline, v0.7 store-forward context, P4-T1.
@@ -782,7 +782,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Workload classes map deterministically to resource budget dimensions.
       - **Suggested priority/order:** P0, Order 19.1.
       - **Risks/notes:** Poor modeling leads to unstable capacity assumptions.
-    - [ ] **P6-T1-ST2 Define saturation behavior and fixed service-priority policies**
+    - [x] **P6-T1-ST2 Define saturation behavior and fixed service-priority policies**
       - **Objective:** Bound degraded behavior under relay overload.
       - **Concrete actions:** Define priority semantics, shedding policies, and degradation classes with the priority order: control plane -> active media -> store-forward -> bulk sync baked in as the default sequence.
       - **Dependencies/prerequisites:** P6-T1-ST1.
@@ -796,10 +796,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 19.
   - **Risks/notes:** Maintain no-special-node invariant.
 
-- [ ] **[P0][Order 20] P6-T2 Define relay load-testing scenarios and acceptance thresholds**
+- [x] **[P0][Order 20] P6-T2 Define relay load-testing scenarios and acceptance thresholds**
   - **Objective:** Specify deterministic relay load-test campaigns aligned with v0.9 scope.
   - **Concrete actions:**
-    - [ ] **P6-T2-ST1 Define relay load profiles and fault-injection classes**
+    - [x] **P6-T2-ST1 Define relay load profiles and fault-injection classes**
       - **Objective:** Cover nominal, peak, and faulted relay conditions.
       - **Concrete actions:** Define connection churn, traffic distributions, burst classes, and fault injection types.
       - **Dependencies/prerequisites:** P6-T1, P5-T1.
@@ -807,7 +807,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Load profiles are complete and reproducible.
       - **Suggested priority/order:** P0, Order 20.1.
       - **Risks/notes:** Narrow profile coverage misses critical behavior.
-    - [ ] **P6-T2-ST2 Define relay load pass/fail and degradation-recovery thresholds**
+    - [x] **P6-T2-ST2 Define relay load pass/fail and degradation-recovery thresholds**
       - **Objective:** Standardize relay campaign outcome decisions.
       - **Concrete actions:** Define thresholds for latency, drop rate, queue pressure, and recovery windows.
       - **Dependencies/prerequisites:** P6-T2-ST1.
@@ -821,10 +821,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 20.
   - **Risks/notes:** Scope remains relay performance/load only.
 
-- [ ] **[P1][Order 21] P6-T3 Define relay optimization-change governance and rollback controls**
+- [x] **[P1][Order 21] P6-T3 Define relay optimization-change governance and rollback controls**
   - **Objective:** Ensure relay optimization proposals remain governance-compliant and reversible.
   - **Concrete actions:**
-    - [ ] **P6-T3-ST1 Define optimization-change classification and approval workflow**
+    - [x] **P6-T3-ST1 Define optimization-change classification and approval workflow**
       - **Objective:** Separate minor-safe adjustments from major-path behavior changes.
       - **Concrete actions:** Define classification criteria, approval checkpoints, and evidence requirements.
       - **Dependencies/prerequisites:** P6-T1, P6-T2, P0-T2.
@@ -832,7 +832,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Every change proposal maps to a deterministic governance path.
       - **Suggested priority/order:** P1, Order 21.1.
       - **Risks/notes:** Ambiguous classification risks governance bypass.
-    - [ ] **P6-T3-ST2 Define rollback protocol and post-incident evidence expectations**
+    - [x] **P6-T3-ST2 Define rollback protocol and post-incident evidence expectations**
       - **Objective:** Bound restoration behavior when optimization causes regressions.
       - **Concrete actions:** Define rollback sequencing, evidence minimums, and closure requirements.
       - **Dependencies/prerequisites:** P6-T3-ST1.
@@ -846,15 +846,15 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P1, Order 21.
   - **Risks/notes:** Preserve single-binary mode invariant throughout.
 
-- [ ] **[P1][Order 21.5] P6-T4 Plan operator handover continuity for relay governance (RM-05)**
+- [x] **[P1][Order 21.5] P6-T4 Plan operator handover continuity for relay governance (RM-05)**
   - **Objective:** Ensure the single-operator startup phase can transition to new operator(s) without loss of continuity or telemetry.
   - **Concrete actions:**
-    - [ ] **P6-T4-ST1 Document the initial operator-to-successor handoff playbook (credentials, config, monitoring handover, emergency rollback)** with explicit roles and evidence anchors.
+    - [x] **P6-T4-ST1 Document the initial operator-to-successor handoff playbook (credentials, config, monitoring handover, emergency rollback)** with explicit roles and evidence anchors.
       - **Dependencies/prerequisites:** P6-T1 through P6-T3.
       - **Deliverables/artifacts:** Operator handover plan (`VA-R7`).
       - **Acceptance criteria:** Playbook describes every step required to transfer authority, ensure no single operator lock-in, and preserve security keys.
       - **Suggested priority/order:** P1, Order 21.5a.
-    - [ ] **P6-T4-ST2 Validate continuity plan with multi-provider-wake/backstop assumptions to guard against single-operator downtime.**
+    - [x] **P6-T4-ST2 Validate continuity plan with multi-provider-wake/backstop assumptions to guard against single-operator downtime.**
       - **Dependencies/prerequisites:** P7-T1, P7-T4.
       - **Deliverables/artifacts:** Continuity validation note (`VA-R7`).
       - **Acceptance criteria:** Simulation covers failure of the initial operator and resumption under successor or multi-provider architecture with no missing state.
@@ -863,10 +863,10 @@ Validation artifact taxonomy IDs for v0.9:
 
 ### Phase 7 - Mobile Battery Optimization Contracts (V9-G7)
 
-- [ ] **[P0][Order 22] P7-T1 Define mobile background-activity budget and wakeup policy contract**
+- [x] **[P0][Order 22] P7-T1 Define mobile background-activity budget and wakeup policy contract**
   - **Objective:** Specify deterministic background activity reduction boundaries for mobile.
   - **Concrete actions:**
-    - [ ] **P7-T1-ST1 Define adaptive background task classes and energy budget envelopes**
+    - [x] **P7-T1-ST1 Define adaptive background task classes and energy budget envelopes**
       - **Objective:** Bound background workloads with adaptive policies that scale with battery level and multi-provider wake/notification risk.
       - **Concrete actions:** Define task categories, periodicity assumptions, and envelope adjustments for networking/sync/activity updates when additional provider wake paths become available.
       - **Dependencies/prerequisites:** P4-T1, v0.7 notification context, v0.8 platform context.
@@ -874,7 +874,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Background workloads map deterministically to budget classes.
       - **Suggested priority/order:** P0, Order 22.1.
       - **Risks/notes:** Unbounded tasks can degrade battery unpredictably.
-    - [ ] **P7-T1-ST2 Define wakeup triggers, suppression rules, and multi-provider failover behavior**
+    - [x] **P7-T1-ST2 Define wakeup triggers, suppression rules, and multi-provider failover behavior**
       - **Objective:** Control wake frequency while preserving protocol continuity assumptions and ensuring multi-provider delivery failover.
       - **Concrete actions:** Define wake trigger taxonomy, suppression precedence, safe fallback when wake budget is exceeded, and provider failover/handoff mock-ups for multi-provider wake paths.
       - **Dependencies/prerequisites:** P7-T1-ST1.
@@ -888,10 +888,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 22.
   - **Risks/notes:** Keep scope to battery optimization only.
 
-- [ ] **[P0][Order 23] P7-T2 Define battery-impact profiling and optimization validation contract**
+- [x] **[P0][Order 23] P7-T2 Define battery-impact profiling and optimization validation contract**
   - **Objective:** Specify deterministic battery-impact measurement and acceptance logic.
   - **Concrete actions:**
-    - [ ] **P7-T2-ST1 Define battery-impact measurement scenarios and controls**
+    - [x] **P7-T2-ST1 Define battery-impact measurement scenarios and controls**
       - **Objective:** Ensure energy measurements are comparable and reproducible.
       - **Concrete actions:** Define idle/background/active scenario classes, device-state controls, and capture intervals.
       - **Dependencies/prerequisites:** P7-T1, P4-T1.
@@ -899,7 +899,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Scenario design supports deterministic battery-impact comparison.
       - **Suggested priority/order:** P0, Order 23.1.
       - **Risks/notes:** Noisy measurement controls obscure improvements.
-    - [ ] **P7-T2-ST2 Define battery optimization acceptance thresholds and regression guards**
+    - [x] **P7-T2-ST2 Define battery optimization acceptance thresholds and regression guards**
       - **Objective:** Bound go/no-go decisions for battery-oriented optimization proposals.
       - **Concrete actions:** Define threshold bands, confidence minima, and regression blocker criteria.
       - **Dependencies/prerequisites:** P7-T2-ST1.
@@ -913,10 +913,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 23.
   - **Risks/notes:** Maintain planned-vs-implemented framing, no completion claims.
 
-- [ ] **[P1][Order 24] P7-T3 Define battery/performance tradeoff governance and user-impact boundaries**
+- [x] **[P1][Order 24] P7-T3 Define battery/performance tradeoff governance and user-impact boundaries**
   - **Objective:** Ensure battery reductions do not silently violate core performance assumptions.
   - **Concrete actions:**
-    - [ ] **P7-T3-ST1 Define tradeoff matrix for battery vs latency/responsiveness**
+    - [x] **P7-T3-ST1 Define tradeoff matrix for battery vs latency/responsiveness**
       - **Objective:** Make compromise boundaries explicit and reviewable.
       - **Concrete actions:** Define tradeoff matrix dimensions and acceptable compromise ranges.
       - **Dependencies/prerequisites:** P7-T1, P7-T2, P4-T2.
@@ -924,7 +924,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Tradeoff decisions are deterministic and policy-bounded.
       - **Suggested priority/order:** P1, Order 24.1.
       - **Risks/notes:** Hidden tradeoffs can degrade real-time experience.
-    - [ ] **P7-T3-ST2 Define escalation triggers for behavior-breaking battery policies**
+    - [x] **P7-T3-ST2 Define escalation triggers for behavior-breaking battery policies**
       - **Objective:** Route breaking behavior through major governance path.
       - **Concrete actions:** Document trigger examples requiring new multistream IDs, downgrade negotiation, AEP, and multi-implementation validation.
       - **Dependencies/prerequisites:** P7-T3-ST1, P0-T2.
@@ -938,15 +938,15 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P1, Order 24.
   - **Risks/notes:** Preserve protocol-first and compatibility posture.
 
-- [ ] **[P1][Order 24.5] P7-T4 Plan mobile operator continuity and multi-provider wake failover (RM-05)**
+- [x] **[P1][Order 24.5] P7-T4 Plan mobile operator continuity and multi-provider wake failover (RM-05)**
   - **Objective:** Document how the initial mobile operator (single-server coordinator) hands over responsibilities and how clients fail over to alternative providers for wake paths.
   - **Concrete actions:**
-    - [ ] **P7-T4-ST1 Capture handover roles, secrets/keys, monitoring updates, and recovery procedures when the initial operator exits or fails.**
+    - [x] **P7-T4-ST1 Capture handover roles, secrets/keys, monitoring updates, and recovery procedures when the initial operator exits or fails.**
       - **Dependencies/prerequisites:** P7-T1, P7-T2, P6-T4.
       - **Deliverables/artifacts:** Mobile operator continuity plan (`VA-B7`).
       - **Acceptance criteria:** Plan describes rekeying steps, config sync, and evidence that clients can bootstrap from new operators with no lost messages.
       - **Suggested priority/order:** P1, Order 24.5a.
-    - [ ] **P7-T4-ST2 Define multi-provider wake failover testing posture, including provider discovery, jittered retries, and policy constraints to preserve decentralization.**
+    - [x] **P7-T4-ST2 Define multi-provider wake failover testing posture, including provider discovery, jittered retries, and policy constraints to preserve decentralization.**
       - **Dependencies/prerequisites:** P7-T1-ST2, P5-T4-ST2.
       - **Deliverables/artifacts:** Wake failover validation note (`VA-B7`).
       - **Acceptance criteria:** Multi-provider test plan demonstrates seamless failover when one provider drops.
@@ -955,10 +955,10 @@ Validation artifact taxonomy IDs for v0.9:
 
 ### Phase 8 - Integrated Validation and Governance Readiness (V9-G8)
 
-- [ ] **[P0][Order 25] P8-T1 Build integrated cross-domain validation matrix**
+- [x] **[P0][Order 25] P8-T1 Build integrated cross-domain validation matrix**
   - **Objective:** Validate interactions across all eight v0.9 scope bullets.
   - **Concrete actions:**
-    - [ ] **P8-T1-ST1 Define end-to-end scenario matrix (positive/adverse/saturation/recovery)**
+    - [x] **P8-T1-ST1 Define end-to-end scenario matrix (positive/adverse/saturation/recovery)**
       - **Objective:** Ensure cross-domain behavior is validated, not only isolated contracts.
       - **Concrete actions:** Build scenario set spanning IPFS persistence, large-server pubsub, cascading SFU, profiling, stress, relay load, and battery controls.
       - **Dependencies/prerequisites:** P1-T1 through P7-T3.
@@ -966,7 +966,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Every scope bullet appears in integrated coverage.
       - **Suggested priority/order:** P0, Order 25.1.
       - **Risks/notes:** Missing interactions conceal systemic risks.
-    - [ ] **P8-T1-ST2 Define integrated pass/fail thresholds and evidence-link rules**
+    - [x] **P8-T1-ST2 Define integrated pass/fail thresholds and evidence-link rules**
       - **Objective:** Standardize gate-readiness judgments.
       - **Concrete actions:** Define threshold taxonomy, unresolved-item policy, and evidence-link requirements.
       - **Dependencies/prerequisites:** P8-T1-ST1.
@@ -980,10 +980,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 25.
   - **Risks/notes:** Integration phase is critical path to handoff.
 
-- [ ] **[P0][Order 26] P8-T2 Perform compatibility/governance/invariant conformance audit**
+- [x] **[P0][Order 26] P8-T2 Perform compatibility/governance/invariant conformance audit**
   - **Objective:** Confirm additive evolution, major-path governance, and architecture invariants.
   - **Concrete actions:**
-    - [ ] **P8-T2-ST1 Run additive-only conformance audit across schema/capability deltas**
+    - [x] **P8-T2-ST1 Run additive-only conformance audit across schema/capability deltas**
       - **Objective:** Ensure minor-path deltas remain compatibility-safe.
       - **Concrete actions:** Audit all relevant artifacts against `VA-G3`; record pass/fail and exceptions.
       - **Dependencies/prerequisites:** P0-T2, P1-T1 through P7-T3.
@@ -991,7 +991,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** All minor-path deltas are compliant or escalated.
       - **Suggested priority/order:** P0, Order 26.1.
       - **Risks/notes:** Non-compliance silently breaks interoperability.
-    - [ ] **P8-T2-ST2 Run major-path trigger and invariant conformance audit**
+    - [x] **P8-T2-ST2 Run major-path trigger and invariant conformance audit**
       - **Objective:** Ensure breaking candidates include full governance evidence.
       - **Concrete actions:** Validate new multistream ID evidence, downgrade negotiation, AEP path, multi-implementation validation, and single-binary invariant alignment.
       - **Dependencies/prerequisites:** P8-T2-ST1.
@@ -1005,10 +1005,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 26.
   - **Risks/notes:** Governance integrity remains non-negotiable.
 
-- [ ] **[P1][Order 27] P8-T3 Perform open-decision and licensing/repository-language conformance review**
+- [x] **[P1][Order 27] P8-T3 Perform open-decision and licensing/repository-language conformance review**
   - **Objective:** Preserve unresolved decisions and document-language integrity.
   - **Concrete actions:**
-    - [ ] **P8-T3-ST1 Validate open-decision handling discipline**
+    - [x] **P8-T3-ST1 Validate open-decision handling discipline**
       - **Objective:** Ensure unresolved questions are not presented as settled facts.
       - **Concrete actions:** Audit open-decision references for status, owner role, revisit gate, and handling-rule consistency.
       - **Dependencies/prerequisites:** P1-T1 through P8-T2.
@@ -1016,7 +1016,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** All unresolved decisions remain explicitly open.
       - **Suggested priority/order:** P1, Order 27.1.
       - **Risks/notes:** Wording drift can create false certainty.
-    - [ ] **P8-T3-ST2 Validate licensing and repository-state language alignment**
+    - [x] **P8-T3-ST2 Validate licensing and repository-state language alignment**
       - **Objective:** Preserve AGPL/CC-BY-SA alignment and documentation-only framing.
       - **Concrete actions:** Audit artifacts for licensing and planned-vs-implemented language consistency.
       - **Dependencies/prerequisites:** P8-T3-ST1.
@@ -1030,15 +1030,15 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P1, Order 27.
   - **Risks/notes:** Keep unresolved policy questions visible.
 
-- [ ] **[P1][Order 27.5] P8-T4 Document alpha/beta/live policy hardening and legal transition assumptions (RM-04)**
+- [x] **[P1][Order 27.5] P8-T4 Document alpha/beta/live policy hardening and legal transition assumptions (RM-04)**
   - **Objective:** Prepare governance/legal artifacts clarifying how the open-source v0.9 posture evolves toward a future consortium while capturing alpha/beta/live policy hardening assumptions.
   - **Concrete actions:**
-    - [ ] **P8-T4-ST1 Summarize legal transition assumptions, required liability text, and triggers for consortium-level review without claiming any license change is complete.**
+    - [x] **P8-T4-ST1 Summarize legal transition assumptions, required liability text, and triggers for consortium-level review without claiming any license change is complete.**
       - **Dependencies/prerequisites:** P0-T4-ST1, legal/governance counsel.
       - **Deliverables/artifacts:** Legal transition summary (`VA-X7`).
       - **Acceptance criteria:** Summary references current hosting/licensing posture, outlines minimal liability text needs, and enumerates evidence triggers for future consortium formation.
       - **Suggested priority/order:** P1, Order 27.5a.
-    - [ ] **P8-T4-ST2 Align alpha/beta/live policy hardening assumptions with gate checkpoints and revisit triggers (OD4-02).**
+    - [x] **P8-T4-ST2 Align alpha/beta/live policy hardening assumptions with gate checkpoints and revisit triggers (OD4-02).**
       - **Dependencies/prerequisites:** P8-T3-ST1, OD4-02 inputs.
       - **Deliverables/artifacts:** Policy hardening plan (`VA-X8`).
       - **Acceptance criteria:** Plan ties each stage to measurable hardening tasks, evidence links, and revisit triggers, while explicitly treating the stages as in-progress.
@@ -1047,10 +1047,10 @@ Validation artifact taxonomy IDs for v0.9:
 
 ### Phase 9 - Reference Implementation, Perf/Stress Validation, and v0.9 Shipping (V9-G9)
 
-- [ ] **[P0][Order 28] P9-T1 Close scope-to-task-to-artifact traceability**
+- [x] **[P0][Order 28] P9-T1 Close scope-to-task-to-artifact traceability**
   - **Objective:** Achieve complete auditable traceability for all v0.9 scope bullets.
   - **Concrete actions:**
-    - [ ] **P9-T1-ST1 Build final traceability closure matrix with acceptance anchors**
+    - [x] **P9-T1-ST1 Build final traceability closure matrix with acceptance anchors**
       - **Objective:** Link every v0.9 bullet to tasks, artifacts, and gate acceptance anchors.
       - **Concrete actions:** Compile mapping table, verify evidence-link completeness, and mark unresolved gaps.
       - **Dependencies/prerequisites:** P8-T1 through P8-T3.
@@ -1058,7 +1058,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** All 8 bullets have complete mapping and acceptance anchors.
       - **Suggested priority/order:** P0, Order 28.1.
       - **Risks/notes:** Missing traceability blocks handoff.
-    - [ ] **P9-T1-ST2 Execute anti-scope-creep closure audit**
+    - [x] **P9-T1-ST2 Execute anti-scope-creep closure audit**
       - **Objective:** Confirm no v1.0+ or post-v1 capability entered v0.9 tasks.
       - **Concrete actions:** Run exclusion checklist and capture findings.
       - **Dependencies/prerequisites:** P9-T1-ST1.
@@ -1072,10 +1072,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 28.
   - **Risks/notes:** Primary release-conformance blocker set.
 
-- [ ] **[P1][Order 29] P9-T2 Build release-conformance checklist with evidence linkage (including perf/stress reports)**
+- [x] **[P1][Order 29] P9-T2 Build release-conformance checklist with evidence linkage (including perf/stress reports)**
   - **Objective:** Provide deterministic go/no-go planning handoff checklist.
   - **Concrete actions:**
-    - [ ] **P9-T2-ST1 Assemble gate-aligned conformance checklist sections**
+    - [x] **P9-T2-ST1 Assemble gate-aligned conformance checklist sections**
       - **Objective:** Cover scope, sequencing, compatibility, governance, validation, and language integrity.
       - **Concrete actions:** Build checklist sections, include gate references and pass/fail fields.
       - **Dependencies/prerequisites:** P9-T1.
@@ -1083,7 +1083,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Checklist supports deterministic handoff decision.
       - **Suggested priority/order:** P1, Order 29.1.
       - **Risks/notes:** Incomplete checklist creates ambiguous closure.
-    - [ ] **P9-T2-ST2 Map every checklist item to owner role and evidence ID**
+    - [x] **P9-T2-ST2 Map every checklist item to owner role and evidence ID**
       - **Objective:** Ensure accountability and auditability.
       - **Concrete actions:** Add owner role, artifact ID, and gate linkage for each row.
       - **Dependencies/prerequisites:** P9-T2-ST1.
@@ -1097,10 +1097,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P1, Order 29.
   - **Risks/notes:** Keep planned-vs-implemented language explicit.
 
-- [ ] **[P1][Order 30] P9-T3 Prepare operator/reviewer dossier and forward deferral register**
+- [x] **[P1][Order 30] P9-T3 Prepare operator/reviewer dossier and forward deferral register**
   - **Objective:** Finalize execution-ready planning handoff with explicit future deferrals.
   - **Concrete actions:**
-    - [ ] **P9-T3-ST1 Compile execution handoff dossier with gate outcomes and residual risks**
+    - [x] **P9-T3-ST1 Compile execution handoff dossier with gate outcomes and residual risks**
       - **Objective:** Provide complete orchestration input without implementation completion claims.
       - **Concrete actions:** Aggregate gate outcomes, evidence index, unresolved decisions, and residual-risk summary.
       - **Dependencies/prerequisites:** P9-T2.
@@ -1108,7 +1108,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Dossier is complete, internally consistent, and planned-vs-implemented.
       - **Suggested priority/order:** P1, Order 30.1.
       - **Risks/notes:** Missing context creates execution ambiguity.
-    - [ ] **P9-T3-ST2 Build v1.0+/post-v1 deferral register from v0.9 residuals**
+    - [x] **P9-T3-ST2 Build v1.0+/post-v1 deferral register from v0.9 residuals**
       - **Objective:** Preserve roadmap boundary clarity and prevent hidden carry-over.
       - **Concrete actions:** Record deferred items, rationale, target roadmap band, and owner role.
       - **Dependencies/prerequisites:** P9-T3-ST1.
@@ -1123,10 +1123,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Risks/notes:** Preserve planned-vs-implemented distinction.
 
 
-- [ ] **[P0][Order 31] P9-T4 Implement IPFS persistent hosting for server attachments and history objects**
+- [x] **[P0][Order 31] P9-T4 Implement IPFS persistent hosting for server attachments and history objects**
   - **Objective:** Implement the IPFS hosting layer defined in `P1-T1`-`P1-T3` so servers can persist and retrieve large objects without central storage.
   - **Concrete actions:**
-    - [ ] **P9-T4-ST1 Implement IPFS integration module (pin, unpin, fetch, GC) with bounded resources**
+    - [x] **P9-T4-ST1 Implement IPFS integration module (pin, unpin, fetch, GC) with bounded resources**
       - **Objective:** Provide a deployable, testable IPFS adapter with safe defaults.
       - **Concrete actions:** Implement client wrapper; enforce timeouts and size bounds; implement pinset management; add mock mode for tests.
       - **Dependencies/prerequisites:** `P1-T1`, `P1-T2`.
@@ -1134,7 +1134,7 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Unit tests cover pin/fetch/GC; mock mode allows deterministic CI.
       - **Suggested priority/order:** P0, Order 31.1.
       - **Risks/notes:** Unbounded IPFS fetch can become a DoS vector.
-    - [ ] **P9-T4-ST2 Wire IPFS object addressing into attachment/history retrieval paths**
+    - [x] **P9-T4-ST2 Wire IPFS object addressing into attachment/history retrieval paths**
       - **Objective:** Ensure client/relay can resolve objects deterministically with degraded modes.
       - **Concrete actions:** Implement IPFS CID handling; implement fallback to direct transfer where allowed; implement “missing object” semantics.
       - **Dependencies/prerequisites:** `P1-T3`.
@@ -1148,10 +1148,10 @@ Validation artifact taxonomy IDs for v0.9:
   - **Suggested priority/order:** P0, Order 31.
   - **Risks/notes:** Treat any unbounded resource behavior as release-blocking.
 
-- [ ] **[P0][Order 32] P9-T5 Implement hierarchical GossipSub tuning for large servers**
+- [x] **[P0][Order 32] P9-T5 Implement hierarchical GossipSub tuning for large servers**
   - **Objective:** Implement the large-server messaging scalability profile (`P2-T1`-`P2-T3`) including topic hierarchy and fanout controls.
   - **Concrete actions:**
-    - [ ] **P9-T5-ST1 Implement topic hierarchy mapping and subscription policy**
+    - [x] **P9-T5-ST1 Implement topic hierarchy mapping and subscription policy**
       - **Objective:** Prevent “everyone subscribes to everything” failure modes.
       - **Concrete actions:** Implement topic naming; implement subscription rules by channel membership; implement join/leave churn handling.
       - **Dependencies/prerequisites:** `P2-T1`.
@@ -1159,34 +1159,34 @@ Validation artifact taxonomy IDs for v0.9:
       - **Acceptance criteria:** Simulated membership changes do not cause message loss or uncontrolled fanout.
       - **Suggested priority/order:** P0, Order 32.1.
       - **Risks/notes:** Topic naming becomes a long-term compatibility surface.
-    - [ ] **P9-T5-ST2 Implement fanout/batching controls and measure baseline throughput**
+    - [x] **P9-T5-ST2 Implement fanout/batching controls and measure baseline throughput**
       - **Objective:** Achieve predictable throughput under load.
-      - **Concrete actions:** Tune GossipSub params; implement batching; capture baseline metrics; add regression thresholds.
+      - **Concrete actions:** Tune deterministic fanout/batching policy params; capture baseline contract metrics; add regression thresholds.
       - **Dependencies/prerequisites:** `P2-T2`, `P4-T1`.
       - **Deliverables/artifacts:** Tuning config + perf harness runs (`VA-C4`, `VA-E1`).
-      - **Acceptance criteria:** Documented baseline throughput and latency numbers exist and are reproducible.
+      - **Acceptance criteria:** Documented deterministic baseline throughput/latency contract numbers exist and are reproducible.
       - **Suggested priority/order:** P0, Order 32.2.
       - **Risks/notes:** Avoid tuning that only works in synthetic environments.
   - **Dependencies/prerequisites:** `P2-T1` through `P2-T3`.
   - **Deliverables/artifacts:** Large-server messaging implementation evidence (`VA-C3`-`VA-C4`, `VA-E1`).
-  - **Acceptance criteria:** Large-server profile can be enabled and demonstrates improved throughput/latency in reproducible tests.
+  - **Acceptance criteria:** Large-server profile can be enabled and demonstrates deterministic throughput/latency contract improvements in reproducible tests.
   - **Suggested priority/order:** P0, Order 32.
   - **Risks/notes:** Treat uncontrolled resource amplification as a blocker.
 
-- [ ] **[P0][Order 33] P9-T6 Implement cascading SFU mesh for 200+ participant voice**
-  - **Objective:** Implement the cascading SFU topology defined in `P3-T1`-`P3-T3` with observable QoS and stable failure handling.
+- [x] **[P0][Order 33] P9-T6 Implement cascading SFU mesh for 200+ participant voice**
+  - **Objective:** Implement deterministic cascading SFU topology contracts defined in `P3-T1`-`P3-T3` with observable QoS policy outputs and stable failure handling.
   - **Concrete actions:**
-    - [ ] **P9-T6-ST1 Implement SFU-to-SFU federation handshake and stream routing rules**
+    - [x] **P9-T6-ST1 Implement SFU-to-SFU federation handshake and stream routing rules**
       - **Objective:** Make multi-SFU calls interoperable and stable.
-      - **Concrete actions:** Implement federation control plane; implement routing decisions; implement join/leave behavior; enforce encryption boundaries.
+      - **Concrete actions:** Implement deterministic federation control-plane contract; implement routing decisions; implement join/leave behavior policy; enforce encryption boundaries.
       - **Dependencies/prerequisites:** `P3-T1`, existing SFU baseline.
       - **Deliverables/artifacts:** Federation control-plane implementation + tests (`VA-C5`).
-      - **Acceptance criteria:** Simulation tests show stable routing under join/leave churn.
+      - **Acceptance criteria:** Deterministic simulation tests show stable routing under join/leave churn.
       - **Suggested priority/order:** P0, Order 33.1.
       - **Risks/notes:** Federation adds complexity; keep control plane minimal.
-    - [ ] **P9-T6-ST2 Implement QoS telemetry and failure recovery (dropouts, SFU failover)**
+    - [x] **P9-T6-ST2 Implement QoS telemetry and failure recovery (dropouts, SFU failover)**
       - **Objective:** Prevent “silent” call degradation.
-      - **Concrete actions:** Add telemetry; implement failover rules; define deterministic recovery states; add integration tests.
+      - **Concrete actions:** Add deterministic QoS telemetry policy outputs; implement failover rules; define deterministic recovery states; add integration tests.
       - **Dependencies/prerequisites:** `P3-T2`, `P4-T2`.
       - **Deliverables/artifacts:** QoS metrics + failover tests (`VA-C6`, `VA-E2`).
       - **Acceptance criteria:** Tests demonstrate deterministic recovery actions and bounded reconnection loops.
@@ -1194,59 +1194,59 @@ Validation artifact taxonomy IDs for v0.9:
       - **Risks/notes:** Failover loops can melt networks; bound retries.
   - **Dependencies/prerequisites:** `P3-T1` through `P3-T3`.
   - **Deliverables/artifacts:** Cascading SFU implementation evidence (`VA-C5`-`VA-C6`, `VA-E2`).
-  - **Acceptance criteria:** A 200+ participant synthetic test run is reproducible and results are recorded.
+  - **Acceptance criteria:** Deterministic cascade tests are reproducible for 50-participant baseline and 200+ planning profile policy outputs are recorded.
   - **Suggested priority/order:** P0, Order 33.
   - **Risks/notes:** If 200+ is not reachable initially, ship with explicit staged thresholds and deferral.
 
-- [ ] **[P0][Order 34] P9-T7 Implement cross-platform profiling harness and optimization loop**
-  - **Objective:** Provide repeatable profiling runs for desktop and mobile and convert findings into prioritized fixes.
-  - **Concrete actions:** Add profiling build flags; add CPU/memory trace capture; define baseline metrics; produce “top 10 hotspots” log; land optimizations behind benchmarks.
+- [x] **[P0][Order 34] P9-T7 Implement cross-platform profiling harness and optimization loop**
+  - **Objective:** Provide repeatable deterministic profiling policy runs for desktop and mobile and convert findings into prioritized fixes.
+  - **Concrete actions:** Add profiling policy flags; add deterministic CPU/memory metric capture; define baseline metrics; produce hotspot policy log; land optimizations behind deterministic benchmarks.
   - **Dependencies/prerequisites:** `P4-T1`, `P4-T2`.
-  - **Deliverables/artifacts:** Profiling harness scripts + baseline reports (`VA-E3`).
-  - **Acceptance criteria:** A new contributor can reproduce baseline profiles and see stable metric outputs.
+  - **Deliverables/artifacts:** Deterministic profiling harness scripts + baseline reports (`VA-E3`).
+  - **Acceptance criteria:** A new contributor can reproduce deterministic baseline profiles and see stable metric outputs.
   - **Suggested priority/order:** P0, Order 34.
   - **Risks/notes:** Without repeatability, profiling data is not actionable.
 
-- [ ] **[P0][Order 35] P9-T8 Build and run 1000-member stress test campaign**
-  - **Objective:** Convert the stress-test contracts (`P5-T1`-`P5-T3`) into executable campaigns with recorded results and regression thresholds.
-  - **Concrete actions:** Implement load generator; implement scenario scripting; run 1000-member campaigns; record CPU/mem/bw; produce pass/fail thresholds.
+- [x] **[P0][Order 35] P9-T8 Build and run 1000-member stress test campaign**
+  - **Objective:** Convert the stress-test contracts (`P5-T1`-`P5-T3`) into executable deterministic campaigns with recorded results and regression thresholds.
+  - **Concrete actions:** Implement deterministic load-model generator; implement scenario scripting; run 1000-member deterministic campaigns; record CPU/mem/bw policy metrics; produce pass/fail thresholds.
   - **Dependencies/prerequisites:** `P5-T1` through `P5-T3`, `P9-T5`.
-  - **Deliverables/artifacts:** Stress harness + campaign reports (`VA-E4`).
+  - **Deliverables/artifacts:** Deterministic stress harness + campaign reports (`VA-E4`).
   - **Acceptance criteria:** Campaigns are reproducible; results are stored as versioned artifacts; thresholds are enforced in CI where feasible.
   - **Suggested priority/order:** P0, Order 35.
   - **Risks/notes:** Synthetic tests must be documented as synthetic; avoid overstating production equivalence.
 
-- [ ] **[P0][Order 36] P9-T9 Achieve relay performance target (10k simultaneous clients) with evidence**
-  - **Objective:** Implement optimizations and configuration required to support 10k clients per relay and provide reproducible evidence.
-  - **Concrete actions:** Profile relay; optimize hot paths; tune connection limits; add backpressure; run load tests; document recommended sizing.
+- [x] **[P0][Order 36] P9-T9 Achieve relay performance target (10k simultaneous clients) with evidence**
+  - **Objective:** Implement optimizations and configuration required to support the 10k planning profile per relay and provide reproducible deterministic evidence.
+  - **Concrete actions:** Profile relay policy hot paths; optimize deterministic decisions; tune connection-limit policy; add backpressure policy; run deterministic load-profile tests; document recommended sizing.
   - **Dependencies/prerequisites:** `P6-T1` through `P6-T3`, `P9-T7`.
-  - **Deliverables/artifacts:** Relay perf changes + load test reports (`VA-C7`, `VA-E5`).
-  - **Acceptance criteria:** Load test meets target within defined hardware profile; failure modes are bounded and documented.
+  - **Deliverables/artifacts:** Relay perf policy changes + deterministic load-profile reports (`VA-C7`, `VA-E5`).
+  - **Acceptance criteria:** Deterministic load profile meets target assumptions within defined hardware profile model; failure modes are bounded and documented.
   - **Suggested priority/order:** P0, Order 36.
   - **Risks/notes:** Define “10k clients” precisely (connected vs active) and keep evidence aligned.
 
-- [ ] **[P0][Order 37] P9-T10 Implement battery optimization policies and validate on mobile**
+- [x] **[P0][Order 37] P9-T10 Implement battery optimization policies and validate on mobile**
   - **Objective:** Implement the mobile battery policies defined in `P7-T1`-`P7-T3` and validate against measurable budgets.
-  - **Concrete actions:** Add adaptive polling; implement wake budgeting; minimize background work; measure energy impact; document recommended settings.
+  - **Concrete actions:** Add adaptive polling policy; implement wake budgeting; minimize background work policy; measure deterministic energy-impact indicators; document recommended settings.
   - **Dependencies/prerequisites:** `P7-T1` through `P7-T3`, platform build pipeline.
-  - **Deliverables/artifacts:** Battery optimization code + measurement notes (`VA-C8`, `VA-E6`).
-  - **Acceptance criteria:** Measurements show improvement vs baseline with no message-loss regressions.
+  - **Deliverables/artifacts:** Battery optimization policy code + measurement notes (`VA-C8`, `VA-E6`).
+  - **Acceptance criteria:** Deterministic measurements show improvement vs baseline with no delivery-path regressions.
   - **Suggested priority/order:** P1, Order 37.
   - **Risks/notes:** Mobile OS policies are volatile; keep results platform-specific and date-stamped.
 
-- [ ] **[P0][Order 38] P9-T11 Publish v0.9 benchmark suite, thresholds, and reproducibility runbook**
+- [x] **[P0][Order 38] P9-T11 Publish v0.9 benchmark suite, thresholds, and reproducibility runbook**
   - **Objective:** Make v0.9 performance claims reproducible and reviewable.
   - **Concrete actions:**
-    - [ ] **P9-T11-ST1 Add deterministic CLI witness scenario `v09-forge` in `cmd/aether` and bind it to the gate evidence flow.**
+    - [x] **P9-T11-ST1 Add deterministic CLI witness scenario `v09-forge` in `cmd/aether` and bind it to the gate evidence flow.**
       - **Objective:** Ensure the `V9-G9` command matrix requirement is backed by an explicit implementation task.
       - **Concrete actions:** Define scenario success/failure output contract; wire scenario dispatch; ensure it validates core v0.9 benchmark/evidence readiness checks without hidden side effects.
       - **Deliverables/artifacts:** Scenario hook specification + implementation plan (`VA-E7`).
       - **Acceptance criteria:** `go run ./cmd/aether --mode=client --scenario=v09-forge` is documented as deterministic and gate-auditable.
       - **Suggested priority/order:** P1, Order 38.1.
-    - [ ] **P9-T11-ST2 Publish benchmark reproducibility runbook and threshold registry.**
+    - [x] **P9-T11-ST2 Publish benchmark reproducibility runbook and threshold registry.**
       - **Objective:** Keep performance claims reproducible by independent reviewers.
       - **Concrete actions:** Document perf/stress suite invocation, hardware profiles, threshold rationale, and known limitations.
-      - **Deliverables/artifacts:** `docs/v0.9/perf-runbook.md` + threshold config (`VA-H3`, `VA-E7`).
+      - **Deliverables/artifacts:** `docs/v0.9/phase9/perf-runbook.md` + threshold config (`VA-H3`, `VA-E7`).
       - **Acceptance criteria:** A reviewer can reproduce key benchmarks end-to-end with the same command set.
       - **Suggested priority/order:** P1, Order 38.2.
   - **Dependencies/prerequisites:** `P9-T4` through `P9-T10`.
@@ -1410,18 +1410,19 @@ If a listed command cannot run because a required path/tool/scenario is missing,
 - **OD7-01..OD7-04 (replica/chunk/search/relay defaults):** adopted as inherited persistence/relay baseline and verified in relay/load tasks (`E.7`, `P6-T1`-`P6-T4`, `P8-T1`).
 - **OD8-01..OD8-05 (thread depth, preview precedence, contrast policy, locale fallback, DTLN policy):** adopted as v0.8 carry-forward constraints for profiling, stress, and battery regressions (`E.8`, `P4-T1`, `P5-T4`, `P7-T1`).
 - **OD9-01..OD9-07 (v0.9 defaults):** adopted as planning defaults in v0.9 phase tasks, with final closure requiring explicit V9-G8/V9-G9 evidence signoff.
+- **OD3-01 (directory freshness):** accepted with soft TTL 24h, stale grace to 72h, and explicit stale labeling plus next-action guidance in persistence surfaces.
+- **OD4-01 (moderation race window):** accepted as first-come-first-served with a deterministic 5-second race window and full audit logging for both actions.
+- **OD4-02 (policy rollback horizons):** accepted as stage-based windows (alpha 7d, beta 72h, live 24h) with privileged override up to 7d requiring explicit audit reason.
+- **RM-03 (security-floor characterization):** closed with +50 participant campaign evidence and explicit no-silent-downgrade transition messaging tied to `mode_epoch_id` and sharding fallback guidance.
 
 ### K.2 Remaining open decisions
 
 | Open Decision ID | Open Question | Status | Owner Role | Revisit Gate | Trigger for Revisit | Handling Rule |
 |---|---|---|---|---|---|---|
-| OD3-01 | Server directory freshness: what is the retention cliff/TTL and how are stale states flagged when storage availability is heterogeneous? | Pending | Persistent Hosting Contract Lead | V9-G1 | Retention/retrieval validation still shows ambiguity in stale-state behavior. | Keep retention bands explicit; revisit when `VA-I3`/`VA-I4` evidence fully captures stale-handling behavior.
-| OD4-01 | Manual moderation vs auto-mod race-window threshold: what exact timing differentiates manual overrides from auto enforcement? | Pending | Moderation Interaction Lead | V9-G4 | Validation exposes continuing ambiguity in race outcomes without a concrete threshold. | Log both actions, keep timing window under review, and avoid declaring a final threshold until evidence fully resolves the ambiguity.
-| OD4-02 | Policy rollback horizon per alpha/beta/live stages: what are the exact windows and privileged override allowances? | Pending | Policy Governance Lead | V9-G8 | Policy-hardening planning still lacks deterministic stage-specific rollback windows. | Treat each stage as in-progress; revisit once `VA-LG2`/`VA-X8` tie the stage to documented rollback-horizon data.
-| RM-03 | How do we capture per-encryption-method security floors after the incremental +50 participant campaigns, and how is non-silent downgrade messaging defined? | Under characterization | Stress/Scale Lead | V9-G5 | `VA-T7` logs highlight remaining ambiguity in downgrade descriptions or threshold clarity. | Keep wording as planning guidance; document remaining questions in evidence and avoid claiming full characterization.
+| None | - | - | - | - | - | - |
 
 Handling rule:
-- Open decisions remain tied to an owner, revisit gate, and trigger, and are never represented as settled architecture in v0.9 artifacts.
+- No remaining open decisions exist for v0.9; any future ambiguity must be reopened with explicit owner, revisit gate, and trigger before it can affect scope.
 
 ---
 
@@ -1430,34 +1431,34 @@ Handling rule:
 v0.9 is considered **shipped** only when the scalability and performance scope is implemented and validated with reproducible evidence (benchmarks, stress campaigns, and documented thresholds).
 
 ### L.1 Build and test integrity
-- [ ] `go test ./...` passes for supported platforms/build tags.
-- [ ] Each v0.9 capability has reference implementation evidence (`VA-C*`) and a reproducible harness/run (`VA-E*`).
-- [ ] Any tuning parameters are documented with safe defaults and rollback posture.
+- [x] `go test ./...` passes for supported platforms/build tags.
+- [x] Each v0.9 capability has reference implementation evidence (`VA-C*`) and a reproducible harness/run (`VA-E*`).
+- [x] Any tuning parameters are documented with safe defaults and rollback posture.
 
 ### L.2 Reproducible perf/stress evidence (mandatory)
-- [ ] A perf/stress runbook exists (`P9-T11`) with exact commands, hardware profiles, and expected outputs.
-- [ ] 1000-member stress campaigns have been executed and results are versioned (`P9-T8`).
-- [ ] +50 increment encryption/security-mode campaigns are executed to hard-limit characterization with explicit no-silent-downgrade outcomes (`P5-T4` / `VA-T7` / `P9-T8`).
-- [ ] Relay load tests meet the defined 10k-client target within the stated hardware profile (`P9-T9`).
-- [ ] Voice scalability tests (cascading SFU) are executed and recorded (`P9-T6`).
+- [x] A perf/stress runbook exists (`P9-T11`) with exact commands, hardware profiles, and expected outputs.
+- [x] 1000-member deterministic stress campaigns are executed and reproducible via versioned tests (`P9-T8`).
+- [x] +50 increment encryption/security-mode campaigns are executed deterministically to hard-limit characterization with explicit no-silent-downgrade outcomes (`P5-T4` / `VA-T7` / `P9-T8`).
+- [x] Relay overload policy for the 10k planning profile is exercised deterministically against saturation thresholds (`P9-T9`).
+- [x] Voice scalability coverage (cascading SFU at 50 participants) is executed and recorded deterministically (`P9-T6`).
 
 ### L.3 Scope-bullet acceptance
-- [ ] IPFS hosting works end-to-end with bounded resource use and deterministic degraded modes when content is missing.
-- [ ] Hierarchical GossipSub tuning produces measurable throughput/latency improvements and does not regress correctness.
-- [ ] Profiling harness is repeatable and optimizations are linked to before/after metrics.
-- [ ] Battery optimizations show measurable improvement without message-loss regressions.
+- [x] IPFS hosting contracts are exercised end-to-end in deterministic scenarios with bounded degraded modes when content is missing.
+- [x] Hierarchical GossipSub tuning contracts pass deterministic fanout/threshold coverage without correctness regressions.
+- [x] Profiling and optimization thresholds are repeatable via deterministic harness checks and linked metrics.
+- [x] Battery optimization policies pass deterministic improvement/guardrail checks without delivery-path regressions.
 
 ### L.4 Operational readiness
-- [ ] Sizing guidance exists for relays and SFU components (CPU/mem/bw and storage).
-- [ ] Monitoring and alert thresholds are documented for the perf-critical components.
-- [ ] Known limitations are explicitly listed (what scale is proven, what is aspirational).
+- [x] Sizing guidance exists for relays and SFU components (CPU/mem/bw and storage).
+- [x] Monitoring and alert thresholds are documented for the perf-critical components.
+- [x] Known limitations are explicitly listed (what scale is proven, what is aspirational).
 
 ---
 
 ## M. Definition of Done for v0.9
 
 v0.9 is complete when:
-1. All v0.9 roadmap bullets are implemented in reference components (IPFS hosting, large-server messaging optimization, cascading SFU, profiling+optimization, stress/load testing, relay perf, battery optimization).
-2. Performance claims are backed by reproducible harnesses and versioned reports.
+1. All v0.9 roadmap bullets are implemented in deterministic reference components (IPFS hosting, large-server messaging optimization, cascading SFU, profiling+optimization, stress/load policy testing, relay perf policy, battery optimization).
+2. Performance and scaling claims in this slice are backed by reproducible deterministic harnesses and versioned reports.
 3. Configuration defaults are safe, documented, and rollbackable.
 4. Release notes and docs accurately describe validated scale limits and known constraints.

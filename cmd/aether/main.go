@@ -12,13 +12,15 @@ import (
 	phase6 "github.com/aether/code_aether/pkg/phase6"
 	phase9 "github.com/aether/code_aether/pkg/phase9"
 	v08scenario "github.com/aether/code_aether/pkg/v08/scenario"
+	v09scenario "github.com/aether/code_aether/pkg/v09/scenario"
+	v10scenario "github.com/aether/code_aether/pkg/v10/scenario"
 )
 
 var (
 	dispatchScenarioFn = dispatchScenario
 
 	runMode           = flag.String("mode", "client", "runtime mode: client|relay|bootstrap")
-	scenario          = flag.String("scenario", "", "optional scenario: create-server|join-deeplink|first-contact|v08-echo")
+	scenario          = flag.String("scenario", "", "optional scenario: create-server|join-deeplink|first-contact|v08-echo|v09-forge|v10-genesis")
 	firstContactRuns  = flag.Int("first-contact-runs", 3, "number of repeated first-contact runs")
 	firstContactOut   = flag.String("first-contact-output", "artifacts/generated/first-contact", "output directory for first-contact scenario artifacts")
 	firstContactGoal  = flag.Duration("first-contact-target", 5*time.Minute, "target duration for each first-contact run")
@@ -45,6 +47,8 @@ type scenarioHandlers struct {
 	runFirstContact func()
 	runRelayMode    func()
 	runV08Echo      func() error
+	runV09Forge     func() error
+	runV10Genesis   func() error
 }
 
 func defaultScenarioHandlers() scenarioHandlers {
@@ -54,6 +58,8 @@ func defaultScenarioHandlers() scenarioHandlers {
 		runFirstContact: runFirstContactScenario,
 		runRelayMode:    runRelayMode,
 		runV08Echo:      runV08EchoScenario,
+		runV09Forge:     runV09ForgeScenario,
+		runV10Genesis:   runV10GenesisScenario,
 	}
 }
 
@@ -99,8 +105,22 @@ func dispatchScenario(mode string, scenario string, store *phase6.ManifestStore,
 		}
 		fmt.Println("v0.8 echo: PASS")
 		return 0
+	case "v09-forge":
+		if err := handlers.runV09Forge(); err != nil {
+			fmt.Fprintf(os.Stderr, "v0.9 forge: FAIL: %v\n", err)
+			return 7
+		}
+		fmt.Println("v0.9 forge: PASS")
+		return 0
+	case "v10-genesis":
+		if err := handlers.runV10Genesis(); err != nil {
+			fmt.Fprintf(os.Stderr, "v1.0 genesis: FAIL: %v\n", err)
+			return 8
+		}
+		fmt.Println("v1.0 genesis: PASS")
+		return 0
 	default:
-		fmt.Fprintf(os.Stderr, "unknown scenario %q; valid scenarios: create-server, join-deeplink, first-contact, v08-echo\n", scenario)
+		fmt.Fprintf(os.Stderr, "unknown scenario %q; valid scenarios: create-server, join-deeplink, first-contact, v08-echo, v09-forge, v10-genesis\n", scenario)
 		return 3
 	}
 }
@@ -206,6 +226,14 @@ func runCreateServer(store *phase6.ManifestStore) {
 
 func runV08EchoScenario() error {
 	return v08scenario.RunEchoContracts()
+}
+
+func runV09ForgeScenario() error {
+	return v09scenario.RunForgeScenario()
+}
+
+func runV10GenesisScenario() error {
+	return v10scenario.RunGenesisScenario()
 }
 
 func runJoinDeepLink(store *phase6.ManifestStore) {

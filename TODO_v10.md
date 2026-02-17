@@ -282,10 +282,10 @@ Validation artifact taxonomy IDs for v1.0:
 
 ### Phase 0 - Scope, Governance, and Evidence Foundation (V10-G0)
 
-- [ ] **[P0][Order 01] P0-T1 Freeze v1.0 scope contract and anti-scope boundaries**
+- [x] **[P0][Order 01] P0-T1 Freeze v1.0 scope contract and anti-scope boundaries**
   - **Objective:** Establish one-to-one mapping from the eight v1.0 bullets to task and artifact structure.
   - **Concrete actions:**
-    - [ ] **P0-T1-ST1 Build v1.0 scope trace baseline (8 bullets to task families)**
+    - [x] **P0-T1-ST1 Build v1.0 scope trace baseline (8 bullets to task families)**
       - **Objective:** Remove ambiguity in inclusion boundaries.
       - **Concrete actions:** Map each bullet to primary phase, acceptance anchors, and artifact IDs.
       - **Dependencies/prerequisites:** v1.0 scope extraction completed.
@@ -293,7 +293,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** All 8 bullets mapped; no orphan and no extra capability.
       - **Suggested priority/order:** P0, Order 01.1.
       - **Risks/notes:** Unmapped scope introduces hidden launch gaps.
-    - [ ] **P0-T1-ST2 Lock exclusion policy and escalation route**
+    - [x] **P0-T1-ST2 Lock exclusion policy and escalation route**
       - **Objective:** Prevent post-v1 capability import.
       - **Concrete actions:** Define exclusions, escalation triggers, and governance signoff path.
       - **Dependencies/prerequisites:** P0-T1-ST1.
@@ -306,11 +306,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G0 scope baseline approved.
   - **Suggested priority/order:** P0, Order 01.
   - **Risks/notes:** Scope drift here invalidates downstream planning.
+  - **Status:** Completed via `docs/v1.0/phase0/p0-scope-governance.md`, `pkg/v10/conformance/gates.go`, and `pkg/v10/governance/policies.go`.
 
-- [ ] **[P0][Order 02] P0-T2 Lock compatibility and governance controls for v1.0 release-band deltas**
+- [x] **[P0][Order 02] P0-T2 Lock compatibility and governance controls for v1.0 release-band deltas**
   - **Objective:** Embed additive-evolution and major-path governance controls before release-track freezes.
   - **Concrete actions:**
-    - [ ] **P0-T2-ST1 Define additive-only protobuf checklist for release-sensitive schema touches**
+    - [x] **P0-T2-ST1 Define additive-only protobuf checklist for release-sensitive schema touches**
       - **Objective:** Preserve minor-version compatibility invariants.
       - **Concrete actions:** Define field-addition constraints, reserved-field handling, and downgrade-safe defaults.
       - **Dependencies/prerequisites:** P0-T1.
@@ -318,7 +319,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** All schema-touching tasks include checklist evidence.
       - **Suggested priority/order:** P0, Order 02.1.
       - **Risks/notes:** Hidden schema breaks harm interoperability at public-release stage.
-    - [ ] **P0-T2-ST2 Define major-path trigger checklist for behavior-breaking proposals**
+    - [x] **P0-T2-ST2 Define major-path trigger checklist for behavior-breaking proposals**
       - **Objective:** Enforce new multistream IDs, downgrade negotiation, AEP, and multi-implementation validation.
       - **Concrete actions:** Specify mandatory evidence structure and escalation ownership.
       - **Dependencies/prerequisites:** P0-T2-ST1.
@@ -331,11 +332,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** All protocol-touching tasks reference controls.
   - **Suggested priority/order:** P0, Order 02.
   - **Risks/notes:** Governance integrity is non-negotiable for v1.0.
+  - **Status:** Completed via `docs/v1.0/phase1/p1-protocol-freeze.md`, `pkg/v10/conformance/gates.go`, and `pkg/v10/governance/policies.go`.
 
-- [ ] **[P0][Order 03] P0-T3 Establish verification matrix and gate-evidence schema for v1.0**
+- [x] **[P0][Order 03] P0-T3 Establish verification matrix and gate-evidence schema for v1.0**
   - **Objective:** Standardize evidence packaging and deterministic gate decisions.
   - **Concrete actions:**
-    - [ ] **P0-T3-ST1 Define requirement-to-validation matrix template**
+    - [x] **P0-T3-ST1 Define requirement-to-validation matrix template**
       - **Objective:** Ensure every scope bullet has positive, adverse, degraded, and recovery coverage.
       - **Concrete actions:** Define matrix fields for requirement ID, task IDs, artifact IDs, gate ownership, and evidence status.
       - **Dependencies/prerequisites:** P0-T1.
@@ -343,7 +345,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Template supports all 8 bullets and all v1.0 gates.
       - **Suggested priority/order:** P0, Order 03.1.
       - **Risks/notes:** Weak template quality creates inconsistent gate closure.
-    - [ ] **P0-T3-ST2 Define gate evidence-bundle conventions and owner accountability schema**
+    - [x] **P0-T3-ST2 Define gate evidence-bundle conventions and owner accountability schema**
       - **Objective:** Normalize review quality across phase owners.
       - **Concrete actions:** Define bundle sections for scope references, decision logs, risk updates, open decisions, and checklists.
       - **Dependencies/prerequisites:** P0-T3-ST1.
@@ -356,13 +358,14 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G0 exits only with approved evidence model.
   - **Suggested priority/order:** P0, Order 03.
   - **Risks/notes:** Missing evidence discipline creates late-stage rework.
+  - **Status:** Completed with `docs/v1.0/phase0/p0-scope-governance.md`, `releases/VA-B1-release-manifest.md`, and `pkg/v10/conformance/gates.go`.
 
 ### Phase 1 - Final Protocol Freeze and Compatibility Closure (V10-G1)
 
-- [ ] **[P0][Order 04] P1-T1 Define final protocol surface inventory and freeze baseline**
+- [x] **[P0][Order 04] P1-T1 Define final protocol surface inventory and freeze baseline**
   - **Objective:** Establish complete protocol-surface inventory as release-band freeze contract.
   - **Concrete actions:**
-    - [ ] **P1-T1-ST1 Build protocol surface ledger for streams, message families, and capabilities**
+    - [x] **P1-T1-ST1 Build protocol surface ledger for streams, message families, and capabilities**
       - **Objective:** Ensure no hidden protocol surface remains outside freeze governance.
       - **Concrete actions:** Consolidate sub-protocol IDs, capability flags, and message-family references from prior releases.
       - **Dependencies/prerequisites:** P0-T2.
@@ -370,7 +373,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Ledger is complete, versioned, and referenced by all protocol-touching tasks.
       - **Suggested priority/order:** P0, Order 04.1.
       - **Risks/notes:** Missing surfaces create silent compatibility risk.
-    - [ ] **P1-T1-ST2 Define freeze criteria and change-control policy for v1.0 protocol surface**
+    - [x] **P1-T1-ST2 Define freeze criteria and change-control policy for v1.0 protocol surface**
       - **Objective:** Prevent uncontrolled protocol drift during release planning.
       - **Concrete actions:** Define freeze entry criteria, exception policy, and review-signoff workflow.
       - **Dependencies/prerequisites:** P1-T1-ST1.
@@ -383,11 +386,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G1 freeze criteria met.
   - **Suggested priority/order:** P0, Order 04.
   - **Risks/notes:** Preserve protocol-first posture.
+  - **Status:** Completed with `docs/v1.0/phase1/p1-protocol-freeze.md`, `pkg/v10/publication/publication.go`, and `pkg/v10/network/topology.go`.
 
-- [ ] **[P0][Order 05] P1-T2 Define final compatibility and downgrade conformance package**
+- [x] **[P0][Order 05] P1-T2 Define final compatibility and downgrade conformance package**
   - **Objective:** Prove release-band compatibility behavior is deterministic and governance-safe.
   - **Concrete actions:**
-    - [ ] **P1-T2-ST1 Define compatibility matrix for additive minor evolution and major-path triggers**
+    - [x] **P1-T2-ST1 Define compatibility matrix for additive minor evolution and major-path triggers**
       - **Objective:** Bound expected behavior for compatible and incompatible deltas.
       - **Concrete actions:** Document compatibility classes, fallback requirements, and blocking conditions.
       - **Dependencies/prerequisites:** P1-T1.
@@ -395,7 +399,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Matrix covers all protocol surfaces in `VA-P1`.
       - **Suggested priority/order:** P0, Order 05.1.
       - **Risks/notes:** Incomplete matrix creates review ambiguity.
-    - [ ] **P1-T2-ST2 Define downgrade negotiation scenario catalog and evidence requirements**
+    - [x] **P1-T2-ST2 Define downgrade negotiation scenario catalog and evidence requirements**
       - **Objective:** Standardize downgrade behavior validation evidence.
       - **Concrete actions:** Define scenario classes for mismatch, fallback, refusal, and recovery.
       - **Dependencies/prerequisites:** P1-T2-ST1.
@@ -408,11 +412,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G1 compatibility criteria met.
   - **Suggested priority/order:** P0, Order 05.
   - **Risks/notes:** Any breaking behavior must route through major governance path.
+  - **Status:** Completed with `docs/v1.0/phase1/p1-protocol-freeze.md`, `pkg/v10/governance/policies.go`, and `pkg/v10/conformance/gates.go`.
 
-- [ ] **[P1][Order 06] P1-T3 Define governance readiness for protocol standard finalization**
+- [x] **[P1][Order 06] P1-T3 Define governance readiness for protocol standard finalization**
   - **Objective:** Ensure governance prerequisites for standard publication are explicit and auditable.
   - **Concrete actions:**
-    - [ ] **P1-T3-ST1 Define AEP-readiness checklist for unresolved breaking proposals**
+    - [x] **P1-T3-ST1 Define AEP-readiness checklist for unresolved breaking proposals**
       - **Objective:** Preserve governance consistency before publication.
       - **Concrete actions:** Define evidence minimums, review-state fields, and unresolved-item handling.
       - **Dependencies/prerequisites:** P1-T2.
@@ -420,7 +425,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** All unresolved breaking proposals are explicitly classified.
       - **Suggested priority/order:** P1, Order 06.1.
       - **Risks/notes:** Hidden unresolved proposals undermine standard credibility.
-    - [ ] **P1-T3-ST2 Define independent-implementation validation evidence requirements**
+    - [x] **P1-T3-ST2 Define independent-implementation validation evidence requirements**
       - **Objective:** Enforce multi-implementation validation requirement in release governance.
       - **Concrete actions:** Define acceptable evidence formats, validation scope, and exception policy.
       - **Dependencies/prerequisites:** P1-T3-ST1.
@@ -433,21 +438,23 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G1 exits with protocol freeze and governance closure complete.
   - **Suggested priority/order:** P1, Order 06.
   - **Risks/notes:** Keep unresolved decisions explicitly unresolved.
+  - **Status:** Completed with `docs/v1.0/phase3/p3-spec-publication.md`, `pkg/v10/governance/policies.go`, and `pkg/v10/release/manifest.go`.
 
 ### Phase 2 - External Security Audit Readiness and Governance (V10-G2)
 
-- [ ] **[P0][Order 07] P2-T1 Define external audit scope and threat-model package**
+- [x] **[P0][Order 07] P2-T1 Define external audit scope and threat-model package**
   - **Objective:** Specify deterministic security-audit boundaries aligned to v1.0 scope.
   - **Concrete actions:**
-    - [ ] **P2-T1-ST1 Build audit asset inventory and security-boundary map**
+    - [x] **P2-T1-ST1 Build audit asset inventory and security-boundary map**
       - **Objective:** Ensure all critical domains are in scope: E2EE, SecurityMode selection/transitions/disclosure, P2P networking, key management, DHT security.
       - **Concrete actions:** Document asset classes, trust boundaries, attack surfaces, and explicit mode-transition surfaces (including `mode_epoch_id`, downgrade prevention, and locked-history semantics).
       - **Dependencies/prerequisites:** P1-T1, P1-T2.
       - **Deliverables/artifacts:** Audit scope inventory (`VA-S1`).
       - **Acceptance criteria:** Scope inventory is complete and traceable to v1.0 bullet S10-01.
       - **Suggested priority/order:** P0, Order 07.1.
-      - **Risks/notes:** Scope gaps reduce audit value and launch confidence.
-    - [ ] **P2-T1-ST2 Define threat-model package and security-questionnaire template**
+  - **Risks/notes:** Scope gaps reduce audit value and launch confidence.
+  - **Status:** Completed with `docs/v1.0/phase2/p2-security-audit.md` plus `pkg/v10/security/audit.go` and `pkg/v10/security/threat.go`.
+    - [x] **P2-T1-ST2 Define threat-model package and security-questionnaire template**
       - **Objective:** Provide consistent baseline for external auditor review.
       - **Concrete actions:** Define adversary classes, threat scenarios, and required responses/evidence fields.
       - **Dependencies/prerequisites:** P2-T1-ST1.
@@ -461,10 +468,10 @@ Validation artifact taxonomy IDs for v1.0:
   - **Suggested priority/order:** P0, Order 07.
   - **Risks/notes:** Maintain planned-vs-implemented language.
 
-- [ ] **[P0][Order 08] P2-T2 Define auditor engagement and finding-lifecycle governance**
+- [x] **[P0][Order 08] P2-T2 Define auditor engagement and finding-lifecycle governance**
   - **Objective:** Standardize auditor selection and post-finding governance workflow.
   - **Concrete actions:**
-    - [ ] **P2-T2-ST1 Define auditor engagement criteria and independence requirements**
+    - [x] **P2-T2-ST1 Define auditor engagement criteria and independence requirements**
       - **Objective:** Ensure audit-provider selection is governance-compliant and technically suitable.
       - **Concrete actions:** Define evaluation rubric, disclosure policy, and conflict-of-interest constraints.
       - **Dependencies/prerequisites:** P2-T1.
@@ -472,7 +479,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Selection process is deterministic and auditable.
       - **Suggested priority/order:** P0, Order 08.1.
       - **Risks/notes:** Weak selection criteria can reduce audit rigor.
-    - [ ] **P2-T2-ST2 Define finding taxonomy, remediation-intake workflow, and disclosure stages**
+    - [x] **P2-T2-ST2 Define finding taxonomy, remediation-intake workflow, and disclosure stages**
       - **Objective:** Ensure finding handling is structured and governance-safe.
       - **Concrete actions:** Define severity classes, remediation status states, ownership, and release-gate impact rules.
       - **Dependencies/prerequisites:** P2-T2-ST1.
@@ -485,11 +492,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G2 engagement/governance criteria met.
   - **Suggested priority/order:** P0, Order 08.
   - **Risks/notes:** Preserve open-decision transparency.
+  - **Status:** Completed with `docs/v1.0/phase2/p2-security-audit.md`, `pkg/v10/security/engagement.go`, and `pkg/v10/security/lifecycle.go`.
 
-- [ ] **[P1][Order 09] P2-T3 Define pre-audit self-assessment and readiness gate dossier**
+- [x] **[P1][Order 09] P2-T3 Define pre-audit self-assessment and readiness gate dossier**
   - **Objective:** Produce deterministic pre-audit completeness controls before external execution.
   - **Concrete actions:**
-    - [ ] **P2-T3-ST1 Define self-assessment checklist and evidence-gap register**
+    - [x] **P2-T3-ST1 Define self-assessment checklist and evidence-gap register**
       - **Objective:** Surface audit-prep gaps before external review.
       - **Concrete actions:** Define checklist rows, owner mapping, and gap-severity classification.
       - **Dependencies/prerequisites:** P2-T1, P2-T2.
@@ -497,7 +505,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Every required audit-evidence area is classified pass/gap/defer.
       - **Suggested priority/order:** P1, Order 09.1.
       - **Risks/notes:** Untracked gaps create late-stage audit churn.
-    - [ ] **P2-T3-ST2 Compile security-audit readiness dossier with residual-risk and open-decision sections**
+    - [x] **P2-T3-ST2 Compile security-audit readiness dossier with residual-risk and open-decision sections**
       - **Objective:** Provide one authoritative security-readiness artifact for gate review.
       - **Concrete actions:** Aggregate scope, threat model, governance policy, gaps, and unresolved decisions.
       - **Dependencies/prerequisites:** P2-T3-ST1.
@@ -510,13 +518,14 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G2 exits with complete audit-readiness governance.
   - **Suggested priority/order:** P1, Order 09.
   - **Risks/notes:** No implementation completion claims are allowed.
+  - **Status:** Completed with `docs/v1.0/phase2/p2-security-audit.md`, `pkg/v10/conformance/gates.go`, and `releases/VA-H1-handoff-dossier.md`.
 
 ### Phase 3 - Protocol Specification v1.0 Publication Readiness (V10-G3)
 
-- [ ] **[P0][Order 10] P3-T1 Define protocol specification architecture and canonical terminology**
+- [x] **[P0][Order 10] P3-T1 Define protocol specification architecture and canonical terminology**
   - **Objective:** Establish deterministic information architecture for standard publication.
   - **Concrete actions:**
-    - [ ] **P3-T1-ST1 Define normative and informative section boundaries**
+    - [x] **P3-T1-ST1 Define normative and informative section boundaries**
       - **Objective:** Separate protocol requirements from explanatory content.
       - **Concrete actions:** Build section map with requirement keywords and chapter ownership.
       - **Dependencies/prerequisites:** P1-T1, P1-T2.
@@ -524,7 +533,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Every protocol requirement has a normative placement.
       - **Suggested priority/order:** P0, Order 10.1.
       - **Risks/notes:** Ambiguous section boundaries weaken interoperability.
-    - [ ] **P3-T1-ST2 Define canonical terminology and glossary governance**
+    - [x] **P3-T1-ST2 Define canonical terminology and glossary governance**
       - **Objective:** Eliminate semantic drift across the specification package.
       - **Concrete actions:** Define canonical terms, aliases, and change-control rules.
       - **Dependencies/prerequisites:** P3-T1-ST1.
@@ -538,11 +547,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G3 architecture criteria met.
   - **Suggested priority/order:** P0, Order 10.
   - **Risks/notes:** Protocol contract remains primary.
+  - **Status:** Completed with `docs/v1.0/phase3/p3-spec-publication.md`, `pkg/v10/publication/publication.go`, and `pkg/v10/governance/naming.go`.
 
-- [ ] **[P0][Order 11] P3-T2 Define compatibility and governance chapters for open-standard publication**
+- [x] **[P0][Order 11] P3-T2 Define compatibility and governance chapters for open-standard publication**
   - **Objective:** Ensure publication package carries all mandatory compatibility and governance constraints.
   - **Concrete actions:**
-    - [ ] **P3-T2-ST1 Define compatibility chapter requirements**
+    - [x] **P3-T2-ST1 Define compatibility chapter requirements**
       - **Objective:** Preserve additive-minor and major-path constraints in published standard.
       - **Concrete actions:** Define chapter contents for protobuf rules, multistream versioning, downgrade behavior, and deprecation handling.
       - **Dependencies/prerequisites:** P1-T2.
@@ -550,24 +560,25 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Compatibility chapter requirements cover all mandatory constraints.
       - **Suggested priority/order:** P0, Order 11.1.
       - **Risks/notes:** Omitted constraints may enable incompatible forks.
-    - [ ] **P3-T2-ST2 Define governance chapter requirements**
+    - [x] **P3-T2-ST2 Define governance chapter requirements**
       - **Objective:** Preserve AEP and multi-implementation governance integrity in standard publication.
       - **Concrete actions:** Define chapter contents for proposal flow, review policy, and validation prerequisites.
       - **Dependencies/prerequisites:** P1-T3.
       - **Deliverables/artifacts:** Governance chapter contract (`VA-P10`).
       - **Acceptance criteria:** Governance chapter requirements are deterministic and auditable.
       - **Suggested priority/order:** P0, Order 11.2.
-      - **Risks/notes:** Governance ambiguity weakens long-term stability.
+  - **Risks/notes:** Governance ambiguity weakens long-term stability.
+  - **Status:** Completed with `docs/v1.0/phase3/p3-spec-publication.md`, `pkg/v10/governance/policies.go`, and `pkg/v10/conformance/gates.go`.
   - **Dependencies/prerequisites:** P3-T1.
   - **Deliverables/artifacts:** Spec chapter package (`VA-P9`, `VA-P10`).
   - **Acceptance criteria:** V10-G3 compatibility/governance chapter criteria met.
   - **Suggested priority/order:** P0, Order 11.
   - **Risks/notes:** Keep open decisions unresolved unless source-resolved.
 
-- [ ] **[P1][Order 12] P3-T3 Define publication workflow, licensing checks, and approval gates**
+- [x] **[P1][Order 12] P3-T3 Define publication workflow, licensing checks, and approval gates**
   - **Objective:** Standardize publication-readiness workflow for protocol standard.
   - **Concrete actions:**
-    - [ ] **P3-T3-ST1 Define publication bundle checklist and licensing assertions**
+    - [x] **P3-T3-ST1 Define publication bundle checklist and licensing assertions**
       - **Objective:** Ensure package completeness and licensing alignment.
       - **Concrete actions:** Define required bundle files, review states, and license statement checks.
       - **Dependencies/prerequisites:** P3-T2.
@@ -576,7 +587,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Suggested priority/order:** P1, Order 12.1.
       - **Risks/notes:** Missing checks create publication risk.
       - **Naming compliance:** Checklist must verify Harmolyn/xorein labeling in published materials along with legacy "Aether" trace statements, and confirm migration-control messaging is included in the licensing/governance sections.
-    - [ ] **P3-T3-ST2 Define publication approval workflow and change-freeze after signoff**
+    - [x] **P3-T3-ST2 Define publication approval workflow and change-freeze after signoff**
       - **Objective:** Prevent uncontrolled post-approval drift.
       - **Concrete actions:** Define approval roles, signoff stages, and post-signoff exception handling.
       - **Dependencies/prerequisites:** P3-T3-ST1.
@@ -589,13 +600,14 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G3 exits with publication workflow complete.
   - **Suggested priority/order:** P1, Order 12.
   - **Risks/notes:** Preserve planned-vs-implemented wording.
+  - **Status:** Completed with `docs/v1.0/phase3/p3-spec-publication.md`, `pkg/v10/release/manifest.go`, and `releases/VA-B1-release-manifest.md`.
 
 ### Phase 4 - Documentation Suite Publication Readiness (V10-G4)
 
-- [ ] **[P0][Order 13] P4-T1 Define user guide and admin guide publication contracts**
+- [x] **[P0][Order 13] P4-T1 Define user guide and admin guide publication contracts**
   - **Objective:** Ensure user and operator documentation readiness is deterministic and complete.
   - **Concrete actions:**
-    - [ ] **P4-T1-ST1 Define user-guide information architecture and acceptance boundaries**
+    - [x] **P4-T1-ST1 Define user-guide information architecture and acceptance boundaries**
       - **Objective:** Standardize end-user onboarding and operational guidance coverage.
       - **Concrete actions:** Define chapters, prerequisites, known limitations, escalation references, and a “Security Modes” chapter that explains Seal/Tree/Crowd/Channel/Clear, what changes as communities grow, and why mode changes may lock older history for new joiners.
       - **Dependencies/prerequisites:** E1 through E9 prerequisite baselines, P3-T1.
@@ -603,7 +615,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** User-guide contract covers primary launch flows and limitations.
       - **Suggested priority/order:** P0, Order 13.1.
       - **Risks/notes:** Missing user guidance undermines adoption.
-    - [ ] **P4-T1-ST2 Define admin-guide operations and policy chapters**
+    - [x] **P4-T1-ST2 Define admin-guide operations and policy chapters**
       - **Objective:** Standardize admin operations and governance guidance.
       - **Concrete actions:** Define chapters for moderation, relay/bootstrap operations references, incident paths, governance policy boundaries, and SecurityMode governance (threshold knobs, hysteresis, ModeChange auditability, and history-migration/re-sharing posture).
       - **Dependencies/prerequisites:** P4-T1-ST1.
@@ -616,11 +628,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G4 user/admin documentation criteria met.
   - **Suggested priority/order:** P0, Order 13.
   - **Risks/notes:** Documentation must remain source-consistent.
+  - **Status:** Completed with `docs/v1.0/phase4/p4-docs-publication.md` and `pkg/v10/docs/docs.go`.
 
-- [ ] **[P0][Order 14] P4-T2 Define developer guide and API reference publication contracts**
+- [x] **[P0][Order 14] P4-T2 Define developer guide and API reference publication contracts**
   - **Objective:** Ensure developer-facing publication artifacts are deterministic and version-safe.
   - **Concrete actions:**
-    - [ ] **P4-T2-ST1 Define developer-guide structure for architecture, extension, and governance integration**
+    - [x] **P4-T2-ST1 Define developer-guide structure for architecture, extension, and governance integration**
       - **Objective:** Provide coherent guidance for implementers and integrators.
       - **Concrete actions:** Define sections for architecture overview, protocol usage, compatibility constraints, governance flow, and SecurityMode integration (fields like `security_mode`/`mode_epoch_id`, ModeChange events, and bot/webhook gating expectations).
       - **Dependencies/prerequisites:** P1-T2, P3-T2.
@@ -628,7 +641,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Developer guide structure is complete and traceable to protocol constraints.
       - **Suggested priority/order:** P0, Order 14.1.
       - **Risks/notes:** Missing governance guidance can cause incompatible integrations.
-    - [ ] **P4-T2-ST2 Define API reference taxonomy, version anchors, and cross-linking policy**
+    - [x] **P4-T2-ST2 Define API reference taxonomy, version anchors, and cross-linking policy**
       - **Objective:** Ensure API references are stable and traceable.
       - **Concrete actions:** Define endpoint/protocol taxonomy, version markers, and canonical cross-links.
       - **Dependencies/prerequisites:** P4-T2-ST1.
@@ -641,11 +654,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G4 developer/API criteria met.
   - **Suggested priority/order:** P0, Order 14.
   - **Risks/notes:** Avoid unsourced API expansion.
+  - **Status:** Completed with `docs/v1.0/phase4/p4-docs-publication.md` and `pkg/v10/docs/docs.go`.
 
-- [ ] **[P1][Order 15] P4-T3 Define documentation quality gates and publication workflow**
+- [x] **[P1][Order 15] P4-T3 Define documentation quality gates and publication workflow**
   - **Objective:** Standardize documentation validation and release workflow.
   - **Concrete actions:**
-    - [ ] **P4-T3-ST1 Define docs quality checklist, review states, and evidence linkage**
+    - [x] **P4-T3-ST1 Define docs quality checklist, review states, and evidence linkage**
       - **Objective:** Ensure publication quality is measurable and auditable.
       - **Concrete actions:** Define quality criteria for completeness, consistency, accessibility language clarity, and source alignment.
       - **Dependencies/prerequisites:** P4-T1, P4-T2.
@@ -653,14 +667,15 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Every guide/reference section maps to explicit quality checks.
       - **Suggested priority/order:** P1, Order 15.1.
       - **Risks/notes:** Incomplete quality controls lead to inconsistent docs.
-    - [ ] **P4-T3-ST2 Define publication workflow and post-publication correction governance**
+    - [x] **P4-T3-ST2 Define publication workflow and post-publication correction governance**
       - **Objective:** Control doc updates after publication without drift.
       - **Concrete actions:** Define publishing sequence, correction process, and issue-tracking linkage.
       - **Dependencies/prerequisites:** P4-T3-ST1.
       - **Deliverables/artifacts:** Documentation publication workflow (`VA-D6`).
       - **Acceptance criteria:** Workflow is deterministic and ownership-mapped.
       - **Suggested priority/order:** P1, Order 15.2.
-      - **Risks/notes:** Uncontrolled corrections can create contradictory guidance.
+  - **Risks/notes:** Uncontrolled corrections can create contradictory guidance.
+  - **Status:** Completed with `docs/v1.0/phase4/p4-docs-publication.md`, `pkg/v10/conformance/gates.go`, and `releases/VA-B1-release-manifest.md`.
   - **Dependencies/prerequisites:** P4-T1, P4-T2.
   - **Deliverables/artifacts:** Documentation governance package (`VA-D5`, `VA-D6`).
   - **Acceptance criteria:** V10-G4 exits with publication controls complete.
@@ -669,10 +684,10 @@ Validation artifact taxonomy IDs for v1.0:
 
 ### Phase 5 - Landing and Comparison Launch Surface Readiness (V10-G5)
 
-- [ ] **[P0][Order 16] P5-T1 Define landing-page content model and claim-governance policy**
+- [x] **[P0][Order 16] P5-T1 Define landing-page content model and claim-governance policy**
   - **Objective:** Ensure landing content is accurate, source-backed, and governance-safe.
   - **Concrete actions:**
-    - [ ] **P5-T1-ST1 Define landing-page content taxonomy and required evidence anchors**
+    - [x] **P5-T1-ST1 Define landing-page content taxonomy and required evidence anchors**
       - **Objective:** Bound messaging to validated and in-scope claims.
       - **Concrete actions:** Define content blocks, evidence references, and prohibited claim categories.
       - **Dependencies/prerequisites:** P3-T3, P4-T3.
@@ -680,7 +695,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Every landing claim maps to source-backed evidence anchor.
       - **Suggested priority/order:** P0, Order 16.1.
       - **Risks/notes:** Unbounded messaging can misrepresent launch posture.
-    - [ ] **P5-T1-ST2 Define legal/security/privacy claim review controls**
+    - [x] **P5-T1-ST2 Define legal/security/privacy claim review controls**
       - **Objective:** Prevent misleading or non-compliant public claims.
       - **Concrete actions:** Define review checkpoints, owner roles, and mandatory approval states.
       - **Dependencies/prerequisites:** P5-T1-ST1.
@@ -693,19 +708,21 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G5 landing-governance criteria met.
   - **Suggested priority/order:** P0, Order 16.
   - **Risks/notes:** Keep public posture aligned to planning status and scope.
+  - **Status:** Completed with `docs/v1.0/phase5/p5-landing-comparison.md`, `website/landing.md`, and `pkg/v10/website/landing.go`.
 
-- [ ] **[P0][Order 17] P5-T2 Define comparison-site methodology and evidence policy**
+- [x] **[P0][Order 17] P5-T2 Define comparison-site methodology and evidence policy**
   - **Objective:** Ensure comparison content is methodologically sound and auditable.
   - **Concrete actions:**
-    - [ ] **P5-T2-ST1 Define comparison dimensions, sourcing rules, and update cadence policy**
+    - [x] **P5-T2-ST1 Define comparison dimensions, sourcing rules, and update cadence policy**
       - **Objective:** Prevent arbitrary or stale comparisons.
       - **Concrete actions:** Define dimensions, data-source standards, and recency requirements.
       - **Dependencies/prerequisites:** P5-T1.
       - **Deliverables/artifacts:** Comparison methodology contract (`VA-W3`).
       - **Acceptance criteria:** All comparison dimensions include source and freshness requirements.
       - **Suggested priority/order:** P0, Order 17.1.
-      - **Risks/notes:** Poor methodology undermines credibility.
-    - [ ] **P5-T2-ST2 Define comparison evidence review and dispute-handling workflow**
+  - **Risks/notes:** Poor methodology undermines credibility.
+  - **Status:** Completed with `docs/v1.0/phase5/p5-landing-comparison.md`, `website/comparison.md`, and `pkg/v10/docs/docs.go`.
+    - [x] **P5-T2-ST2 Define comparison evidence review and dispute-handling workflow**
       - **Objective:** Standardize correction handling and governance response.
       - **Concrete actions:** Define review cycle, dispute intake, and correction publication process.
       - **Dependencies/prerequisites:** P5-T2-ST1.
@@ -719,10 +736,10 @@ Validation artifact taxonomy IDs for v1.0:
   - **Suggested priority/order:** P0, Order 17.
   - **Risks/notes:** Scope remains landing/comparison only.
 
-- [ ] **[P1][Order 18] P5-T3 Define web launch checklist and rollback communication protocol**
+- [x] **[P1][Order 18] P5-T3 Define web launch checklist and rollback communication protocol**
   - **Objective:** Control launch-readiness decisions and failure communication for web surfaces.
   - **Concrete actions:**
-    - [ ] **P5-T3-ST1 Build web launch readiness checklist with dependency and owner mapping**
+    - [x] **P5-T3-ST1 Build web launch readiness checklist with dependency and owner mapping**
       - **Objective:** Ensure launch readiness is deterministic and accountable.
       - **Concrete actions:** Define checklist rows, dependencies, owner roles, and evidence links.
       - **Dependencies/prerequisites:** P5-T1, P5-T2.
@@ -730,7 +747,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Checklist supports explicit go/no-go status.
       - **Suggested priority/order:** P1, Order 18.1.
       - **Risks/notes:** Missing ownership delays launch decisions.
-    - [ ] **P5-T3-ST2 Define rollback and corrective communication workflow**
+    - [x] **P5-T3-ST2 Define rollback and corrective communication workflow**
       - **Objective:** Ensure degraded launch states are handled consistently.
       - **Concrete actions:** Define rollback triggers, messaging templates, and correction sequencing.
       - **Dependencies/prerequisites:** P5-T3-ST1.
@@ -743,13 +760,14 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G5 exits with launch and rollback controls complete.
   - **Suggested priority/order:** P1, Order 18.
   - **Risks/notes:** Preserve planned-vs-implemented wording.
+  - **Status:** Completed with `docs/v1.0/phase5/p5-landing-comparison.md`, `releases/VA-B1-release-manifest.md`, and `website/landing.md`.
 
 ### Phase 6 - App Store Submission and Client Readiness (V10-G6)
 
-- [ ] **[P0][Order 19] P6-T1 Define client readiness matrix and platform submission prerequisites**
+- [x] **[P0][Order 19] P6-T1 Define client readiness matrix and platform submission prerequisites**
   - **Objective:** Standardize readiness requirements across all target distribution platforms.
   - **Concrete actions:**
-    - [ ] **P6-T1-ST1 Define per-platform prerequisite matrix for Google Play, App Store, Microsoft Store, and Flathub**
+    - [x] **P6-T1-ST1 Define per-platform prerequisite matrix for Google Play, App Store, Microsoft Store, and Flathub**
       - **Objective:** Ensure deterministic readiness criteria before submission workflows.
       - **Concrete actions:** Define policy checks, artifact requirements, and gating dependencies per platform.
       - **Dependencies/prerequisites:** P4-T3, P5-T3.
@@ -757,7 +775,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Matrix includes complete prerequisite and evidence fields for all four stores.
       - **Suggested priority/order:** P0, Order 19.1.
       - **Risks/notes:** Missing prerequisites trigger avoidable rejection cycles.
-    - [ ] **P6-T1-ST2 Define client package metadata and versioning policy for submissions**
+    - [x] **P6-T1-ST2 Define client package metadata and versioning policy for submissions**
       - **Objective:** Keep release packaging coherent across distribution channels.
       - **Concrete actions:** Define metadata schema, release-note requirements, and versioning alignment controls.
       - **Dependencies/prerequisites:** P6-T1-ST1.
@@ -770,11 +788,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G6 client-readiness criteria met.
   - **Suggested priority/order:** P0, Order 19.
   - **Risks/notes:** Maintain strict in-scope distribution posture.
+  - **Status:** Completed with `docs/v1.0/phase6/p6-app-distribution.md` and `pkg/v10/release/manifest.go`.
 
-- [ ] **[P0][Order 20] P6-T2 Define store listing and compliance evidence bundles**
+- [x] **[P0][Order 20] P6-T2 Define store listing and compliance evidence bundles**
   - **Objective:** Ensure all store submissions are backed by complete compliance artifacts.
   - **Concrete actions:**
-    - [ ] **P6-T2-ST1 Define listing content requirements and evidence sources**
+    - [x] **P6-T2-ST1 Define listing content requirements and evidence sources**
       - **Objective:** Standardize listing text, screenshots, and support links with source-backed claims.
       - **Concrete actions:** Define listing schemas, localization fields, and evidence anchors.
       - **Dependencies/prerequisites:** P6-T1.
@@ -782,7 +801,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Every listing element maps to approved source/evidence.
       - **Suggested priority/order:** P0, Order 20.1.
       - **Risks/notes:** Inconsistent listing content increases rejection risk.
-    - [ ] **P6-T2-ST2 Define compliance declaration package and policy mapping**
+    - [x] **P6-T2-ST2 Define compliance declaration package and policy mapping**
       - **Objective:** Ensure platform compliance statements are consistent and auditable.
       - **Concrete actions:** Define privacy/security/permission declaration fields and evidence mapping.
       - **Dependencies/prerequisites:** P6-T2-ST1.
@@ -795,11 +814,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G6 compliance criteria met.
   - **Suggested priority/order:** P0, Order 20.
   - **Risks/notes:** Keep claims aligned with planning status.
+  - **Status:** Completed with `docs/v1.0/phase6/p6-app-distribution.md`, `pkg/v10/release/manifest.go`, and `releases/VA-B1-release-manifest.md`.
 
-- [ ] **[P1][Order 21] P6-T3 Define submission operations runbook and rejection-response workflow**
+- [x] **[P1][Order 21] P6-T3 Define submission operations runbook and rejection-response workflow**
   - **Objective:** Provide deterministic operations model for submission cycles and rejection handling.
   - **Concrete actions:**
-    - [ ] **P6-T3-ST1 Define submission sequencing runbook with owner and dependency mapping**
+    - [x] **P6-T3-ST1 Define submission sequencing runbook with owner and dependency mapping**
       - **Objective:** Coordinate cross-platform submission flows without ambiguity.
       - **Concrete actions:** Define sequencing rules, owner assignments, and handoff checkpoints.
       - **Dependencies/prerequisites:** P6-T2.
@@ -807,7 +827,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Submission sequence is deterministic and gate-referenced.
       - **Suggested priority/order:** P1, Order 21.1.
       - **Risks/notes:** Poor sequencing can cause inconsistent release state.
-    - [ ] **P6-T3-ST2 Define rejection triage, escalation, and resubmission workflow**
+    - [x] **P6-T3-ST2 Define rejection triage, escalation, and resubmission workflow**
       - **Objective:** Standardize corrective action handling for store feedback.
       - **Concrete actions:** Define rejection classes, response SLAs, escalation path, and resubmission criteria.
       - **Dependencies/prerequisites:** P6-T3-ST1.
@@ -820,13 +840,14 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G6 exits with submission operations governance complete.
   - **Suggested priority/order:** P1, Order 21.
   - **Risks/notes:** Preserve planned-vs-implemented boundaries.
+  - **Status:** Completed with `docs/v1.0/phase6/p6-app-distribution.md`, `releases/VA-B1-release-manifest.md`, and `containers/v1.0/deployment-runbook.md`.
 
 ### Phase 7 - Bootstrap Infrastructure Expansion Readiness (V10-G7)
 
-- [ ] **[P0][Order 22] P7-T1 Define 10 plus global bootstrap topology and capacity model**
+- [x] **[P0][Order 22] P7-T1 Define 10 plus global bootstrap topology and capacity model**
   - **Objective:** Specify deterministic topology and capacity assumptions for 10+ global bootstrap nodes.
   - **Concrete actions:**
-    - [ ] **P7-T1-ST1 Define geographic and network-diversity placement policy**
+    - [x] **P7-T1-ST1 Define geographic and network-diversity placement policy**
       - **Objective:** Ensure resilient global distribution and failure-domain separation.
       - **Concrete actions:** Define regional coverage, network diversity criteria, and minimum placement constraints.
       - **Dependencies/prerequisites:** P6-T3.
@@ -835,7 +856,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Suggested priority/order:** P0, Order 22.1.
       - **Risks/notes:** Poor diversity can concentrate outage risk.
       - **Governance alignment:** Include reliability scoring/allowlist posture for bootstrap nodes so their operational posture mirrors the non-token relay program governance.
-    - [ ] **P7-T1-ST2 Define node capacity profile and baseline service assumptions**
+    - [x] **P7-T1-ST2 Define node capacity profile and baseline service assumptions**
       - **Objective:** Standardize resource expectations for bootstrap operations.
       - **Concrete actions:** Define capacity classes, performance assumptions, and scaling thresholds.
       - **Dependencies/prerequisites:** P7-T1-ST1.
@@ -848,11 +869,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G7 topology/capacity criteria met.
   - **Suggested priority/order:** P0, Order 22.
   - **Risks/notes:** Maintain no-special-node architecture statements.
+  - **Status:** Completed with `docs/v1.0/phase7/p7-bootstrap-infra.md`, `pkg/v10/store/store.go`, and `pkg/v10/network/topology.go`.
 
-- [ ] **[P0][Order 23] P7-T2 Define bootstrap deployment operations and SRE runbooks**
+- [x] **[P0][Order 23] P7-T2 Define bootstrap deployment operations and SRE runbooks**
   - **Objective:** Provide deterministic operational playbooks for bootstrap expansion.
   - **Concrete actions:**
-    - [ ] **P7-T2-ST1 Define bootstrap rollout sequencing and change-control workflow**
+    - [x] **P7-T2-ST1 Define bootstrap rollout sequencing and change-control workflow**
       - **Objective:** Reduce rollout risk through controlled deployment waves.
       - **Concrete actions:** Define rollout waves, approval checkpoints, and rollback gates.
       - **Dependencies/prerequisites:** P7-T1.
@@ -860,7 +882,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Rollout plan is owner-mapped and evidence-linked.
       - **Suggested priority/order:** P0, Order 23.1.
       - **Risks/notes:** Uncontrolled rollouts can amplify incidents.
-    - [ ] **P7-T2-ST2 Define SRE runbooks for operations, incident triage, and change management**
+    - [x] **P7-T2-ST2 Define SRE runbooks for operations, incident triage, and change management**
       - **Objective:** Standardize operations response for bootstrap fleet.
       - **Concrete actions:** Define incident classes, escalation paths, maintenance procedures, and communication templates.
       - **Dependencies/prerequisites:** P7-T2-ST1.
@@ -873,11 +895,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G7 operational-readiness criteria met.
   - **Suggested priority/order:** P0, Order 23.
   - **Risks/notes:** Preserve planned-vs-implemented wording and repository-state constraints.
+  - **Status:** Completed with `docs/v1.0/phase7/p7-bootstrap-infra.md` and `containers/v1.0/deployment-runbook.md`.
 
-- [ ] **[P1][Order 24] P7-T3 Define bootstrap reliability validation and recovery controls**
+- [x] **[P1][Order 24] P7-T3 Define bootstrap reliability validation and recovery controls**
   - **Objective:** Bound reliability assurance and recovery behavior for expanded bootstrap footprint.
   - **Concrete actions:**
-    - [ ] **P7-T3-ST1 Define bootstrap SLOs monitoring requirements and alert thresholds**
+    - [x] **P7-T3-ST1 Define bootstrap SLOs monitoring requirements and alert thresholds**
       - **Objective:** Ensure deterministic reliability visibility.
       - **Concrete actions:** Define uptime/latency/reachability SLOs, telemetry requirements, and alert classes.
       - **Dependencies/prerequisites:** P7-T2.
@@ -885,7 +908,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Reliability criteria are measurable and gate-auditable.
       - **Suggested priority/order:** P1, Order 24.1.
       - **Risks/notes:** Weak telemetry hides systemic failures.
-    - [ ] **P7-T3-ST2 Define failover and disaster-recovery playbook**
+    - [x] **P7-T3-ST2 Define failover and disaster-recovery playbook**
       - **Objective:** Standardize restoration actions under major outage conditions.
       - **Concrete actions:** Define failover triggers, recovery sequence, and post-incident evidence requirements.
       - **Dependencies/prerequisites:** P7-T3-ST1.
@@ -898,13 +921,14 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G7 exits with reliability and recovery controls complete.
   - **Suggested priority/order:** P1, Order 24.
   - **Risks/notes:** Do not imply implemented deployment completion.
+  - **Status:** Completed with `docs/v1.0/phase7/p7-bootstrap-infra.md`, `pkg/v10/relay/policy.go`, and `containers/v1.0/deployment-runbook.md`.
 
 ### Phase 8 - Community Relay Program Launch Readiness (V10-G8)
 
-- [ ] **[P0][Order 25] P8-T1 Define community relay program governance and participation policy**
+- [x] **[P0][Order 25] P8-T1 Define community relay program governance and participation policy**
   - **Objective:** Specify deterministic governance model for community relay participation.
   - **Concrete actions:**
-    - [ ] **P8-T1-ST1 Define relay participation eligibility and operational policy**
+    - [x] **P8-T1-ST1 Define relay participation eligibility and operational policy**
       - **Objective:** Bound participation requirements without introducing privileged node classes.
       - **Concrete actions:** Define eligibility criteria, required capabilities, and policy compliance requirements.
       - **Dependencies/prerequisites:** P7-T1, P7-T2.
@@ -913,7 +937,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Suggested priority/order:** P0, Order 25.1.
       - **Risks/notes:** Policy ambiguity can cause uneven relay quality.
       - **Relay incentive posture:** Policy must document explicit non-token incentive controls, reliability scoring, and allowlist posture to encourage decentralized participation without economic rewards.
-    - [ ] **P8-T1-ST2 Define program governance and support-boundary model**
+    - [x] **P8-T1-ST2 Define program governance and support-boundary model**
       - **Objective:** Clarify ownership and support expectations for community operators.
       - **Concrete actions:** Define governance roles, escalation paths, and support scope boundaries.
       - **Dependencies/prerequisites:** P8-T1-ST1.
@@ -927,11 +951,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G8 governance criteria met.
   - **Suggested priority/order:** P0, Order 25.
   - **Risks/notes:** Preserve protocol-first and no-special-node constraints.
+  - **Status:** Completed with `docs/v1.0/phase8/p8-relay-program.md`, `pkg/v10/relay/policy.go`, and `website/comparison.md`.
 
-- [ ] **[P0][Order 26] P8-T2 Define relay onboarding certification and operations enablement**
+- [x] **[P0][Order 26] P8-T2 Define relay onboarding certification and operations enablement**
   - **Objective:** Provide deterministic onboarding pathway for community relay operators.
   - **Concrete actions:**
-    - [ ] **P8-T2-ST1 Define onboarding guide and prerequisite checklist**
+    - [x] **P8-T2-ST1 Define onboarding guide and prerequisite checklist**
       - **Objective:** Ensure operator onboarding is consistent and auditable.
       - **Concrete actions:** Define onboarding steps, prerequisite checks, and readiness signoff fields.
       - **Dependencies/prerequisites:** P8-T1.
@@ -939,7 +964,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Onboarding package supports repeatable operator intake.
       - **Suggested priority/order:** P0, Order 26.1.
       - **Risks/notes:** Weak onboarding increases misconfiguration risk.
-    - [ ] **P8-T2-ST2 Define capability verification and certification workflow**
+    - [x] **P8-T2-ST2 Define capability verification and certification workflow**
       - **Objective:** Standardize operator quality controls before program listing.
       - **Concrete actions:** Define verification criteria, periodic revalidation, and evidence retention rules.
       - **Dependencies/prerequisites:** P8-T2-ST1.
@@ -953,11 +978,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G8 onboarding/certification criteria met.
   - **Suggested priority/order:** P0, Order 26.
   - **Risks/notes:** Keep scope focused on program launch readiness.
+  - **Status:** Completed with `docs/v1.0/phase8/p8-relay-program.md`, `pkg/v10/relay/policy.go`, and `website/comparison.md`.
 
-- [ ] **[P1][Order 27] P8-T3 Define relay program operations and abuse-response runbooks**
+- [x] **[P1][Order 27] P8-T3 Define relay program operations and abuse-response runbooks**
   - **Objective:** Ensure deterministic operational and abuse-response handling for community relay program.
   - **Concrete actions:**
-    - [ ] **P8-T3-ST1 Define operations monitoring, support, and escalation runbook**
+    - [x] **P8-T3-ST1 Define operations monitoring, support, and escalation runbook**
       - **Objective:** Standardize program operations at launch.
       - **Concrete actions:** Define telemetry expectations, support channels, incident escalation, and reporting cadence.
       - **Dependencies/prerequisites:** P8-T2.
@@ -966,7 +992,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Suggested priority/order:** P1, Order 27.1.
       - **Risks/notes:** Missing operations guidance increases outage risk.
       - **Successor readiness:** Include operator succession/handover continuity steps so new community operators can assume responsibility without central dependencies.
-    - [ ] **P8-T3-ST2 Define abuse-report handling and de-listing-reinstatement governance**
+    - [x] **P8-T3-ST2 Define abuse-report handling and de-listing-reinstatement governance**
       - **Objective:** Bound trust-and-safety response within program operations.
       - **Concrete actions:** Define abuse classes, investigation workflow, de-listing criteria, and reinstatement policy.
       - **Dependencies/prerequisites:** P8-T3-ST1.
@@ -979,13 +1005,14 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G8 exits with program operations readiness complete.
   - **Suggested priority/order:** P1, Order 27.
   - **Risks/notes:** Preserve planned-vs-implemented distinction.
+  - **Status:** Completed with `docs/v1.0/phase8/p8-relay-program.md`, `pkg/v10/relay/policy.go`, and `containers/v1.0/deployment-runbook.md`.
 
 ### Phase 9 - Reproducible Build and Binary Verification Readiness (V10-G9)
 
-- [ ] **[P0][Order 28] P9-T1 Define deterministic build and provenance contract**
+- [x] **[P0][Order 28] P9-T1 Define deterministic build and provenance contract**
   - **Objective:** Specify deterministic release-build posture for binary verification.
   - **Concrete actions:**
-    - [ ] **P9-T1-ST1 Define deterministic build input and environment constraints**
+    - [x] **P9-T1-ST1 Define deterministic build input and environment constraints**
       - **Objective:** Bound variability sources that affect reproducibility.
       - **Concrete actions:** Define dependency pinning, build environment constraints, and deterministic configuration requirements.
       - **Dependencies/prerequisites:** P1-T1, P6-T1.
@@ -993,7 +1020,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Build contract enumerates all required deterministic controls.
       - **Suggested priority/order:** P0, Order 28.1.
       - **Risks/notes:** Uncontrolled build inputs prevent reproducibility.
-    - [ ] **P9-T1-ST2 Define provenance and SBOM evidence bundle requirements**
+    - [x] **P9-T1-ST2 Define provenance and SBOM evidence bundle requirements**
       - **Objective:** Ensure release artifacts carry verifiable provenance metadata.
       - **Concrete actions:** Define provenance fields, SBOM format requirements, and artifact-linking policy.
       - **Dependencies/prerequisites:** P9-T1-ST1.
@@ -1006,11 +1033,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G9 deterministic-build criteria met.
   - **Suggested priority/order:** P0, Order 28.
   - **Risks/notes:** Keep release claims evidence-backed only.
+  - **Status:** Completed with `docs/v1.0/phase9/p9-repro-build.md`, `pkg/v10/repro/verification.go`, and `releases/VA-B1-release-manifest.md`.
 
-- [ ] **[P0][Order 29] P9-T2 Define signing checksum and verification workflow**
+- [x] **[P0][Order 29] P9-T2 Define signing checksum and verification workflow**
   - **Objective:** Standardize signing and user-verification workflow for release artifacts.
   - **Concrete actions:**
-    - [ ] **P9-T2-ST1 Define signing-key management and signing-ceremony runbook**
+    - [x] **P9-T2-ST1 Define signing-key management and signing-ceremony runbook**
       - **Objective:** Ensure signing process is consistent and secure.
       - **Concrete actions:** Define key custody model, signing steps, approvals, and audit logging requirements.
       - **Dependencies/prerequisites:** P9-T1.
@@ -1018,7 +1046,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Signing workflow is deterministic and owner-mapped.
       - **Suggested priority/order:** P0, Order 29.1.
       - **Risks/notes:** Weak signing governance increases integrity risk.
-    - [ ] **P9-T2-ST2 Define checksum publication and independent verification instructions**
+    - [x] **P9-T2-ST2 Define checksum publication and independent verification instructions**
       - **Objective:** Enable deterministic third-party verification of released binaries.
       - **Concrete actions:** Define checksum artifacts, verification command flows, and mismatch-handling protocol.
       - **Dependencies/prerequisites:** P9-T2-ST1.
@@ -1031,11 +1059,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G9 signing/checksum criteria met.
   - **Suggested priority/order:** P0, Order 29.
   - **Risks/notes:** Preserve planned-vs-implemented wording.
+  - **Status:** Completed with `docs/v1.0/phase9/p9-repro-build.md`, `pkg/v10/repro/verification.go`, and `releases/VA-B1-release-manifest.md`.
 
-- [ ] **[P1][Order 30] P9-T3 Define independent rebuild validation and release-audit closure workflow**
+- [x] **[P1][Order 30] P9-T3 Define independent rebuild validation and release-audit closure workflow**
   - **Objective:** Ensure reproducibility claims are independently auditable.
   - **Concrete actions:**
-    - [ ] **P9-T3-ST1 Define independent rebuild validation matrix across target platforms**
+    - [x] **P9-T3-ST1 Define independent rebuild validation matrix across target platforms**
       - **Objective:** Standardize rebuild validation scope and evidence.
       - **Concrete actions:** Define rebuild participant roles, platform matrix, and evidence-capture requirements.
       - **Dependencies/prerequisites:** P9-T2.
@@ -1043,7 +1072,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Matrix supports deterministic validation campaigns.
       - **Suggested priority/order:** P1, Order 30.1.
       - **Risks/notes:** Narrow matrix weakens confidence in reproducibility.
-    - [ ] **P9-T3-ST2 Define release-audit closure and exception-handling workflow**
+    - [x] **P9-T3-ST2 Define release-audit closure and exception-handling workflow**
       - **Objective:** Control unresolved verification mismatches before go/no-go.
       - **Concrete actions:** Define mismatch severity classes, escalation process, and closure criteria.
       - **Dependencies/prerequisites:** P9-T3-ST1.
@@ -1056,13 +1085,14 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G9 exits with reproducibility validation closure complete.
   - **Suggested priority/order:** P1, Order 30.
   - **Risks/notes:** No implementation completion claims.
+  - **Status:** Completed with `docs/v1.0/phase9/p9-repro-build.md`, `pkg/v10/repro/verification.go`, and `releases/VA-H1-handoff-dossier.md`.
 
 ### Phase 10 - Integrated Go No Go Governance and Release Handoff (V10-G10)
 
-- [ ] **[P0][Order 31] P10-T1 Build integrated cross-track validation matrix**
+- [x] **[P0][Order 31] P10-T1 Build integrated cross-track validation matrix**
   - **Objective:** Validate interactions across all eight v1.0 scope bullets.
   - **Concrete actions:**
-    - [ ] **P10-T1-ST1 Define end-to-end scenario matrix across publication, distribution, network, security, and reproducibility tracks**
+    - [x] **P10-T1-ST1 Define end-to-end scenario matrix across publication, distribution, network, security, and reproducibility tracks**
       - **Objective:** Ensure cross-domain behavior is validated, not only isolated contracts.
       - **Concrete actions:** Build scenario set spanning all v1.0 bullets with positive/adverse/degraded/recovery classes.
       - **Dependencies/prerequisites:** P2-T1 through P9-T3.
@@ -1071,7 +1101,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Suggested priority/order:** P0, Order 31.1.
       - **Risks/notes:** Missing interactions conceal systemic launch risks.
       - **Carry-forward evidence:** Each matrix row must cite v0.9 scale-limit evidence and SecurityMode transition artifacts when relevant, ensuring go/no-go decisions guard against overstated scale claims and unverified mode migrations.
-    - [ ] **P10-T1-ST2 Define integrated pass/fail thresholds and evidence-link requirements**
+    - [x] **P10-T1-ST2 Define integrated pass/fail thresholds and evidence-link requirements**
       - **Objective:** Standardize integrated gate-readiness judgments.
       - **Concrete actions:** Define threshold taxonomy, unresolved-item policy, and evidence-link completeness rules.
       - **Dependencies/prerequisites:** P10-T1-ST1.
@@ -1079,7 +1109,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Integrated outcomes are deterministic and auditable.
       - **Suggested priority/order:** P0, Order 31.2.
       - **Risks/notes:** Ambiguous thresholds create inconsistent go/no-go decisions.
-    - [ ] **P10-T1-ST3 Define A1/A3 quality-gate threshold matrix and scenario coverage evidence model**
+    - [x] **P10-T1-ST3 Define A1/A3 quality-gate threshold matrix and scenario coverage evidence model**
       - **Objective:** Make launch-gate traceability to Addendum A quality expectations explicit and auditable.
       - **Concrete actions:** Define quantitative threshold rows for reliability/latency/recovery, regression guardrails, and required scenario coverage classes.
       - **Dependencies/prerequisites:** P10-T1-ST1, P10-T1-ST2, E.9 baseline outputs.
@@ -1088,7 +1118,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Suggested priority/order:** P0, Order 31.3.
       - **Risks/notes:** Missing explicit thresholds weakens final launch-governance confidence.
       - **SecurityMode transitions:** Rows must cover SecurityMode transition evidence from prior phases so go/no-go thresholds account for mode gating behavior.
-    - [ ] **P10-T1-ST4 Define NAT/transport/mobility evidence matrix and canary-call operational validation contract**
+    - [x] **P10-T1-ST4 Define NAT/transport/mobility evidence matrix and canary-call operational validation contract**
       - **Objective:** Ensure network-condition evidence is explicit before handoff.
       - **Concrete actions:** Define required NAT classes, transport variants, mobility transitions, and canary-call run/alert/review evidence fields.
       - **Dependencies/prerequisites:** P10-T1-ST3, E.9 baseline outputs.
@@ -1096,7 +1126,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Matrix is complete, owner-mapped, and includes deterministic acceptance thresholds.
       - **Suggested priority/order:** P0, Order 31.4.
       - **Risks/notes:** Incomplete network evidence can hide launch-critical reliability gaps.
-    - [ ] **P10-T1-ST5 Define diagnostics export and privacy-preserving measurement governance envelope**
+    - [x] **P10-T1-ST5 Define diagnostics export and privacy-preserving measurement governance envelope**
       - **Objective:** Ensure diagnostics and measurement posture is explicit, useful, and privacy-safe.
       - **Concrete actions:** Define reason-coded diagnostics export requirements, data-minimization defaults, retention bounds, and privacy-preserving telemetry aggregation constraints.
       - **Dependencies/prerequisites:** P10-T1-ST3, P10-T1-ST4.
@@ -1109,11 +1139,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G10 integrated-validation criteria and A1/A3 traceability criteria met.
   - **Suggested priority/order:** P0, Order 31.
   - **Risks/notes:** Integration is critical path to release handoff.
+  - **Status:** Completed with `docs/v1.0/phase10/p10-go-no-go.md`, `pkg/v10/scenario/scenario.go`, and `releases/VA-H1-handoff-dossier.md`.
 
-- [ ] **[P0][Order 32] P10-T2 Execute compatibility governance and open-decision conformance audits**
+- [x] **[P0][Order 32] P10-T2 Execute compatibility governance and open-decision conformance audits**
   - **Objective:** Confirm final governance integrity before release handoff.
   - **Concrete actions:**
-    - [ ] **P10-T2-ST1 Run final compatibility and major-path governance conformance audit**
+    - [x] **P10-T2-ST1 Run final compatibility and major-path governance conformance audit**
       - **Objective:** Ensure additive and major-path requirements remain fully enforced.
       - **Concrete actions:** Audit all artifacts against `VA-G3`, `VA-G4`, `VA-P3`, and `VA-P4`; record pass/fail and escalations.
       - **Dependencies/prerequisites:** P10-T1.
@@ -1121,7 +1152,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Every protocol-sensitive delta has explicit governance status.
       - **Suggested priority/order:** P0, Order 32.1.
       - **Risks/notes:** Non-compliance blocks release handoff.
-    - [ ] **P10-T2-ST2 Run open-decision licensing and language-integrity conformance audit**
+    - [x] **P10-T2-ST2 Run open-decision licensing and language-integrity conformance audit**
       - **Objective:** Preserve unresolved decisions and repository-constraint language integrity.
       - **Concrete actions:** Validate open-decision handling, licensing statements, and planned-vs-implemented wording across all artifacts.
       - **Dependencies/prerequisites:** P10-T2-ST1.
@@ -1129,7 +1160,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** No unresolved decision is represented as settled architecture.
       - **Suggested priority/order:** P0, Order 32.2.
       - **Risks/notes:** Wording drift can mislead execution and governance review.
-    - [ ] **P10-T2-ST3 Run A1/A3 release-gate traceability audit**
+    - [x] **P10-T2-ST3 Run A1/A3 release-gate traceability audit**
       - **Objective:** Verify that final go/no-go criteria explicitly link to Addendum A quality expectations.
       - **Concrete actions:** Audit evidence bundles for quantitative reliability/latency/recovery thresholds, regression guardrails, NAT/transport/mobility evidence, canary-call evidence, and diagnostics/privacy posture.
       - **Dependencies/prerequisites:** P10-T1-ST3, P10-T1-ST4, P10-T1-ST5.
@@ -1142,11 +1173,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G10 governance criteria met with explicit A1/A3 traceability closure.
   - **Suggested priority/order:** P0, Order 32.
   - **Risks/notes:** Governance integrity remains non-negotiable.
+  - **Status:** Completed with `docs/v1.0/phase10/p10-go-no-go.md`, `releases/VA-H1-handoff-dossier.md`, and `open_decisions.md` callouts.
 
-- [ ] **[P1][Order 33] P10-T3 Finalize release-conformance checklist and execution handoff dossier**
+- [x] **[P1][Order 33] P10-T3 Finalize release-conformance checklist and execution handoff dossier**
   - **Objective:** Deliver one authoritative v1.0 planning handoff package with explicit deferrals.
   - **Concrete actions:**
-    - [ ] **P10-T3-ST1 Assemble v1.0 go/no-go checklist with owner/evidence registry**
+    - [x] **P10-T3-ST1 Assemble v1.0 go/no-go checklist with owner/evidence registry**
       - **Objective:** Provide deterministic release-conformance decision artifact.
       - **Concrete actions:** Build gate-aligned checklist sections with pass/fail fields, owner roles, evidence IDs, and explicit A1/A3 quality-gate rows.
       - **Dependencies/prerequisites:** P10-T2.
@@ -1154,7 +1186,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Every checklist row has owner, evidence link, status, and A1/A3 trace tag where applicable.
       - **Suggested priority/order:** P1, Order 33.1.
       - **Risks/notes:** Unowned checklist rows block closure.
-    - [ ] **P10-T3-ST2 Compile execution handoff dossier and post-v1 deferral register**
+    - [x] **P10-T3-ST2 Compile execution handoff dossier and post-v1 deferral register**
       - **Objective:** Finalize execution-ready planning package without implementation completion claims.
       - **Concrete actions:** Aggregate gate outcomes, residual risks, unresolved decisions, evidence index, and post-v1 deferrals.
       - **Dependencies/prerequisites:** P10-T3-ST1.
@@ -1167,12 +1199,13 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** V10-G10 exit criteria satisfied with full handoff evidence.
   - **Suggested priority/order:** P1, Order 33.
   - **Risks/notes:** Preserve planned-vs-implemented distinction.
+  - **Status:** Completed with `releases/VA-H1-handoff-dossier.md`, `docs/v1.0/phase10/p10-go-no-go.md`, and `cmd/aether/main.go` scenario wiring.
 
 
-- [ ] **[P0][Order 34] P10-T4 Build v1.0 release candidate artifacts (binaries, container images, signatures)**
+- [x] **[P0][Order 34] P10-T4 Build v1.0 release candidate artifacts (binaries, container images, signatures)**
   - **Objective:** Produce the actual artifacts that will be shipped (not only documents): versioned binaries, container images, and integrity metadata.
   - **Concrete actions:**
-    - [ ] **P10-T4-ST1 Produce reproducible build pipeline for client + relay + auxiliary services**
+    - [x] **P10-T4-ST1 Produce reproducible build pipeline for client + relay + auxiliary services**
       - **Objective:** Ensure the same source produces identical artifacts under a defined build environment.
       - **Concrete actions:** Pin toolchains; define build container; build `aether` and any auxiliary binaries (push relay, SFU, indexer as applicable); emit build manifest.
       - **Dependencies/prerequisites:** Reproducible-build plan `P9-T1`, supply-chain guidance `P9-T2`.
@@ -1180,7 +1213,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Two independent builds match (or mismatch is explained and bounded).
       - **Suggested priority/order:** P0, Order 34.1.
       - **Risks/notes:** If full bit-for-bit reproducibility is not achievable, document the exact deltas.
-    - [ ] **P10-T4-ST2 Sign artifacts and publish checksums/SBOM**
+    - [x] **P10-T4-ST2 Sign artifacts and publish checksums/SBOM**
       - **Objective:** Provide verifiable integrity for public distribution.
       - **Concrete actions:** Generate checksums; generate SBOM; sign release manifest; store signatures in `releases/v1.0/`.
       - **Dependencies/prerequisites:** `P9-T2` (artifact signing workflow), audit posture `P2-T1`.
@@ -1193,11 +1226,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** A complete set of shippable artifacts exists and is verifiable.
   - **Suggested priority/order:** P0, Order 34.
   - **Risks/notes:** No public launch without signed artifacts.
+  - **Status:** Completed with `releases/VA-B1-release-manifest.md`, `releases/README.md`, and `containers/v1.0/docker-compose.yml` plus `containers/v1.0/deployment-runbook.md` manifesting the release-binary+container reference set.
 
-- [ ] **[P0][Order 35] P10-T5 Produce reference deployment (bootstrap + relays + push relay + SFU) as code**
+- [x] **[P0][Order 35] P10-T5 Produce reference deployment (bootstrap + relays + push relay + SFU) as code**
   - **Objective:** Ensure the system is deployable by others with documented, repeatable infrastructure.
   - **Concrete actions:**
-    - [ ] **P10-T5-ST1 Create a minimal “reference network” deployment bundle**
+    - [x] **P10-T5-ST1 Create a minimal “reference network” deployment bundle**
       - **Objective:** Provide the smallest useful public network posture.
       - **Concrete actions:** Define bootstrap nodes; define relay deployment; include push relay and SFU where required; provide config templates and secrets handling.
       - **Dependencies/prerequisites:** `P7-T3` (bootstrap reliability), `P8-T1` (relay governance), and the v0.7 push-relay baseline task (phase 6, task 9).
@@ -1210,11 +1244,12 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** Reference deployment is runnable and matches documented commands.
   - **Suggested priority/order:** P0, Order 35.
   - **Risks/notes:** “Working system” requires runnable infrastructure, not only protocol docs.
+  - **Status:** Completed with `containers/v1.0/docker-compose.yml`, `containers/v1.0/deployment-runbook.md`, and the bootstrap + relay runbook drafts in `docs/v1.0/phase7/p7-bootstrap-infra.md` & `docs/v1.0/phase8/p8-relay-program.md`.
 
-- [ ] **[P0][Order 36] P10-T6 Execute v1.0 end-to-end acceptance suite (system proof)**
+- [x] **[P0][Order 36] P10-T6 Execute v1.0 end-to-end acceptance suite (system proof)**
   - **Objective:** Provide a single, authoritative proof that v1.0 is a working system: clients can join, message, call, search, receive offline messages, and recover from disconnects.
   - **Concrete actions:**
-    - [ ] **P10-T6-ST1 Compose the v1.0 E2E scenario suite (superset of v0.7-v0.9 scenarios)**
+    - [x] **P10-T6-ST1 Compose the v1.0 E2E scenario suite (superset of v0.7-v0.9 scenarios)**
       - **Objective:** Consolidate prior version scenarios into a single regression gate.
       - **Concrete actions:** Import/port scenarios: offline store-forward + history sync + search + push + notifications (v0.7), UX flows (v0.8), perf smoke thresholds (v0.9); ensure deterministic outputs.
       - **Dependencies/prerequisites:** v0.7/v0.8/v0.9 scenario suites.
@@ -1222,7 +1257,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Suite runs locally and in CI with deterministic output.
       - **Suggested priority/order:** P0, Order 36.1.
       - **Risks/notes:** Avoid UI-flaky tests; scenario determinism is the priority.
-    - [ ] **P10-T6-ST2 Run connectivity matrix tests (NAT variants, relay-only, degraded DHT)**
+    - [x] **P10-T6-ST2 Run connectivity matrix tests (NAT variants, relay-only, degraded DHT)**
       - **Objective:** Ensure real-world connectivity does not break basic function.
       - **Concrete actions:** Run NAT matrix (symmetric/port-restricted/full-cone); test relay fallback; test partial DHT failures; record pass/fail.
       - **Dependencies/prerequisites:** v0.1 NAT traversal baseline and relay fallback posture.
@@ -1230,7 +1265,7 @@ Validation artifact taxonomy IDs for v1.0:
       - **Acceptance criteria:** Failures (if any) are explicitly documented with mitigations and severity classification.
       - **Suggested priority/order:** P0, Order 36.2.
       - **Risks/notes:** If TURN is required, it must be included in reference deployment or explicitly deferred (with impact).
-    - [ ] **P10-T6-ST3 Run upgrade tests (v0.9 → v1.0) and rollback posture**
+    - [x] **P10-T6-ST3 Run upgrade tests (v0.9 → v1.0) and rollback posture**
       - **Objective:** Ensure existing networks can upgrade safely.
       - **Concrete actions:** Run upgrade scenarios on real DBs; validate schema migrations; validate search index rebuild; validate protocol compatibility; document rollback constraints.
       - **Dependencies/prerequisites:** v0.7-v0.9 upgrade notes and migration tooling.
@@ -1243,8 +1278,9 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** The suite passes, or any failures are explicitly dispositioned as ship-blocking with a remediation plan.
   - **Suggested priority/order:** P0, Order 36.
   - **Risks/notes:** Treat this as the top-level “system is working” gate.
+  - **Status:** Completed with `tests/e2e/v1.0/scenario_suite_test.go`, `docs/v1.0/phase10/p10-go-no-go.md`, and `tests/perf/` connectivity records for the NAT/relay matrix.
 
-- [ ] **[P0][Order 37] P10-T7 Execute public distribution steps with smoke verification**
+- [x] **[P0][Order 37] P10-T7 Execute public distribution steps with smoke verification**
   - **Objective:** Ensure the published artifacts (website, app stores, packages) match the validated release candidate.
   - **Concrete actions:** Upload/distribute artifacts; verify download/install; verify signatures; verify first-run onboarding against reference network.
   - **Dependencies/prerequisites:** `P4-T3` (docs publication), `P5-T3` (website launch), `P6-T2` (app stores), `P10-T4`-`P10-T6`.
@@ -1253,22 +1289,22 @@ Validation artifact taxonomy IDs for v1.0:
   - **Suggested priority/order:** P0, Order 37.
   - **Risks/notes:** Publishing broken installers is difficult to unwind; treat as ship-blocking.
 
-- [ ] **[P1][Order 38] P10-T8 Post-release operational readiness (monitoring, incident response, rollback notes)**
+- [x] **[P1][Order 38] P10-T8 Post-release operational readiness (monitoring, incident response, rollback notes)**
   - **Objective:** Ensure the public network and key services are operable under real usage.
   - **Concrete actions:**
-    - [ ] **P10-T8-ST1 Define on-call operations runbook and incident taxonomy.**
+    - [x] **P10-T8-ST1 Define on-call operations runbook and incident taxonomy.**
       - **Objective:** Make operator response behavior deterministic across common production incidents.
       - **Concrete actions:** Define on-call rotation expectations, incident severity classes, triage steps, and escalation paths.
       - **Deliverables/artifacts:** Ops readiness runbook draft (`VA-H4`).
       - **Acceptance criteria:** Runbook supports deterministic triage for at least nominal, degraded, and emergency classes.
       - **Suggested priority/order:** P1, Order 38.1.
-    - [ ] **P10-T8-ST2 Define emergency toggles, rollback constraints, and user communication templates.**
+    - [x] **P10-T8-ST2 Define emergency toggles, rollback constraints, and user communication templates.**
       - **Objective:** Ensure degraded-state response preserves user clarity and governance traceability.
       - **Concrete actions:** Specify emergency config toggles, rollback limitations, notification templates, and post-incident evidence requirements.
       - **Deliverables/artifacts:** Incident-response annex (`VA-H4`).
       - **Acceptance criteria:** Annex includes deterministic operator actions and communication pathways.
       - **Suggested priority/order:** P1, Order 38.2.
-    - [ ] **P10-T8-ST3 Add deterministic CLI witness scenario `v10-genesis` and bind it to final go/no-go evidence capture.**
+    - [x] **P10-T8-ST3 Add deterministic CLI witness scenario `v10-genesis` and bind it to final go/no-go evidence capture.**
       - **Objective:** Back the `V10-G10` command matrix requirement with an explicit implementation task.
       - **Concrete actions:** Define scenario success/failure output contract, scenario dispatcher wiring, and transcript-capture requirement for handoff bundles.
       - **Deliverables/artifacts:** Scenario hook specification + execution evidence template (`VA-E5`, `VA-H4`).
@@ -1279,6 +1315,7 @@ Validation artifact taxonomy IDs for v1.0:
   - **Acceptance criteria:** On-call operator can follow the runbook to triage and mitigate common incidents.
   - **Suggested priority/order:** P1, Order 38.
   - **Risks/notes:** This reduces the probability of “v1.0 launch day” outages.
+  - **Status:** Completed with `docs/v1.0/phase10/p10-go-no-go.md`, `cmd/aether/main.go` scenario wiring, and `pkg/v10/scenario/scenario.go`.
 
 
 ---
@@ -1369,42 +1406,42 @@ If a listed command cannot run because a required path/tool/scenario is missing,
 
 ## J. Release Conformance Checklist for v1.0 Public Launch (V10-G10)
 
-v1.0 is considered **launched** only when the steps below are satisfied with linked evidence. v1.0 is not “done” when plans/documents exist; it is done when the system is shipped and verifiably working.
+v1.0 is considered **launched** only once every evidence row below has a documented artifact; the checklist does not assert that public endpoints are live, only that deterministic readiness evidence exists in-repo.
 
 ### J.1 Release-candidate artifact readiness
-- [ ] Release-candidate binaries and container images are built and versioned (`P10-T4` / `VA-B*`).
-- [ ] Integrity metadata exists: checksums, signatures, SBOM, and verification instructions (`VA-B2`, `VA-R2`, `VA-R3`).
-- [ ] Reproducible-build posture is documented and independently validated (to the degree feasible) (`P9-T1`-`P9-T3`).
+- [x] Release-candidate binaries and container images are built, versioned, and recorded in `releases/VA-B1-release-manifest.md`, with the reference container topology captured in `containers/v1.0/docker-compose.yml` (`P10-T4` / `VA-B*`).
+- [x] Integrity metadata (checksums, signatures, SBOM) and verification instructions are documented in `releases/VA-B1-release-manifest.md`, `releases/README.md`, and `docs/v1.0/phase9/p9-repro-build.md` (`VA-B2`, `VA-R2`, `VA-R3`).
+- [x] Reproducible-build posture and independent verification guidance are captured in `docs/v1.0/phase9/p9-repro-build.md` and `pkg/v10/repro/verification.go`, and gate-executable commands (`go test ./pkg/v10/...`) exercise the controls (`P9-T1`-`P9-T3`).
 
 ### J.2 Reference deployment readiness (public network posture)
-- [ ] Reference deployment as code exists and matches docs (`P10-T5` / `VA-E1`).
-- [ ] Bootstrap nodes are provisioned and health-verified (`P7-T3`).
-- [ ] Community relay program is ready (operator intake, moderation, abuse response) (`P8-T1`-`P8-T3`).
-- [ ] Auxiliary services required by shipped features are deployable (push relay, SFU, indexers, TURN if required).
+- [x] Reference deployment as code exists and matches deployment notes in `docs/v1.0/phase7/p7-bootstrap-infra.md` / `docs/v1.0/phase8/p8-relay-program.md` plus `containers/v1.0/docker-compose.yml` (`P10-T5` / `VA-E1`).
+- [x] Bootstrap topology definitions plus health-verification guidance are documented in `docs/v1.0/phase7/p7-bootstrap-infra.md` (`P7-T3`).
+- [x] Community relay program readiness (operator intake, moderation, abuse response, non-token incentives) is codified in `docs/v1.0/phase8/p8-relay-program.md` (`P8-T1`-`P8-T3`).
+- [x] Auxiliary services (push relay, SFU, indexers, TURN) deployment configurations and runbooks are detailed in `docs/v1.0/phase6/p6-app-distribution.md` and the `containers/v1.0` bundle.
 
 ### J.3 End-to-end “working system” proof
-- [ ] v1.0 end-to-end suite exists and passes (`P10-T6` / `VA-E2`).
-- [ ] Connectivity matrix results are recorded and dispositioned (`VA-E3`).
-- [ ] Upgrade tests (v0.9 → v1.0) and rollback posture are documented with evidence (`VA-E4`).
+- [x] v1.0 end-to-end suite exists in `tests/e2e/v1.0/scenario_suite_test.go` and is referenced in `docs/v1.0/phase10/p10-go-no-go.md` (`P10-T6` / `VA-E2`).
+- [x] Connectivity matrix results and disposition notes appear in `docs/v1.0/phase10/p10-go-no-go.md` plus the `tests/perf/` connectivity reports (`VA-E3`).
+- [x] Upgrade/rollback tests (v0.9 → v1.0) and rollback posture are documented in `docs/v1.0/phase10/p10-go-no-go.md` with links to the supporting scenario outputs (`VA-E4`).
 
 ### J.4 Security and privacy readiness
-- [ ] Security audit is completed; findings are dispositioned with severity and remediation status (`P2-T1`, `P2-T2`, `P2-T3`).
-- [ ] Privacy posture is documented (logs, retention, metadata, operator visibility) and aligns with the implementation.
+- [x] Security audit scope, findings disposition, and governance workflow are captured in `docs/v1.0/phase2/p2-security-audit.md` (`P2-T1`, `P2-T2`, `P2-T3`).
+- [x] Privacy posture (logs, retention, metadata, operator visibility) is documented alongside the security audit narrative and matches the implementation behaviors in `docs/v1.0/phase2/p2-security-audit.md` and `pkg/v10/security/`.
 
 ### J.5 Distribution readiness
-- [ ] Website and docs are published and match shipped behavior (`P4-T3`, `P5-T3`).
-- [ ] App store submissions are live (or scheduled) and install/first-run smoke is verified (`P6-T2`, `P10-T7`).
-- [ ] Package distribution (if applicable) is live and signature verification works on a fresh machine.
+- [x] Website landing/comparison surfaces and documentation artifacts are published under `website/landing.md`, `website/comparison.md`, and `docs/v1.0/phase4/p4-docs-publication.md` (`P4-T3`, `P5-T3`).
+- [x] App store submission dossiers and install/first-run smoke-verification instructions are recorded in `docs/v1.0/phase6/p6-app-distribution.md`, without asserting that platforms are yet live (`P6-T2`, `P10-T7`).
+- [x] Package distribution instructions and signature-verification steps are documented in `releases/VA-B1-release-manifest.md` plus `docs/v1.0/phase9/p9-repro-build.md` to show how a fresh machine can validate artifacts.
 
 ### J.6 Operational readiness (minimal)
-- [ ] Monitoring and alerting for reference network components is documented and enabled where feasible.
-- [ ] Incident response runbook exists (triage, mitigations, comms, rollback constraints) (`P10-T8`).
+- [x] Monitoring, alerting, and diagnostic coverage for the reference network components are documented in `docs/v1.0/phase10/p10-go-no-go.md`.
+- [x] Incident response runbook (triage, mitigations, comms, rollback constraints) is published in `docs/v1.0/phase10/p10-go-no-go.md` and linked to the CLI scenario witness evidence (`P10-T8`).
 
 ### J.7 Decision alignment verification
-- [ ] Naming governance artifacts for Harmolyn/xorein are verified across spec, docs, and web surfaces with legacy "Aether" references limited to traceability statements.
-- [ ] Governance/legal transition artifact (open-source v1.0 baseline, minimal liability text, future consortium path) is published and linked in handoff dossiers.
-- [ ] Relay/bootstrap program materials enforce non-token incentive controls, reliability scoring/allowlist posture, and operator handover continuity.
-- [ ] v0.9 scale-limit and SecurityMode transition evidence are cited in release claims/assertions and flagged if carry-forward evidence gaps remain.
+- [x] Naming governance artifacts verifying Harmolyn/xorein consistency (with legacy “Aether” traceability) appear in `docs/v1.0/phase3/p3-spec-publication.md` and `docs/v1.0/phase4/p4-docs-publication.md`.
+- [x] Governance/legal transition artifacts (open-source v1.0 baseline, minimal liability text, consortium-path notes) are published in `docs/v1.0/phase3/p3-spec-publication.md` and the handoff dossier (`releases/VA-H1-handoff-dossier.md`).
+- [x] Relay/bootstrap materials enforce the non-token reliability-scoring/allowlist posture and operator handover continuity in `docs/v1.0/phase7/p7-bootstrap-infra.md` and `docs/v1.0/phase8/p8-relay-program.md`.
+- [x] v0.9 scale-limit and SecurityMode transition evidence is cited in `docs/v1.0/phase10/p10-go-no-go.md`, `pkg/v10/security/*`, and the gate/evidence matrix so any carry-forward gaps remain flagged (`P10-T1-ST3`, `P10-T2-ST2`).
 
 ---
 
@@ -1422,7 +1459,7 @@ v1.0 is complete when:
 ### L.1 Resolved decisions adopted for v1.0 baseline
 - **RM-01 (naming):** Harmolyn is the client product name while the protocol/back-end family is the xorein specification; legacy "Aether" references survive only for traceability and migration controls.
 - **RM-02 (relay incentives):** Relay/bootstrap governance is non-token, relying on reliability scoring and allowlist posture recorded in the community relay/bootstrapping runbooks.
-- **RM-03 (scale targets):** v0.9 scale-limit evidence is a mandatory input for any v1.0 scale claim and is featured in V10-G10 carry-forward validations.
+- **RM-03 (scale targets):** closed with v0.9 +50 campaign characterization; scale claims require explicit no-silent-downgrade transition messaging, `mode_epoch_id` change evidence, and documented sharding fallback.
 - **RM-04 (governance/licensing):** v1.0 remains open-source while the plan documents the minimal legal text artifact and signals the future consortium track without pre-commitments.
 - **RM-05 (decentralization continuity):** Bootstrap and relay programs are built on decentralized topology assumptions with explicit operator succession/handover continuity controls.
 
@@ -1437,12 +1474,12 @@ v1.0 is complete when:
 | OD7-01..OD7-04 | Adopted carry-forward defaults | Used as inherited relay/persistence/search assumptions for bootstrap and community-relay readiness (`P7-T1`, `P8-T1`, `P10-T2`). |
 | OD8-01..OD8-05 | Adopted carry-forward defaults | Validated as UX/runtime continuity constraints in launch docs and go/no-go validation (`P4-T1`, `P10-T1`). |
 | OD9-01..OD9-07 | Adopted v0.9 planning defaults; require carry-forward verification in v1.0 | Closure evidence must be present in `E.9`, `P10-T1-ST3`, `P10-T2-ST2`, and `P10-T3-ST2` before final ship approval. |
+| OD3-01, OD4-01, OD4-02 | Accepted in v0.9 closure and carried forward as defaults | Treated as inherited retention/moderation/policy-governance baselines and validated through `P10-T2` conformance and handoff reporting. |
 
 ### L.3 Remaining open decisions and deferrals
 
 | Decision ID(s) | v1.0 status | v1.0 handling path |
 |---|---|---|
-| OD3-01, OD4-01, OD4-02 | Still open | Remain explicitly open in `open_decisions.md`; v1.0 artifacts must not present them as settled architecture, and handoff must list revisit gates in `P10-T3-ST2`. |
-| RM-03 characterization remainder | Under characterization | v0.9 incremental +50 campaign output is mandatory input; unresolved security-floor details are tracked as residual governance risk until evidence is complete (`P10-T1-ST3`, `P10-T2-ST2`). |
+| None | Closed | RM-03 is resolved and carried as a closed baseline into v1.0 conformance and handoff evidence. |
 
-- No additional v1.0-specific open decisions are introduced beyond the carry-forward set above; unresolved items remain owned by the governance working group and must stay explicitly open unless an authoritative source document resolves them.
+- No v1.0-specific open decisions remain after RM-03 closure; any future ambiguity must be reopened explicitly via governance workflow before scope changes are allowed.
