@@ -65,9 +65,10 @@ func (p *testPeerConnection) Disconnect(_ context.Context, _ string) error {
 }
 
 type blockingPeerConnection struct {
-	id             string
-	connectStarted chan struct{}
-	releaseCh      chan struct{}
+	id               string
+	connectStarted   chan struct{}
+	releaseCh        chan struct{}
+	disconnectCalled int
 }
 
 func newBlockingPeerConnection(id string) *blockingPeerConnection {
@@ -93,7 +94,10 @@ func (p *blockingPeerConnection) Connect(_ context.Context, _ string, _ *apb.Voi
 	}
 }
 
-func (p *blockingPeerConnection) Disconnect(_ context.Context, _ string) error { return nil }
+func (p *blockingPeerConnection) Disconnect(_ context.Context, _ string) error {
+	p.disconnectCalled++
+	return nil
+}
 
 func TestNewVoicePipelineBaselineDefaults(t *testing.T) {
 	baseline, err := NewVoicePipelineBaseline("session-a", 1700000000)
@@ -475,7 +479,7 @@ func TestVoiceSessionManagerCongestionRemainsDuringPendingJoin(t *testing.T) {
 	}
 }
 
-func TestVoiceSessionManagerTeardownClearsPendingJoin(t *testing.T) {
+func TestVoiceSessionManagerTeardownRejectsStalePendingJoin(t *testing.T) {
 	manager, err := NewVoiceSessionManager(1, nil)
 	if err != nil {
 		t.Fatalf("NewVoiceSessionManager() error = %v", err)
@@ -514,8 +518,14 @@ func TestVoiceSessionManagerTeardownClearsPendingJoin(t *testing.T) {
 	close(firstPeer.releaseCh)
 	wg.Wait()
 
-	if firstErr != nil {
-		t.Fatalf("first Join() unexpected error = %v", firstErr)
+	if !errors.Is(firstErr, ErrJoinCanceled) {
+		t.Fatalf("first Join() error = %v, want ErrJoinCanceled", firstErr)
+	}
+	if firstPeer.disconnectCalled != 1 {
+		t.Fatalf("first peer disconnect calls = %d, want 1", firstPeer.disconnectCalled)
+	}
+	if got := manager.ParticipantCount(); got != 1 {
+		t.Fatalf("ParticipantCount() after stale join completion = %d, want 1", got)
 	}
 	if err := manager.Teardown(ctx, "session-a"); err != nil {
 		t.Fatalf("Teardown() cleanup error = %v", err)

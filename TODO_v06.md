@@ -1,6 +1,8 @@
 # TODO_v06.md
 
-> Status: Planning artifact only. No implementation completion is claimed in this document.
+> Status: Execution artifact. `docs/v0.6/phase0/p0-t1-scope-contract.md` through `docs/v0.6/phase5/p5-t3-release-gate-handoff.md` and `pkg/v06` anchor this execution evidence; `TODO_v06.md` tracks residual verification detail.
+>
+> Evidence: `docs/v0.6/phase0/p0-t1-scope-contract.md`, `docs/v0.6/phase0/p0-t2-compatibility-governance-checklist.md`, `docs/v0.6/phase0/p0-t3-verification-evidence-matrix.md`, `docs/v0.6/phase5/p5-t3-release-gate-handoff.md`, `pkg/v06`
 >
 > Authoritative v0.6 scope source: `aether-v3.md` roadmap bullets under **v0.6.0 — Sentinel** after Addendum A pull-forward alignment.
 >
@@ -141,34 +143,34 @@ Validation artifacts:
 - `VA-X*` integrated conformance
 
 ### Phase 0 (V6-G0)
-- [ ] **P0-T1** Scope trace mapping for all ten bullets with hardening interpretation rules.
-- [ ] **P0-T2** Compatibility/governance checklists (additive + major-path triggers).
-- [ ] **P0-T3** Gate evidence schema and pass/fail templates.
+- [x] **P0-T1** Scope trace mapping for all ten bullets with hardening interpretation rules.
+- [x] **P0-T2** Compatibility/governance checklists (additive + major-path triggers).
+- [x] **P0-T3** Gate evidence schema and pass/fail templates.
 
 ### Phase 1 (V6-G1): Discovery hardening
-- [ ] **P1-T1** DHT publication reliability contract (freshness, stale pruning, retry/backoff) (`VA-D1`).
-- [ ] **P1-T2** Index integrity and poisoning defense contract (`VA-D2`).
-- [ ] **P1-T3** Multi-source consistency and deterministic conflict handling (`VA-D3`).
+- [x] **P1-T1** DHT publication reliability contract (freshness, stale pruning, retry/backoff) (`VA-D1`).
+- [x] **P1-T2** Index integrity and poisoning defense contract (`VA-D2`).
+- [x] **P1-T3** Multi-source consistency and deterministic conflict handling (`VA-D3`).
 
 ### Phase 2 (V6-G2): Search/explore/preview reliability
-- [ ] **P2-T1** Deterministic partial-failure semantics for search queries/responses (`VA-S1`).
-- [ ] **P2-T2** Explore-feed degradation, freshness, and fallback ordering (`VA-S2`).
-- [ ] **P2-T3** Preview-to-join reliability and mismatch handling (`VA-S3`).
+- [x] **P2-T1** Deterministic partial-failure semantics for search queries/responses (`VA-S1`).
+- [x] **P2-T2** Explore-feed degradation, freshness, and fallback ordering (`VA-S2`).
+- [x] **P2-T3** Preview-to-join reliability and mismatch handling (`VA-S3`).
 
 ### Phase 3 (V6-G3): Anti-abuse hardening
-- [ ] **P3-T1** PoW anti-sybil hardening profile and adaptation boundaries (`VA-A1`).
-- [ ] **P3-T2** Local limiter boundary/recovery hardening under burst and replay-like traffic (`VA-A2`).
-- [ ] **P3-T3** GossipSub score-stability, reintegration, and false-positive controls (`VA-A3`).
+- [x] **P3-T1** PoW anti-sybil hardening profile and adaptation boundaries (`VA-A1`).
+- [x] **P3-T2** Local limiter boundary/recovery hardening under burst and replay-like traffic (`VA-A2`).
+- [x] **P3-T3** GossipSub score-stability, reintegration, and false-positive controls (`VA-A3`).
 
 ### Phase 4 (V6-G4): Reputation/report/filter reliability
-- [ ] **P4-T1** Reputation anti-gaming and uncertainty-handling hardening (`VA-R1`).
-- [ ] **P4-T2** Report routing reliability (idempotency, retry, ordering, acknowledgement), including E2EE-compatible user-submitted evidence bundle semantics (`VA-R2`).
-- [ ] **P4-T3** Optional filter reliability and bounded-policy behavior, including SecurityMode gating (Clear-only server-side filters; E2EE requires on-device/explicitly limited behavior) (`VA-R3`).
+- [x] **P4-T1** Reputation anti-gaming and uncertainty-handling hardening (`VA-R1`).
+- [x] **P4-T2** Report routing reliability (idempotency, retry, ordering, acknowledgement), including E2EE-compatible user-submitted evidence bundle semantics (`VA-R2`).
+- [x] **P4-T3** Optional filter reliability and bounded-policy behavior, including SecurityMode gating (Clear-only server-side filters; E2EE requires on-device/explicitly limited behavior) (`VA-R3`).
 
 ### Phase 5 (V6-G5 → V6-G6): Integrated conformance and handoff
-- [ ] **P5-T1** Cross-feature hardening scenarios (positive/adverse/abuse/recovery) (`VA-X1`).
-- [ ] **P5-T2** Compatibility/governance/open-decision conformance audit (`VA-X2`).
-- [ ] **P5-T3** Release checklist + execution handoff dossier + v0.7+ deferral register (`VA-X3`).
+- [x] **P5-T1** Cross-feature hardening scenarios (positive/adverse/abuse/recovery) (`VA-X1`).
+- [x] **P5-T2** Compatibility/governance/open-decision conformance audit (`VA-X2`).
+- [x] **P5-T3** Release checklist + execution handoff dossier + v0.7+ deferral register (`VA-X3`).
 
 ---
 
@@ -203,14 +205,14 @@ Handling rule: open decisions remain `Open` and must not be represented as settl
 
 ## 9. Release-Conformance Checklist (V6-G6)
 
-- [ ] All ten v0.6 bullets are mapped to tasks and artifacts.
-- [ ] v0.6 is framed as hardening/scaling/reliability, not first introduction of v0.3 discovery/admission features.
-- [ ] Discovery/search/explore/preview wording consistently describes hardening of previously introduced capabilities rather than first introduction.
-- [ ] Optional filters remain optional and non-authoritative.
-- [ ] Anti-abuse and report-routing reliability semantics are deterministic and test-mapped.
-- [ ] No v0.7+ archive/history scope is imported.
-- [ ] Compatibility/governance/open-decision checks are complete.
-- [ ] Planned-vs-implemented distinction remains explicit.
+- [x] All ten v0.6 bullets are mapped to tasks and artifacts.
+- [x] v0.6 is framed as hardening/scaling/reliability, not first introduction of v0.3 discovery/admission features.
+- [x] Discovery/search/explore/preview wording consistently describes hardening of previously introduced capabilities rather than first introduction.
+- [x] Optional filters remain optional and non-authoritative.
+- [x] Anti-abuse and report-routing reliability semantics are deterministic and test-mapped.
+- [x] No v0.7+ archive/history scope is imported.
+- [x] Compatibility/governance/open-decision checks are complete.
+- [x] Planned-vs-implemented distinction remains explicit.
 
 ---
 
