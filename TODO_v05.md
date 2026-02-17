@@ -1,6 +1,8 @@
 # TODO_v05.md
 
-> Status: Planning artifact only. No implementation completion is claimed in this document.
+> Status: Execution artifact. `docs/v0.5/phase0/p0-t1-scope-contract.md` through `docs/v0.5/phase6/p6-t3-release-gate-handoff.md` and `pkg/v05` anchor this execution evidence; `TODO_v05.md` tracks residual verification detail.
+>
+> Evidence: `docs/v0.5/phase0/p0-t1-scope-contract.md`, `docs/v0.5/phase0/p0-t2-compatibility-governance-checklist.md`, `docs/v0.5/phase0/p0-t3-verification-evidence-matrix.md`, `docs/v0.5/phase6/p6-t3-release-gate-handoff.md`, `pkg/v05`
 >
 > Authoritative v0.5 scope source: `aether-v3.md` roadmap bullets under **v0.5.0 — Pulse**.
 >
@@ -218,10 +220,10 @@ Validation artifact IDs used below:
 
 ## Phase 0 - Scope Lock, Governance Controls, and Evidence Setup (V5-G0)
 
-- [ ] **[P0][Order 01] P0-T1 Freeze v0.5 scope contract and anti-scope boundaries**
+- [x] **[P0][Order 01] P0-T1 Freeze v0.5 scope contract and anti-scope boundaries**
   - **Objective:** Create one-to-one mapping from v0.5 roadmap bullets to planned work items and explicit exclusions.
   - **Concrete actions:**
-    - [ ] **P0-T1-ST1 Build v0.5 scope trace base 8 bullets to task IDs**
+    - [x] **P0-T1-ST1 Build v0.5 scope trace base 8 bullets to task IDs**
       - **Objective:** Ensure zero ambiguity in v0.5 inclusion boundaries.
       - **Concrete actions:** Map each v0.5 bullet to at least one task and one validation artifact ID.
       - **Dependencies/prerequisites:** v0.5 roadmap extraction complete.
@@ -229,7 +231,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** All 8 bullets mapped; no orphan bullet; no extra capability in mapping.
       - **Suggested priority/order:** P0, Order 01.1.
       - **Risks/notes:** Incomplete mapping introduces hidden execution gaps.
-    - [ ] **P0-T1-ST2 Lock explicit exclusions and scope-escalation policy**
+    - [x] **P0-T1-ST2 Lock explicit exclusions and scope-escalation policy**
       - **Objective:** Prevent v0.6+ and post-v0.5 leakage into v0.5.
       - **Concrete actions:** Document exclusion list, escalation trigger, and approval path for newly proposed items.
       - **Dependencies/prerequisites:** P0-T1-ST1.
@@ -243,10 +245,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 01.
   - **Risks/notes:** Scope drift here invalidates downstream sequencing.
 
-- [ ] **[P0][Order 02] P0-T2 Lock compatibility and governance controls for v0.5 protocol-touching deltas**
+- [x] **[P0][Order 02] P0-T2 Lock compatibility and governance controls for v0.5 protocol-touching deltas**
   - **Objective:** Embed compatibility and governance invariants before protocol contract freeze work begins.
   - **Concrete actions:**
-    - [ ] **P0-T2-ST1 Define additive-only protobuf checklist for bot shim emoji and webhook schema deltas**
+    - [x] **P0-T2-ST1 Define additive-only protobuf checklist for bot shim emoji and webhook schema deltas**
       - **Objective:** Prevent destructive schema evolution.
       - **Concrete actions:** Define prohibited operations and reviewer checkpoints for all schema changes.
       - **Dependencies/prerequisites:** P0-T1.
@@ -254,7 +256,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Checklist forbids field-number reuse and non-additive minor changes.
       - **Suggested priority/order:** P0, Order 02.1.
       - **Risks/notes:** Late incompatibility findings can block release conformance.
-    - [ ] **P0-T2-ST2 Define major-change trigger matrix and downgrade evidence requirements**
+    - [x] **P0-T2-ST2 Define major-change trigger matrix and downgrade evidence requirements**
       - **Objective:** Ensure breaking behavior follows formal governance path.
       - **Concrete actions:** Define trigger conditions, required new multistream ID plan, downgrade negotiation evidence, AEP linkage, and multi-implementation validation requirements.
       - **Dependencies/prerequisites:** P0-T2-ST1.
@@ -268,10 +270,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 02.
   - **Risks/notes:** Controls must exist before task-level protocol contracts.
 
-- [ ] **[P0][Order 03] P0-T3 Establish v0.5 verification matrix and gate evidence schema**
+- [x] **[P0][Order 03] P0-T3 Establish v0.5 verification matrix and gate evidence schema**
   - **Objective:** Standardize completion evidence so gate decisions are deterministic.
   - **Concrete actions:**
-    - [ ] **P0-T3-ST1 Define requirement-to-validation matrix template for v0.5**
+    - [x] **P0-T3-ST1 Define requirement-to-validation matrix template for v0.5**
       - **Objective:** Ensure each scope item has positive-path, negative-path, and recovery-path validation.
       - **Concrete actions:** Build matrix fields for requirement ID, task IDs, artifact IDs, gate ownership, and evidence status.
       - **Dependencies/prerequisites:** P0-T1.
@@ -279,7 +281,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Template supports all 8 scope bullets and all v0.5 gates.
       - **Suggested priority/order:** P0, Order 03.1.
       - **Risks/notes:** Weak matrix structure reduces auditability.
-    - [ ] **P0-T3-ST2 Define gate evidence bundle schema and review checklist**
+    - [x] **P0-T3-ST2 Define gate evidence bundle schema and review checklist**
       - **Objective:** Eliminate ad hoc proof formats at gate review time.
       - **Concrete actions:** Define mandatory evidence fields, trace-link rules, and pass-fail declaration format.
       - **Dependencies/prerequisites:** P0-T3-ST1.
@@ -297,10 +299,10 @@ Validation artifact IDs used below:
 
 ## Phase 1 - Bot API Protocol Contract Freeze (V5-G1)
 
-- [ ] **[P0][Order 04] P1-T1 Define Native Bot API gRPC service surface for events and commands**
+- [x] **[P0][Order 04] P1-T1 Define Native Bot API gRPC service surface for events and commands**
   - **Objective:** Specify deterministic service contracts for bot connectivity, event intake, and command dispatch.
   - **Concrete actions:**
-    - [ ] **P1-T1-ST1 Define gRPC service namespaces and RPC surface map**
+    - [x] **P1-T1-ST1 Define gRPC service namespaces and RPC surface map**
       - **Objective:** Prevent ambiguity in API capability boundaries.
       - **Concrete actions:** Define service names, RPC methods, streaming modes, and capability advertisement fields.
       - **Dependencies/prerequisites:** P0-T2.
@@ -308,7 +310,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** All v0.5 bot API capabilities map to explicit RPC contracts.
       - **Suggested priority/order:** P0, Order 04.1.
       - **Risks/notes:** Surface ambiguity causes SDK divergence.
-    - [ ] **P1-T1-ST2 Define canonical request response envelope schema and version negotiation hooks**
+    - [x] **P1-T1-ST2 Define canonical request response envelope schema and version negotiation hooks**
       - **Objective:** Ensure envelope consistency and compatibility discipline.
       - **Concrete actions:** Define envelope fields, correlation IDs, metadata constraints, and negotiation handshake expectations.
       - **Dependencies/prerequisites:** P1-T1-ST1.
@@ -322,10 +324,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 04.
   - **Risks/notes:** This is foundational for SDK and shim alignment.
 
-- [ ] **[P0][Order 05] P1-T2 Define bot event taxonomy and deterministic delivery semantics**
+- [x] **[P0][Order 05] P1-T2 Define bot event taxonomy and deterministic delivery semantics**
   - **Objective:** Specify which events are in scope and how delivery behaves under normal and failure conditions.
   - **Concrete actions:**
-    - [ ] **P1-T2-ST1 Define in-scope event categories and payload contracts**
+    - [x] **P1-T2-ST1 Define in-scope event categories and payload contracts**
       - **Objective:** Ensure event coverage matches v0.5 scope without introducing adjacent roadmap features.
       - **Concrete actions:** Define event classes, payload fields (including `security_mode`/`mode_epoch_id` and ciphertext-vs-cleartext payload classes), and category-specific validation rules.
       - **Dependencies/prerequisites:** P1-T1.
@@ -333,7 +335,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Every in-scope event type has deterministic payload schema and validation behavior.
       - **Suggested priority/order:** P0, Order 05.1.
       - **Risks/notes:** Over-broad event sets can pull v0.6+ scope into v0.5.
-    - [ ] **P1-T2-ST2 Define event ordering ack replay and recovery semantics**
+    - [x] **P1-T2-ST2 Define event ordering ack replay and recovery semantics**
       - **Objective:** Ensure stable bot behavior across reconnect and partial failure conditions.
       - **Concrete actions:** Define ordering keys, acknowledgment semantics, replay window assumptions, and recovery behavior after disconnect.
       - **Dependencies/prerequisites:** P1-T2-ST1.
@@ -347,10 +349,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 05.
   - **Risks/notes:** Event behavior impacts slash and shim translation behavior downstream.
 
-- [ ] **[P0][Order 06] P1-T3 Define bot command invocation lifecycle and deterministic outcomes**
+- [x] **[P0][Order 06] P1-T3 Define bot command invocation lifecycle and deterministic outcomes**
   - **Objective:** Specify command request validation, execution lifecycle, and response semantics.
   - **Concrete actions:**
-    - [ ] **P1-T3-ST1 Define command request schema validation and context binding rules**
+    - [x] **P1-T3-ST1 Define command request schema validation and context binding rules**
       - **Objective:** Ensure commands execute only with complete and valid context.
       - **Concrete actions:** Define command payload fields, context identity bindings, permission check hooks, and validation error outcomes.
       - **Dependencies/prerequisites:** P1-T1, P1-T2.
@@ -358,7 +360,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** All invalid command request classes map to deterministic rejection semantics.
       - **Suggested priority/order:** P0, Order 06.1.
       - **Risks/notes:** Weak validation enables undefined execution behavior.
-    - [ ] **P1-T3-ST2 Define execution acknowledgment error taxonomy timeout and idempotency behavior**
+    - [x] **P1-T3-ST2 Define execution acknowledgment error taxonomy timeout and idempotency behavior**
       - **Objective:** Make command outcomes machine-readable and testable.
       - **Concrete actions:** Define acceptance states, terminal states, reason codes, timeout handling, and duplicate-command behavior.
       - **Dependencies/prerequisites:** P1-T3-ST1.
@@ -372,10 +374,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 06.
   - **Risks/notes:** This task is a hard dependency for slash command execution semantics.
 
-- [ ] **[P0][Order 07] P1-T4 Define bot authentication authorization and audit boundary integration**
+- [x] **[P0][Order 07] P1-T4 Define bot authentication authorization and audit boundary integration**
   - **Objective:** Bind bot API access to deterministic identity, permission, and auditability rules.
   - **Concrete actions:**
-    - [ ] **P1-T4-ST1 Define bot credential and session authorization model for API access**
+    - [x] **P1-T4-ST1 Define bot credential and session authorization model for API access**
       - **Objective:** Ensure only authorized bot principals can consume events and invoke commands.
       - **Concrete actions:** Define credential classes, scope representation, revocation semantics, and failure reasons for invalid credentials.
       - **Dependencies/prerequisites:** P1-T3, v0.4 permission baseline.
@@ -383,7 +385,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Auth outcomes are deterministic for valid, expired, revoked, and malformed credential states.
       - **Suggested priority/order:** P0, Order 07.1.
       - **Risks/notes:** Credential ambiguity introduces privilege-escalation risk.
-    - [ ] **P1-T4-ST2 Define authorization checks and required audit hooks for bot actions**
+    - [x] **P1-T4-ST2 Define authorization checks and required audit hooks for bot actions**
       - **Objective:** Align bot actions with v0.4 governance constraints.
       - **Concrete actions:** Map bot action classes to permission checks and required audit-entry triggers where applicable.
       - **Dependencies/prerequisites:** P1-T4-ST1.
@@ -391,7 +393,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** No bot action class lacks explicit authorization and audit behavior mapping.
       - **Suggested priority/order:** P0, Order 07.2.
       - **Risks/notes:** Missing audit hooks weaken governance and incident review quality.
-    - [ ] **P1-T4-ST3 Define bot trust classes and SecurityMode gating rules (default: Clear-only plaintext)**
+    - [x] **P1-T4-ST3 Define bot trust classes and SecurityMode gating rules (default: Clear-only plaintext)**
       - **Objective:** Prevent accidental plaintext exposure from E2EE conversations while preserving an explicit path for future “endpoint bot” participation.
       - **Concrete actions:** Define bot trust classes (e.g., Clear-only integration vs future endpoint bot), default restrictions, and deterministic reason codes for blocked access in E2EE modes (Seal/Tree/Crowd/Channel).
       - **Dependencies/prerequisites:** P1-T4-ST2, v0.4 SecurityMode baseline.
@@ -409,10 +411,10 @@ Validation artifact IDs used below:
 
 ## Phase 2 - SDK and Slash Command Contracts (V5-G2)
 
-- [ ] **[P0][Order 08] P2-T1 Define first-class Go SDK contract and lifecycle expectations**
+- [x] **[P0][Order 08] P2-T1 Define first-class Go SDK contract and lifecycle expectations**
   - **Objective:** Specify canonical Go SDK interface and behavior aligned with Native Bot API contracts.
   - **Concrete actions:**
-    - [ ] **P2-T1-ST1 Define Go SDK package boundaries and core client abstractions**
+    - [x] **P2-T1-ST1 Define Go SDK package boundaries and core client abstractions**
       - **Objective:** Prevent SDK interface fragmentation across bot workflows.
       - **Concrete actions:** Define client initialization model, event subscription primitives, command invocation interface, and connection lifecycle hooks.
       - **Dependencies/prerequisites:** P1-T1, P1-T2, P1-T3.
@@ -420,7 +422,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Core bot workflows are representable through deterministic SDK interfaces.
       - **Suggested priority/order:** P0, Order 08.1.
       - **Risks/notes:** Incomplete abstractions force unstable downstream wrappers.
-    - [ ] **P2-T1-ST2 Define Go SDK error model retry guidance and version compatibility policy**
+    - [x] **P2-T1-ST2 Define Go SDK error model retry guidance and version compatibility policy**
       - **Objective:** Ensure stable operational behavior across minor evolution.
       - **Concrete actions:** Define error classes, retryability flags, compatibility promises, and deprecation signaling behavior.
       - **Dependencies/prerequisites:** P2-T1-ST1.
@@ -434,10 +436,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 08.
   - **Risks/notes:** Go SDK contract quality anchors community SDK conformance quality.
 
-- [ ] **[P1][Order 09] P2-T2 Define community SDK conformance profile for Python JavaScript Rust**
+- [x] **[P1][Order 09] P2-T2 Define community SDK conformance profile for Python JavaScript Rust**
   - **Objective:** Define minimum behavior profile for community SDK interoperability with Bot API.
   - **Concrete actions:**
-    - [ ] **P2-T2-ST1 Define cross-language minimum conformance matrix**
+    - [x] **P2-T2-ST1 Define cross-language minimum conformance matrix**
       - **Objective:** Preserve multi-language interoperability without claiming full parity.
       - **Concrete actions:** Define minimum required features, required behavior invariants, and conformance test dimensions.
       - **Dependencies/prerequisites:** P2-T1.
@@ -445,7 +447,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Python JavaScript Rust profiles each map to one explicit conformance checklist.
       - **Suggested priority/order:** P1, Order 09.1.
       - **Risks/notes:** Ambiguous profile claims produce false compatibility expectations.
-    - [ ] **P2-T2-ST2 Define support-tier labeling and version synchronization guidance**
+    - [x] **P2-T2-ST2 Define support-tier labeling and version synchronization guidance**
       - **Objective:** Keep language ecosystem expectations explicit and realistic.
       - **Concrete actions:** Define support tiers, compatibility tags, and version sync policy relative to Native Bot API and Go SDK baselines.
       - **Dependencies/prerequisites:** P2-T2-ST1.
@@ -459,10 +461,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P1, Order 09.
   - **Risks/notes:** This task must avoid promising implementation completion.
 
-- [ ] **[P0][Order 10] P2-T3 Define slash command schema registration and invocation contract**
+- [x] **[P0][Order 10] P2-T3 Define slash command schema registration and invocation contract**
   - **Objective:** Specify slash command lifecycle behavior from definition through execution.
   - **Concrete actions:**
-    - [ ] **P2-T3-ST1 Define slash command schema model and validation rules**
+    - [x] **P2-T3-ST1 Define slash command schema model and validation rules**
       - **Objective:** Ensure deterministic command definitions.
       - **Concrete actions:** Define command naming rules, option schema constraints, permission hooks, and localization boundary rules where applicable.
       - **Dependencies/prerequisites:** P1-T3, P1-T4.
@@ -470,7 +472,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Every invalid schema class maps to deterministic validation rejection behavior.
       - **Suggested priority/order:** P0, Order 10.1.
       - **Risks/notes:** Schema ambiguity leads to cross-SDK execution drift.
-    - [ ] **P2-T3-ST2 Define registration update removal and propagation semantics**
+    - [x] **P2-T3-ST2 Define registration update removal and propagation semantics**
       - **Objective:** Keep slash command catalogs convergent across clients and bots.
       - **Concrete actions:** Define lifecycle state transitions, conflict handling, and deterministic propagation expectations.
       - **Dependencies/prerequisites:** P2-T3-ST1.
@@ -484,10 +486,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 10.
   - **Risks/notes:** Must remain within v0.5 scope and not import broader app-command ecosystems.
 
-- [ ] **[P0][Order 11] P2-T4 Define slash autocomplete request response and fallback behavior**
+- [x] **[P0][Order 11] P2-T4 Define slash autocomplete request response and fallback behavior**
   - **Objective:** Specify deterministic autocomplete semantics and failure handling.
   - **Concrete actions:**
-    - [ ] **P2-T4-ST1 Define autocomplete query and response envelope constraints**
+    - [x] **P2-T4-ST1 Define autocomplete query and response envelope constraints**
       - **Objective:** Ensure predictable suggestion retrieval and ranking behavior.
       - **Concrete actions:** Define query fields, result limits, ordering semantics, and latency budget classification for deterministic client behavior.
       - **Dependencies/prerequisites:** P2-T3.
@@ -495,7 +497,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Equivalent inputs produce deterministic suggestion ordering within defined constraints.
       - **Suggested priority/order:** P0, Order 11.1.
       - **Risks/notes:** Ambiguous ranking semantics create inconsistent UX and bot behavior.
-    - [ ] **P2-T4-ST2 Define stale empty and failure fallback semantics**
+    - [x] **P2-T4-ST2 Define stale empty and failure fallback semantics**
       - **Objective:** Prevent undefined behavior when autocomplete providers fail or time out.
       - **Concrete actions:** Define timeout behavior, stale data handling, empty-result semantics, and error signaling.
       - **Dependencies/prerequisites:** P2-T4-ST1.
@@ -513,10 +515,10 @@ Validation artifact IDs used below:
 
 ## Phase 3 - Discord Shim Contracts and Migration Boundaries (V5-G3)
 
-- [ ] **[P0][Order 12] P3-T1 Define Discord shim REST subset mapping contract**
+- [x] **[P0][Order 12] P3-T1 Define Discord shim REST subset mapping contract**
   - **Objective:** Specify deterministic mapping between shim REST subset and native protocol behaviors.
   - **Concrete actions:**
-    - [ ] **P3-T1-ST1 Define endpoint coverage and field-level translation for messages channels guilds members roles**
+    - [x] **P3-T1-ST1 Define endpoint coverage and field-level translation for messages channels guilds members roles**
       - **Objective:** Lock exact REST subset boundaries to prevent parity creep.
       - **Concrete actions:** Document supported endpoints, request and response field mappings, and unsupported-field behavior.
       - **Dependencies/prerequisites:** P1-T1 through P1-T4, P2-T3.
@@ -524,7 +526,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Every supported endpoint has deterministic translation rules and explicit unsupported behavior.
       - **Suggested priority/order:** P0, Order 12.1.
       - **Risks/notes:** Ambiguous field mapping can break common bot patterns.
-    - [ ] **P3-T1-ST2 Define HTTP status and error translation semantics**
+    - [x] **P3-T1-ST2 Define HTTP status and error translation semantics**
       - **Objective:** Keep client error handling behavior predictable under shim translation.
       - **Concrete actions:** Define status-code mapping, error payload taxonomy, and retry guidance for translated failures.
       - **Dependencies/prerequisites:** P3-T1-ST1.
@@ -538,10 +540,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 12.
   - **Risks/notes:** Must not imply support beyond declared subset.
 
-- [ ] **[P0][Order 13] P3-T2 Define Discord shim Gateway event translation and session semantics**
+- [x] **[P0][Order 13] P3-T2 Define Discord shim Gateway event translation and session semantics**
   - **Objective:** Specify deterministic event bridging behavior for WebSocket Gateway compatibility layer.
   - **Concrete actions:**
-    - [ ] **P3-T2-ST1 Define Gateway event translation matrix and intent boundary**
+    - [x] **P3-T2-ST1 Define Gateway event translation matrix and intent boundary**
       - **Objective:** Ensure predictable event conversions for in-scope compatibility patterns.
       - **Concrete actions:** Map native events to Gateway event classes, define intent exposure scope, and unsupported-event behavior.
       - **Dependencies/prerequisites:** P1-T2, P3-T1.
@@ -549,7 +551,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Every translated event class has deterministic mapping and payload rules.
       - **Suggested priority/order:** P0, Order 13.1.
       - **Risks/notes:** Translation drift breaks bot runtime assumptions.
-    - [ ] **P3-T2-ST2 Define session heartbeat reconnect and resume behavior**
+    - [x] **P3-T2-ST2 Define session heartbeat reconnect and resume behavior**
       - **Objective:** Ensure stable Gateway lifecycle behavior under disruptions.
       - **Concrete actions:** Define heartbeat expectations, reconnect flows, resume semantics, and deterministic failure handling.
       - **Dependencies/prerequisites:** P3-T2-ST1.
@@ -563,10 +565,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 13.
   - **Risks/notes:** This task is foundational for measurable coverage claims.
 
-- [ ] **[P0][Order 14] P3-T3 Define 80 percent common pattern coverage model and unsupported-feature taxonomy**
+- [x] **[P0][Order 14] P3-T3 Define 80 percent common pattern coverage model and unsupported-feature taxonomy**
   - **Objective:** Make compatibility target measurable, reproducible, and bounded.
   - **Concrete actions:**
-    - [ ] **P3-T3-ST1 Build canonical pattern corpus representing common discord.py and discord.js usage**
+    - [x] **P3-T3-ST1 Build canonical pattern corpus representing common discord.py and discord.js usage**
       - **Objective:** Define what counts toward the v0.5 coverage target.
       - **Concrete actions:** Curate representative pattern catalog, classify by criticality, and define success criteria per pattern.
       - **Dependencies/prerequisites:** P3-T1, P3-T2.
@@ -574,7 +576,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Pattern corpus is explicit, versioned, and traceable to coverage scoring.
       - **Suggested priority/order:** P0, Order 14.1.
       - **Risks/notes:** Weak corpus design can inflate coverage claims without real compatibility.
-    - [ ] **P3-T3-ST2 Define coverage scoring method and unsupported-feature declaration template**
+    - [x] **P3-T3-ST2 Define coverage scoring method and unsupported-feature declaration template**
       - **Objective:** Prevent ambiguous interpretation of target completion.
       - **Concrete actions:** Define scoring algorithm, pass threshold criteria, and mandatory unsupported-feature declaration schema.
       - **Dependencies/prerequisites:** P3-T3-ST1.
@@ -588,10 +590,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 14.
   - **Risks/notes:** Native API preference must remain explicit despite compatibility scoring.
 
-- [ ] **[P1][Order 15] P3-T4 Define documented limitations and migration guide contract**
+- [x] **[P1][Order 15] P3-T4 Define documented limitations and migration guide contract**
   - **Objective:** Produce deterministic migration boundaries and explicit native API preference guidance.
   - **Concrete actions:**
-    - [ ] **P3-T4-ST1 Define limitations matrix and native equivalent mapping**
+    - [x] **P3-T4-ST1 Define limitations matrix and native equivalent mapping**
       - **Objective:** Ensure unsupported shim behavior has clear native alternatives.
       - **Concrete actions:** Map limitation classes to native Bot API equivalents and required adaptation notes.
       - **Dependencies/prerequisites:** P3-T3.
@@ -599,7 +601,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Every limitation class has explicit handling path and no ambiguous wording.
       - **Suggested priority/order:** P1, Order 15.1.
       - **Risks/notes:** Missing mappings increase migration friction and regressions.
-    - [ ] **P3-T4-ST2 Define migration guide scenario template and success criteria**
+    - [x] **P3-T4-ST2 Define migration guide scenario template and success criteria**
       - **Objective:** Make migration guidance operationally actionable and testable.
       - **Concrete actions:** Define canonical migration scenarios, acceptance outcomes, and rollback-safe transition boundaries.
       - **Dependencies/prerequisites:** P3-T4-ST1.
@@ -617,10 +619,10 @@ Validation artifact IDs used below:
 
 ## Phase 4 - Emoji and Reaction Contracts (V5-G4)
 
-- [ ] **[P0][Order 16] P4-T1 Define custom emoji lifecycle and fixed quota semantics**
+- [x] **[P0][Order 16] P4-T1 Define custom emoji lifecycle and fixed quota semantics**
   - **Objective:** Specify deterministic emoji upload and management behavior with max 50 per server policy.
   - **Concrete actions:**
-    - [ ] **P4-T1-ST1 Define emoji upload schema validation and normalization rules**
+    - [x] **P4-T1-ST1 Define emoji upload schema validation and normalization rules**
       - **Objective:** Prevent malformed emoji assets and naming conflicts.
       - **Concrete actions:** Define allowed formats, naming constraints, uniqueness checks, and invalid-upload rejection behavior.
       - **Dependencies/prerequisites:** v0.3 media baseline, v0.4 permission baseline.
@@ -628,7 +630,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Equivalent invalid uploads produce deterministic rejection outcomes and reason codes.
       - **Suggested priority/order:** P0, Order 16.1.
       - **Risks/notes:** Weak validation can create cross-client rendering failures.
-    - [ ] **P4-T1-ST2 Define quota enforcement replacement deletion and transfer boundaries**
+    - [x] **P4-T1-ST2 Define quota enforcement replacement deletion and transfer boundaries**
       - **Objective:** Ensure fixed 50-per-server policy is enforceable and deterministic.
       - **Concrete actions:** Define quota checks, replacement behavior, deletion semantics, and rejection behavior at quota boundary.
       - **Dependencies/prerequisites:** P4-T1-ST1.
@@ -642,10 +644,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 16.
   - **Risks/notes:** Must remain fixed to v0.5 quota policy and avoid storage-platform expansion.
 
-- [ ] **[P0][Order 17] P4-T2 Define emoji picker and shortcode parse resolution contract**
+- [x] **[P0][Order 17] P4-T2 Define emoji picker and shortcode parse resolution contract**
   - **Objective:** Specify deterministic selection and text-to-emoji resolution semantics.
   - **Concrete actions:**
-    - [ ] **P4-T2-ST1 Define emoji picker data model ordering and fallback behavior**
+    - [x] **P4-T2-ST1 Define emoji picker data model ordering and fallback behavior**
       - **Objective:** Ensure picker behavior is predictable across clients.
       - **Concrete actions:** Define picker ordering keys, availability filtering, and fallback handling for missing assets.
       - **Dependencies/prerequisites:** P4-T1.
@@ -653,7 +655,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Picker ordering and availability behavior is deterministic for equivalent state.
       - **Suggested priority/order:** P0, Order 17.1.
       - **Risks/notes:** Divergent picker ordering weakens cross-client consistency.
-    - [ ] **P4-T2-ST2 Define shortcode parsing tokenization resolution and fallback text semantics**
+    - [x] **P4-T2-ST2 Define shortcode parsing tokenization resolution and fallback text semantics**
       - **Objective:** Prevent parse ambiguity and rendering divergence.
       - **Concrete actions:** Define `:shortcode:` token rules, collision handling, unresolved-token behavior, and normalization rules.
       - **Dependencies/prerequisites:** P4-T2-ST1.
@@ -667,10 +669,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 17.
   - **Risks/notes:** Must avoid adding rich-text expansion outside v0.5 scope.
 
-- [ ] **[P0][Order 18] P4-T3 Define message reaction lifecycle and convergence semantics**
+- [x] **[P0][Order 18] P4-T3 Define message reaction lifecycle and convergence semantics**
   - **Objective:** Specify deterministic reaction behavior for add remove toggle count and propagation.
   - **Concrete actions:**
-    - [ ] **P4-T3-ST1 Define reaction actor rules and add remove toggle semantics**
+    - [x] **P4-T3-ST1 Define reaction actor rules and add remove toggle semantics**
       - **Objective:** Ensure one deterministic reaction state per actor and emoji per message.
       - **Concrete actions:** Define actor uniqueness rules, add/remove transitions, duplicate handling, and invalid-state rejection behavior.
       - **Dependencies/prerequisites:** P4-T2.
@@ -678,7 +680,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Equivalent actor operations converge to deterministic reaction state.
       - **Suggested priority/order:** P0, Order 18.1.
       - **Risks/notes:** Duplicate semantics ambiguity can inflate reaction state.
-    - [ ] **P4-T3-ST2 Define reaction count aggregation event emission and recovery behavior**
+    - [x] **P4-T3-ST2 Define reaction count aggregation event emission and recovery behavior**
       - **Objective:** Keep counts and event streams consistent under retries and reconnects.
       - **Concrete actions:** Define count recomputation rules, event emission ordering, stale-state reconciliation behavior, and mode-aware payload expectations (reactions are encrypted in E2EE modes; bots/webhooks observe only where permitted).
       - **Dependencies/prerequisites:** P4-T3-ST1.
@@ -692,10 +694,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 18.
   - **Risks/notes:** Must align with bot event contracts and webhook message behavior.
 
-- [ ] **[P1][Order 19] P4-T4 Define emoji and reaction authorization moderation and audit interactions**
+- [x] **[P1][Order 19] P4-T4 Define emoji and reaction authorization moderation and audit interactions**
   - **Objective:** Integrate emoji and reaction behavior with v0.4 governance controls.
   - **Concrete actions:**
-    - [ ] **P4-T4-ST1 Define permission matrix for emoji management and reaction actions**
+    - [x] **P4-T4-ST1 Define permission matrix for emoji management and reaction actions**
       - **Objective:** Ensure governance consistency across user and bot actors.
       - **Concrete actions:** Map emoji create/delete/manage and reaction add/remove actions to permission checks and denial reason taxonomy.
       - **Dependencies/prerequisites:** P4-T1, P4-T3, v0.4 permission baseline.
@@ -703,7 +705,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** No emoji or reaction action class lacks explicit permission mapping.
       - **Suggested priority/order:** P1, Order 19.1.
       - **Risks/notes:** Unmapped actions create policy bypass vectors.
-    - [ ] **P4-T4-ST2 Define moderation and audit entry requirements for emoji and reaction actions**
+    - [x] **P4-T4-ST2 Define moderation and audit entry requirements for emoji and reaction actions**
       - **Objective:** Maintain deterministic accountability and incident traceability.
       - **Concrete actions:** Define when actions must emit signed audit entries, redaction policy boundaries, and moderation deletion behavior.
       - **Dependencies/prerequisites:** P4-T4-ST1.
@@ -721,10 +723,10 @@ Validation artifact IDs used below:
 
 ## Phase 5 - Incoming Webhook Contracts (V5-G5)
 
-- [ ] **[P0][Order 20] P5-T1 Define incoming webhook endpoint contract for POST to channel message**
+- [x] **[P0][Order 20] P5-T1 Define incoming webhook endpoint contract for POST to channel message**
   - **Objective:** Specify deterministic webhook ingest behavior for in-scope message posting.
   - **Concrete actions:**
-    - [ ] **P5-T1-ST1 Define endpoint schema payload fields and validation semantics**
+    - [x] **P5-T1-ST1 Define endpoint schema payload fields and validation semantics**
       - **Objective:** Ensure webhook payload contract is unambiguous and bounded.
       - **Concrete actions:** Define required and optional fields, payload-size constraints, and deterministic validation failures.
       - **Dependencies/prerequisites:** P1-T3, P4-T2.
@@ -732,7 +734,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Equivalent invalid payload classes map to deterministic rejection outcomes.
       - **Suggested priority/order:** P0, Order 20.1.
       - **Risks/notes:** Ambiguous payload model causes incompatible producer behavior.
-    - [ ] **P5-T1-ST2 Define channel routing and acceptance rejection semantics**
+    - [x] **P5-T1-ST2 Define channel routing and acceptance rejection semantics**
       - **Objective:** Ensure posted webhook messages map deterministically to target channel outcomes.
       - **Concrete actions:** Define channel resolution rules, authorization checks, SecurityMode gating (default: allow only Clear channels), and deterministic reason codes for rejection.
       - **Dependencies/prerequisites:** P5-T1-ST1.
@@ -746,10 +748,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 20.
   - **Risks/notes:** Scope limited to inbound posting behavior only.
 
-- [ ] **[P0][Order 21] P5-T2 Define webhook authentication secret lifecycle and misuse controls**
+- [x] **[P0][Order 21] P5-T2 Define webhook authentication secret lifecycle and misuse controls**
   - **Objective:** Ensure webhook access is governed by deterministic credential controls.
   - **Concrete actions:**
-    - [ ] **P5-T2-ST1 Define secret generation storage redaction rotation and revocation semantics**
+    - [x] **P5-T2-ST1 Define secret generation storage redaction rotation and revocation semantics**
       - **Objective:** Prevent credential leakage and undefined rotation behavior.
       - **Concrete actions:** Define secret lifecycle states, disclosure prevention rules, and transition behavior for rotate and revoke actions.
       - **Dependencies/prerequisites:** P5-T1.
@@ -757,7 +759,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Secret lifecycle transitions are deterministic and auditable.
       - **Suggested priority/order:** P0, Order 21.1.
       - **Risks/notes:** Weak secret lifecycle controls increase compromise impact.
-    - [ ] **P5-T2-ST2 Define unauthorized invalid and expired credential failure semantics**
+    - [x] **P5-T2-ST2 Define unauthorized invalid and expired credential failure semantics**
       - **Objective:** Standardize rejection behavior for authentication failures.
       - **Concrete actions:** Define failure taxonomy, status code mapping, and required auditability hooks for repeated misuse.
       - **Dependencies/prerequisites:** P5-T2-ST1.
@@ -771,10 +773,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 21.
   - **Risks/notes:** Must align with bot auth posture without claiming identical mechanism.
 
-- [ ] **[P0][Order 22] P5-T3 Define webhook idempotency retry rate-control and failure-recovery behavior**
+- [x] **[P0][Order 22] P5-T3 Define webhook idempotency retry rate-control and failure-recovery behavior**
   - **Objective:** Specify resilient webhook processing under network and producer instability.
   - **Concrete actions:**
-    - [ ] **P5-T3-ST1 Define idempotency key semantics duplicate suppression and replay handling**
+    - [x] **P5-T3-ST1 Define idempotency key semantics duplicate suppression and replay handling**
       - **Objective:** Prevent duplicate message insertion from retries and replay attempts.
       - **Concrete actions:** Define idempotency fields, replay detection windows, and deterministic duplicate outcomes.
       - **Dependencies/prerequisites:** P5-T2.
@@ -782,7 +784,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Duplicate submissions with equivalent keys converge to deterministic outcomes.
       - **Suggested priority/order:** P0, Order 22.1.
       - **Risks/notes:** Missing replay controls can amplify abuse and message spam.
-    - [ ] **P5-T3-ST2 Define status-code taxonomy retry guidance and recovery boundaries**
+    - [x] **P5-T3-ST2 Define status-code taxonomy retry guidance and recovery boundaries**
       - **Objective:** Ensure producers can react consistently to failures without undefined retries.
       - **Concrete actions:** Define deterministic status codes, retryable vs non-retryable classes, and backoff guidance fields.
       - **Dependencies/prerequisites:** P5-T3-ST1.
@@ -796,10 +798,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 22.
   - **Risks/notes:** Must remain within inbound webhook scope.
 
-- [ ] **[P1][Order 23] P5-T4 Define webhook message rendering boundaries with emoji and mentions**
+- [x] **[P1][Order 23] P5-T4 Define webhook message rendering boundaries with emoji and mentions**
   - **Objective:** Specify deterministic message-surface integration behavior for webhook-origin messages.
   - **Concrete actions:**
-    - [ ] **P5-T4-ST1 Define allowed message formatting and shortcode handling for webhook payloads**
+    - [x] **P5-T4-ST1 Define allowed message formatting and shortcode handling for webhook payloads**
       - **Objective:** Keep webhook message rendering predictable and scope-bounded.
       - **Concrete actions:** Define supported formatting subset, shortcode parsing behavior, and fallback rendering for unresolved emoji references.
       - **Dependencies/prerequisites:** P4-T2, P5-T1.
@@ -807,7 +809,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Equivalent payload content yields deterministic rendered output classes.
       - **Suggested priority/order:** P1, Order 23.1.
       - **Risks/notes:** Over-expansive formatting support can pull non-v0.5 scope.
-    - [ ] **P5-T4-ST2 Define mention handling and permission guardrails for webhook-origin posts**
+    - [x] **P5-T4-ST2 Define mention handling and permission guardrails for webhook-origin posts**
       - **Objective:** Prevent unauthorized mention amplification through webhook channels.
       - **Concrete actions:** Define mention-resolution behavior, allowed mention classes, and deterministic suppression or rejection outcomes.
       - **Dependencies/prerequisites:** P5-T4-ST1.
@@ -825,10 +827,10 @@ Validation artifact IDs used below:
 
 ## Phase 6 - Integrated Validation, Conformance, and Release Handoff (V5-G6 to V5-G7)
 
-- [ ] **[P0][Order 24] P6-T1 Build integrated cross-feature scenario validation pack for all v0.5 scope items**
+- [x] **[P0][Order 24] P6-T1 Build integrated cross-feature scenario validation pack for all v0.5 scope items**
   - **Objective:** Validate coherence across bot API, SDK/slash contracts, shim, emoji/reactions, and webhooks.
   - **Concrete actions:**
-    - [ ] **P6-T1-ST1 Define end-to-end scenario suite covering all 8 scope bullets**
+    - [x] **P6-T1-ST1 Define end-to-end scenario suite covering all 8 scope bullets**
       - **Objective:** Ensure complete positive-path coverage with deterministic expected outcomes.
       - **Concrete actions:** Build scenario catalog spanning bot event consumption, slash invocation, shim translation paths, emoji and reaction operations, and webhook posting.
       - **Dependencies/prerequisites:** P1-T1 through P5-T4.
@@ -836,7 +838,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Every scope bullet appears in at least one end-to-end scenario with expected result criteria.
       - **Suggested priority/order:** P0, Order 24.1.
       - **Risks/notes:** Incomplete scenario coverage hides integration defects.
-    - [ ] **P6-T1-ST2 Define adversarial and recovery scenarios with deterministic outcomes**
+    - [x] **P6-T1-ST2 Define adversarial and recovery scenarios with deterministic outcomes**
       - **Objective:** Validate resilience under misuse, concurrency, and failure conditions.
       - **Concrete actions:** Include replayed webhook submissions, invalid bot credentials, webhook-to-E2EE rejection, gateway resume interruptions, emoji quota boundary conflicts, and concurrent reaction toggles.
       - **Dependencies/prerequisites:** P6-T1-ST1.
@@ -850,10 +852,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 24.
   - **Risks/notes:** This phase provides conformance-confidence baseline.
 
-- [ ] **[P0][Order 25] P6-T2 Run compatibility governance and unresolved-decision conformance review**
+- [x] **[P0][Order 25] P6-T2 Run compatibility governance and unresolved-decision conformance review**
   - **Objective:** Verify all planned outputs preserve architecture and governance constraints.
   - **Concrete actions:**
-    - [ ] **P6-T2-ST1 Audit schema and protocol deltas for additive and major-version discipline**
+    - [x] **P6-T2-ST1 Audit schema and protocol deltas for additive and major-version discipline**
       - **Objective:** Ensure compatibility policy integrity.
       - **Concrete actions:** Apply compatibility checklist to all v0.5 artifacts and verify major-change evidence where applicable including downgrade-path requirements.
       - **Dependencies/prerequisites:** P1-T1 through P5-T4.
@@ -861,7 +863,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** No incompatible delta exists without formal governance pathway evidence.
       - **Suggested priority/order:** P0, Order 25.1.
       - **Risks/notes:** Late compatibility defects can block V5-G7 closure.
-    - [ ] **P6-T2-ST2 Validate open-decision handling and anti-scope discipline**
+    - [x] **P6-T2-ST2 Validate open-decision handling and anti-scope discipline**
       - **Objective:** Prevent accidental finalization of unresolved choices or roadmap leakage.
       - **Concrete actions:** Review all v0.5 artifacts for open-decision wording discipline and v0.6+ scope contamination.
       - **Dependencies/prerequisites:** P6-T2-ST1.
@@ -875,10 +877,10 @@ Validation artifact IDs used below:
   - **Suggested priority/order:** P0, Order 25.
   - **Risks/notes:** Protects protocol stability and scope integrity.
 
-- [ ] **[P1][Order 26] P6-T3 Finalize release-conformance package and execution handoff dossier**
+- [x] **[P1][Order 26] P6-T3 Finalize release-conformance package and execution handoff dossier**
   - **Objective:** Deliver one authoritative handoff package for execution orchestration.
   - **Concrete actions:**
-    - [ ] **P6-T3-ST1 Assemble V5-G7 checklist with pass fail status and evidence links**
+    - [x] **P6-T3-ST1 Assemble V5-G7 checklist with pass fail status and evidence links**
       - **Objective:** Provide a single go-no-go planning source of truth.
       - **Concrete actions:** Compile scope-item status, acceptance results, residual risks, and explicit evidence references.
       - **Dependencies/prerequisites:** P6-T1, P6-T2.
@@ -886,7 +888,7 @@ Validation artifact IDs used below:
       - **Acceptance criteria:** Every scope item has explicit pass-fail declaration with traceable artifacts.
       - **Suggested priority/order:** P1, Order 26.1.
       - **Risks/notes:** Missing evidence links make signoff non-auditable.
-    - [ ] **P6-T3-ST2 Build execution handoff backlog and explicit v0.6+ deferral register**
+    - [x] **P6-T3-ST2 Build execution handoff backlog and explicit v0.6+ deferral register**
       - **Objective:** Prevent hidden carry-over and preserve roadmap continuity.
       - **Concrete actions:** Capture deferred work, rationale, dependency notes, and target roadmap bands without completion claims.
       - **Dependencies/prerequisites:** P6-T3-ST1.
@@ -1023,32 +1025,32 @@ Handling rule:
 v0.5 planning is execution-ready only when all items below are satisfied.
 
 ### 11.1 Scope and boundary integrity
-- [ ] All 8 v0.5 roadmap bullets are mapped to tasks and artifacts.
-- [ ] Out-of-scope boundaries are documented and referenced in gate checklists.
-- [ ] No v0.6+ capabilities are imported into v0.5 tasks.
+- [x] All 8 v0.5 roadmap bullets are mapped to tasks and artifacts.
+- [x] Out-of-scope boundaries are documented and referenced in gate checklists.
+- [x] No v0.6+ capabilities are imported into v0.5 tasks.
 
 ### 11.2 Dependency and sequencing integrity
-- [ ] v0.1 through v0.4 prerequisite assumptions are linked to dependent tasks.
-- [ ] Carry-back dependency rule is referenced wherever prerequisite gaps are discovered.
-- [ ] Task ordering is dependency-coherent across all phases.
-- [ ] Gate exit criteria are testable and evidence-backed.
+- [x] v0.1 through v0.4 prerequisite assumptions are linked to dependent tasks.
+- [x] Carry-back dependency rule is referenced wherever prerequisite gaps are discovered.
+- [x] Task ordering is dependency-coherent across all phases.
+- [x] Gate exit criteria are testable and evidence-backed.
 
 ### 11.3 Protocol compatibility and governance conformance
-- [ ] Additive-only protobuf checklist applied to all schema-touching contracts.
-- [ ] Any potentially breaking behavior has explicit major-version governance documentation.
-- [ ] New multistream ID and downgrade negotiation requirements are preserved where applicable.
-- [ ] AEP path and multi-implementation validation requirements are referenced for breaking-change paths.
+- [x] Additive-only protobuf checklist applied to all schema-touching contracts.
+- [x] Any potentially breaking behavior has explicit major-version governance documentation.
+- [x] New multistream ID and downgrade negotiation requirements are preserved where applicable.
+- [x] AEP path and multi-implementation validation requirements are referenced for breaking-change paths.
 
 ### 11.4 Validation and risk closure
-- [ ] Integrated scenario suite covers normal, degraded, and recovery paths across all v0.5 scope bullets.
-- [ ] High-severity risks have mitigation and gate ownership assignments.
-- [ ] Residual risks are explicitly accepted or deferred with rationale.
+- [x] Integrated scenario suite covers normal, degraded, and recovery paths across all v0.5 scope bullets.
+- [x] High-severity risks have mitigation and gate ownership assignments.
+- [x] Residual risks are explicitly accepted or deferred with rationale.
 
 ### 11.5 Documentation quality and handoff completeness
-- [ ] Planned-vs-implemented separation is explicit in all sections.
-- [ ] Open decisions remain unresolved and tracked with revisit gates.
-- [ ] Release-conformance checklist includes pass-fail status and evidence links per scope item.
-- [ ] Execution handoff dossier and v0.6+ deferral register are complete and roadmap-aligned.
+- [x] Planned-vs-implemented separation is explicit in all sections.
+- [x] Open decisions remain unresolved and tracked with revisit gates.
+- [x] Release-conformance checklist includes pass-fail status and evidence links per scope item.
+- [x] Execution handoff dossier and v0.6+ deferral register are complete and roadmap-aligned.
 
 ---
 

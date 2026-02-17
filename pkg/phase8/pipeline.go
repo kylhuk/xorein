@@ -31,6 +31,7 @@ var (
 	ErrPeerLimit      = errors.New("phase8: peer limit reached")
 	ErrPeerExists     = errors.New("phase8: peer already connected")
 	ErrPeerNotFound   = errors.New("phase8: peer not connected")
+	ErrJoinCanceled   = errors.New("phase8: join canceled by teardown")
 )
 
 type MediaCapture interface {
@@ -58,6 +59,7 @@ type VoiceSessionManager struct {
 	peers      map[string]PeerConnection
 	pending    map[string]struct{}
 	maxPeers   int
+	generation uint64
 	congested  bool
 	fallbackFn func() error
 }
@@ -110,6 +112,7 @@ func (m *VoiceSessionManager) Join(ctx context.Context, sessionID string, codec 
 		}
 		return ErrPeerLimit
 	}
+	joinGeneration := m.generation
 	m.pending[peerID] = struct{}{}
 	m.mux.Unlock()
 
@@ -123,6 +126,14 @@ func (m *VoiceSessionManager) Join(ctx context.Context, sessionID string, codec 
 
 	m.mux.Lock()
 	delete(m.pending, peerID)
+	if joinGeneration != m.generation {
+		m.updateCongestionLocked()
+		m.mux.Unlock()
+		if err := peer.Disconnect(ctx, sessionID); err != nil {
+			return fmt.Errorf("phase8: disconnect stale peer %s: %w", peerID, err)
+		}
+		return ErrJoinCanceled
+	}
 	m.peers[peerID] = peer
 	m.updateCongestionLocked()
 	m.mux.Unlock()
@@ -157,6 +168,7 @@ func (m *VoiceSessionManager) Teardown(ctx context.Context, sessionID string) er
 	for _, peer := range m.peers {
 		peers = append(peers, peer)
 	}
+	m.generation++
 	m.peers = make(map[string]PeerConnection, m.maxPeers)
 	m.pending = make(map[string]struct{}, m.maxPeers)
 	m.updateCongestionLocked()
