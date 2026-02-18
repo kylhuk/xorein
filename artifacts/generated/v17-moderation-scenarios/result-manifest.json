@@ -1,0 +1,10 @@
+{
+  "version": "v17-moderation-scenarios",
+  "timestamp": "2026-02-18T16:56:17Z",
+  "scenarios": [
+    {"name": "pkg-v17", "status": "pass"},
+    {"name": "e2e-v17", "status": "pass"},
+    {"name": "perf-v17", "status": "pass"},
+    {"name": "relay-policy", "status": "pass"}
+  ]
+}

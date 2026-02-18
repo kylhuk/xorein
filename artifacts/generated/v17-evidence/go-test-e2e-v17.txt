@@ -1,0 +1,3 @@
+Command: go test ./tests/e2e/v17/...
+ok  	github.com/aether/code_aether/tests/e2e/v17	(cached)
+EXIT_STATUS=0

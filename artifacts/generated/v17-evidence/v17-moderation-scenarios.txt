@@ -1,0 +1,10 @@
+Command: ./scripts/v17-moderation-scenarios.sh
+ok  	github.com/aether/code_aether/pkg/v17/audit	(cached)
+ok  	github.com/aether/code_aether/pkg/v17/moderation	(cached)
+ok  	github.com/aether/code_aether/pkg/v17/modsync	(cached)
+ok  	github.com/aether/code_aether/pkg/v17/ui	(cached)
+ok  	github.com/aether/code_aether/tests/e2e/v17	(cached)
+ok  	github.com/aether/code_aether/tests/perf/v17	(cached)
+ok  	github.com/aether/code_aether/pkg/v11/relaypolicy	(cached)
+Result manifest written to artifacts/generated/v17-moderation-scenarios/result-manifest.json
+EXIT_STATUS=0

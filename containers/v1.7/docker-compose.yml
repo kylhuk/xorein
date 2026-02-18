@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  moderation-relay:
+    image: "aether/relay:v1.7"
+    environment:
+      RELAY_ENV: "v17-moderation"
+    ports:
+      - "8087:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "echo healthy"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  audit-viewer:
+    image: "busybox:latest"
+    command: ["sh", "-c", "sleep 3600"]
+    depends_on:
+      - moderation-relay

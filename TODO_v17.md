@@ -63,56 +63,56 @@ Planning artifact only. This file defines v17 implementation and validation requ
 ## Phase plan
 
 ### Phase 0 - Scope lock (G0)
-- [ ] `P0-T1` Freeze v17 moderation and audit acceptance criteria.
+- [x] `P0-T1` Freeze v17 moderation and audit acceptance criteria.
   - `ST1` Produce requirement-to-artifact traceability matrix.
   - `ST2` Assign gate ownership and approvers using RACI template.
   - Artifacts: `docs/v1.7/phase0/p0-scope-lock.md`, `docs/v1.7/phase0/p0-traceability-matrix.md`, `docs/v1.7/phase0/p0-gate-ownership.md`.
 
 ### Phase 1 - Moderation event runtime (G2)
-- [ ] `P1-T1` Implement signed moderation event pipeline.
+- [x] `P1-T1` Implement signed moderation event pipeline.
   - `ST1` Event creation, signing, verification, and ordering.
   - `ST2` Event application rules for redaction, timeout, ban, slow mode, lockdown.
   - `ST3` Deterministic rejection reasons for invalid events.
   - Artifacts: `pkg/v17/moderation/*`, `pkg/v17/moderation/*_test.go`.
 
-- [ ] `P1-T2` Implement moderation replication semantics.
+- [x] `P1-T2` Implement moderation replication semantics.
   - `ST1` Consistency rules across replicas/peers.
   - `ST2` Replay and duplicate event handling.
   - Artifacts: `pkg/v17/modsync/*`, `pkg/v17/modsync/*_test.go`.
 
 ### Phase 2 - Audit and client enforcement (G3)
-- [ ] `P2-T1` Implement append-only audit log model.
+- [x] `P2-T1` Implement append-only audit log model.
   - `ST1` Query constraints by role.
   - `ST2` Signer and verification metadata visibility.
   - Artifacts: `pkg/v17/audit/*`, `pkg/v17/audit/*_test.go`.
 
-- [ ] `P2-T2` Implement official-client enforcement status signaling.
+- [x] `P2-T2` Implement official-client enforcement status signaling.
   - `ST1` Surface enforcement mode and trust warnings.
   - `ST2` Ensure UI and runtime semantics remain aligned.
   - Artifacts: `pkg/v17/ui/*`, `docs/v1.7/phase2/p2-enforcement-ux-contract.md`.
 
 ### Phase 3 - Validation matrix (G4, G5)
-- [ ] `P3-T1` Add moderation adversarial tests.
+- [x] `P3-T1` Add moderation adversarial tests.
   - `ST1` Forged signature and stale-event tests.
   - `ST2` Concurrent conflicting moderation action tests.
   - `ST3` Partition/rejoin convergence tests.
   - Artifacts: `tests/e2e/v17/*`, `tests/perf/v17/*`.
 
-- [ ] `P3-T2` Add Podman moderation scenarios.
+- [x] `P3-T2` Add Podman moderation scenarios.
   - `ST1` Moderation event and audit scenarios in container network.
   - `ST2` Relay no-data-hosting regression scenario for moderation paths.
   - `ST3` Deterministic pass/fail probes and result manifest output.
   - Artifacts: `containers/v1.7/*`, `scripts/v17-moderation-scenarios.sh`, `docs/v1.7/phase3/p3-podman-scenarios.md`.
 
 ### Phase 4 - v18 spec package (G6)
-- [ ] `P4-T1` Produce discovery and indexer specification package.
+- [x] `P4-T1` Produce discovery and indexer specification package.
   - `ST1` Signed `DirectoryEntry` contract and publication model.
   - `ST2` Indexer response signature and client verification model.
   - `ST3` Join funnel contract (invite/request/open + abuse controls).
   - Artifacts: `docs/v1.7/phase4/f18-discovery-spec.md`, `docs/v1.7/phase4/f18-proto-delta.md`, `docs/v1.7/phase4/f18-acceptance-matrix.md`.
 
 ### Phase 5 - Closure and evidence (G7)
-- [ ] `P5-T1` Publish v17 evidence bundle and promotion recommendation.
+- [x] `P5-T1` Publish v17 evidence bundle and promotion recommendation.
   - `ST1` Command outputs for compatibility/test/e2e/perf checks.
   - `ST2` Podman scenario outputs and deterministic result manifests.
   - `ST3` `F17` as-built conformance report against v16 `F17` specs.
