@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	phase6 "github.com/aether/code_aether/pkg/phase6"
+	relaypolicy "github.com/aether/code_aether/pkg/v11/relaypolicy"
 )
 
 func TestDispatchScenarioFirstContactInvokesHandler(t *testing.T) {
@@ -23,6 +24,29 @@ func TestDispatchScenarioFirstContactInvokesHandler(t *testing.T) {
 	}
 	if !called {
 		t.Fatalf("expected first-contact handler to be invoked")
+	}
+}
+
+func TestValidateRelayPersistenceModeRejectsForbiddenClasses(t *testing.T) {
+	original := *relayPersistenceMode
+	defer func() {
+		*relayPersistenceMode = original
+	}()
+
+	*relayPersistenceMode = string(relaypolicy.PersistenceModeDurableMessageBody)
+	err := validateRelayPersistenceMode()
+	if err == nil {
+		t.Fatalf("validateRelayPersistenceMode() = nil, want forbidden error")
+	}
+	var policyErr *relaypolicy.ValidationError
+	if !errors.As(err, &policyErr) {
+		t.Fatalf("expected ValidationError, got %T", err)
+	}
+	if policyErr.Mode != relaypolicy.PersistenceModeDurableMessageBody {
+		t.Fatalf("expected mode %q, got %q", relaypolicy.PersistenceModeDurableMessageBody, policyErr.Mode)
+	}
+	if len(policyErr.ForbiddenClasses) == 0 {
+		t.Fatalf("expected forbidden classes list, got empty")
 	}
 }
 

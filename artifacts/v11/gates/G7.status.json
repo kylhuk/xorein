@@ -1,0 +1,9 @@
+{
+  "gateId": "G7",
+  "state": "promoted",
+  "updatedAt": "2026-02-18T08:35:26Z",
+  "evidenceId": "EV-v11-G7-001",
+  "owner": "El Pollo Diablo",
+  "approver": "El Pollo Diablo",
+  "notes": "As-built conformance promoted with final single-operator release recommendation"
+}

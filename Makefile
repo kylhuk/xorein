@@ -9,9 +9,9 @@ RELAY_IMAGE_TAG ?= v0.1.0
 RELAY_IMAGE := $(RELAY_IMAGE_REPO):$(RELAY_IMAGE_TAG)
 RELEASE_PACK_DIR := $(GENERATED_DIR)/release-pack
 RELEASE_PACK_SIGN_DIR := $(RELEASE_PACK_DIR)/signing
-RELEASE_SIGNING_IMAGE ?= docker.io/library/golang:1.24.8
+RELEASE_SIGNING_IMAGE ?= docker.io/library/golang:1.24.12
 
-.PHONY: all pipeline check-fast check-full generate compile lint roadmap-verify test scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify
+.PHONY: all pipeline check-fast check-full generate compile lint roadmap-verify test scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify v11-gate-runner v11-relay-smoke
 
 STAGE_ORDER := generate compile lint test scan
 
@@ -54,9 +54,9 @@ scan:
 	ART_DIR="$(GENERATED_DIR)/security"; \
 	mkdir -p "$$ART_DIR"; \
 	echo "[scan] govulncheck ./..."; \
-	podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/library/golang:1.24.8 bash -lc 'set -euo pipefail; export PATH="/usr/local/go/bin:/go/bin:$$PATH"; export GOMODCACHE=/tmp/gomodcache; go install golang.org/x/vuln/cmd/govulncheck@v1.1.4; govulncheck ./...' | tee "$$ART_DIR/govulncheck.txt"; \
+	podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/library/golang:1.24.12 bash -lc 'set -euo pipefail; export PATH="/usr/local/go/bin:/go/bin:$$PATH"; export GOMODCACHE=/tmp/gomodcache; go install golang.org/x/vuln/cmd/govulncheck@v1.1.4; govulncheck ./...' | tee "$$ART_DIR/govulncheck.txt"; \
 	echo "[scan] gosec ./..."; \
-	podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/library/golang:1.24.8 bash -lc 'set -euo pipefail; export PATH="/usr/local/go/bin:/go/bin:$$PATH"; export GOMODCACHE=/tmp/gomodcache; go install github.com/securego/gosec/v2/cmd/gosec@v2.22.2; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test ./... >/tmp/gotest.log; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 gosec -fmt text -severity medium -confidence medium ./...' | tee "$$ART_DIR/gosec.txt"; \
+	podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/library/golang:1.24.12 bash -lc 'set -euo pipefail; export PATH="/usr/local/go/bin:/go/bin:$$PATH"; export GOMODCACHE=/tmp/gomodcache; go install github.com/securego/gosec/v2/cmd/gosec@v2.22.2; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test ./... >/tmp/gotest.log; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 gosec -fmt text -severity medium -confidence medium ./...' | tee "$$ART_DIR/gosec.txt"; \
 	echo "[scan] trivy filesystem (vuln+secret)"; \
 	podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/aquasec/trivy:0.50.0 fs --scanners vuln,secret --security-checks vuln,secret --skip-dirs /workspace/.git --no-progress --exit-code 1 --severity HIGH,CRITICAL --format json /workspace | tee "$$ART_DIR/trivy-fs.json"
 
@@ -117,3 +117,11 @@ relay-container-publish-check:
 release-pack-verify:
 	@echo "[release-pack] generating reproducible verification bundle"
 	@./scripts/release-pack-verify.sh
+
+v11-gate-runner:
+	@echo "[gate-runner] evaluating v11 gate artifact"
+	@set -euo pipefail; go run ./cmd/v11-gate-runner --status-dir artifacts/v11/gates
+
+v11-relay-smoke:
+	@echo "[v11-relay-smoke] running relay podman probe baseline"
+	@./scripts/v11-relay-smoke.sh

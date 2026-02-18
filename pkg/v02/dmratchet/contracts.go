@@ -90,7 +90,7 @@ func ValidatePersistedState(state RatchetState, expectation BindingExpectation, 
 			return PersistenceDecision{Reason: ReasonSkippedKeysExceeded, ResyncRequired: true}
 		}
 	}
-	if config.ReplayWindow > 0 && uint32(len(state.ReplayCache)) > config.ReplayWindow {
+	if config.ReplayWindow > 0 && uint64(len(state.ReplayCache)) > uint64(config.ReplayWindow) {
 		return PersistenceDecision{Reason: ReasonValidationReplayWindowExceeded, ResyncRequired: true}
 	}
 	return PersistenceDecision{Valid: true, Reason: ReasonStateValid}
@@ -136,7 +136,7 @@ func EvaluateIncomingMessage(state RatchetState, message IncomingMessage, config
 			return MessageDecision{Reason: ReasonReplayDetected, Replay: true}
 		}
 	}
-	if config.ReplayWindow > 0 && uint32(len(state.ReplayCache)) >= config.ReplayWindow {
+	if config.ReplayWindow > 0 && uint64(len(state.ReplayCache)) >= uint64(config.ReplayWindow) {
 		return MessageDecision{Reason: ReasonDecisionReplayWindowExceeded, Resync: true}
 	}
 	if message.Counter < state.ReceivingCounter {
@@ -149,15 +149,18 @@ func EvaluateIncomingMessage(state RatchetState, message IncomingMessage, config
 	if config.MaxSkippedKeysPerChain > 0 && gap > config.MaxSkippedKeysPerChain {
 		return MessageDecision{Reason: ReasonSkipWindowExceeded, Resync: true}
 	}
-	total := uint64(state.TotalSkippedKeys) + uint64(gap)
-	if config.MaxTotalSkippedKeys > 0 && total > uint64(config.MaxTotalSkippedKeys) {
+	if state.TotalSkippedKeys > ^uint32(0)-gap {
+		return MessageDecision{Reason: ReasonTotalSkipBudgetExceeded, Resync: true}
+	}
+	newSkippedTotal := state.TotalSkippedKeys + gap
+	if config.MaxTotalSkippedKeys > 0 && newSkippedTotal > config.MaxTotalSkippedKeys {
 		return MessageDecision{Reason: ReasonTotalSkipBudgetExceeded, Resync: true}
 	}
 	return MessageDecision{
 		Accept:          true,
 		Reason:          ReasonOutOfOrderWithinBounds,
 		Gap:             gap,
-		NewSkippedTotal: uint32(total),
+		NewSkippedTotal: newSkippedTotal,
 		SkipChain:       message.Chain,
 	}
 }

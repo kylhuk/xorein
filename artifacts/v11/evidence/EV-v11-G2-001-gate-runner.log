@@ -1,0 +1,14 @@
+[gate-runner] evaluating v11 gate artifact
+v11 gate runner summary
+ status directory: artifacts/v11/gates
+ evaluated at: 2026-02-18T08:36:35Z
+ freshness threshold: 24h0m0s
+ G0 promoted (updated 2026-02-18T08:35:26Z)
+ G1 promoted (updated 2026-02-18T08:35:26Z)
+ G2 promoted (updated 2026-02-18T08:35:26Z)
+ G3 promoted (updated 2026-02-18T08:35:26Z)
+ G4 promoted (updated 2026-02-18T08:35:26Z)
+ G5 promoted (updated 2026-02-18T08:35:26Z)
+ G6 promoted (updated 2026-02-18T08:35:26Z)
+ G7 promoted (updated 2026-02-18T08:35:26Z)
+PASS: All gates promoted and artifact is fresh.

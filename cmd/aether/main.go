@@ -14,31 +14,33 @@ import (
 	v08scenario "github.com/aether/code_aether/pkg/v08/scenario"
 	v09scenario "github.com/aether/code_aether/pkg/v09/scenario"
 	v10scenario "github.com/aether/code_aether/pkg/v10/scenario"
+	relaypolicy "github.com/aether/code_aether/pkg/v11/relaypolicy"
 )
 
 var (
 	dispatchScenarioFn = dispatchScenario
 
-	runMode           = flag.String("mode", "client", "runtime mode: client|relay|bootstrap")
-	scenario          = flag.String("scenario", "", "optional scenario: create-server|join-deeplink|first-contact|v08-echo|v09-forge|v10-genesis")
-	firstContactRuns  = flag.Int("first-contact-runs", 3, "number of repeated first-contact runs")
-	firstContactOut   = flag.String("first-contact-output", "artifacts/generated/first-contact", "output directory for first-contact scenario artifacts")
-	firstContactGoal  = flag.Duration("first-contact-target", 5*time.Minute, "target duration for each first-contact run")
-	serverID          = flag.String("server-id", "aether-server", "server identifier for manifest scenarios")
-	identity          = flag.String("identity", "aether-identity", "identity string used when signing manifests and joining")
-	description       = flag.String("description", "phase6 stub server", "server description for manifest metadata")
-	version           = flag.Int("version", 1, "manifest version value")
-	chatEnabled       = flag.Bool("capability-chat", true, "advertise chat capability")
-	voiceEnabled      = flag.Bool("capability-voice", false, "advertise voice capability")
-	deeplink          = flag.String("deeplink", "", "deeplink URI for join-deeplink scenario")
-	seedManifest      = flag.Bool("seed-manifest", false, "seed manifest store before join handshake")
-	relayListen       = flag.String("relay-listen", "0.0.0.0:4001", "relay listen address host:port")
-	relayStore        = flag.String("relay-store", "./artifacts/generated/relay-store", "relay store-and-forward data directory")
-	relayHealth       = flag.Duration("relay-health-interval", 30*time.Second, "relay health status emission interval")
-	relayReservations = flag.Int("relay-reservation-limit", 256, "maximum concurrent relay reservations")
-	relaySessionTTL   = flag.Duration("relay-session-timeout", 2*time.Minute, "maximum relay session lifetime")
-	relayMaxBytesSec  = flag.Int64("relay-max-bytes-per-sec", 1_000_000, "per-session relay bandwidth budget in bytes/sec")
-	profile           = flag.String("profile", "default", "operator profile for demos")
+	runMode              = flag.String("mode", "client", "runtime mode: client|relay|bootstrap")
+	scenario             = flag.String("scenario", "", "optional scenario: create-server|join-deeplink|first-contact|v08-echo|v09-forge|v10-genesis")
+	firstContactRuns     = flag.Int("first-contact-runs", 3, "number of repeated first-contact runs")
+	firstContactOut      = flag.String("first-contact-output", "artifacts/generated/first-contact", "output directory for first-contact scenario artifacts")
+	firstContactGoal     = flag.Duration("first-contact-target", 5*time.Minute, "target duration for each first-contact run")
+	serverID             = flag.String("server-id", "aether-server", "server identifier for manifest scenarios")
+	identity             = flag.String("identity", "aether-identity", "identity string used when signing manifests and joining")
+	description          = flag.String("description", "phase6 stub server", "server description for manifest metadata")
+	version              = flag.Int("version", 1, "manifest version value")
+	chatEnabled          = flag.Bool("capability-chat", true, "advertise chat capability")
+	voiceEnabled         = flag.Bool("capability-voice", false, "advertise voice capability")
+	deeplink             = flag.String("deeplink", "", "deeplink URI for join-deeplink scenario")
+	seedManifest         = flag.Bool("seed-manifest", false, "seed manifest store before join handshake")
+	relayListen          = flag.String("relay-listen", "0.0.0.0:4001", "relay listen address host:port")
+	relayStore           = flag.String("relay-store", "./artifacts/generated/relay-store", "relay store-and-forward data directory")
+	relayPersistenceMode = flag.String("relay-persistence-mode", "session-metadata", "relay persistence intent (none|session-metadata|transient-metadata|durable-message-body|attachment-payload|media-frame-archive)")
+	relayHealth          = flag.Duration("relay-health-interval", 30*time.Second, "relay health status emission interval")
+	relayReservations    = flag.Int("relay-reservation-limit", 256, "maximum concurrent relay reservations")
+	relaySessionTTL      = flag.Duration("relay-session-timeout", 2*time.Minute, "maximum relay session lifetime")
+	relayMaxBytesSec     = flag.Int64("relay-max-bytes-per-sec", 1_000_000, "per-session relay bandwidth budget in bytes/sec")
+	profile              = flag.String("profile", "default", "operator profile for demos")
 )
 
 type scenarioHandlers struct {
@@ -154,7 +156,20 @@ func runFirstContactScenario() {
 	}
 }
 
+func validateRelayPersistenceMode() error {
+	mode, err := relaypolicy.ParsePersistenceMode(*relayPersistenceMode)
+	if err != nil {
+		return err
+	}
+	return relaypolicy.ValidateMode(mode)
+}
+
 func runRelayMode() {
+	if err := validateRelayPersistenceMode(); err != nil {
+		fmt.Fprintf(os.Stderr, "relay persistence policy violation: %v\n", err)
+		os.Exit(16)
+	}
+
 	if strings.TrimSpace(*relayListen) == "" {
 		fmt.Fprintln(os.Stderr, "invalid relay configuration: --relay-listen must be non-empty host:port")
 		os.Exit(11)

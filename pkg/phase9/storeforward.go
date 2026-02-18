@@ -251,6 +251,7 @@ func (s *StoreService) compact(now time.Time) StoreResult {
 	})
 
 	var dropped int
+	var droppedCounter uint64
 	cut := 0
 	for cut < len(s.items) {
 		if s.items[cut].expiresAt.After(now) {
@@ -259,10 +260,11 @@ func (s *StoreService) compact(now time.Time) StoreResult {
 		s.queuedBytes -= int64(len(s.items[cut].ciphertext))
 		cut++
 		dropped++
+		droppedCounter++
 	}
 	if cut > 0 {
 		s.items = append([]storedEnvelope(nil), s.items[cut:]...)
-		s.droppedByTTL += uint64(dropped)
+		s.droppedByTTL += droppedCounter
 	}
 
 	return StoreResult{DroppedByTTL: dropped}

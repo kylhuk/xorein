@@ -1,16 +1,9 @@
 === Symbol Results ===
 
-Vulnerability #1: GO-2026-4341
-    Memory exhaustion in query parameter parsing in net/url
-  More info: https://pkg.go.dev/vuln/GO-2026-4341
-  Standard library
-    Found in: net/url@go1.24.8
-    Fixed in: net/url@go1.24.12
-    Example traces found:
-      #1: pkg/v02/friends/exchange.go:216:20: friends.extractInvitePayloadBlob calls url.URL.Query
+No vulnerabilities found.
 
-Your code is affected by 1 vulnerability from the Go standard library.
-This scan also found 0 vulnerabilities in packages you import and 6
-vulnerabilities in modules you require, but your code doesn't appear to call
-these vulnerabilities.
+Your code is affected by 0 vulnerabilities.
+This scan also found 0 vulnerabilities in packages you import and 1
+vulnerability in modules you require, but your code doesn't appear to call these
+vulnerabilities.
 Use '-show verbose' for more details.

@@ -4,9 +4,10 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/ed25519"
-	"crypto/sha256"
+	"crypto/rand"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"sync"
 )
 
@@ -41,7 +42,10 @@ func NewPipeline(id ParticipantID, state *KeyState) *Pipeline {
 }
 
 func (p *Pipeline) Send(seq uint64, plaintext []byte) (*EncryptedMessage, error) {
-	nonce := deriveNonce(plaintext, seq)
+	nonce, err := randomNonce(12)
+	if err != nil {
+		return nil, fmt.Errorf("phase7: nonce generation failed: %w", err)
+	}
 	ciphertext, err := encrypt(p.secret, nonce, plaintext)
 	if err != nil {
 		return nil, err
@@ -94,14 +98,12 @@ func decrypt(key, nonce, ciphertext []byte) ([]byte, error) {
 	return gcm.Open(nil, nonce, ciphertext, nil)
 }
 
-func deriveNonce(data []byte, seq uint64) []byte {
-	r := sha256.New()
-	r.Write(data)
-	var buf [8]byte
-	binary.BigEndian.PutUint64(buf[:], seq)
-	r.Write(buf[:])
-	sum := r.Sum(nil)
-	return sum[:12]
+func randomNonce(size int) ([]byte, error) {
+	nonce := make([]byte, size)
+	if _, err := rand.Read(nonce); err != nil {
+		return nil, err
+	}
+	return nonce, nil
 }
 
 func replayID(sender ParticipantID, seq uint64) string {

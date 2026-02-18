@@ -1,0 +1,9 @@
+{
+  "gateId": "G0",
+  "state": "promoted",
+  "updatedAt": "2026-02-18T08:35:26Z",
+  "evidenceId": "EV-v11-G0-001",
+  "owner": "El Pollo Diablo",
+  "approver": "El Pollo Diablo",
+  "notes": "Scope lock and traceability promoted after final evidence refresh"
+}

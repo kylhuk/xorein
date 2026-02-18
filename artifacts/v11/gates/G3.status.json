@@ -1,0 +1,9 @@
+{
+  "gateId": "G3",
+  "state": "promoted",
+  "updatedAt": "2026-02-18T08:35:26Z",
+  "evidenceId": "EV-v11-G3-001",
+  "owner": "El Pollo Diablo",
+  "approver": "El Pollo Diablo",
+  "notes": "Relay no-data-hosting boundary promoted after policy and e2e evidence"
+}

@@ -1,0 +1,1 @@
+relay persistence policy violation: relay persistence mode "durable-message-body" may not store forbidden classes: durable-message-body

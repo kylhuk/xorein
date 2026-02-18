@@ -1,0 +1,29 @@
+{
+  "suite": "v11-relay-smoke",
+  "binary": "/home/wenga/src/code_aether/bin/aether",
+  "binary_reused": true,
+  "podman_image": "docker.io/library/golang:1.24.12",
+  "artifact_dir": "/home/wenga/src/code_aether/artifacts/generated/v11-relay-smoke",
+  "probes": [
+    {
+      "name": "allowed-persistence-mode",
+      "mode": "session-metadata",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0,
+      "status": "pass",
+      "failure_reason": "",
+      "required_output": "Relay runtime active mode=relay",
+      "log": "/home/wenga/src/code_aether/artifacts/generated/v11-relay-smoke/allowed-relay-session-metadata.log"
+    },
+    {
+      "name": "forbidden-persistence-mode",
+      "mode": "durable-message-body",
+      "expected_exit_code": 16,
+      "actual_exit_code": 16,
+      "status": "pass",
+      "failure_reason": "",
+      "required_output": "policy violation",
+      "log": "/home/wenga/src/code_aether/artifacts/generated/v11-relay-smoke/forbidden-relay-durable-message-body.log"
+    }
+  ]
+}

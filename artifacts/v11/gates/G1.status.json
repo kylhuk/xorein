@@ -1,0 +1,9 @@
+{
+  "gateId": "G1",
+  "state": "promoted",
+  "updatedAt": "2026-02-18T08:35:26Z",
+  "evidenceId": "EV-v11-G1-001",
+  "owner": "El Pollo Diablo",
+  "approver": "El Pollo Diablo",
+  "notes": "Compatibility policy promoted with buf lint and buf breaking evidence"
+}
