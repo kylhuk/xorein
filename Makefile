@@ -11,7 +11,7 @@ RELEASE_PACK_DIR := $(GENERATED_DIR)/release-pack
 RELEASE_PACK_SIGN_DIR := $(RELEASE_PACK_DIR)/signing
 RELEASE_SIGNING_IMAGE ?= docker.io/library/golang:1.24.8
 
-.PHONY: all pipeline check-fast check-full generate compile lint roadmap-verify test scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify
+.PHONY: all pipeline check-fast check-full generate compile lint roadmap-verify test scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify v11-gate-runner v11-relay-smoke
 
 STAGE_ORDER := generate compile lint test scan
 
@@ -117,3 +117,11 @@ relay-container-publish-check:
 release-pack-verify:
 	@echo "[release-pack] generating reproducible verification bundle"
 	@./scripts/release-pack-verify.sh
+
+v11-gate-runner:
+	@echo "[gate-runner] evaluating v11 gate artifact"
+	@set -euo pipefail; go run ./cmd/v11-gate-runner --status-dir artifacts/v11/gates
+
+v11-relay-smoke:
+	@echo "[v11-relay-smoke] running relay podman probe baseline"
+	@./scripts/v11-relay-smoke.sh
