@@ -5,4 +5,4 @@ go: downloading golang.org/x/sys v0.39.0
 === CONT  TestNewDeviceRestoreScenario
 --- PASS: TestNewDeviceRestoreScenario (0.22s)
 PASS
-ok  	github.com/aether/code_aether/tests/e2e/v12	0.231s
+ok  	github.com/aether/code_aether/tests/e2e/v12	0.227s
