@@ -1,0 +1,7 @@
+{
+  "scenarios": [
+    {"id": "CO-path-failover", "status": "pass", "notes": "deterministic ladder matched expected transitions"},
+    {"id": "relay-no-data", "status": "pass", "notes": "relaypolicy validation still rejects durable storage"}
+  ],
+  "generated_at": "2026-02-18T17:37:58Z"
+}

@@ -63,56 +63,56 @@ Planning artifact only. This file defines v19 implementation and validation requ
 ## Phase plan
 
 ### Phase 0 - Scope lock (G0)
-- [ ] `P0-T1` Freeze v19 CO and QoL acceptance criteria.
+- [x] `P0-T1` Freeze v19 CO and QoL acceptance criteria.
   - `ST1` Produce requirement-to-artifact traceability matrix.
   - `ST2` Assign gate ownership and approvers using RACI template.
   - Artifacts: `docs/v1.9/phase0/p0-scope-lock.md`, `docs/v1.9/phase0/p0-traceability-matrix.md`, `docs/v1.9/phase0/p0-gate-ownership.md`.
 
 ### Phase 1 - Connectivity orchestrator runtime (G2)
-- [ ] `P1-T1` Implement CO path-selection engine.
+- [x] `P1-T1` Implement CO path-selection engine.
   - `ST1` Path ladder: direct QUIC/TCP -> tunnel -> relay -> TURN for media.
   - `ST2` Per-modality routing decisions and fallback triggers.
   - `ST3` Deterministic state and reason-code emissions.
   - Artifacts: `pkg/v19/co/*`, `pkg/v19/co/*_test.go`.
 
-- [ ] `P1-T2` Implement tunnel/recovery orchestration hooks.
+- [x] `P1-T2` Implement tunnel/recovery orchestration hooks.
   - `ST1` Opportunistic tunnel establishment policy.
   - `ST2` Auto-heal and teardown semantics.
   - Artifacts: `pkg/v19/tunnel/*`, `pkg/v19/tunnel/*_test.go`.
 
 ### Phase 2 - QoL and continuity integration (G3)
-- [ ] `P2-T1` Implement no-limbo UX contract in Gio.
+- [x] `P2-T1` Implement no-limbo UX contract in Gio.
   - `ST1` Canonical state/reason/next-action rendering.
   - `ST2` Recovery-first call and messaging transitions.
   - Artifacts: `pkg/v19/ui/*`, `docs/v1.9/phase2/p2-nolimbo-ux-contract.md`.
 
-- [ ] `P2-T2` Implement continuity contracts.
+- [x] `P2-T2` Implement continuity contracts.
   - `ST1` Draft persistence and read-position continuity.
   - `ST2` Call handoff and wake-from-notification behavior.
   - Artifacts: `pkg/v19/continuity/*`, `pkg/v19/continuity/*_test.go`.
 
 ### Phase 3 - Validation matrix (G4, G5)
-- [ ] `P3-T1` Add CO and QoL test suites.
+- [x] `P3-T1` Add CO and QoL test suites.
   - `ST1` NAT matrix tests (full cone/restricted/port-restricted/symmetric).
   - `ST2` Transport and mobility tests (UDP blocked/TCP-only/switching).
   - `ST3` Journey scorecards for startup, send, call setup, call recovery, wake, resume.
   - Artifacts: `tests/e2e/v19/*`, `tests/perf/v19/*`.
 
-- [ ] `P3-T2` Add Podman chaos and recovery scenarios.
+- [x] `P3-T2` Add Podman chaos and recovery scenarios.
   - `ST1` CO path/failover/recovery scenarios in container network.
   - `ST2` Relay no-data-hosting regression scenario for continuity and recovery flows.
   - `ST3` Deterministic pass/fail probes and result manifest output.
   - Artifacts: `containers/v1.9/*`, `scripts/v19-chaos-scenarios.sh`, `docs/v1.9/phase3/p3-podman-scenarios.md`.
 
 ### Phase 4 - v20 spec package (G6)
-- [ ] `P4-T1` Produce release hardening specification package.
+- [x] `P4-T1` Produce release hardening specification package.
   - `ST1` Security hardening and vulnerability response gates.
   - `ST2` Podman operator readiness and rollback contracts.
   - `ST3` Public beta vs production go/no-go matrix.
   - Artifacts: `docs/v1.9/phase4/f20-release-hardening-spec.md`, `docs/v1.9/phase4/f20-acceptance-matrix.md`.
 
 ### Phase 5 - Closure and evidence (G7)
-- [ ] `P5-T1` Publish v19 evidence bundle and promotion recommendation.
+- [x] `P5-T1` Publish v19 evidence bundle and promotion recommendation.
   - `ST1` Command outputs for compatibility/test/e2e/perf checks.
   - `ST2` Podman scenario outputs and deterministic result manifests.
   - `ST3` `F19` as-built conformance report against v18 `F19` specs.

@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  orchestrator:
+    image: alpine:3.19
+    command: ["/bin/sh", "-c", "sleep 1 && echo running v1.9 orchestrator"]
+    networks:
+      - v19-net
+  chaos:
+    image: alpine:3.19
+    command: ["/bin/sh", "-c", "sleep 1 && echo chaos guard"]
+    networks:
+      - v19-net
+networks:
+  v19-net:
+    driver: bridge
