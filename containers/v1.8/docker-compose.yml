@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  discovery-relay:
+    image: "aether/relay:v1.8"
+    environment:
+      RELAY_ENV: "v18-discovery"
+    ports:
+      - "8088:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "echo healthy"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  indexer:
+    image: "aether/relay:v1.8"
+    environment:
+      RELAY_ENV: "v18-indexer"
+    depends_on:
+      - discovery-relay

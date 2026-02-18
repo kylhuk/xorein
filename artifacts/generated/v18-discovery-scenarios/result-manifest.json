@@ -1,0 +1,35 @@
+{
+  "version": "v18-discovery-scenarios",
+  "timestamp": "2026-02-18T17:14:56Z",
+  "overall": "pass",
+  "scenarios": [
+    {
+      "id": "pkg-v18",
+      "command": "go test ./pkg/v18/...",
+      "exit_code": 0,
+      "status": "pass",
+      "log": "/home/wenga/src/code_aether/artifacts/generated/v18-discovery-scenarios/pkg-v18.log"
+    }
+    ,{
+      "id": "e2e-v18",
+      "command": "go test ./tests/e2e/v18/...",
+      "exit_code": 0,
+      "status": "pass",
+      "log": "/home/wenga/src/code_aether/artifacts/generated/v18-discovery-scenarios/e2e-v18.log"
+    }
+    ,{
+      "id": "perf-v18",
+      "command": "go test ./tests/perf/v18/...",
+      "exit_code": 0,
+      "status": "pass",
+      "log": "/home/wenga/src/code_aether/artifacts/generated/v18-discovery-scenarios/perf-v18.log"
+    }
+    ,{
+      "id": "relay-boundary",
+      "command": "go test ./tests/e2e/v18/... -run '^TestDiscoveryIntegrityEnforcesRelayBoundary$' -count=1",
+      "exit_code": 0,
+      "status": "pass",
+      "log": "/home/wenga/src/code_aether/artifacts/generated/v18-discovery-scenarios/relay-boundary.log"
+    }
+  ]
+}

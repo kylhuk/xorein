@@ -63,56 +63,56 @@ Planning artifact only. This file defines v18 implementation and validation requ
 ## Phase plan
 
 ### Phase 0 - Scope lock (G0)
-- [ ] `P0-T1` Freeze discovery and indexer scope.
+- [x] `P0-T1` Freeze discovery and indexer scope.
   - `ST1` Produce requirement-to-artifact traceability matrix.
   - `ST2` Assign gate ownership and approvers using RACI template.
   - Artifacts: `docs/v1.8/phase0/p0-scope-lock.md`, `docs/v1.8/phase0/p0-traceability-matrix.md`, `docs/v1.8/phase0/p0-gate-ownership.md`.
 
 ### Phase 1 - Directory and indexer runtime (G2)
-- [ ] `P1-T1` Implement `DirectoryEntry` publication lifecycle.
+- [x] `P1-T1` Implement `DirectoryEntry` publication lifecycle.
   - `ST1` Sign, publish, update, and revoke listing behavior.
   - `ST2` Deterministic keying and retrieval semantics.
   - Artifacts: `pkg/v18/directory/*`, `pkg/v18/directory/*_test.go`.
 
-- [ ] `P1-T2` Implement reference indexer service.
+- [x] `P1-T2` Implement reference indexer service.
   - `ST1` Crawl and verify public listings.
   - `ST2` Build searchable index and signed response payloads.
   - `ST3` Add operator configuration and health endpoints.
   - Artifacts: `cmd/indexer/*`, `pkg/v18/indexer/*`, `pkg/v18/indexer/*_test.go`.
 
 ### Phase 2 - Client verification and join UX (G3)
-- [ ] `P2-T1` Implement multi-indexer query and verification.
+- [x] `P2-T1` Implement multi-indexer query and verification.
   - `ST1` Merge/deduplicate by Space ID.
   - `ST2` Verify signatures and surface trust warnings.
   - Artifacts: `pkg/v18/discoveryclient/*`, `pkg/v18/discoveryclient/*_test.go`.
 
-- [ ] `P2-T2` Implement Explore and join funnel UX.
+- [x] `P2-T2` Implement Explore and join funnel UX.
   - `ST1` Browse/search/preview flows.
   - `ST2` Invite/request/open join actions and error states.
   - Artifacts: `pkg/v18/ui/*`, `docs/v1.8/phase2/p2-discovery-ux-contract.md`.
 
 ### Phase 3 - Validation matrix (G4, G5)
-- [ ] `P3-T1` Add discovery integrity and abuse-path tests.
+- [x] `P3-T1` Add discovery integrity and abuse-path tests.
   - `ST1` Forged listing and forged indexer response tests.
   - `ST2` Duplicate/mismatch merge tests.
   - `ST3` Join abuse control tests (rate/reputation/PoW where specified).
   - Artifacts: `tests/e2e/v18/*`, `tests/perf/v18/*`.
 
-- [ ] `P3-T2` Add Podman discovery/indexer scenarios.
+- [x] `P3-T2` Add Podman discovery/indexer scenarios.
   - `ST1` Discovery/indexer/search/join scenarios in container network.
   - `ST2` Relay no-data-hosting regression scenario for discovery/join paths.
   - `ST3` Deterministic pass/fail probes and result manifest output.
   - Artifacts: `containers/v1.8/*`, `scripts/v18-discovery-scenarios.sh`, `docs/v1.8/phase3/p3-podman-scenarios.md`.
 
 ### Phase 4 - v19 spec package (G6)
-- [ ] `P4-T1` Produce connectivity orchestrator and QoL specification package.
+- [x] `P4-T1` Produce connectivity orchestrator and QoL specification package.
   - `ST1` Path ladder and deterministic reason taxonomy.
   - `ST2` Global no-limbo UX invariants and journey contracts.
   - `ST3` Continuity contracts (draft/read/call handoff, wake behavior).
   - Artifacts: `docs/v1.8/phase4/f19-connectivity-qol-spec.md`, `docs/v1.8/phase4/f19-proto-delta.md`, `docs/v1.8/phase4/f19-acceptance-matrix.md`.
 
 ### Phase 5 - Closure and evidence (G7)
-- [ ] `P5-T1` Publish v18 evidence bundle and promotion recommendation.
+- [x] `P5-T1` Publish v18 evidence bundle and promotion recommendation.
   - `ST1` Command outputs for compatibility/test/e2e/perf checks.
   - `ST2` Podman scenario outputs and deterministic result manifests.
   - `ST3` `F18` as-built conformance report against v17 `F18` specs.
