@@ -1,0 +1,9 @@
+{
+  "suite": "v20-podman-scenarios",
+  "status": "pass",
+  "commands": [
+    {"command": "podman pod create --name v20-operator", "status": "success"},
+    {"command": "podman container run --rm --pod v20-operator registry.access.redhat.com/ubi8/ubi:latest echo ready", "status": "success"},
+    {"command": "podman pod ps --filter name=v20-operator", "status": "success"}
+  ]
+}

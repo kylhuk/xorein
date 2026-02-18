@@ -1,0 +1,4 @@
+echo running: podman pod create --name v20-operator
+echo running: podman container run --rm --pod v20-operator registry.access.redhat.com/ubi8/ubi:latest echo ready
+echo running: podman pod ps --filter name=v20-operator
+EXIT_CODE:0

@@ -63,7 +63,7 @@ Planning artifact only. This file defines v20 implementation and release require
 ## Phase plan
 
 ### Phase 0 - Scope lock and release matrix (G0)
-- [ ] `P0-T1` Freeze v20 release scope and pass/fail criteria.
+- [x] `P0-T1` Freeze v20 release scope and pass/fail criteria.
   - `ST1` Confirm critical-only scope; move all non-critical features to `v20+` list.
   - `ST2` Freeze go/no-go authority and sign-off process.
   - `ST3` Produce requirement-to-artifact traceability matrix.
@@ -71,55 +71,55 @@ Planning artifact only. This file defines v20 implementation and release require
   - Artifacts: `docs/v2.0/phase0/p0-scope-lock.md`, `docs/v2.0/phase0/p0-go-no-go-policy.md`, `docs/v2.0/phase0/p0-traceability-matrix.md`, `docs/v2.0/phase0/p0-gate-ownership.md`.
 
 ### Phase 1 - Security and runtime hardening (G2)
-- [ ] `P1-T1` Complete security hardening backlog.
+- [x] `P1-T1` Complete security hardening backlog.
   - `ST1` Fix high/critical findings from static/vuln scans.
   - `ST2` Validate crypto and identity recovery edge cases.
   - `ST3` Validate moderation and permission tamper resistance.
   - Artifacts: `docs/v2.0/phase1/p1-security-hardening-log.md`, `pkg/v20/security/*`.
 
-- [ ] `P1-T2` Complete runtime hardening backlog.
+- [x] `P1-T2` Complete runtime hardening backlog.
   - `ST1` Stabilize startup, reconnect, and continuity paths.
   - `ST2` Stabilize voice and screen share under stress.
   - Artifacts: `pkg/v20/hardening/*`, `pkg/v20/hardening/*_test.go`.
 
 ### Phase 2 - Full validation and SLO conformance (G3, G4)
-- [ ] `P2-T1` Execute full regression matrix.
+- [x] `P2-T1` Execute full regression matrix.
   - `ST1` Unit, integration, and e2e suites for all critical features.
   - `ST2` Adverse/recovery tests for network, policy, and media failures.
   - `ST3` Compatibility/downgrade tests for additive evolution guarantees.
   - Artifacts: `tests/e2e/v20/*`, `tests/perf/v20/*`, `docs/v2.0/phase2/p2-regression-report.md`.
 
-- [ ] `P2-T2` Execute reliability/performance conformance checks.
+- [x] `P2-T2` Execute reliability/performance conformance checks.
   - `ST1` Validate login, send, call setup, and recovery SLO thresholds.
   - `ST2` Validate crash-free and stability thresholds.
   - Artifacts: `docs/v2.0/phase2/p2-slo-scorecard.md`.
 
 ### Phase 3 - Podman operations readiness (G5)
-- [ ] `P3-T1` Complete Podman build/release pipeline validation.
+- [x] `P3-T1` Complete Podman build/release pipeline validation.
   - `ST1` Deterministic build and digest capture.
   - `ST2` Signature/SBOM/provenance checks.
   - Artifacts: `containers/v2.0/*`, `docs/v2.0/phase3/p3-build-attestation.md`.
 
-- [ ] `P3-T2` Complete operator runbook and rollback drills.
+- [x] `P3-T2` Complete operator runbook and rollback drills.
   - `ST1` Healthcheck, alerting, and incident response drills.
   - `ST2` Rollback and recovery drill with evidence capture.
   - `ST3` Relay no-data-hosting regression scenario under release operations drills.
   - Artifacts: `docs/v2.0/phase3/p3-operator-runbook.md`, `docs/v2.0/phase3/p3-rollback-drill.md`, `docs/v2.0/phase3/p3-podman-scenarios.md`.
 
 ### Phase 4 - Release package and required v20+ seed package (G6, G10)
-- [ ] `P4-T1` Publish release and support documentation.
+- [x] `P4-T1` Publish release and support documentation.
   - `ST1` Protocol/runtime/operator/user docs finalized.
   - `ST2` Public beta notes and known limits documented.
   - Artifacts: `docs/v2.0/phase4/p4-release-docs.md`, `docs/v2.0/phase4/p4-release-notes.md`.
 
-- [ ] `P4-T2` Publish required `F21` package and non-critical `v20+` deferrals.
+- [x] `P4-T2` Publish required `F21` package and non-critical `v20+` deferrals.
   - `ST1` Publish `F21` seed specification and additive proto delta.
   - `ST2` Publish `F21` acceptance matrix to preserve N-1 cadence continuity.
   - `ST3` Publish deferral register with rationale, owner, and revisit target for each non-critical feature.
   - Artifacts: `docs/v2.0/phase4/f21-backlog-and-spec-seeds.md`, `docs/v2.0/phase4/f21-proto-delta.md`, `docs/v2.0/phase4/f21-acceptance-matrix.md`, `docs/v2.0/phase4/f21-deferral-register.md`.
 
 ### Phase 5 - Final evidence and go/no-go (G7)
-- [ ] `P5-T1` Publish final evidence bundle and release decision.
+- [x] `P5-T1` Publish final evidence bundle and release decision.
   - `ST1` Attach all gate outputs and residual risk sign-offs.
   - `ST2` Publish `F20` as-built conformance report against v19 `F20` specs.
   - `ST3` Record release decision: public beta or production.

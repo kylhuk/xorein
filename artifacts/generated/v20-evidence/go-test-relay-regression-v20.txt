@@ -1,0 +1,2 @@
+ok  	github.com/aether/code_aether/tests/e2e/v20	0.002s
+EXIT_CODE:0

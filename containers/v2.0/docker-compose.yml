@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  relay:
+    image: registry.access.redhat.com/ubi8/ubi:latest
+    command: ["/bin/sh", "-c", "sleep 3600"]
+    environment:
+      - RELAY_MODE=hardening
+    ports:
+      - "4001:4001"
+    labels:
+      - "com.aether.release=v2.0"
