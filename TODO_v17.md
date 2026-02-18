@@ -1,7 +1,7 @@
 # TODO v17 - Xorein Execution Plan (v1.7)
 
 ## Status
-Planning artifact only. This file defines v17 implementation and validation requirements. It does not claim implementation completion.
+Completed in repository scope; versioned verification reran `go test -count=1 ./pkg/v17/...`, `go test -count=1 ./tests/e2e/v17/...`, and `go test -count=1 ./tests/perf/v17/...`.
 
 ## Version Isolation Contract (mandatory)
 - v17 cannot advance unless all v17 in-scope spec, code, tests, docs, ops artifacts, and evidence are complete.

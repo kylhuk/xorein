@@ -1,7 +1,7 @@
 # TODO v12 - Xorein Execution Plan (v1.2)
 
 ## Status
-Planning artifact only. This file defines v12 implementation and validation requirements. It does not claim implementation completion.
+Completed in repository scope; versioned verification reran `go test -count=1 ./pkg/v12/...`, `go test -count=1 ./tests/e2e/v12/...`, and `go test -count=1 ./tests/perf/v12/...`.
 
 ## Version Isolation Contract (mandatory)
 - v12 cannot be promoted unless all in-scope spec, code, tests, docs, ops artifacts, and evidence are complete.

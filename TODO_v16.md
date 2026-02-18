@@ -1,7 +1,7 @@
 # TODO v16 - Xorein Execution Plan (v1.6)
 
 ## Status
-Planning artifact only. This file defines v16 implementation and validation requirements. It does not claim implementation completion.
+Completed in repository scope; versioned verification reran `go test -count=1 ./pkg/v16/...`, `go test -count=1 ./tests/e2e/v16/...`, and `go test -count=1 ./tests/perf/v16/...`.
 
 ## Version Isolation Contract (mandatory)
 - v16 cannot advance unless all v16 in-scope spec, code, tests, docs, ops artifacts, and evidence are complete.

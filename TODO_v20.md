@@ -1,7 +1,7 @@
 # TODO v20 - Xorein Execution Plan (v2.0)
 
 ## Status
-Planning artifact only. This file defines v20 implementation and release requirements. It does not claim implementation completion.
+Completed in repository scope; versioned verification reran `go test -count=1 ./pkg/v20/...`, `go test -count=1 ./tests/e2e/v20/...`, and `go test -count=1 ./tests/perf/v20/...`.
 
 ## Version Isolation Contract (mandatory)
 - v20 cannot close unless all v20 in-scope spec, code, tests, docs, ops artifacts, and evidence are complete.

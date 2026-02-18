@@ -1,7 +1,7 @@
 # TODO v15 - Xorein Execution Plan (v1.5)
 
 ## Status
-Implementation in progress; v15 plans now include executed capture, transport, UI, validation, container, and v16-spec artifacts, pending required evidence commands.
+Completed in repository scope; versioned verification reran `go test -count=1 ./pkg/v15/...`, `go test -count=1 ./tests/e2e/v15/...`, and `go test -count=1 ./tests/perf/v15/...`.
 
 ## Version Isolation Contract (mandatory)
 - v15 cannot advance unless all v15 in-scope spec, code, tests, docs, ops artifacts, and evidence are complete.
