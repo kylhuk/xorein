@@ -8,7 +8,7 @@ This directory collects planning and implementation artifacts for v11 (v1.1). Ph
 - **Phase 2 - Relay data boundary (G3):** Allowed/forbidden data class rationale and policy/test references are captured in `phase2/p2-relay-data-boundary.md`.
 - **Phase 3 - Podman smoke (G4):** Podman relay smoke purpose, command usage, and probe expectations are now documented in `phase3/p3-podman-smoke.md`.
 - **Phase 4 - v12 spec (G5):** Planning artifacts now include identity/backup spec, backup/recovery flows, the proto delta list, and the acceptance matrix in `phase4/`.
-- **Phase 5:** Evidence bundle, risk register, as-built conformance notes, gate signoff checklist, and evidence index live under `phase5/` (see the templates in `docs/templates/` for expected structure).
+- **Phase 5:** Evidence bundle, risk register, deferral register, as-built conformance notes, gate signoff checklist, and evidence index live under `phase5/`.
 
 ## Templates and evidence conventions
 - Gate RACI and sign-off: `docs/templates/roadmap-signoff-raci.md` (copy into your gate files).
@@ -16,4 +16,4 @@ This directory collects planning and implementation artifacts for v11 (v1.1). Ph
 - Traceability/gate checklist patterns: `docs/templates/roadmap-gate-checklist.md`.
 
 ## Working note
-- All planning-artifact statements use the `Planned vs implemented` framing required by sprint governance; treat the files in `phase0/` as checkpoints rather than completed implementation evidence.
+- Keep `Planned vs implemented` framing explicit in each artifact; `phase0/` remains planning baseline while `phase5/` carries closure evidence and promotion records for v11.

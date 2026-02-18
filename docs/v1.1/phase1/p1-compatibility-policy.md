@@ -21,9 +21,9 @@ Defines the additive-only compatibility guardrails that keep v11 wiring stable w
 ## Validation commands (planned evidence)
 | Command | Purpose | Evidence placeholder | Status |
 |---|---|---|---|
-| `buf lint` | Proto style/lint checklist | `EV-v11-G1-001` | pending (not yet run) |
-| `buf breaking` | Breaking-change regression | `EV-v11-G1-002` | pending (not yet run) |
+| `buf lint` | Proto style/lint checklist | `EV-v11-G1-001` | pass (warning: deprecated `DEFAULT` category in `buf.yaml`) |
+| `buf breaking` | Breaking-change regression | `EV-v11-G1-002` | pass (`--against '.git#branch=origin/dev'`) |
 
 ## Planned vs implemented
 - **Planned:** Document the additive-only guardrails before gate runner automation enforces them, ensuring Phase 2+ teams can verify they respect proto/wire constraints.
-- **Implemented:** Planning-level text only; actual lint/breaking executions and gate runner records are still outstanding until the commands above are executed and recorded as evidence.
+- **Implemented:** Planning-level guardrails plus recorded lint/breaking evidence are now in place; promotion remains subject to remaining phase5 security and approval gates.

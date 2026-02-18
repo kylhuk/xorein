@@ -1,0 +1,9 @@
+{
+  "gateId": "G4",
+  "state": "promoted",
+  "updatedAt": "2026-02-18T08:35:26Z",
+  "evidenceId": "EV-v11-G4-002",
+  "owner": "El Pollo Diablo",
+  "approver": "El Pollo Diablo",
+  "notes": "Podman smoke baseline promoted with pass logs and manifest"
+}

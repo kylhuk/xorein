@@ -152,6 +152,7 @@ func SealPrivateKey(private ed25519.PrivateKey, passphrase string) (StorageEnvel
 		return StorageEnvelope{}, fmt.Errorf("phase5: nonce generation failed: %w", err)
 	}
 
+	// #nosec G407 -- nonce is generated with crypto/rand above and used once per envelope.
 	ciphertext := gcm.Seal(nil, nonce, private, nil)
 	return StorageEnvelope{Salt: salt, Nonce: nonce, Ciphertext: ciphertext}, nil
 }

@@ -2,7 +2,7 @@
   "suite": "v11-relay-smoke",
   "binary": "/home/wenga/src/code_aether/bin/aether",
   "binary_reused": true,
-  "podman_image": "docker.io/library/golang:1.24.8",
+  "podman_image": "docker.io/library/golang:1.24.12",
   "artifact_dir": "/home/wenga/src/code_aether/artifacts/generated/v11-relay-smoke",
   "probes": [
     {

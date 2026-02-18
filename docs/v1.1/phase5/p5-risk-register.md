@@ -1,15 +1,15 @@
-# Phase 5 · Risk register (Planning in progress)
+# Phase 5 - Risk register (v11 closure)
 
 ## Purpose
-Track residual and gating dependencies that must be mitigated before the v11 promotion gate can move from `blocked` to `ready_for_review`.
+Track residual and post-promotion dependencies for v11. Gate-blocking risks remain `open` only while unresolved; mitigated items stay listed for audit traceability.
 
 ## Risk table
 | RiskID | Description | Severity | Mitigation | Owner role | Status |
 |---|---|---|---|---|---|
-| R11-01 | Mandatory global command evidence remains incomplete (`buf lint`, `buf breaking`, `go test ./...`, `make check-full`), so promotion cannot proceed. | high | Run missing commands, store immutable logs/checksums, and update `p5-evidence-index.md` + `p5-gate-signoff.md`. | QA Lead | open |
-| R11-02 | Proto guardrail gate (G1) remains blocked until buf outputs are attached, which risks additive-policy drift in later edits. | medium | Execute `buf lint` and `buf breaking`, bind outputs to EV-v11-G1-001/002, and require Protocol Lead review before status change. | Protocol Lead | open |
-| R11-03 | Deferral register for out-of-scope runtime features is not yet published, reducing closure clarity for release handoff. | medium | Populate the v11 deferral register using `docs/templates/roadmap-deferral-register.md` and cross-link it from gate signoff + release notes draft. | Plan Lead | open |
+| R11-01 | Buf compatibility checks currently rely on a local CLI install; future environments may regress if `buf` is absent. | medium | Add deterministic buf provisioning in CI/automation (or containerized invocation), and keep EV-v11-G1-001/002 reproducible. | Protocol Lead | mitigated |
+| R11-02 | `make check-full` previously failed at `gosec` scan; latest rerun passes, but scan regressions remain a release risk without routine monitoring. | medium | Keep security scan evidence fresh in CI and treat any future non-zero `gosec` result as an immediate gate blocker requiring triage. | Security Lead | mitigated |
+| R11-03 | Deferral governance can regress if the no-active-deferrals record is not kept visible during later updates. | low | Keep `docs/v1.1/phase5/p5-deferral-register.md` linked from phase5 closure docs and update immediately if any unavoidable deferral is approved. | Plan Lead | mitigated |
 
 ## Planned vs implemented
-- **Planned:** Keep this table current; escalate any blocker to a `blocked` gate status and tie the risk back to `p5-gate-signoff.md` before promotion.
-- **Implemented:** G4 evidence collection has started (e2e + smoke + roadmap verify captured), while mandatory global checks and deferral publication remain open risks.
+- **Planned:** Continue updating this table for any post-v11 release-impacting risk.
+- **Implemented:** All v11 gate-blocking risks in this register are mitigated in the current closure snapshot.

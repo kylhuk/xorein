@@ -201,6 +201,14 @@ func TestEvaluateIncomingMessageCases(t *testing.T) {
 			wantReason: ReasonTotalSkipBudgetExceeded,
 			wantResync: true,
 		},
+		{
+			name:       "total skip overflow is rejected",
+			state:      RatchetState{ReceivingCounter: 1, TotalSkippedKeys: ^uint32(0)},
+			message:    IncomingMessage{MessageID: "msg", Chain: ChainReceiving, Counter: 2},
+			config:     RatchetConfig{MaxSkippedKeysPerChain: 4, MaxTotalSkippedKeys: ^uint32(0), ReplayWindow: 4},
+			wantReason: ReasonTotalSkipBudgetExceeded,
+			wantResync: true,
+		},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

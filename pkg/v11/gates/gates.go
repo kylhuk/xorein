@@ -107,22 +107,29 @@ func StatusFilePath(statusDir string, id GateID) string {
 }
 
 func ParseGateStatusFile(path string, expected GateID) (gateStatus, error) {
-	data, err := os.ReadFile(path)
+	expectedName := fmt.Sprintf("%s.status.json", expected)
+	cleanPath := filepath.Clean(path)
+	if filepath.Base(cleanPath) != expectedName {
+		return gateStatus{}, fmt.Errorf("read %s: unexpected status file name %q for gate %q", cleanPath, filepath.Base(cleanPath), expected)
+	}
+
+	// #nosec G304 -- cleanPath is constrained to a deterministic gate status filename.
+	data, err := os.ReadFile(cleanPath)
 	if err != nil {
-		return gateStatus{}, fmt.Errorf("read %s: %w", path, err)
+		return gateStatus{}, fmt.Errorf("read %s: %w", cleanPath, err)
 	}
 
 	var raw gateStatusFile
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return gateStatus{}, fmt.Errorf("parse %s: %w", path, err)
+		return gateStatus{}, fmt.Errorf("parse %s: %w", cleanPath, err)
 	}
 
 	if strings.TrimSpace(raw.UpdatedAt) == "" {
-		return gateStatus{}, fmt.Errorf("parse %s: updatedAt is required", path)
+		return gateStatus{}, fmt.Errorf("parse %s: updatedAt is required", cleanPath)
 	}
 	updatedAt, err := time.Parse(time.RFC3339, raw.UpdatedAt)
 	if err != nil {
-		return gateStatus{}, fmt.Errorf("parse %s: invalid updatedAt: %w", path, err)
+		return gateStatus{}, fmt.Errorf("parse %s: invalid updatedAt: %w", cleanPath, err)
 	}
 
 	gateID := GateID(strings.ToUpper(strings.TrimSpace(raw.GateID)))
@@ -130,7 +137,7 @@ func ParseGateStatusFile(path string, expected GateID) (gateStatus, error) {
 		gateID = expected
 	}
 	if gateID != expected {
-		return gateStatus{}, fmt.Errorf("parse %s: gateId %q does not match expected %q", path, gateID, expected)
+		return gateStatus{}, fmt.Errorf("parse %s: gateId %q does not match expected %q", cleanPath, gateID, expected)
 	}
 
 	return gateStatus{

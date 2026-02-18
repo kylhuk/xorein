@@ -3,6 +3,7 @@ package gates
 import (
 	"encoding/json"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -115,6 +116,27 @@ func TestRunGateChecks_MismatchedGateIDFails(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "does not match expected") {
 		t.Fatalf("expected mismatch error, got %v", err)
+	}
+}
+
+func TestParseGateStatusFileRejectsUnexpectedFilename(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	updatedAt := time.Date(2026, 2, 18, 8, 0, 0, 0, time.UTC)
+	path := filepath.Join(dir, "custom.status.json")
+	writeGateStatusPayload(t, path, map[string]string{
+		"gateId":    "G3",
+		"state":     string(StatePromoted),
+		"updatedAt": updatedAt.Format(time.RFC3339),
+	})
+
+	_, err := ParseGateStatusFile(path, "G3")
+	if err == nil {
+		t.Fatal("expected unexpected filename error")
+	}
+	if !strings.Contains(err.Error(), "unexpected status file name") {
+		t.Fatalf("expected unexpected filename error, got %v", err)
 	}
 }
 

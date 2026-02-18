@@ -6,7 +6,7 @@ ARTIFACT_DIR="$REPO_DIR/artifacts/generated/v11-relay-smoke"
 MANIFEST_PATH="$ARTIFACT_DIR/result-manifest.json"
 SMOKE_BINARY="$REPO_DIR/bin/aether"
 SMOKE_BINARY_CONTAINER=""
-PODMAN_IMAGE="docker.io/library/golang:1.24.8"
+PODMAN_IMAGE="docker.io/library/golang:1.24.12"
 RELAY_LISTEN="127.0.0.1:4001"
 RELAY_STORE_BASE="/workspace/artifacts/generated/v11-relay-smoke/stores"
 
