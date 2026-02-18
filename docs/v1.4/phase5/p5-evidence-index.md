@@ -1,0 +1,30 @@
+# Phase 5 Evidence Index
+
+- `EV-v14-G1-001`: `buf lint` (wire schema validation)
+  - Evidence artifact: `artifacts/generated/v14-evidence/buf-lint.txt`
+- `EV-v14-G1-002`: `buf breaking --against '.git#branch=origin/dev'` (wire compatibility)
+  - Evidence artifact: `artifacts/generated/v14-evidence/buf-breaking.txt`
+- `EV-v14-G2-003`: `go test ./...` (full test coverage)
+  - Evidence artifact: `artifacts/generated/v14-evidence/go-test-all.txt`
+- `EV-v14-G3-004`: `go test ./tests/e2e/v14/...` (voice UX and reconnect flows)
+  - Evidence artifact: `artifacts/generated/v14-evidence/go-test-e2e-v14.txt`
+- `EV-v14-G4-005`: `go test ./tests/perf/v14/...` (call setup and throughput paths)
+  - Evidence artifact: `artifacts/generated/v14-evidence/go-test-perf-v14.txt`
+- `EV-v14-G5-006`: `make check-full` (phase-wide verification)
+  - Evidence artifact: `artifacts/generated/v14-evidence/make-check-full.txt`
+- `EV-v14-G5-007`: `scripts/v14-voice-scenarios.sh` (Podman voice scenarios)
+  - Evidence artifact: `artifacts/generated/v14-evidence/v14-voice-scenarios.txt`
+  - Supporting manifest: `artifacts/generated/v14-voice-scenarios/result-manifest.json`
+- `EV-v14-G6-008`: v15 specification package publication
+  - Evidence artifacts:
+    - `docs/v1.4/phase4/f15-screenshare-spec.md`
+    - `docs/v1.4/phase4/f15-proto-delta.md`
+    - `docs/v1.4/phase4/f15-acceptance-matrix.md`
+- `EV-v14-G7-009`: `scripts/verify-roadmap-docs.sh` (docs/evidence integrity)
+  - Evidence artifact: `artifacts/generated/v14-evidence/verify-roadmap-docs.txt`
+- `EV-v14-G8-010`: `go test ./tests/e2e/v14/... -run '^TestVoiceFlowSequence$'` (relay regression)
+  - Evidence artifact: `artifacts/generated/v14-evidence/go-test-relay-regression-v14.txt`
+- `EV-v14-G9-011`: as-built conformance package
+  - Evidence artifacts:
+    - `docs/v1.4/phase5/p5-as-built-conformance.md`
+    - `docs/v1.4/phase5/p5-risk-register.md`

@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  voice-relay:
+    image: aether/voice-relay:latest
+    ports:
+      - "4001:4001"
+    networks:
+      - voice-net
+  voice-client:
+    image: aether/voice-client:latest
+    depends_on:
+      - voice-relay
+    networks:
+      - voice-net
+
+networks:
+  voice-net:
+    driver: bridge

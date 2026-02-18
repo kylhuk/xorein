@@ -63,52 +63,52 @@ Planning artifact only. This file defines v14 implementation and validation requ
 ## Phase plan
 
 ### Phase 0 - Scope lock (G0)
-- [ ] `P0-T1` Freeze v14 requirements and SLOs.
+- [x] `P0-T1` Freeze v14 requirements and SLOs.
   - `ST1` Produce requirement-to-artifact traceability matrix.
   - `ST2` Assign gate ownership and approvers using RACI template.
   - Artifacts: `docs/v1.4/phase0/p0-scope-lock.md`, `docs/v1.4/phase0/p0-traceability-matrix.md`, `docs/v1.4/phase0/p0-gate-ownership.md`.
 
 ### Phase 1 - Voice signaling and session engine (G2)
-- [ ] `P1-T1` Implement voice signaling lifecycle.
+- [x] `P1-T1` Implement voice signaling lifecycle.
   - `ST1` Session create/join/leave and retries.
   - `ST2` Deterministic signaling error taxonomy.
   - Artifacts: `pkg/v14/signaling/*`, `pkg/v14/signaling/*_test.go`.
 
-- [ ] `P1-T2` Implement voice session engine.
+- [x] `P1-T2` Implement voice session engine.
   - `ST1` Codec and transport profile negotiation.
   - `ST2` Reconnect/backoff policy and state transitions.
   - `ST3` Fallback orchestration (direct -> mesh -> SFU/TURN).
   - Artifacts: `pkg/v14/voice/*`, `pkg/v14/voice/*_test.go`.
 
 ### Phase 2 - Client integration and UX (G3)
-- [ ] `P2-T1` Implement Gio voice controls.
+- [x] `P2-T1` Implement Gio voice controls.
   - `ST1` Join/leave/mute/deafen/device selection.
   - `ST2` Call state and quality badge rendering.
   - `ST3` Recovery-first banners for transient failures.
   - Artifacts: `pkg/v14/ui/*`, `docs/v1.4/phase2/p2-voice-ux-contract.md`.
 
 ### Phase 3 - Validation matrix (G4, G5)
-- [ ] `P3-T1` Add reliability and degraded-network tests.
+- [x] `P3-T1` Add reliability and degraded-network tests.
   - `ST1` Call setup p50/p95 tests.
   - `ST2` Network-switch recovery tests.
   - `ST3` Restrictive-network force-SFU tests.
   - Artifacts: `tests/e2e/v14/*`, `tests/perf/v14/*`.
 
-- [ ] `P3-T2` Add Podman multi-peer call scenarios.
+- [x] `P3-T2` Add Podman multi-peer call scenarios.
   - `ST1` Voice call establishment and reconnect scenarios in container network.
   - `ST2` Relay no-data-hosting regression scenario for voice control paths.
   - `ST3` Deterministic pass/fail probes and result manifest output.
   - Artifacts: `containers/v1.4/*`, `scripts/v14-voice-scenarios.sh`, `docs/v1.4/phase3/p3-podman-scenarios.md`.
 
 ### Phase 4 - v15 spec package (G6)
-- [ ] `P4-T1` Produce screen share specification package.
+- [x] `P4-T1` Produce screen share specification package.
   - `ST1` Capture source, preset, and adaptation policy.
   - `ST2` Viewer-side degradation and recovery contract.
   - `ST3` Security and keying requirements for media frames.
   - Artifacts: `docs/v1.4/phase4/f15-screenshare-spec.md`, `docs/v1.4/phase4/f15-proto-delta.md`, `docs/v1.4/phase4/f15-acceptance-matrix.md`.
 
 ### Phase 5 - Closure and evidence (G7)
-- [ ] `P5-T1` Publish v14 evidence bundle and promotion recommendation.
+- [x] `P5-T1` Publish v14 evidence bundle and promotion recommendation.
   - `ST1` Command outputs for compatibility/test/e2e/perf checks.
   - `ST2` Podman scenario outputs and deterministic result manifests.
   - `ST3` `F14` as-built conformance report against v13 `F14` specs.

@@ -1,0 +1,10 @@
+{
+  "version": "v14",
+  "status": "pass",
+  "timestamp": "2026-02-18T16:04:45Z",
+  "scenarios": [
+    {"name": "voice-call-setup", "status": "pass", "steps": 4, "log": "voice-call-setup.log"},
+    {"name": "voice-reconnect", "status": "pass", "steps": 3, "log": "voice-reconnect.log"},
+    {"name": "relay-boundary-regression", "status": "pass", "steps": 2, "log": "relay-boundary.log"}
+  ]
+}
