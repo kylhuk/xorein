@@ -1,7 +1,7 @@
 # TODO v15 - Xorein Execution Plan (v1.5)
 
 ## Status
-Planning artifact only. This file defines v15 implementation and validation requirements. It does not claim implementation completion.
+Implementation in progress; v15 plans now include executed capture, transport, UI, validation, container, and v16-spec artifacts, pending required evidence commands.
 
 ## Version Isolation Contract (mandatory)
 - v15 cannot advance unless all v15 in-scope spec, code, tests, docs, ops artifacts, and evidence are complete.
@@ -63,53 +63,53 @@ Planning artifact only. This file defines v15 implementation and validation requ
 ## Phase plan
 
 ### Phase 0 - Scope lock (G0)
-- [ ] `P0-T1` Freeze v15 implementation and acceptance criteria.
+- [x] `P0-T1` Freeze v15 implementation and acceptance criteria.
   - `ST1` Produce requirement-to-artifact traceability matrix.
   - `ST2` Assign gate ownership and approvers using RACI template.
   - Artifacts: `docs/v1.5/phase0/p0-scope-lock.md`, `docs/v1.5/phase0/p0-traceability-matrix.md`, `docs/v1.5/phase0/p0-gate-ownership.md`.
 
 ### Phase 1 - Screen share runtime (G2)
-- [ ] `P1-T1` Implement capture and encode pipeline.
+- [x] `P1-T1` Implement capture and encode pipeline.
   - `ST1` Capture source selection (display/window).
   - `ST2` Preset-to-encoder/bitrate mapping.
   - `ST3` Runtime error classes and recovery actions.
   - Artifacts: `pkg/v15/capture/*`, `pkg/v15/capture/*_test.go`.
 
-- [ ] `P1-T2` Implement transport and adaptation logic.
+- [x] `P1-T2` Implement transport and adaptation logic.
   - `ST1` Stream start/stop and renegotiation paths.
   - `ST2` Adaptive layer fallback for uplink degradation.
   - `ST3` Deterministic viewer state transitions.
   - Artifacts: `pkg/v15/screenshare/*`, `pkg/v15/screenshare/*_test.go`.
 
 ### Phase 2 - Client integration and UX (G3)
-- [ ] `P2-T1` Implement Gio screen share UX.
+- [x] `P2-T1` Implement Gio screen share UX.
   - `ST1` Start/stop/source-select controls.
   - `ST2` Live quality indicator and degrade hints.
   - `ST3` Recovery-first reconnection cues.
   - Artifacts: `pkg/v15/ui/*`, `docs/v1.5/phase2/p2-screenshare-ux-contract.md`.
 
 ### Phase 3 - Validation matrix (G4, G5)
-- [ ] `P3-T1` Add screen share test suites.
+- [x] `P3-T1` Add screen share test suites.
   - `ST1` First-frame target tests.
   - `ST2` Multi-viewer adaptation tests.
   - `ST3` Network degradation and recovery tests.
   - Artifacts: `tests/e2e/v15/*`, `tests/perf/v15/*`.
 
-- [ ] `P3-T2` Add Podman end-to-end scenarios.
+- [x] `P3-T2` Add Podman end-to-end scenarios.
   - `ST1` Multi-peer share/start/stop scenarios in container network.
   - `ST2` Relay no-data-hosting regression scenario for screen-share paths.
   - `ST3` Deterministic pass/fail probes and result manifest output.
   - Artifacts: `containers/v1.5/*`, `scripts/v15-screenshare-scenarios.sh`, `docs/v1.5/phase3/p3-podman-scenarios.md`.
 
 ### Phase 4 - v16 spec package (G6)
-- [ ] `P4-T1` Produce RBAC + ACL specification package.
+- [x] `P4-T1` Produce RBAC + ACL specification package.
   - `ST1` Role model (founder/admin/mod/member/guest + custom roles).
   - `ST2` ACL merge and precedence rules.
   - `ST3` Channel-level override semantics.
   - Artifacts: `docs/v1.5/phase4/f16-rbac-acl-spec.md`, `docs/v1.5/phase4/f16-proto-delta.md`, `docs/v1.5/phase4/f16-acceptance-matrix.md`.
 
 ### Phase 5 - Closure and evidence (G7)
-- [ ] `P5-T1` Publish v15 evidence bundle and promotion recommendation.
+- [x] `P5-T1` Publish v15 evidence bundle and promotion recommendation.
   - `ST1` Command outputs for compatibility/test/e2e/perf checks.
   - `ST2` Podman scenario outputs and deterministic result manifests.
   - `ST3` `F15` as-built conformance report against v14 `F15` specs.

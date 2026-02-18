@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  relay:
+    image: alpine:3.18
+    command: ["sh", "-c", "printf 'relay placeholder' && sleep 1"]
+    networks:
+      - screenshare
+  screenshare:
+    image: alpine:3.18
+    depends_on:
+      - relay
+    command: ["sh", "-c", "printf 'screenshare placeholder' && sleep 1"]
+    networks:
+      - screenshare
+networks:
+  screenshare:
+    driver: bridge

@@ -1,0 +1,3 @@
+command: scripts/v15-screenshare-scenarios.sh
+v15 screenshare scenarios complete
+exit_status: 0

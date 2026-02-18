@@ -1,0 +1,16 @@
+{
+  "version": "v1.5",
+  "scenarios": [
+    {
+      "id": "v15-screenshare-001",
+      "description": "first-frame handshake",
+      "result": "pass"
+    },
+    {
+      "id": "v15-screenshare-002",
+      "description": "adaptation fallback",
+      "result": "pass"
+    }
+  ],
+  "notes": "Deterministic checks for stateful capture + adaptation contracts"
+}

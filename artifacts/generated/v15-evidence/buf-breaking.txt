@@ -1,0 +1,2 @@
+command: buf breaking --against .git#branch=origin/dev
+exit_status: 0
