@@ -63,7 +63,7 @@ Planning artifact only. This file defines v12 implementation and validation requ
 ## Phase plan
 
 ### Phase 0 - Scope lock and spec import (G0)
-- [ ] `P0-T1` Freeze v12 implementation scope to `F12`.
+- [x] `P0-T1` Freeze v12 implementation scope to `F12`.
   - `ST1` Map each requirement to exact code/test/docs artifacts.
   - `ST2` Freeze non-goals and escalation path.
   - `ST3` Produce requirement-to-artifact traceability matrix.
@@ -71,13 +71,13 @@ Planning artifact only. This file defines v12 implementation and validation requ
   - Artifacts: `docs/v1.2/phase0/p0-scope-lock.md`, `docs/v1.2/phase0/p0-traceability-matrix.md`, `docs/v1.2/phase0/p0-gate-ownership.md`.
 
 ### Phase 1 - Identity and backup implementation (G2)
-- [ ] `P1-T1` Implement immutable identity lifecycle.
+- [x] `P1-T1` Implement immutable identity lifecycle.
   - `ST1` Add identity creation flow with uniqueness guarantees.
   - `ST2` Persist identity metadata and key references locally.
   - `ST3` Add deterministic errors for duplicate/corrupt identity state.
   - Artifacts: `pkg/v12/identity/*`, `pkg/v12/identity/*_test.go`.
 
-- [ ] `P1-T2` Implement local backup model.
+- [x] `P1-T2` Implement local backup model.
   - `ST1` Define backup payload format for identity + critical configuration.
   - `ST2` Implement backup export with `BackupID + BackupPassword` using versioned envelope (`Argon2id` KDF + AEAD).
   - `ST3` Implement backup import and restore verification checks.
@@ -85,26 +85,26 @@ Planning artifact only. This file defines v12 implementation and validation requ
   - Artifacts: `pkg/v12/backup/*`, `pkg/v12/backup/*_test.go`, `docs/v1.2/phase1/p1-backup-format.md`.
 
 ### Phase 2 - Proto and client integration (G1, G3)
-- [ ] `P2-T1` Apply additive proto updates for identity and recovery metadata.
+- [x] `P2-T1` Apply additive proto updates for identity and recovery metadata.
   - `ST1` Add fields/messages without renumbering existing fields.
   - `ST2` Reserve deprecated numbers/names as needed.
   - `ST3` Regenerate code and validate schema compatibility.
   - Artifacts: `proto/aether.proto`, `gen/go/aether/*`, `docs/v1.2/phase2/p2-proto-changelog.md`.
 
-- [ ] `P2-T2` Implement Gio identity onboarding and recovery UX.
+- [x] `P2-T2` Implement Gio identity onboarding and recovery UX.
   - `ST1` New-user path: create identity, explain no-reset policy.
   - `ST2` Recovery path: import backup, validate password, show deterministic errors.
   - `ST3` Add configuration restore controls and confirmation UI.
-  - Artifacts: `pkg/v12/ui/*`, `docs/v1.2/phase2/p2-ux-contract.md`.
+  - Artifacts: `pkg/v12/ui/*`, `pkg/ui/*`, `docs/v1.2/phase2/p2-ux-contract.md`.
 
 ### Phase 3 - Validation matrix (G4, G5)
-- [ ] `P3-T1` Add unit and integration tests.
+- [x] `P3-T1` Add unit and integration tests.
   - `ST1` Identity uniqueness and immutability tests.
   - `ST2` Wrong password, corrupt backup, truncated backup tests.
   - `ST3` Migration and restart consistency tests.
   - Artifacts: `pkg/v12/**/*_test.go`.
 
-- [ ] `P3-T2` Add e2e and Podman recovery scenarios.
+- [x] `P3-T2` Add e2e and Podman recovery scenarios.
   - `ST1` New device restore scenario.
   - `ST2` Lost password without backup scenario (expected unrecoverable).
   - `ST3` Backup tamper detection scenario.
@@ -113,20 +113,20 @@ Planning artifact only. This file defines v12 implementation and validation requ
   - Artifacts: `tests/e2e/v12/*`, `containers/v1.2/*`, `scripts/v12-recovery-scenarios.sh`, `docs/v1.2/phase3/p3-podman-scenarios.md`.
 
 ### Phase 4 - v13 spec package (G6)
-- [ ] `P4-T1` Define Spaces lifecycle spec.
+- [x] `P4-T1` Define Spaces lifecycle spec.
   - `ST1` Space create semantics, founder/admin auto-assignment.
   - `ST2` Visibility default and join policy defaults.
   - `ST3` Space metadata and channel model draft.
   - Artifacts: `docs/v1.2/phase4/f13-spaces-chat-spec.md`.
 
-- [ ] `P4-T2` Define text-channel/chat baseline spec.
+- [x] `P4-T2` Define text-channel/chat baseline spec.
   - `ST1` Channel contracts, send/receive states, read markers.
   - `ST2` Failure and recovery reason taxonomy.
   - `ST3` Acceptance matrix for v13 implementation closure.
   - Artifacts: `docs/v1.2/phase4/f13-chat-flows.md`, `docs/v1.2/phase4/f13-proto-delta.md`, `docs/v1.2/phase4/f13-acceptance-matrix.md`.
 
 ### Phase 5 - Closure and evidence (G7)
-- [ ] `P5-T1` Publish v12 evidence bundle.
+- [x] `P5-T1` Publish v12 evidence bundle.
   - `ST1` Command outputs for compatibility/test/e2e checks.
   - `ST2` Podman scenario outputs and deterministic result manifests.
   - `ST3` `F12` as-built conformance report against v11 `F12` specs.

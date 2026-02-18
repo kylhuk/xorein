@@ -1,1 +1,10 @@
 .cache/
+.github/
+.vestige*
+.kilocodemodes
+.kilocode/
+.opencode/
+opencode.json
+*.gen.yaml
+.config/
+.beads/

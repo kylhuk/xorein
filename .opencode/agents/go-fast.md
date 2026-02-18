@@ -7,32 +7,10 @@ options:
 permission:
   task: deny
   edit:
-    "*": allow
-    "*.go": allow
-    "**/*.go": allow
-    "go.mod": allow
-    "go.sum": allow
-    "**/go.mod": allow
-    "**/go.sum": allow
-  bash:
-    "*": allow
-    "python": allow
-    "git status*": allow
-    "git diff*": allow
-    "git log*": allow
-    "git show*": allow
-    "git rev-parse*": allow
-    "git apply*": allow
-    "git ls-files*": allow
-    "go *": allow
-    "gofmt*": allow
-    "goimports*": allow
-    "golangci-lint*": allow
-    "buf*": allow
-    "git commit*": deny
-    "git push*": deny
-    "rm*": deny
-    "sudo*": deny
+    "*": deny
+    "/home/wenga/src/**": allow
+  bash: allow
+
 ---
 
 You implement Go changes.

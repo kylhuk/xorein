@@ -1,0 +1,8 @@
+go: downloading golang.org/x/crypto v0.46.1-0.20251210140736-7dacc380ba00
+go: downloading golang.org/x/sys v0.39.0
+=== RUN   TestRestoreDetectsTamperedCiphertext
+=== PAUSE TestRestoreDetectsTamperedCiphertext
+=== CONT  TestRestoreDetectsTamperedCiphertext
+--- PASS: TestRestoreDetectsTamperedCiphertext (0.12s)
+PASS
+ok  	github.com/aether/code_aether/pkg/v12/backup	0.124s

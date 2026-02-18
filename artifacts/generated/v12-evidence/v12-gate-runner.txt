@@ -1,0 +1,15 @@
+v12 gate runner summary
+status directory: artifacts/v12/gates
+evaluated at: 2026-02-18T14:43:32Z
+freshness threshold: 24h0m0s
+G0 promoted (updated 2026-02-18T14:45:00Z)
+G1 promoted (updated 2026-02-18T14:45:00Z)
+G2 promoted (updated 2026-02-18T14:45:00Z)
+G3 promoted (updated 2026-02-18T14:45:00Z)
+G4 promoted (updated 2026-02-18T14:45:00Z)
+G5 promoted (updated 2026-02-18T14:45:00Z)
+G6 promoted (updated 2026-02-18T14:45:00Z)
+G7 promoted (updated 2026-02-18T14:45:00Z)
+G8 promoted (updated 2026-02-18T14:45:00Z)
+G9 promoted (updated 2026-02-18T14:45:00Z)
+PASS: All gates promoted and artifact is fresh.

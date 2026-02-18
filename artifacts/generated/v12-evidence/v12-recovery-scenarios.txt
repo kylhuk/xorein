@@ -1,0 +1,2 @@
+[v12-recovery] wrote manifest: /home/wenga/src/code_aether/artifacts/generated/v12-recovery-scenarios/result-manifest.json
+[v12-recovery] all checks passed

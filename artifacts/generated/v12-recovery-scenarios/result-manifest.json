@@ -1,0 +1,47 @@
+{
+  "suite": "v12-recovery-scenarios",
+  "podman_image": "docker.io/library/golang:1.24.12",
+  "artifact_dir": "/home/wenga/src/code_aether/artifacts/generated/v12-recovery-scenarios",
+  "probes": [
+    {
+      "name": "new-device-restore",
+      "command": "/usr/local/go/bin/go test ./tests/e2e/v12 -run TestNewDeviceRestoreScenario -count=1 -v",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0,
+      "status": "pass",
+      "failure_reason": "",
+      "required_output": "PASS",
+      "log": "/home/wenga/src/code_aether/artifacts/generated/v12-recovery-scenarios/new-device-restore.log"
+    },
+    {
+      "name": "lost-password-without-backup",
+      "command": "/usr/local/go/bin/go test ./tests/e2e/v12 -run TestLostPasswordWithoutBackupScenario -count=1 -v",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0,
+      "status": "pass",
+      "failure_reason": "",
+      "required_output": "PASS",
+      "log": "/home/wenga/src/code_aether/artifacts/generated/v12-recovery-scenarios/lost-password-without-backup.log"
+    },
+    {
+      "name": "backup-tamper-detection",
+      "command": "/usr/local/go/bin/go test ./pkg/v12/backup -run TestRestoreDetectsTamperedCiphertext -count=1 -v",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0,
+      "status": "pass",
+      "failure_reason": "",
+      "required_output": "PASS",
+      "log": "/home/wenga/src/code_aether/artifacts/generated/v12-recovery-scenarios/backup-tamper-detection.log"
+    },
+    {
+      "name": "relay-boundary-regression",
+      "command": "/usr/local/go/bin/go test ./tests/e2e/v12 -run TestRelayBoundaryRegressionScenario -count=1 -v",
+      "expected_exit_code": 0,
+      "actual_exit_code": 0,
+      "status": "pass",
+      "failure_reason": "",
+      "required_output": "PASS",
+      "log": "/home/wenga/src/code_aether/artifacts/generated/v12-recovery-scenarios/relay-boundary-regression.log"
+    }
+  ]
+}

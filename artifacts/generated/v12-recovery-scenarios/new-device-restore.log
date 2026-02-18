@@ -1,0 +1,8 @@
+go: downloading golang.org/x/crypto v0.46.1-0.20251210140736-7dacc380ba00
+go: downloading golang.org/x/sys v0.39.0
+=== RUN   TestNewDeviceRestoreScenario
+=== PAUSE TestNewDeviceRestoreScenario
+=== CONT  TestNewDeviceRestoreScenario
+--- PASS: TestNewDeviceRestoreScenario (0.22s)
+PASS
+ok  	github.com/aether/code_aether/tests/e2e/v12	0.231s

@@ -2239,6 +2239,65 @@ func (VerificationStatus) EnumDescriptor() ([]byte, []int) {
 	return file_proto_aether_proto_rawDescGZIP(), []int{36}
 }
 
+// BackupReason captures deterministic restore reason taxonomy for local backup.
+type BackupReason int32
+
+const (
+	BackupReason_BACKUP_REASON_UNSPECIFIED        BackupReason = 0
+	BackupReason_BACKUP_REASON_PASSWORD           BackupReason = 1
+	BackupReason_BACKUP_REASON_CORRUPT            BackupReason = 2
+	BackupReason_BACKUP_REASON_IDENTITY_MISMATCH  BackupReason = 3
+	BackupReason_BACKUP_REASON_IDENTITY_DUPLICATE BackupReason = 4
+	BackupReason_BACKUP_REASON_OUTDATED           BackupReason = 5
+)
+
+// Enum value maps for BackupReason.
+var (
+	BackupReason_name = map[int32]string{
+		0: "BACKUP_REASON_UNSPECIFIED",
+		1: "BACKUP_REASON_PASSWORD",
+		2: "BACKUP_REASON_CORRUPT",
+		3: "BACKUP_REASON_IDENTITY_MISMATCH",
+		4: "BACKUP_REASON_IDENTITY_DUPLICATE",
+		5: "BACKUP_REASON_OUTDATED",
+	}
+	BackupReason_value = map[string]int32{
+		"BACKUP_REASON_UNSPECIFIED":        0,
+		"BACKUP_REASON_PASSWORD":           1,
+		"BACKUP_REASON_CORRUPT":            2,
+		"BACKUP_REASON_IDENTITY_MISMATCH":  3,
+		"BACKUP_REASON_IDENTITY_DUPLICATE": 4,
+		"BACKUP_REASON_OUTDATED":           5,
+	}
+)
+
+func (x BackupReason) Enum() *BackupReason {
+	p := new(BackupReason)
+	*p = x
+	return p
+}
+
+func (x BackupReason) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (BackupReason) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_aether_proto_enumTypes[37].Descriptor()
+}
+
+func (BackupReason) Type() protoreflect.EnumType {
+	return &file_proto_aether_proto_enumTypes[37]
+}
+
+func (x BackupReason) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use BackupReason.Descriptor instead.
+func (BackupReason) EnumDescriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{37}
+}
+
 // CapabilitySet represents the strongly typed capability flags alongside custom
 // opaque attributes for future extensions.
 type CapabilitySet struct {
@@ -2370,6 +2429,213 @@ func (x *IdentityProfile) GetAdvertisedCapabilities() *CapabilitySet {
 	return nil
 }
 
+// IdentityState captures immutable identity status for restore-safe workflows.
+type IdentityState struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	IdentityId           string                 `protobuf:"bytes,1,opt,name=identity_id,json=identityId,proto3" json:"identity_id,omitempty"`
+	PublicKeyFingerprint string                 `protobuf:"bytes,2,opt,name=public_key_fingerprint,json=publicKeyFingerprint,proto3" json:"public_key_fingerprint,omitempty"`
+	CreatedAtUnix        uint64                 `protobuf:"varint,3,opt,name=created_at_unix,json=createdAtUnix,proto3" json:"created_at_unix,omitempty"`
+	MetadataVersion      uint32                 `protobuf:"varint,4,opt,name=metadata_version,json=metadataVersion,proto3" json:"metadata_version,omitempty"`
+	BackupStatus         string                 `protobuf:"bytes,5,opt,name=backup_status,json=backupStatus,proto3" json:"backup_status,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *IdentityState) Reset() {
+	*x = IdentityState{}
+	mi := &file_proto_aether_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IdentityState) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IdentityState) ProtoMessage() {}
+
+func (x *IdentityState) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IdentityState.ProtoReflect.Descriptor instead.
+func (*IdentityState) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *IdentityState) GetIdentityId() string {
+	if x != nil {
+		return x.IdentityId
+	}
+	return ""
+}
+
+func (x *IdentityState) GetPublicKeyFingerprint() string {
+	if x != nil {
+		return x.PublicKeyFingerprint
+	}
+	return ""
+}
+
+func (x *IdentityState) GetCreatedAtUnix() uint64 {
+	if x != nil {
+		return x.CreatedAtUnix
+	}
+	return 0
+}
+
+func (x *IdentityState) GetMetadataVersion() uint32 {
+	if x != nil {
+		return x.MetadataVersion
+	}
+	return 0
+}
+
+func (x *IdentityState) GetBackupStatus() string {
+	if x != nil {
+		return x.BackupStatus
+	}
+	return ""
+}
+
+// BackupManifest contains local backup metadata without ciphertext payload.
+type BackupManifest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BackupId      string                 `protobuf:"bytes,1,opt,name=backup_id,json=backupId,proto3" json:"backup_id,omitempty"`
+	BackupVersion uint32                 `protobuf:"varint,2,opt,name=backup_version,json=backupVersion,proto3" json:"backup_version,omitempty"`
+	CreatedAtUnix uint64                 `protobuf:"varint,3,opt,name=created_at_unix,json=createdAtUnix,proto3" json:"created_at_unix,omitempty"`
+	Reason        BackupReason           `protobuf:"varint,4,opt,name=reason,proto3,enum=aether.BackupReason" json:"reason,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *BackupManifest) Reset() {
+	*x = BackupManifest{}
+	mi := &file_proto_aether_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BackupManifest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BackupManifest) ProtoMessage() {}
+
+func (x *BackupManifest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BackupManifest.ProtoReflect.Descriptor instead.
+func (*BackupManifest) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *BackupManifest) GetBackupId() string {
+	if x != nil {
+		return x.BackupId
+	}
+	return ""
+}
+
+func (x *BackupManifest) GetBackupVersion() uint32 {
+	if x != nil {
+		return x.BackupVersion
+	}
+	return 0
+}
+
+func (x *BackupManifest) GetCreatedAtUnix() uint64 {
+	if x != nil {
+		return x.CreatedAtUnix
+	}
+	return 0
+}
+
+func (x *BackupManifest) GetReason() BackupReason {
+	if x != nil {
+		return x.Reason
+	}
+	return BackupReason_BACKUP_REASON_UNSPECIFIED
+}
+
+// BackupRestoreResult provides deterministic identity/backup reason fields.
+type BackupRestoreResult struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Success        bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	IdentityReason *PolicyReason          `protobuf:"varint,2,opt,name=identity_reason,json=identityReason,proto3,enum=aether.PolicyReason,oneof" json:"identity_reason,omitempty"`
+	BackupReason   *BackupReason          `protobuf:"varint,3,opt,name=backup_reason,json=backupReason,proto3,enum=aether.BackupReason,oneof" json:"backup_reason,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *BackupRestoreResult) Reset() {
+	*x = BackupRestoreResult{}
+	mi := &file_proto_aether_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *BackupRestoreResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BackupRestoreResult) ProtoMessage() {}
+
+func (x *BackupRestoreResult) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_aether_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BackupRestoreResult.ProtoReflect.Descriptor instead.
+func (*BackupRestoreResult) Descriptor() ([]byte, []int) {
+	return file_proto_aether_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *BackupRestoreResult) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *BackupRestoreResult) GetIdentityReason() PolicyReason {
+	if x != nil && x.IdentityReason != nil {
+		return *x.IdentityReason
+	}
+	return PolicyReason_POLICY_REASON_UNSPECIFIED
+}
+
+func (x *BackupRestoreResult) GetBackupReason() BackupReason {
+	if x != nil && x.BackupReason != nil {
+		return *x.BackupReason
+	}
+	return BackupReason_BACKUP_REASON_UNSPECIFIED
+}
+
 // MembershipState records per-member enablement toggles within manifests.
 type MembershipState struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
@@ -2383,7 +2649,7 @@ type MembershipState struct {
 
 func (x *MembershipState) Reset() {
 	*x = MembershipState{}
-	mi := &file_proto_aether_proto_msgTypes[2]
+	mi := &file_proto_aether_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2395,7 +2661,7 @@ func (x *MembershipState) String() string {
 func (*MembershipState) ProtoMessage() {}
 
 func (x *MembershipState) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[2]
+	mi := &file_proto_aether_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2408,7 +2674,7 @@ func (x *MembershipState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MembershipState.ProtoReflect.Descriptor instead.
 func (*MembershipState) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{2}
+	return file_proto_aether_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *MembershipState) GetMember() *IdentityProfile {
@@ -2454,7 +2720,7 @@ type ServerManifest struct {
 
 func (x *ServerManifest) Reset() {
 	*x = ServerManifest{}
-	mi := &file_proto_aether_proto_msgTypes[3]
+	mi := &file_proto_aether_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2466,7 +2732,7 @@ func (x *ServerManifest) String() string {
 func (*ServerManifest) ProtoMessage() {}
 
 func (x *ServerManifest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[3]
+	mi := &file_proto_aether_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2479,7 +2745,7 @@ func (x *ServerManifest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ServerManifest.ProtoReflect.Descriptor instead.
 func (*ServerManifest) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{3}
+	return file_proto_aether_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ServerManifest) GetManifestId() string {
@@ -2538,7 +2804,7 @@ type ChatMessage struct {
 
 func (x *ChatMessage) Reset() {
 	*x = ChatMessage{}
-	mi := &file_proto_aether_proto_msgTypes[4]
+	mi := &file_proto_aether_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2550,7 +2816,7 @@ func (x *ChatMessage) String() string {
 func (*ChatMessage) ProtoMessage() {}
 
 func (x *ChatMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[4]
+	mi := &file_proto_aether_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2563,7 +2829,7 @@ func (x *ChatMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatMessage.ProtoReflect.Descriptor instead.
 func (*ChatMessage) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{4}
+	return file_proto_aether_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ChatMessage) GetMessageId() string {
@@ -2615,7 +2881,7 @@ type VoiceState struct {
 
 func (x *VoiceState) Reset() {
 	*x = VoiceState{}
-	mi := &file_proto_aether_proto_msgTypes[5]
+	mi := &file_proto_aether_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2627,7 +2893,7 @@ func (x *VoiceState) String() string {
 func (*VoiceState) ProtoMessage() {}
 
 func (x *VoiceState) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[5]
+	mi := &file_proto_aether_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2640,7 +2906,7 @@ func (x *VoiceState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VoiceState.ProtoReflect.Descriptor instead.
 func (*VoiceState) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{5}
+	return file_proto_aether_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *VoiceState) GetSessionId() string {
@@ -2694,7 +2960,7 @@ type VoiceCodecProfile struct {
 
 func (x *VoiceCodecProfile) Reset() {
 	*x = VoiceCodecProfile{}
-	mi := &file_proto_aether_proto_msgTypes[6]
+	mi := &file_proto_aether_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2706,7 +2972,7 @@ func (x *VoiceCodecProfile) String() string {
 func (*VoiceCodecProfile) ProtoMessage() {}
 
 func (x *VoiceCodecProfile) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[6]
+	mi := &file_proto_aether_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2719,7 +2985,7 @@ func (x *VoiceCodecProfile) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VoiceCodecProfile.ProtoReflect.Descriptor instead.
 func (*VoiceCodecProfile) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{6}
+	return file_proto_aether_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *VoiceCodecProfile) GetCodec() VoiceCodec {
@@ -2784,7 +3050,7 @@ type VoiceTransportProfile struct {
 
 func (x *VoiceTransportProfile) Reset() {
 	*x = VoiceTransportProfile{}
-	mi := &file_proto_aether_proto_msgTypes[7]
+	mi := &file_proto_aether_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2796,7 +3062,7 @@ func (x *VoiceTransportProfile) String() string {
 func (*VoiceTransportProfile) ProtoMessage() {}
 
 func (x *VoiceTransportProfile) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[7]
+	mi := &file_proto_aether_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2809,7 +3075,7 @@ func (x *VoiceTransportProfile) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VoiceTransportProfile.ProtoReflect.Descriptor instead.
 func (*VoiceTransportProfile) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{7}
+	return file_proto_aether_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *VoiceTransportProfile) GetTransport() string {
@@ -2853,7 +3119,7 @@ type VoiceReconnectPolicy struct {
 
 func (x *VoiceReconnectPolicy) Reset() {
 	*x = VoiceReconnectPolicy{}
-	mi := &file_proto_aether_proto_msgTypes[8]
+	mi := &file_proto_aether_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2865,7 +3131,7 @@ func (x *VoiceReconnectPolicy) String() string {
 func (*VoiceReconnectPolicy) ProtoMessage() {}
 
 func (x *VoiceReconnectPolicy) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[8]
+	mi := &file_proto_aether_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2878,7 +3144,7 @@ func (x *VoiceReconnectPolicy) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VoiceReconnectPolicy.ProtoReflect.Descriptor instead.
 func (*VoiceReconnectPolicy) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{8}
+	return file_proto_aether_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *VoiceReconnectPolicy) GetMaxAttempts() uint32 {
@@ -2922,7 +3188,7 @@ type VoiceLifecycleHook struct {
 
 func (x *VoiceLifecycleHook) Reset() {
 	*x = VoiceLifecycleHook{}
-	mi := &file_proto_aether_proto_msgTypes[9]
+	mi := &file_proto_aether_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2934,7 +3200,7 @@ func (x *VoiceLifecycleHook) String() string {
 func (*VoiceLifecycleHook) ProtoMessage() {}
 
 func (x *VoiceLifecycleHook) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[9]
+	mi := &file_proto_aether_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2947,7 +3213,7 @@ func (x *VoiceLifecycleHook) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VoiceLifecycleHook.ProtoReflect.Descriptor instead.
 func (*VoiceLifecycleHook) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{9}
+	return file_proto_aether_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *VoiceLifecycleHook) GetState() VoiceLifecycleState {
@@ -2994,7 +3260,7 @@ type VoicePipelineBaseline struct {
 
 func (x *VoicePipelineBaseline) Reset() {
 	*x = VoicePipelineBaseline{}
-	mi := &file_proto_aether_proto_msgTypes[10]
+	mi := &file_proto_aether_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3006,7 +3272,7 @@ func (x *VoicePipelineBaseline) String() string {
 func (*VoicePipelineBaseline) ProtoMessage() {}
 
 func (x *VoicePipelineBaseline) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[10]
+	mi := &file_proto_aether_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3019,7 +3285,7 @@ func (x *VoicePipelineBaseline) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VoicePipelineBaseline.ProtoReflect.Descriptor instead.
 func (*VoicePipelineBaseline) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{10}
+	return file_proto_aether_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *VoicePipelineBaseline) GetSessionId() string {
@@ -3080,7 +3346,7 @@ type VoiceSignalSessionRef struct {
 
 func (x *VoiceSignalSessionRef) Reset() {
 	*x = VoiceSignalSessionRef{}
-	mi := &file_proto_aether_proto_msgTypes[11]
+	mi := &file_proto_aether_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3092,7 +3358,7 @@ func (x *VoiceSignalSessionRef) String() string {
 func (*VoiceSignalSessionRef) ProtoMessage() {}
 
 func (x *VoiceSignalSessionRef) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[11]
+	mi := &file_proto_aether_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3105,7 +3371,7 @@ func (x *VoiceSignalSessionRef) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VoiceSignalSessionRef.ProtoReflect.Descriptor instead.
 func (*VoiceSignalSessionRef) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{11}
+	return file_proto_aether_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *VoiceSignalSessionRef) GetSignalSessionId() string {
@@ -3166,7 +3432,7 @@ type VoiceSignalRetryPolicy struct {
 
 func (x *VoiceSignalRetryPolicy) Reset() {
 	*x = VoiceSignalRetryPolicy{}
-	mi := &file_proto_aether_proto_msgTypes[12]
+	mi := &file_proto_aether_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3178,7 +3444,7 @@ func (x *VoiceSignalRetryPolicy) String() string {
 func (*VoiceSignalRetryPolicy) ProtoMessage() {}
 
 func (x *VoiceSignalRetryPolicy) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[12]
+	mi := &file_proto_aether_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3191,7 +3457,7 @@ func (x *VoiceSignalRetryPolicy) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VoiceSignalRetryPolicy.ProtoReflect.Descriptor instead.
 func (*VoiceSignalRetryPolicy) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{12}
+	return file_proto_aether_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *VoiceSignalRetryPolicy) GetMaxOfferAttempts() uint32 {
@@ -3255,7 +3521,7 @@ type VoiceSignalFrame struct {
 
 func (x *VoiceSignalFrame) Reset() {
 	*x = VoiceSignalFrame{}
-	mi := &file_proto_aether_proto_msgTypes[13]
+	mi := &file_proto_aether_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3267,7 +3533,7 @@ func (x *VoiceSignalFrame) String() string {
 func (*VoiceSignalFrame) ProtoMessage() {}
 
 func (x *VoiceSignalFrame) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[13]
+	mi := &file_proto_aether_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3280,7 +3546,7 @@ func (x *VoiceSignalFrame) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VoiceSignalFrame.ProtoReflect.Descriptor instead.
 func (*VoiceSignalFrame) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{13}
+	return file_proto_aether_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *VoiceSignalFrame) GetSignalId() string {
@@ -3356,7 +3622,7 @@ type VoiceSignalSessionState struct {
 
 func (x *VoiceSignalSessionState) Reset() {
 	*x = VoiceSignalSessionState{}
-	mi := &file_proto_aether_proto_msgTypes[14]
+	mi := &file_proto_aether_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3368,7 +3634,7 @@ func (x *VoiceSignalSessionState) String() string {
 func (*VoiceSignalSessionState) ProtoMessage() {}
 
 func (x *VoiceSignalSessionState) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[14]
+	mi := &file_proto_aether_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3381,7 +3647,7 @@ func (x *VoiceSignalSessionState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VoiceSignalSessionState.ProtoReflect.Descriptor instead.
 func (*VoiceSignalSessionState) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{14}
+	return file_proto_aether_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *VoiceSignalSessionState) GetSessionRef() *VoiceSignalSessionRef {
@@ -3450,7 +3716,7 @@ type SignedEnvelope struct {
 
 func (x *SignedEnvelope) Reset() {
 	*x = SignedEnvelope{}
-	mi := &file_proto_aether_proto_msgTypes[15]
+	mi := &file_proto_aether_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3462,7 +3728,7 @@ func (x *SignedEnvelope) String() string {
 func (*SignedEnvelope) ProtoMessage() {}
 
 func (x *SignedEnvelope) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[15]
+	mi := &file_proto_aether_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3475,7 +3741,7 @@ func (x *SignedEnvelope) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignedEnvelope.ProtoReflect.Descriptor instead.
 func (*SignedEnvelope) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{15}
+	return file_proto_aether_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *SignedEnvelope) GetEnvelopeId() string {
@@ -3545,7 +3811,7 @@ type VerificationError struct {
 
 func (x *VerificationError) Reset() {
 	*x = VerificationError{}
-	mi := &file_proto_aether_proto_msgTypes[16]
+	mi := &file_proto_aether_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3557,7 +3823,7 @@ func (x *VerificationError) String() string {
 func (*VerificationError) ProtoMessage() {}
 
 func (x *VerificationError) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[16]
+	mi := &file_proto_aether_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3570,7 +3836,7 @@ func (x *VerificationError) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VerificationError.ProtoReflect.Descriptor instead.
 func (*VerificationError) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{16}
+	return file_proto_aether_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *VerificationError) GetCode() EnvelopeVerificationError {
@@ -3600,7 +3866,7 @@ type EnvelopeVerification struct {
 
 func (x *EnvelopeVerification) Reset() {
 	*x = EnvelopeVerification{}
-	mi := &file_proto_aether_proto_msgTypes[17]
+	mi := &file_proto_aether_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3612,7 +3878,7 @@ func (x *EnvelopeVerification) String() string {
 func (*EnvelopeVerification) ProtoMessage() {}
 
 func (x *EnvelopeVerification) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[17]
+	mi := &file_proto_aether_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3625,7 +3891,7 @@ func (x *EnvelopeVerification) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EnvelopeVerification.ProtoReflect.Descriptor instead.
 func (*EnvelopeVerification) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{17}
+	return file_proto_aether_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *EnvelopeVerification) GetEnvelope() *SignedEnvelope {
@@ -3666,7 +3932,7 @@ type AetherPlaceholder struct {
 
 func (x *AetherPlaceholder) Reset() {
 	*x = AetherPlaceholder{}
-	mi := &file_proto_aether_proto_msgTypes[18]
+	mi := &file_proto_aether_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3678,7 +3944,7 @@ func (x *AetherPlaceholder) String() string {
 func (*AetherPlaceholder) ProtoMessage() {}
 
 func (x *AetherPlaceholder) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[18]
+	mi := &file_proto_aether_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3691,7 +3957,7 @@ func (x *AetherPlaceholder) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AetherPlaceholder.ProtoReflect.Descriptor instead.
 func (*AetherPlaceholder) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{18}
+	return file_proto_aether_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *AetherPlaceholder) GetPlaceholderMessage() string {
@@ -3717,7 +3983,7 @@ type ProtocolMetadata struct {
 
 func (x *ProtocolMetadata) Reset() {
 	*x = ProtocolMetadata{}
-	mi := &file_proto_aether_proto_msgTypes[19]
+	mi := &file_proto_aether_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3729,7 +3995,7 @@ func (x *ProtocolMetadata) String() string {
 func (*ProtocolMetadata) ProtoMessage() {}
 
 func (x *ProtocolMetadata) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[19]
+	mi := &file_proto_aether_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3742,7 +4008,7 @@ func (x *ProtocolMetadata) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ProtocolMetadata.ProtoReflect.Descriptor instead.
 func (*ProtocolMetadata) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{19}
+	return file_proto_aether_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *ProtocolMetadata) GetProtocolId() string {
@@ -3809,7 +4075,7 @@ type DmPrekeyRecord struct {
 
 func (x *DmPrekeyRecord) Reset() {
 	*x = DmPrekeyRecord{}
-	mi := &file_proto_aether_proto_msgTypes[20]
+	mi := &file_proto_aether_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3821,7 +4087,7 @@ func (x *DmPrekeyRecord) String() string {
 func (*DmPrekeyRecord) ProtoMessage() {}
 
 func (x *DmPrekeyRecord) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[20]
+	mi := &file_proto_aether_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3834,7 +4100,7 @@ func (x *DmPrekeyRecord) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DmPrekeyRecord.ProtoReflect.Descriptor instead.
 func (*DmPrekeyRecord) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{20}
+	return file_proto_aether_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *DmPrekeyRecord) GetIdentityId() string {
@@ -3898,7 +4164,7 @@ type DmMessageEnvelope struct {
 
 func (x *DmMessageEnvelope) Reset() {
 	*x = DmMessageEnvelope{}
-	mi := &file_proto_aether_proto_msgTypes[21]
+	mi := &file_proto_aether_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3910,7 +4176,7 @@ func (x *DmMessageEnvelope) String() string {
 func (*DmMessageEnvelope) ProtoMessage() {}
 
 func (x *DmMessageEnvelope) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[21]
+	mi := &file_proto_aether_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3923,7 +4189,7 @@ func (x *DmMessageEnvelope) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DmMessageEnvelope.ProtoReflect.Descriptor instead.
 func (*DmMessageEnvelope) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{21}
+	return file_proto_aether_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *DmMessageEnvelope) GetMessageId() string {
@@ -4013,7 +4279,7 @@ type DmQueuedMessage struct {
 
 func (x *DmQueuedMessage) Reset() {
 	*x = DmQueuedMessage{}
-	mi := &file_proto_aether_proto_msgTypes[22]
+	mi := &file_proto_aether_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4025,7 +4291,7 @@ func (x *DmQueuedMessage) String() string {
 func (*DmQueuedMessage) ProtoMessage() {}
 
 func (x *DmQueuedMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[22]
+	mi := &file_proto_aether_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4038,7 +4304,7 @@ func (x *DmQueuedMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DmQueuedMessage.ProtoReflect.Descriptor instead.
 func (*DmQueuedMessage) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{22}
+	return file_proto_aether_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *DmQueuedMessage) GetMessageId() string {
@@ -4110,7 +4376,7 @@ type DmTransportDecision struct {
 
 func (x *DmTransportDecision) Reset() {
 	*x = DmTransportDecision{}
-	mi := &file_proto_aether_proto_msgTypes[23]
+	mi := &file_proto_aether_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4122,7 +4388,7 @@ func (x *DmTransportDecision) String() string {
 func (*DmTransportDecision) ProtoMessage() {}
 
 func (x *DmTransportDecision) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[23]
+	mi := &file_proto_aether_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4135,7 +4401,7 @@ func (x *DmTransportDecision) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DmTransportDecision.ProtoReflect.Descriptor instead.
 func (*DmTransportDecision) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{23}
+	return file_proto_aether_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *DmTransportDecision) GetPath() DmDeliveryPath {
@@ -4182,7 +4448,7 @@ type DmDirectSessionLifecycle struct {
 
 func (x *DmDirectSessionLifecycle) Reset() {
 	*x = DmDirectSessionLifecycle{}
-	mi := &file_proto_aether_proto_msgTypes[24]
+	mi := &file_proto_aether_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4194,7 +4460,7 @@ func (x *DmDirectSessionLifecycle) String() string {
 func (*DmDirectSessionLifecycle) ProtoMessage() {}
 
 func (x *DmDirectSessionLifecycle) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[24]
+	mi := &file_proto_aether_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4207,7 +4473,7 @@ func (x *DmDirectSessionLifecycle) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DmDirectSessionLifecycle.ProtoReflect.Descriptor instead.
 func (*DmDirectSessionLifecycle) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{24}
+	return file_proto_aether_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *DmDirectSessionLifecycle) GetSessionId() string {
@@ -4277,7 +4543,7 @@ type DmDeliveryReceipt struct {
 
 func (x *DmDeliveryReceipt) Reset() {
 	*x = DmDeliveryReceipt{}
-	mi := &file_proto_aether_proto_msgTypes[25]
+	mi := &file_proto_aether_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4289,7 +4555,7 @@ func (x *DmDeliveryReceipt) String() string {
 func (*DmDeliveryReceipt) ProtoMessage() {}
 
 func (x *DmDeliveryReceipt) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[25]
+	mi := &file_proto_aether_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4302,7 +4568,7 @@ func (x *DmDeliveryReceipt) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DmDeliveryReceipt.ProtoReflect.Descriptor instead.
 func (*DmDeliveryReceipt) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{25}
+	return file_proto_aether_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *DmDeliveryReceipt) GetMessageId() string {
@@ -4380,7 +4646,7 @@ type GroupDmMemberCap struct {
 
 func (x *GroupDmMemberCap) Reset() {
 	*x = GroupDmMemberCap{}
-	mi := &file_proto_aether_proto_msgTypes[26]
+	mi := &file_proto_aether_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4392,7 +4658,7 @@ func (x *GroupDmMemberCap) String() string {
 func (*GroupDmMemberCap) ProtoMessage() {}
 
 func (x *GroupDmMemberCap) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[26]
+	mi := &file_proto_aether_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4405,7 +4671,7 @@ func (x *GroupDmMemberCap) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDmMemberCap.ProtoReflect.Descriptor instead.
 func (*GroupDmMemberCap) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{26}
+	return file_proto_aether_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *GroupDmMemberCap) GetAllowed() bool {
@@ -4446,7 +4712,7 @@ type GroupDmMembershipEvent struct {
 
 func (x *GroupDmMembershipEvent) Reset() {
 	*x = GroupDmMembershipEvent{}
-	mi := &file_proto_aether_proto_msgTypes[27]
+	mi := &file_proto_aether_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4458,7 +4724,7 @@ func (x *GroupDmMembershipEvent) String() string {
 func (*GroupDmMembershipEvent) ProtoMessage() {}
 
 func (x *GroupDmMembershipEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[27]
+	mi := &file_proto_aether_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4471,7 +4737,7 @@ func (x *GroupDmMembershipEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDmMembershipEvent.ProtoReflect.Descriptor instead.
 func (*GroupDmMembershipEvent) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{27}
+	return file_proto_aether_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *GroupDmMembershipEvent) GetEventId() string {
@@ -4550,7 +4816,7 @@ type GroupDmSenderKeyEnvelope struct {
 
 func (x *GroupDmSenderKeyEnvelope) Reset() {
 	*x = GroupDmSenderKeyEnvelope{}
-	mi := &file_proto_aether_proto_msgTypes[28]
+	mi := &file_proto_aether_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4562,7 +4828,7 @@ func (x *GroupDmSenderKeyEnvelope) String() string {
 func (*GroupDmSenderKeyEnvelope) ProtoMessage() {}
 
 func (x *GroupDmSenderKeyEnvelope) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[28]
+	mi := &file_proto_aether_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4575,7 +4841,7 @@ func (x *GroupDmSenderKeyEnvelope) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDmSenderKeyEnvelope.ProtoReflect.Descriptor instead.
 func (*GroupDmSenderKeyEnvelope) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{28}
+	return file_proto_aether_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *GroupDmSenderKeyEnvelope) GetEnvelopeId() string {
@@ -4668,7 +4934,7 @@ type GroupDmKeyDistributionDecision struct {
 
 func (x *GroupDmKeyDistributionDecision) Reset() {
 	*x = GroupDmKeyDistributionDecision{}
-	mi := &file_proto_aether_proto_msgTypes[29]
+	mi := &file_proto_aether_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4680,7 +4946,7 @@ func (x *GroupDmKeyDistributionDecision) String() string {
 func (*GroupDmKeyDistributionDecision) ProtoMessage() {}
 
 func (x *GroupDmKeyDistributionDecision) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[29]
+	mi := &file_proto_aether_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4693,7 +4959,7 @@ func (x *GroupDmKeyDistributionDecision) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDmKeyDistributionDecision.ProtoReflect.Descriptor instead.
 func (*GroupDmKeyDistributionDecision) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{29}
+	return file_proto_aether_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *GroupDmKeyDistributionDecision) GetAccepted() bool {
@@ -4740,7 +5006,7 @@ type GroupDmRekeyDecision struct {
 
 func (x *GroupDmRekeyDecision) Reset() {
 	*x = GroupDmRekeyDecision{}
-	mi := &file_proto_aether_proto_msgTypes[30]
+	mi := &file_proto_aether_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4752,7 +5018,7 @@ func (x *GroupDmRekeyDecision) String() string {
 func (*GroupDmRekeyDecision) ProtoMessage() {}
 
 func (x *GroupDmRekeyDecision) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[30]
+	mi := &file_proto_aether_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4765,7 +5031,7 @@ func (x *GroupDmRekeyDecision) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDmRekeyDecision.ProtoReflect.Descriptor instead.
 func (*GroupDmRekeyDecision) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{30}
+	return file_proto_aether_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *GroupDmRekeyDecision) GetTrigger() GroupDmRekeyTrigger {
@@ -4829,7 +5095,7 @@ type GroupDmTransportDecision struct {
 
 func (x *GroupDmTransportDecision) Reset() {
 	*x = GroupDmTransportDecision{}
-	mi := &file_proto_aether_proto_msgTypes[31]
+	mi := &file_proto_aether_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4841,7 +5107,7 @@ func (x *GroupDmTransportDecision) String() string {
 func (*GroupDmTransportDecision) ProtoMessage() {}
 
 func (x *GroupDmTransportDecision) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[31]
+	mi := &file_proto_aether_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4854,7 +5120,7 @@ func (x *GroupDmTransportDecision) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDmTransportDecision.ProtoReflect.Descriptor instead.
 func (*GroupDmTransportDecision) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{31}
+	return file_proto_aether_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *GroupDmTransportDecision) GetPath() GroupDmTransportPath {
@@ -4895,7 +5161,7 @@ type GroupDmHistorySyncDecision struct {
 
 func (x *GroupDmHistorySyncDecision) Reset() {
 	*x = GroupDmHistorySyncDecision{}
-	mi := &file_proto_aether_proto_msgTypes[32]
+	mi := &file_proto_aether_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4907,7 +5173,7 @@ func (x *GroupDmHistorySyncDecision) String() string {
 func (*GroupDmHistorySyncDecision) ProtoMessage() {}
 
 func (x *GroupDmHistorySyncDecision) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[32]
+	mi := &file_proto_aether_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4920,7 +5186,7 @@ func (x *GroupDmHistorySyncDecision) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDmHistorySyncDecision.ProtoReflect.Descriptor instead.
 func (*GroupDmHistorySyncDecision) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{32}
+	return file_proto_aether_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *GroupDmHistorySyncDecision) GetJoinSequence() uint64 {
@@ -4994,7 +5260,7 @@ type GroupDmConvertPlan struct {
 
 func (x *GroupDmConvertPlan) Reset() {
 	*x = GroupDmConvertPlan{}
-	mi := &file_proto_aether_proto_msgTypes[33]
+	mi := &file_proto_aether_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5006,7 +5272,7 @@ func (x *GroupDmConvertPlan) String() string {
 func (*GroupDmConvertPlan) ProtoMessage() {}
 
 func (x *GroupDmConvertPlan) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[33]
+	mi := &file_proto_aether_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5019,7 +5285,7 @@ func (x *GroupDmConvertPlan) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDmConvertPlan.ProtoReflect.Descriptor instead.
 func (*GroupDmConvertPlan) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{33}
+	return file_proto_aether_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *GroupDmConvertPlan) GetCreateServer() bool {
@@ -5083,7 +5349,7 @@ type GroupDmGrowthDecision struct {
 
 func (x *GroupDmGrowthDecision) Reset() {
 	*x = GroupDmGrowthDecision{}
-	mi := &file_proto_aether_proto_msgTypes[34]
+	mi := &file_proto_aether_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5095,7 +5361,7 @@ func (x *GroupDmGrowthDecision) String() string {
 func (*GroupDmGrowthDecision) ProtoMessage() {}
 
 func (x *GroupDmGrowthDecision) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[34]
+	mi := &file_proto_aether_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5108,7 +5374,7 @@ func (x *GroupDmGrowthDecision) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GroupDmGrowthDecision.ProtoReflect.Descriptor instead.
 func (*GroupDmGrowthDecision) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{34}
+	return file_proto_aether_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *GroupDmGrowthDecision) GetMemberCap() uint32 {
@@ -5203,7 +5469,7 @@ type FriendRequest struct {
 
 func (x *FriendRequest) Reset() {
 	*x = FriendRequest{}
-	mi := &file_proto_aether_proto_msgTypes[35]
+	mi := &file_proto_aether_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5215,7 +5481,7 @@ func (x *FriendRequest) String() string {
 func (*FriendRequest) ProtoMessage() {}
 
 func (x *FriendRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[35]
+	mi := &file_proto_aether_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5228,7 +5494,7 @@ func (x *FriendRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FriendRequest.ProtoReflect.Descriptor instead.
 func (*FriendRequest) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{35}
+	return file_proto_aether_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *FriendRequest) GetFromId() string {
@@ -5336,7 +5602,7 @@ type FriendIdentityShare struct {
 
 func (x *FriendIdentityShare) Reset() {
 	*x = FriendIdentityShare{}
-	mi := &file_proto_aether_proto_msgTypes[36]
+	mi := &file_proto_aether_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5348,7 +5614,7 @@ func (x *FriendIdentityShare) String() string {
 func (*FriendIdentityShare) ProtoMessage() {}
 
 func (x *FriendIdentityShare) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[36]
+	mi := &file_proto_aether_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5361,7 +5627,7 @@ func (x *FriendIdentityShare) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FriendIdentityShare.ProtoReflect.Descriptor instead.
 func (*FriendIdentityShare) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{36}
+	return file_proto_aether_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *FriendIdentityShare) GetFormatVersion() string {
@@ -5414,7 +5680,7 @@ type FriendInvitePayload struct {
 
 func (x *FriendInvitePayload) Reset() {
 	*x = FriendInvitePayload{}
-	mi := &file_proto_aether_proto_msgTypes[37]
+	mi := &file_proto_aether_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5426,7 +5692,7 @@ func (x *FriendInvitePayload) String() string {
 func (*FriendInvitePayload) ProtoMessage() {}
 
 func (x *FriendInvitePayload) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[37]
+	mi := &file_proto_aether_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5439,7 +5705,7 @@ func (x *FriendInvitePayload) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FriendInvitePayload.ProtoReflect.Descriptor instead.
 func (*FriendInvitePayload) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{37}
+	return file_proto_aether_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *FriendInvitePayload) GetIdentityShare() *FriendIdentityShare {
@@ -5496,7 +5762,7 @@ type FriendConcurrentResolution struct {
 
 func (x *FriendConcurrentResolution) Reset() {
 	*x = FriendConcurrentResolution{}
-	mi := &file_proto_aether_proto_msgTypes[38]
+	mi := &file_proto_aether_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5508,7 +5774,7 @@ func (x *FriendConcurrentResolution) String() string {
 func (*FriendConcurrentResolution) ProtoMessage() {}
 
 func (x *FriendConcurrentResolution) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[38]
+	mi := &file_proto_aether_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5521,7 +5787,7 @@ func (x *FriendConcurrentResolution) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FriendConcurrentResolution.ProtoReflect.Descriptor instead.
 func (*FriendConcurrentResolution) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{38}
+	return file_proto_aether_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *FriendConcurrentResolution) GetState() FriendRequestState {
@@ -5563,7 +5829,7 @@ type PresenceStateEntry struct {
 
 func (x *PresenceStateEntry) Reset() {
 	*x = PresenceStateEntry{}
-	mi := &file_proto_aether_proto_msgTypes[39]
+	mi := &file_proto_aether_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5575,7 +5841,7 @@ func (x *PresenceStateEntry) String() string {
 func (*PresenceStateEntry) ProtoMessage() {}
 
 func (x *PresenceStateEntry) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[39]
+	mi := &file_proto_aether_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5588,7 +5854,7 @@ func (x *PresenceStateEntry) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PresenceStateEntry.ProtoReflect.Descriptor instead.
 func (*PresenceStateEntry) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{39}
+	return file_proto_aether_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *PresenceStateEntry) GetIdentityId() string {
@@ -5672,7 +5938,7 @@ type PresenceEventRecord struct {
 
 func (x *PresenceEventRecord) Reset() {
 	*x = PresenceEventRecord{}
-	mi := &file_proto_aether_proto_msgTypes[40]
+	mi := &file_proto_aether_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5684,7 +5950,7 @@ func (x *PresenceEventRecord) String() string {
 func (*PresenceEventRecord) ProtoMessage() {}
 
 func (x *PresenceEventRecord) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[40]
+	mi := &file_proto_aether_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5697,7 +5963,7 @@ func (x *PresenceEventRecord) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PresenceEventRecord.ProtoReflect.Descriptor instead.
 func (*PresenceEventRecord) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{40}
+	return file_proto_aether_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *PresenceEventRecord) GetPreviousState() PresenceState {
@@ -5776,7 +6042,7 @@ type PresenceDisseminationPolicy struct {
 
 func (x *PresenceDisseminationPolicy) Reset() {
 	*x = PresenceDisseminationPolicy{}
-	mi := &file_proto_aether_proto_msgTypes[41]
+	mi := &file_proto_aether_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5788,7 +6054,7 @@ func (x *PresenceDisseminationPolicy) String() string {
 func (*PresenceDisseminationPolicy) ProtoMessage() {}
 
 func (x *PresenceDisseminationPolicy) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[41]
+	mi := &file_proto_aether_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5801,7 +6067,7 @@ func (x *PresenceDisseminationPolicy) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PresenceDisseminationPolicy.ProtoReflect.Descriptor instead.
 func (*PresenceDisseminationPolicy) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{41}
+	return file_proto_aether_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *PresenceDisseminationPolicy) GetDebounceSeconds() uint32 {
@@ -5849,7 +6115,7 @@ type NotificationEvent struct {
 
 func (x *NotificationEvent) Reset() {
 	*x = NotificationEvent{}
-	mi := &file_proto_aether_proto_msgTypes[42]
+	mi := &file_proto_aether_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5861,7 +6127,7 @@ func (x *NotificationEvent) String() string {
 func (*NotificationEvent) ProtoMessage() {}
 
 func (x *NotificationEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[42]
+	mi := &file_proto_aether_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5874,7 +6140,7 @@ func (x *NotificationEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NotificationEvent.ProtoReflect.Descriptor instead.
 func (*NotificationEvent) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{42}
+	return file_proto_aether_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *NotificationEvent) GetKind() NotificationKind {
@@ -5944,7 +6210,7 @@ type MentionToken struct {
 
 func (x *MentionToken) Reset() {
 	*x = MentionToken{}
-	mi := &file_proto_aether_proto_msgTypes[43]
+	mi := &file_proto_aether_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5956,7 +6222,7 @@ func (x *MentionToken) String() string {
 func (*MentionToken) ProtoMessage() {}
 
 func (x *MentionToken) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[43]
+	mi := &file_proto_aether_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5969,7 +6235,7 @@ func (x *MentionToken) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MentionToken.ProtoReflect.Descriptor instead.
 func (*MentionToken) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{43}
+	return file_proto_aether_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *MentionToken) GetType() MentionType {
@@ -5997,7 +6263,7 @@ type PolicyDecision struct {
 
 func (x *PolicyDecision) Reset() {
 	*x = PolicyDecision{}
-	mi := &file_proto_aether_proto_msgTypes[44]
+	mi := &file_proto_aether_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6009,7 +6275,7 @@ func (x *PolicyDecision) String() string {
 func (*PolicyDecision) ProtoMessage() {}
 
 func (x *PolicyDecision) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[44]
+	mi := &file_proto_aether_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6022,7 +6288,7 @@ func (x *PolicyDecision) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PolicyDecision.ProtoReflect.Descriptor instead.
 func (*PolicyDecision) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{44}
+	return file_proto_aether_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *PolicyDecision) GetAllowed() bool {
@@ -6050,7 +6316,7 @@ type SlowModeActorState struct {
 
 func (x *SlowModeActorState) Reset() {
 	*x = SlowModeActorState{}
-	mi := &file_proto_aether_proto_msgTypes[45]
+	mi := &file_proto_aether_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6062,7 +6328,7 @@ func (x *SlowModeActorState) String() string {
 func (*SlowModeActorState) ProtoMessage() {}
 
 func (x *SlowModeActorState) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[45]
+	mi := &file_proto_aether_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6075,7 +6341,7 @@ func (x *SlowModeActorState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SlowModeActorState.ProtoReflect.Descriptor instead.
 func (*SlowModeActorState) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{45}
+	return file_proto_aether_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *SlowModeActorState) GetActorId() string {
@@ -6110,7 +6376,7 @@ type SlowModeDecision struct {
 
 func (x *SlowModeDecision) Reset() {
 	*x = SlowModeDecision{}
-	mi := &file_proto_aether_proto_msgTypes[46]
+	mi := &file_proto_aether_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6122,7 +6388,7 @@ func (x *SlowModeDecision) String() string {
 func (*SlowModeDecision) ProtoMessage() {}
 
 func (x *SlowModeDecision) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[46]
+	mi := &file_proto_aether_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6135,7 +6401,7 @@ func (x *SlowModeDecision) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SlowModeDecision.ProtoReflect.Descriptor instead.
 func (*SlowModeDecision) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{46}
+	return file_proto_aether_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *SlowModeDecision) GetAllowed() bool {
@@ -6222,7 +6488,7 @@ type ModerationEvent struct {
 
 func (x *ModerationEvent) Reset() {
 	*x = ModerationEvent{}
-	mi := &file_proto_aether_proto_msgTypes[47]
+	mi := &file_proto_aether_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6234,7 +6500,7 @@ func (x *ModerationEvent) String() string {
 func (*ModerationEvent) ProtoMessage() {}
 
 func (x *ModerationEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[47]
+	mi := &file_proto_aether_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6247,7 +6513,7 @@ func (x *ModerationEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ModerationEvent.ProtoReflect.Descriptor instead.
 func (*ModerationEvent) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{47}
+	return file_proto_aether_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *ModerationEvent) GetActorId() string {
@@ -6347,7 +6613,7 @@ type RoleState struct {
 
 func (x *RoleState) Reset() {
 	*x = RoleState{}
-	mi := &file_proto_aether_proto_msgTypes[48]
+	mi := &file_proto_aether_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6359,7 +6625,7 @@ func (x *RoleState) String() string {
 func (*RoleState) ProtoMessage() {}
 
 func (x *RoleState) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[48]
+	mi := &file_proto_aether_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6372,7 +6638,7 @@ func (x *RoleState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RoleState.ProtoReflect.Descriptor instead.
 func (*RoleState) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{48}
+	return file_proto_aether_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *RoleState) GetIdentityId() string {
@@ -6420,7 +6686,7 @@ type GovernanceMetadata struct {
 
 func (x *GovernanceMetadata) Reset() {
 	*x = GovernanceMetadata{}
-	mi := &file_proto_aether_proto_msgTypes[49]
+	mi := &file_proto_aether_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -6432,7 +6698,7 @@ func (x *GovernanceMetadata) String() string {
 func (*GovernanceMetadata) ProtoMessage() {}
 
 func (x *GovernanceMetadata) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_aether_proto_msgTypes[49]
+	mi := &file_proto_aether_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6445,7 +6711,7 @@ func (x *GovernanceMetadata) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GovernanceMetadata.ProtoReflect.Descriptor instead.
 func (*GovernanceMetadata) Descriptor() ([]byte, []int) {
-	return file_proto_aether_proto_rawDescGZIP(), []int{49}
+	return file_proto_aether_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *GovernanceMetadata) GetProtocolId() string {
@@ -6521,7 +6787,25 @@ const file_proto_aether_proto_rawDesc = "" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12,\n" +
 	"\x12signing_public_key\x18\x03 \x01(\fR\x10signingPublicKey\x12+\n" +
 	"\x11profile_signature\x18\x04 \x01(\fR\x10profileSignature\x12N\n" +
-	"\x17advertised_capabilities\x18\x05 \x01(\v2\x15.aether.CapabilitySetR\x16advertisedCapabilitiesJ\x05\bd\x10\xc8\x01\"\xdb\x01\n" +
+	"\x17advertised_capabilities\x18\x05 \x01(\v2\x15.aether.CapabilitySetR\x16advertisedCapabilitiesJ\x05\bd\x10\xc8\x01\"\xe5\x01\n" +
+	"\rIdentityState\x12\x1f\n" +
+	"\videntity_id\x18\x01 \x01(\tR\n" +
+	"identityId\x124\n" +
+	"\x16public_key_fingerprint\x18\x02 \x01(\tR\x14publicKeyFingerprint\x12&\n" +
+	"\x0fcreated_at_unix\x18\x03 \x01(\x04R\rcreatedAtUnix\x12)\n" +
+	"\x10metadata_version\x18\x04 \x01(\rR\x0fmetadataVersion\x12#\n" +
+	"\rbackup_status\x18\x05 \x01(\tR\fbackupStatusJ\x05\bd\x10\xc8\x01\"\xb1\x01\n" +
+	"\x0eBackupManifest\x12\x1b\n" +
+	"\tbackup_id\x18\x01 \x01(\tR\bbackupId\x12%\n" +
+	"\x0ebackup_version\x18\x02 \x01(\rR\rbackupVersion\x12&\n" +
+	"\x0fcreated_at_unix\x18\x03 \x01(\x04R\rcreatedAtUnix\x12,\n" +
+	"\x06reason\x18\x04 \x01(\x0e2\x14.aether.BackupReasonR\x06reasonJ\x05\bd\x10\xc8\x01\"\xe0\x01\n" +
+	"\x13BackupRestoreResult\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12B\n" +
+	"\x0fidentity_reason\x18\x02 \x01(\x0e2\x14.aether.PolicyReasonH\x00R\x0eidentityReason\x88\x01\x01\x12>\n" +
+	"\rbackup_reason\x18\x03 \x01(\x0e2\x14.aether.BackupReasonH\x01R\fbackupReason\x88\x01\x01B\x12\n" +
+	"\x10_identity_reasonB\x10\n" +
+	"\x0e_backup_reasonJ\x05\bd\x10\xc8\x01\"\xdb\x01\n" +
 	"\x0fMembershipState\x12/\n" +
 	"\x06member\x18\x01 \x01(\v2\x17.aether.IdentityProfileR\x06member\x12!\n" +
 	"\fchat_enabled\x18\x02 \x01(\bR\vchatEnabled\x12#\n" +
@@ -7189,7 +7473,14 @@ const file_proto_aether_proto_rawDesc = "" +
 	"\x12VerificationStatus\x12#\n" +
 	"\x1fVERIFICATION_STATUS_UNSPECIFIED\x10\x00\x12 \n" +
 	"\x1cVERIFICATION_STATUS_ACCEPTED\x10\x01\x12 \n" +
-	"\x1cVERIFICATION_STATUS_REJECTED\x10\x02\"\x05\bd\x10\xc7\x01B1Z/github.com/aether/code_aether/gen/go/aether;apbb\x06proto3"
+	"\x1cVERIFICATION_STATUS_REJECTED\x10\x02\"\x05\bd\x10\xc7\x01*\xd2\x01\n" +
+	"\fBackupReason\x12\x1d\n" +
+	"\x19BACKUP_REASON_UNSPECIFIED\x10\x00\x12\x1a\n" +
+	"\x16BACKUP_REASON_PASSWORD\x10\x01\x12\x19\n" +
+	"\x15BACKUP_REASON_CORRUPT\x10\x02\x12#\n" +
+	"\x1fBACKUP_REASON_IDENTITY_MISMATCH\x10\x03\x12$\n" +
+	" BACKUP_REASON_IDENTITY_DUPLICATE\x10\x04\x12\x1a\n" +
+	"\x16BACKUP_REASON_OUTDATED\x10\x05\"\x05\bd\x10\xc7\x01B1Z/github.com/aether/code_aether/gen/go/aether;apbb\x06proto3"
 
 var (
 	file_proto_aether_proto_rawDescOnce sync.Once
@@ -7203,8 +7494,8 @@ func file_proto_aether_proto_rawDescGZIP() []byte {
 	return file_proto_aether_proto_rawDescData
 }
 
-var file_proto_aether_proto_enumTypes = make([]protoimpl.EnumInfo, 37)
-var file_proto_aether_proto_msgTypes = make([]protoimpl.MessageInfo, 51)
+var file_proto_aether_proto_enumTypes = make([]protoimpl.EnumInfo, 38)
+var file_proto_aether_proto_msgTypes = make([]protoimpl.MessageInfo, 54)
 var file_proto_aether_proto_goTypes = []any{
 	(CapabilityFlag)(0),                    // 0: aether.CapabilityFlag
 	(PayloadType)(0),                       // 1: aether.PayloadType
@@ -7243,144 +7534,151 @@ var file_proto_aether_proto_goTypes = []any{
 	(ModerationAction)(0),                  // 34: aether.ModerationAction
 	(V02Role)(0),                           // 35: aether.V02Role
 	(VerificationStatus)(0),                // 36: aether.VerificationStatus
-	(*CapabilitySet)(nil),                  // 37: aether.CapabilitySet
-	(*IdentityProfile)(nil),                // 38: aether.IdentityProfile
-	(*MembershipState)(nil),                // 39: aether.MembershipState
-	(*ServerManifest)(nil),                 // 40: aether.ServerManifest
-	(*ChatMessage)(nil),                    // 41: aether.ChatMessage
-	(*VoiceState)(nil),                     // 42: aether.VoiceState
-	(*VoiceCodecProfile)(nil),              // 43: aether.VoiceCodecProfile
-	(*VoiceTransportProfile)(nil),          // 44: aether.VoiceTransportProfile
-	(*VoiceReconnectPolicy)(nil),           // 45: aether.VoiceReconnectPolicy
-	(*VoiceLifecycleHook)(nil),             // 46: aether.VoiceLifecycleHook
-	(*VoicePipelineBaseline)(nil),          // 47: aether.VoicePipelineBaseline
-	(*VoiceSignalSessionRef)(nil),          // 48: aether.VoiceSignalSessionRef
-	(*VoiceSignalRetryPolicy)(nil),         // 49: aether.VoiceSignalRetryPolicy
-	(*VoiceSignalFrame)(nil),               // 50: aether.VoiceSignalFrame
-	(*VoiceSignalSessionState)(nil),        // 51: aether.VoiceSignalSessionState
-	(*SignedEnvelope)(nil),                 // 52: aether.SignedEnvelope
-	(*VerificationError)(nil),              // 53: aether.VerificationError
-	(*EnvelopeVerification)(nil),           // 54: aether.EnvelopeVerification
-	(*AetherPlaceholder)(nil),              // 55: aether.AetherPlaceholder
-	(*ProtocolMetadata)(nil),               // 56: aether.ProtocolMetadata
-	(*DmPrekeyRecord)(nil),                 // 57: aether.DmPrekeyRecord
-	(*DmMessageEnvelope)(nil),              // 58: aether.DmMessageEnvelope
-	(*DmQueuedMessage)(nil),                // 59: aether.DmQueuedMessage
-	(*DmTransportDecision)(nil),            // 60: aether.DmTransportDecision
-	(*DmDirectSessionLifecycle)(nil),       // 61: aether.DmDirectSessionLifecycle
-	(*DmDeliveryReceipt)(nil),              // 62: aether.DmDeliveryReceipt
-	(*GroupDmMemberCap)(nil),               // 63: aether.GroupDmMemberCap
-	(*GroupDmMembershipEvent)(nil),         // 64: aether.GroupDmMembershipEvent
-	(*GroupDmSenderKeyEnvelope)(nil),       // 65: aether.GroupDmSenderKeyEnvelope
-	(*GroupDmKeyDistributionDecision)(nil), // 66: aether.GroupDmKeyDistributionDecision
-	(*GroupDmRekeyDecision)(nil),           // 67: aether.GroupDmRekeyDecision
-	(*GroupDmTransportDecision)(nil),       // 68: aether.GroupDmTransportDecision
-	(*GroupDmHistorySyncDecision)(nil),     // 69: aether.GroupDmHistorySyncDecision
-	(*GroupDmConvertPlan)(nil),             // 70: aether.GroupDmConvertPlan
-	(*GroupDmGrowthDecision)(nil),          // 71: aether.GroupDmGrowthDecision
-	(*FriendRequest)(nil),                  // 72: aether.FriendRequest
-	(*FriendIdentityShare)(nil),            // 73: aether.FriendIdentityShare
-	(*FriendInvitePayload)(nil),            // 74: aether.FriendInvitePayload
-	(*FriendConcurrentResolution)(nil),     // 75: aether.FriendConcurrentResolution
-	(*PresenceStateEntry)(nil),             // 76: aether.PresenceStateEntry
-	(*PresenceEventRecord)(nil),            // 77: aether.PresenceEventRecord
-	(*PresenceDisseminationPolicy)(nil),    // 78: aether.PresenceDisseminationPolicy
-	(*NotificationEvent)(nil),              // 79: aether.NotificationEvent
-	(*MentionToken)(nil),                   // 80: aether.MentionToken
-	(*PolicyDecision)(nil),                 // 81: aether.PolicyDecision
-	(*SlowModeActorState)(nil),             // 82: aether.SlowModeActorState
-	(*SlowModeDecision)(nil),               // 83: aether.SlowModeDecision
-	(*ModerationEvent)(nil),                // 84: aether.ModerationEvent
-	(*RoleState)(nil),                      // 85: aether.RoleState
-	(*GovernanceMetadata)(nil),             // 86: aether.GovernanceMetadata
-	nil,                                    // 87: aether.CapabilitySet.CustomClaimsEntry
+	(BackupReason)(0),                      // 37: aether.BackupReason
+	(*CapabilitySet)(nil),                  // 38: aether.CapabilitySet
+	(*IdentityProfile)(nil),                // 39: aether.IdentityProfile
+	(*IdentityState)(nil),                  // 40: aether.IdentityState
+	(*BackupManifest)(nil),                 // 41: aether.BackupManifest
+	(*BackupRestoreResult)(nil),            // 42: aether.BackupRestoreResult
+	(*MembershipState)(nil),                // 43: aether.MembershipState
+	(*ServerManifest)(nil),                 // 44: aether.ServerManifest
+	(*ChatMessage)(nil),                    // 45: aether.ChatMessage
+	(*VoiceState)(nil),                     // 46: aether.VoiceState
+	(*VoiceCodecProfile)(nil),              // 47: aether.VoiceCodecProfile
+	(*VoiceTransportProfile)(nil),          // 48: aether.VoiceTransportProfile
+	(*VoiceReconnectPolicy)(nil),           // 49: aether.VoiceReconnectPolicy
+	(*VoiceLifecycleHook)(nil),             // 50: aether.VoiceLifecycleHook
+	(*VoicePipelineBaseline)(nil),          // 51: aether.VoicePipelineBaseline
+	(*VoiceSignalSessionRef)(nil),          // 52: aether.VoiceSignalSessionRef
+	(*VoiceSignalRetryPolicy)(nil),         // 53: aether.VoiceSignalRetryPolicy
+	(*VoiceSignalFrame)(nil),               // 54: aether.VoiceSignalFrame
+	(*VoiceSignalSessionState)(nil),        // 55: aether.VoiceSignalSessionState
+	(*SignedEnvelope)(nil),                 // 56: aether.SignedEnvelope
+	(*VerificationError)(nil),              // 57: aether.VerificationError
+	(*EnvelopeVerification)(nil),           // 58: aether.EnvelopeVerification
+	(*AetherPlaceholder)(nil),              // 59: aether.AetherPlaceholder
+	(*ProtocolMetadata)(nil),               // 60: aether.ProtocolMetadata
+	(*DmPrekeyRecord)(nil),                 // 61: aether.DmPrekeyRecord
+	(*DmMessageEnvelope)(nil),              // 62: aether.DmMessageEnvelope
+	(*DmQueuedMessage)(nil),                // 63: aether.DmQueuedMessage
+	(*DmTransportDecision)(nil),            // 64: aether.DmTransportDecision
+	(*DmDirectSessionLifecycle)(nil),       // 65: aether.DmDirectSessionLifecycle
+	(*DmDeliveryReceipt)(nil),              // 66: aether.DmDeliveryReceipt
+	(*GroupDmMemberCap)(nil),               // 67: aether.GroupDmMemberCap
+	(*GroupDmMembershipEvent)(nil),         // 68: aether.GroupDmMembershipEvent
+	(*GroupDmSenderKeyEnvelope)(nil),       // 69: aether.GroupDmSenderKeyEnvelope
+	(*GroupDmKeyDistributionDecision)(nil), // 70: aether.GroupDmKeyDistributionDecision
+	(*GroupDmRekeyDecision)(nil),           // 71: aether.GroupDmRekeyDecision
+	(*GroupDmTransportDecision)(nil),       // 72: aether.GroupDmTransportDecision
+	(*GroupDmHistorySyncDecision)(nil),     // 73: aether.GroupDmHistorySyncDecision
+	(*GroupDmConvertPlan)(nil),             // 74: aether.GroupDmConvertPlan
+	(*GroupDmGrowthDecision)(nil),          // 75: aether.GroupDmGrowthDecision
+	(*FriendRequest)(nil),                  // 76: aether.FriendRequest
+	(*FriendIdentityShare)(nil),            // 77: aether.FriendIdentityShare
+	(*FriendInvitePayload)(nil),            // 78: aether.FriendInvitePayload
+	(*FriendConcurrentResolution)(nil),     // 79: aether.FriendConcurrentResolution
+	(*PresenceStateEntry)(nil),             // 80: aether.PresenceStateEntry
+	(*PresenceEventRecord)(nil),            // 81: aether.PresenceEventRecord
+	(*PresenceDisseminationPolicy)(nil),    // 82: aether.PresenceDisseminationPolicy
+	(*NotificationEvent)(nil),              // 83: aether.NotificationEvent
+	(*MentionToken)(nil),                   // 84: aether.MentionToken
+	(*PolicyDecision)(nil),                 // 85: aether.PolicyDecision
+	(*SlowModeActorState)(nil),             // 86: aether.SlowModeActorState
+	(*SlowModeDecision)(nil),               // 87: aether.SlowModeDecision
+	(*ModerationEvent)(nil),                // 88: aether.ModerationEvent
+	(*RoleState)(nil),                      // 89: aether.RoleState
+	(*GovernanceMetadata)(nil),             // 90: aether.GovernanceMetadata
+	nil,                                    // 91: aether.CapabilitySet.CustomClaimsEntry
 }
 var file_proto_aether_proto_depIdxs = []int32{
 	0,  // 0: aether.CapabilitySet.flags:type_name -> aether.CapabilityFlag
-	87, // 1: aether.CapabilitySet.custom_claims:type_name -> aether.CapabilitySet.CustomClaimsEntry
-	37, // 2: aether.IdentityProfile.advertised_capabilities:type_name -> aether.CapabilitySet
-	38, // 3: aether.MembershipState.member:type_name -> aether.IdentityProfile
-	37, // 4: aether.MembershipState.granted_capabilities:type_name -> aether.CapabilitySet
-	38, // 5: aether.ServerManifest.owner:type_name -> aether.IdentityProfile
-	39, // 6: aether.ServerManifest.members:type_name -> aether.MembershipState
-	37, // 7: aether.ServerManifest.server_capabilities:type_name -> aether.CapabilitySet
-	38, // 8: aether.ChatMessage.sender:type_name -> aether.IdentityProfile
-	38, // 9: aether.VoiceState.participant:type_name -> aether.IdentityProfile
-	2,  // 10: aether.VoiceCodecProfile.codec:type_name -> aether.VoiceCodec
-	4,  // 11: aether.VoiceReconnectPolicy.retryable_classes:type_name -> aether.VoiceReconnectClass
-	3,  // 12: aether.VoiceLifecycleHook.state:type_name -> aether.VoiceLifecycleState
-	43, // 13: aether.VoicePipelineBaseline.codec_profile:type_name -> aether.VoiceCodecProfile
-	44, // 14: aether.VoicePipelineBaseline.transport_profile:type_name -> aether.VoiceTransportProfile
-	45, // 15: aether.VoicePipelineBaseline.reconnect_policy:type_name -> aether.VoiceReconnectPolicy
-	46, // 16: aether.VoicePipelineBaseline.lifecycle_hooks:type_name -> aether.VoiceLifecycleHook
-	48, // 17: aether.VoiceSignalFrame.session_ref:type_name -> aether.VoiceSignalSessionRef
-	5,  // 18: aether.VoiceSignalFrame.signal_type:type_name -> aether.VoiceSignalType
-	49, // 19: aether.VoiceSignalFrame.retry_policy:type_name -> aether.VoiceSignalRetryPolicy
-	48, // 20: aether.VoiceSignalSessionState.session_ref:type_name -> aether.VoiceSignalSessionRef
-	6,  // 21: aether.VoiceSignalSessionState.status:type_name -> aether.VoiceSignalSessionStatus
-	1,  // 22: aether.SignedEnvelope.payload_type:type_name -> aether.PayloadType
-	38, // 23: aether.SignedEnvelope.signer:type_name -> aether.IdentityProfile
-	7,  // 24: aether.SignedEnvelope.signature_algorithm:type_name -> aether.SignatureAlgorithm
-	8,  // 25: aether.VerificationError.code:type_name -> aether.EnvelopeVerificationError
-	52, // 26: aether.EnvelopeVerification.envelope:type_name -> aether.SignedEnvelope
-	36, // 27: aether.EnvelopeVerification.status:type_name -> aether.VerificationStatus
-	53, // 28: aether.EnvelopeVerification.errors:type_name -> aether.VerificationError
-	9,  // 29: aether.ProtocolMetadata.security_mode:type_name -> aether.SecurityMode
-	9,  // 30: aether.DmMessageEnvelope.security_mode:type_name -> aether.SecurityMode
-	9,  // 31: aether.DmQueuedMessage.security_mode:type_name -> aether.SecurityMode
-	10, // 32: aether.DmTransportDecision.path:type_name -> aether.DmDeliveryPath
-	11, // 33: aether.DmTransportDecision.reason:type_name -> aether.DmTransportReason
-	12, // 34: aether.DmTransportDecision.session_state:type_name -> aether.DmDirectSessionState
-	12, // 35: aether.DmDirectSessionLifecycle.current_state:type_name -> aether.DmDirectSessionState
-	12, // 36: aether.DmDirectSessionLifecycle.next_state:type_name -> aether.DmDirectSessionState
-	13, // 37: aether.DmDirectSessionLifecycle.event:type_name -> aether.DmDirectSessionEvent
-	11, // 38: aether.DmDirectSessionLifecycle.reason:type_name -> aether.DmTransportReason
-	10, // 39: aether.DmDeliveryReceipt.path:type_name -> aether.DmDeliveryPath
-	14, // 40: aether.DmDeliveryReceipt.status:type_name -> aether.DmReceiptStatus
-	17, // 41: aether.GroupDmMemberCap.reason:type_name -> aether.GroupDmMemberCapReason
-	15, // 42: aether.GroupDmMembershipEvent.current_state:type_name -> aether.GroupDmMemberState
-	15, // 43: aether.GroupDmMembershipEvent.next_state:type_name -> aether.GroupDmMemberState
-	16, // 44: aether.GroupDmMembershipEvent.event_type:type_name -> aether.GroupDmMembershipEventType
-	9,  // 45: aether.GroupDmMembershipEvent.security_mode:type_name -> aether.SecurityMode
-	7,  // 46: aether.GroupDmSenderKeyEnvelope.signature_algorithm:type_name -> aether.SignatureAlgorithm
-	18, // 47: aether.GroupDmKeyDistributionDecision.reason:type_name -> aether.GroupDmKeyDistributionReason
-	19, // 48: aether.GroupDmRekeyDecision.trigger:type_name -> aether.GroupDmRekeyTrigger
-	20, // 49: aether.GroupDmRekeyDecision.reason:type_name -> aether.GroupDmRekeyReason
-	21, // 50: aether.GroupDmTransportDecision.path:type_name -> aether.GroupDmTransportPath
-	22, // 51: aether.GroupDmTransportDecision.reason:type_name -> aether.GroupDmTransportReason
-	23, // 52: aether.GroupDmHistorySyncDecision.reason:type_name -> aether.GroupDmHistorySyncReason
-	24, // 53: aether.GroupDmGrowthDecision.reason:type_name -> aether.GroupDmGrowthReason
-	70, // 54: aether.GroupDmGrowthDecision.convert_plan:type_name -> aether.GroupDmConvertPlan
-	25, // 55: aether.FriendRequest.state:type_name -> aether.FriendRequestState
-	26, // 56: aether.FriendRequest.action:type_name -> aether.FriendRequestAction
-	7,  // 57: aether.FriendRequest.signature_algorithm:type_name -> aether.SignatureAlgorithm
-	36, // 58: aether.FriendRequest.verification_status:type_name -> aether.VerificationStatus
-	73, // 59: aether.FriendInvitePayload.identity_share:type_name -> aether.FriendIdentityShare
-	27, // 60: aether.FriendInvitePayload.entry_path:type_name -> aether.FriendExchangeEntryPath
-	7,  // 61: aether.FriendInvitePayload.signature_algorithm:type_name -> aether.SignatureAlgorithm
-	25, // 62: aether.FriendConcurrentResolution.state:type_name -> aether.FriendRequestState
-	28, // 63: aether.PresenceStateEntry.state:type_name -> aether.PresenceState
-	30, // 64: aether.PresenceStateEntry.transition_reason:type_name -> aether.PresenceTransitionReason
-	28, // 65: aether.PresenceEventRecord.previous_state:type_name -> aether.PresenceState
-	28, // 66: aether.PresenceEventRecord.next_state:type_name -> aether.PresenceState
-	29, // 67: aether.PresenceEventRecord.event:type_name -> aether.PresenceEvent
-	30, // 68: aether.PresenceEventRecord.reason:type_name -> aether.PresenceTransitionReason
-	33, // 69: aether.NotificationEvent.kind:type_name -> aether.NotificationKind
-	31, // 70: aether.MentionToken.type:type_name -> aether.MentionType
-	32, // 71: aether.PolicyDecision.reason:type_name -> aether.PolicyReason
-	32, // 72: aether.SlowModeDecision.reason:type_name -> aether.PolicyReason
-	82, // 73: aether.SlowModeDecision.actors:type_name -> aether.SlowModeActorState
-	34, // 74: aether.ModerationEvent.action:type_name -> aether.ModerationAction
-	32, // 75: aether.ModerationEvent.reason:type_name -> aether.PolicyReason
-	7,  // 76: aether.ModerationEvent.signature_algorithm:type_name -> aether.SignatureAlgorithm
-	36, // 77: aether.ModerationEvent.verification_status:type_name -> aether.VerificationStatus
-	35, // 78: aether.RoleState.role:type_name -> aether.V02Role
-	9,  // 79: aether.GovernanceMetadata.security_mode:type_name -> aether.SecurityMode
-	80, // [80:80] is the sub-list for method output_type
-	80, // [80:80] is the sub-list for method input_type
-	80, // [80:80] is the sub-list for extension type_name
-	80, // [80:80] is the sub-list for extension extendee
-	0,  // [0:80] is the sub-list for field type_name
+	91, // 1: aether.CapabilitySet.custom_claims:type_name -> aether.CapabilitySet.CustomClaimsEntry
+	38, // 2: aether.IdentityProfile.advertised_capabilities:type_name -> aether.CapabilitySet
+	37, // 3: aether.BackupManifest.reason:type_name -> aether.BackupReason
+	32, // 4: aether.BackupRestoreResult.identity_reason:type_name -> aether.PolicyReason
+	37, // 5: aether.BackupRestoreResult.backup_reason:type_name -> aether.BackupReason
+	39, // 6: aether.MembershipState.member:type_name -> aether.IdentityProfile
+	38, // 7: aether.MembershipState.granted_capabilities:type_name -> aether.CapabilitySet
+	39, // 8: aether.ServerManifest.owner:type_name -> aether.IdentityProfile
+	43, // 9: aether.ServerManifest.members:type_name -> aether.MembershipState
+	38, // 10: aether.ServerManifest.server_capabilities:type_name -> aether.CapabilitySet
+	39, // 11: aether.ChatMessage.sender:type_name -> aether.IdentityProfile
+	39, // 12: aether.VoiceState.participant:type_name -> aether.IdentityProfile
+	2,  // 13: aether.VoiceCodecProfile.codec:type_name -> aether.VoiceCodec
+	4,  // 14: aether.VoiceReconnectPolicy.retryable_classes:type_name -> aether.VoiceReconnectClass
+	3,  // 15: aether.VoiceLifecycleHook.state:type_name -> aether.VoiceLifecycleState
+	47, // 16: aether.VoicePipelineBaseline.codec_profile:type_name -> aether.VoiceCodecProfile
+	48, // 17: aether.VoicePipelineBaseline.transport_profile:type_name -> aether.VoiceTransportProfile
+	49, // 18: aether.VoicePipelineBaseline.reconnect_policy:type_name -> aether.VoiceReconnectPolicy
+	50, // 19: aether.VoicePipelineBaseline.lifecycle_hooks:type_name -> aether.VoiceLifecycleHook
+	52, // 20: aether.VoiceSignalFrame.session_ref:type_name -> aether.VoiceSignalSessionRef
+	5,  // 21: aether.VoiceSignalFrame.signal_type:type_name -> aether.VoiceSignalType
+	53, // 22: aether.VoiceSignalFrame.retry_policy:type_name -> aether.VoiceSignalRetryPolicy
+	52, // 23: aether.VoiceSignalSessionState.session_ref:type_name -> aether.VoiceSignalSessionRef
+	6,  // 24: aether.VoiceSignalSessionState.status:type_name -> aether.VoiceSignalSessionStatus
+	1,  // 25: aether.SignedEnvelope.payload_type:type_name -> aether.PayloadType
+	39, // 26: aether.SignedEnvelope.signer:type_name -> aether.IdentityProfile
+	7,  // 27: aether.SignedEnvelope.signature_algorithm:type_name -> aether.SignatureAlgorithm
+	8,  // 28: aether.VerificationError.code:type_name -> aether.EnvelopeVerificationError
+	56, // 29: aether.EnvelopeVerification.envelope:type_name -> aether.SignedEnvelope
+	36, // 30: aether.EnvelopeVerification.status:type_name -> aether.VerificationStatus
+	57, // 31: aether.EnvelopeVerification.errors:type_name -> aether.VerificationError
+	9,  // 32: aether.ProtocolMetadata.security_mode:type_name -> aether.SecurityMode
+	9,  // 33: aether.DmMessageEnvelope.security_mode:type_name -> aether.SecurityMode
+	9,  // 34: aether.DmQueuedMessage.security_mode:type_name -> aether.SecurityMode
+	10, // 35: aether.DmTransportDecision.path:type_name -> aether.DmDeliveryPath
+	11, // 36: aether.DmTransportDecision.reason:type_name -> aether.DmTransportReason
+	12, // 37: aether.DmTransportDecision.session_state:type_name -> aether.DmDirectSessionState
+	12, // 38: aether.DmDirectSessionLifecycle.current_state:type_name -> aether.DmDirectSessionState
+	12, // 39: aether.DmDirectSessionLifecycle.next_state:type_name -> aether.DmDirectSessionState
+	13, // 40: aether.DmDirectSessionLifecycle.event:type_name -> aether.DmDirectSessionEvent
+	11, // 41: aether.DmDirectSessionLifecycle.reason:type_name -> aether.DmTransportReason
+	10, // 42: aether.DmDeliveryReceipt.path:type_name -> aether.DmDeliveryPath
+	14, // 43: aether.DmDeliveryReceipt.status:type_name -> aether.DmReceiptStatus
+	17, // 44: aether.GroupDmMemberCap.reason:type_name -> aether.GroupDmMemberCapReason
+	15, // 45: aether.GroupDmMembershipEvent.current_state:type_name -> aether.GroupDmMemberState
+	15, // 46: aether.GroupDmMembershipEvent.next_state:type_name -> aether.GroupDmMemberState
+	16, // 47: aether.GroupDmMembershipEvent.event_type:type_name -> aether.GroupDmMembershipEventType
+	9,  // 48: aether.GroupDmMembershipEvent.security_mode:type_name -> aether.SecurityMode
+	7,  // 49: aether.GroupDmSenderKeyEnvelope.signature_algorithm:type_name -> aether.SignatureAlgorithm
+	18, // 50: aether.GroupDmKeyDistributionDecision.reason:type_name -> aether.GroupDmKeyDistributionReason
+	19, // 51: aether.GroupDmRekeyDecision.trigger:type_name -> aether.GroupDmRekeyTrigger
+	20, // 52: aether.GroupDmRekeyDecision.reason:type_name -> aether.GroupDmRekeyReason
+	21, // 53: aether.GroupDmTransportDecision.path:type_name -> aether.GroupDmTransportPath
+	22, // 54: aether.GroupDmTransportDecision.reason:type_name -> aether.GroupDmTransportReason
+	23, // 55: aether.GroupDmHistorySyncDecision.reason:type_name -> aether.GroupDmHistorySyncReason
+	24, // 56: aether.GroupDmGrowthDecision.reason:type_name -> aether.GroupDmGrowthReason
+	74, // 57: aether.GroupDmGrowthDecision.convert_plan:type_name -> aether.GroupDmConvertPlan
+	25, // 58: aether.FriendRequest.state:type_name -> aether.FriendRequestState
+	26, // 59: aether.FriendRequest.action:type_name -> aether.FriendRequestAction
+	7,  // 60: aether.FriendRequest.signature_algorithm:type_name -> aether.SignatureAlgorithm
+	36, // 61: aether.FriendRequest.verification_status:type_name -> aether.VerificationStatus
+	77, // 62: aether.FriendInvitePayload.identity_share:type_name -> aether.FriendIdentityShare
+	27, // 63: aether.FriendInvitePayload.entry_path:type_name -> aether.FriendExchangeEntryPath
+	7,  // 64: aether.FriendInvitePayload.signature_algorithm:type_name -> aether.SignatureAlgorithm
+	25, // 65: aether.FriendConcurrentResolution.state:type_name -> aether.FriendRequestState
+	28, // 66: aether.PresenceStateEntry.state:type_name -> aether.PresenceState
+	30, // 67: aether.PresenceStateEntry.transition_reason:type_name -> aether.PresenceTransitionReason
+	28, // 68: aether.PresenceEventRecord.previous_state:type_name -> aether.PresenceState
+	28, // 69: aether.PresenceEventRecord.next_state:type_name -> aether.PresenceState
+	29, // 70: aether.PresenceEventRecord.event:type_name -> aether.PresenceEvent
+	30, // 71: aether.PresenceEventRecord.reason:type_name -> aether.PresenceTransitionReason
+	33, // 72: aether.NotificationEvent.kind:type_name -> aether.NotificationKind
+	31, // 73: aether.MentionToken.type:type_name -> aether.MentionType
+	32, // 74: aether.PolicyDecision.reason:type_name -> aether.PolicyReason
+	32, // 75: aether.SlowModeDecision.reason:type_name -> aether.PolicyReason
+	86, // 76: aether.SlowModeDecision.actors:type_name -> aether.SlowModeActorState
+	34, // 77: aether.ModerationEvent.action:type_name -> aether.ModerationAction
+	32, // 78: aether.ModerationEvent.reason:type_name -> aether.PolicyReason
+	7,  // 79: aether.ModerationEvent.signature_algorithm:type_name -> aether.SignatureAlgorithm
+	36, // 80: aether.ModerationEvent.verification_status:type_name -> aether.VerificationStatus
+	35, // 81: aether.RoleState.role:type_name -> aether.V02Role
+	9,  // 82: aether.GovernanceMetadata.security_mode:type_name -> aether.SecurityMode
+	83, // [83:83] is the sub-list for method output_type
+	83, // [83:83] is the sub-list for method input_type
+	83, // [83:83] is the sub-list for extension type_name
+	83, // [83:83] is the sub-list for extension extendee
+	0,  // [0:83] is the sub-list for field type_name
 }
 
 func init() { file_proto_aether_proto_init() }
@@ -7388,13 +7686,14 @@ func file_proto_aether_proto_init() {
 	if File_proto_aether_proto != nil {
 		return
 	}
+	file_proto_aether_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_aether_proto_rawDesc), len(file_proto_aether_proto_rawDesc)),
-			NumEnums:      37,
-			NumMessages:   51,
+			NumEnums:      38,
+			NumMessages:   54,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

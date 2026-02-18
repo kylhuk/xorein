@@ -483,6 +483,48 @@ message IdentityProfile {
   CapabilitySet advertised_capabilities = 5;
 }
 
+// BackupReason captures deterministic restore reason taxonomy for local backup.
+enum BackupReason {
+  BACKUP_REASON_UNSPECIFIED = 0;
+  BACKUP_REASON_PASSWORD = 1;
+  BACKUP_REASON_CORRUPT = 2;
+  BACKUP_REASON_IDENTITY_MISMATCH = 3;
+  BACKUP_REASON_IDENTITY_DUPLICATE = 4;
+  BACKUP_REASON_OUTDATED = 5;
+
+  reserved 100 to 199;
+}
+
+// IdentityState captures immutable identity status for restore-safe workflows.
+message IdentityState {
+  reserved 100 to 199;
+
+  string identity_id = 1;
+  string public_key_fingerprint = 2;
+  uint64 created_at_unix = 3;
+  uint32 metadata_version = 4;
+  string backup_status = 5;
+}
+
+// BackupManifest contains local backup metadata without ciphertext payload.
+message BackupManifest {
+  reserved 100 to 199;
+
+  string backup_id = 1;
+  uint32 backup_version = 2;
+  uint64 created_at_unix = 3;
+  BackupReason reason = 4;
+}
+
+// BackupRestoreResult provides deterministic identity/backup reason fields.
+message BackupRestoreResult {
+  reserved 100 to 199;
+
+  bool success = 1;
+  optional PolicyReason identity_reason = 2;
+  optional BackupReason backup_reason = 3;
+}
+
 // MembershipState records per-member enablement toggles within manifests.
 message MembershipState {
   reserved 100 to 199;

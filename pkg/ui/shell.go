@@ -22,6 +22,9 @@ var (
 	ErrShellRequired                       = errors.New("shell required")
 	ErrRouteInvalid                        = errors.New("invalid route")
 	ErrIdentitySetupRequired               = errors.New("identity setup required")
+	ErrNoPasswordResetWarningRequired      = errors.New("no-password-reset warning acknowledgement required")
+	ErrIdentityReasonInvalid               = errors.New("identity reason invalid")
+	ErrBackupReasonInvalid                 = errors.New("backup reason invalid")
 	ErrServerSelectionRequired             = errors.New("server selection required")
 	ErrChannelSelectionMissing             = errors.New("channel selection required")
 	ErrChannelTypeInvalid                  = errors.New("channel type invalid")
@@ -47,6 +50,8 @@ var (
 )
 
 const DefaultComposerMaxLength = 4000
+
+const MandatoryNoPasswordResetWarning = "No host or relay can reset your password. Keep a local backup (BackupID + BackupPassword) to recover."
 
 const (
 	DefaultAudioVolume              = 70
@@ -573,19 +578,25 @@ type DiagnosticExportEnvelope struct {
 
 // AppState is the global state model used by P10-T1 route transitions.
 type AppState struct {
-	CurrentRoute       Route
-	IdentityDisplay    string
-	Servers            []ServerSummary
-	ChannelsByServer   map[string][]ChannelSummary
-	DraftsByScope      map[string]string
-	Settings           SettingsState
-	NetworkDiagnostics NetworkDiagnosticsState
-	VoiceSession       VoiceSessionState
-	VoiceBar           VoiceBarState
-	VoiceControls      VoiceControlState
-	SelectedServerID   string
-	SelectedChannelID  string
-	Subscription       SubscriptionState
+	CurrentRoute                Route
+	IdentityDisplay             string
+	NoPasswordResetWarningText  string
+	NoPasswordResetWarningShown bool
+	NoPasswordResetWarningAck   bool
+	LastIdentityRestoreReason   string
+	LastBackupRestoreReason     string
+	RestoreCompleted            bool
+	Servers                     []ServerSummary
+	ChannelsByServer            map[string][]ChannelSummary
+	DraftsByScope               map[string]string
+	Settings                    SettingsState
+	NetworkDiagnostics          NetworkDiagnosticsState
+	VoiceSession                VoiceSessionState
+	VoiceBar                    VoiceBarState
+	VoiceControls               VoiceControlState
+	SelectedServerID            string
+	SelectedChannelID           string
+	Subscription                SubscriptionState
 }
 
 func (s AppState) hasIdentity() bool {
@@ -604,13 +615,14 @@ type Shell struct {
 func NewShell() *Shell {
 	return &Shell{
 		state: AppState{
-			CurrentRoute:       RouteIdentitySetup,
-			Servers:            []ServerSummary{},
-			ChannelsByServer:   map[string][]ChannelSummary{},
-			DraftsByScope:      map[string]string{},
-			Settings:           defaultSettingsState(),
-			NetworkDiagnostics: defaultNetworkDiagnosticsState(),
-			VoiceControls:      defaultVoiceControlState(),
+			CurrentRoute:               RouteIdentitySetup,
+			NoPasswordResetWarningText: MandatoryNoPasswordResetWarning,
+			Servers:                    []ServerSummary{},
+			ChannelsByServer:           map[string][]ChannelSummary{},
+			DraftsByScope:              map[string]string{},
+			Settings:                   defaultSettingsState(),
+			NetworkDiagnostics:         defaultNetworkDiagnosticsState(),
+			VoiceControls:              defaultVoiceControlState(),
 		},
 		persistedSettings:        defaultSettingsState(),
 		diagnosticRetentionLimit: DefaultDiagnosticRetentionLimit,
@@ -1211,6 +1223,92 @@ func (s *Shell) SetIdentity(display string) error {
 	}
 	s.state.IdentityDisplay = display
 	return nil
+}
+
+// BeginIdentityOnboarding moves shell to onboarding state and displays warning copy.
+func (s *Shell) BeginIdentityOnboarding() error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	s.state.CurrentRoute = RouteIdentitySetup
+	s.state.NoPasswordResetWarningShown = true
+	s.state.NoPasswordResetWarningText = MandatoryNoPasswordResetWarning
+	return nil
+}
+
+// AcknowledgeNoPasswordResetWarning records explicit user acknowledgement.
+func (s *Shell) AcknowledgeNoPasswordResetWarning() error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	s.state.NoPasswordResetWarningShown = true
+	s.state.NoPasswordResetWarningText = MandatoryNoPasswordResetWarning
+	s.state.NoPasswordResetWarningAck = true
+	return nil
+}
+
+// CreateIdentityWithWarning enforces no-password-reset acknowledgement before identity creation.
+func (s *Shell) CreateIdentityWithWarning(display string) error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	if !s.state.NoPasswordResetWarningAck {
+		return ErrNoPasswordResetWarningRequired
+	}
+	return s.SetIdentity(display)
+}
+
+// RecordRestoreOutcome stores deterministic restore reason taxonomy values.
+func (s *Shell) RecordRestoreOutcome(identityReason, backupReason string) error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	identityReason = strings.TrimSpace(identityReason)
+	backupReason = strings.TrimSpace(backupReason)
+
+	if !isValidIdentityRestoreReason(identityReason) {
+		return fmt.Errorf("%w: %s", ErrIdentityReasonInvalid, identityReason)
+	}
+	if !isValidBackupRestoreReason(backupReason) {
+		return fmt.Errorf("%w: %s", ErrBackupReasonInvalid, backupReason)
+	}
+
+	s.state.LastIdentityRestoreReason = identityReason
+	s.state.LastBackupRestoreReason = backupReason
+	return nil
+}
+
+// CompleteRestore finalizes identity recovery state and route prerequisites.
+func (s *Shell) CompleteRestore(display, identityReason, backupReason string) error {
+	if s == nil {
+		return ErrShellRequired
+	}
+	if err := s.RecordRestoreOutcome(identityReason, backupReason); err != nil {
+		return err
+	}
+	if err := s.SetIdentity(display); err != nil {
+		return err
+	}
+	s.state.RestoreCompleted = true
+	return nil
+}
+
+func isValidIdentityRestoreReason(reason string) bool {
+	switch reason {
+	case "", "identity-mismatch", "identity-duplicate":
+		return true
+	default:
+		return false
+	}
+}
+
+func isValidBackupRestoreReason(reason string) bool {
+	switch reason {
+	case "", "backup-password", "backup-corrupt", "backup-outdated":
+		return true
+	default:
+		return false
+	}
 }
 
 // UpsertServer records a server in shell state.

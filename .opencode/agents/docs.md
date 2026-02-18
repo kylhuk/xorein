@@ -14,7 +14,7 @@ permission:
     "**/*.md": allow
     "**/*.mdx": allow
     "**/docs/**": allow
-  bash: deny
+  bash: allow
   webfetch: allow
 ---
 

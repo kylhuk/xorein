@@ -11,7 +11,7 @@ RELEASE_PACK_DIR := $(GENERATED_DIR)/release-pack
 RELEASE_PACK_SIGN_DIR := $(RELEASE_PACK_DIR)/signing
 RELEASE_SIGNING_IMAGE ?= docker.io/library/golang:1.24.12
 
-.PHONY: all pipeline check-fast check-full generate compile lint roadmap-verify test scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify v11-gate-runner v11-relay-smoke
+.PHONY: all pipeline check-fast check-full generate compile lint roadmap-verify test scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify v11-gate-runner v11-relay-smoke v12-gate-runner v12-recovery-scenarios
 
 STAGE_ORDER := generate compile lint test scan
 
@@ -125,3 +125,11 @@ v11-gate-runner:
 v11-relay-smoke:
 	@echo "[v11-relay-smoke] running relay podman probe baseline"
 	@./scripts/v11-relay-smoke.sh
+
+v12-gate-runner:
+	@echo "[gate-runner] evaluating v12 gate artifact"
+	@set -euo pipefail; go run ./cmd/v12-gate-runner --status-dir artifacts/v12/gates
+
+v12-recovery-scenarios:
+	@echo "[v12-recovery] running podman recovery scenario baseline"
+	@./scripts/v12-recovery-scenarios.sh

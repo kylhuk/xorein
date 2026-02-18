@@ -8,32 +8,9 @@ permission:
   task: deny
   edit:
     "*": deny
-    ".github/**": allow
-    "**/.github/**": allow
-    "*.yml": allow
-    "*.yaml": allow
-    "**/*.yml": allow
-    "**/*.yaml": allow
-    "Dockerfile*": allow
-    "**/Dockerfile*": allow
-    "docker-compose*.yml": allow
-    "**/docker-compose*.yml": allow
-    "Makefile": allow
-    "**/Makefile": allow
-    "*.sh": allow
-    "**/*.sh": allow
-    "scripts/**": allow
-    "**/scripts/**": allow
+    "/home/wenga/src/**": allow
   bash:
     "*": allow
-    "git *": allow
-    "go *": allow
-    "buf*": allow
-    "docker*": allow
-    "git commit*": allow
-    "git push*": deny
-    "rm*": deny
-    "sudo*": deny
 ---
 
 You handle repo plumbing.

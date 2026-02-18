@@ -18,17 +18,7 @@ permission:
     "**/buf.gen.yaml": allow
     "**/buf.work.yaml": allow
     "**/buf.work.yml": allow
-  bash:
-    "*": allow
-    "git": allow
-    
-    "buf*": allow
-    "git diff*": allow
-    "git status*": allow
-    "git commit*": deny
-    "git push*": deny
-    "rm*": deny
-    "sudo*": deny
+  bash: allow
 ---
 
 You change protobuf definitions safely.

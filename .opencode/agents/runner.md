@@ -7,26 +7,7 @@ options:
 permission:
   task: deny
   edit: deny
-  bash:
-    "*": allow
-    "git status*": allow
-    "git diff*": allow
-    "git log*": allow
-    "git show*": allow
-    "go version*": allow
-    "go env*": allow
-    "go list*": allow
-    "go test*": allow
-    "go test": allow
-    "go vet*": allow
-    "golangci-lint*": allow
-    "buf*": allow
-    "gofmt*": allow
-    "goimports*": allow
-    "git commit*": deny
-    "git push*": deny
-    "rm*": deny
-    "sudo*": deny
+  bash: allow
 ---
 
 You execute commands to gather evidence.

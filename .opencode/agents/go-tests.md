@@ -14,17 +14,7 @@ permission:
     "**/testdata/**": allow
     "fixtures/**": allow
     "**/fixtures/**": allow
-  bash:
-    "*": allow
-    "go test*": allow
-    "go test": allow
-    "go list*": allow
-    "git diff*": allow
-    "git status*": allow
-    "git commit*": deny
-    "git push*": deny
-    "rm*": deny
-    "sudo*": deny
+  bash: allow
 ---
 
 You write tests.
