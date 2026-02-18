@@ -63,56 +63,56 @@ Planning artifact only. This file defines v16 implementation and validation requ
 ## Phase plan
 
 ### Phase 0 - Scope lock (G0)
-- [ ] `P0-T1` Freeze v16 role/ACL scope and acceptance criteria.
+- [x] `P0-T1` Freeze v16 role/ACL scope and acceptance criteria.
   - `ST1` Produce requirement-to-artifact traceability matrix.
   - `ST2` Assign gate ownership and approvers using RACI template.
   - Artifacts: `docs/v1.6/phase0/p0-scope-lock.md`, `docs/v1.6/phase0/p0-traceability-matrix.md`, `docs/v1.6/phase0/p0-gate-ownership.md`.
 
 ### Phase 1 - RBAC and ACL runtime (G2)
-- [ ] `P1-T1` Implement role model and assignment lifecycle.
+- [x] `P1-T1` Implement role model and assignment lifecycle.
   - `ST1` Seed default roles and permissions.
   - `ST2` Custom role create/update/delete lifecycle.
   - `ST3` Founder and admin safety constraints.
   - Artifacts: `pkg/v16/rbac/*`, `pkg/v16/rbac/*_test.go`.
 
-- [ ] `P1-T2` Implement ACL and merge engine.
+- [x] `P1-T2` Implement ACL and merge engine.
   - `ST1` Channel-level allow/deny overrides.
   - `ST2` Deterministic precedence and conflict resolution.
   - `ST3` Explainability output for denied actions.
   - Artifacts: `pkg/v16/acl/*`, `pkg/v16/acl/*_test.go`.
 
 ### Phase 2 - Client and runtime enforcement (G3)
-- [ ] `P2-T1` Wire permission checks into chat/voice/screenshare actions.
+- [x] `P2-T1` Wire permission checks into chat/voice/screenshare actions.
   - `ST1` Block unauthorized sends and channel joins.
   - `ST2` Block unauthorized moderation and management actions.
   - `ST3` Ensure no bypass paths in relay/client flows.
   - Artifacts: `pkg/v16/enforcement/*`, `tests/e2e/v16/enforcement_test.go`.
 
-- [ ] `P2-T2` Implement Gio admin/role management UX.
+- [x] `P2-T2` Implement Gio admin/role management UX.
   - Artifacts: `pkg/v16/ui/*`, `docs/v1.6/phase2/p2-rbac-ux-contract.md`.
 
 ### Phase 3 - Validation matrix (G4, G5)
-- [ ] `P3-T1` Add permission matrix tests.
+- [x] `P3-T1` Add permission matrix tests.
   - `ST1` Positive path tests per role.
   - `ST2` Negative path and escalation-attempt tests.
   - `ST3` Partition/rejoin consistency checks.
   - Artifacts: `tests/e2e/v16/*`, `tests/perf/v16/*`.
 
-- [ ] `P3-T2` Add Podman policy scenarios.
+- [x] `P3-T2` Add Podman policy scenarios.
   - `ST1` Role/ACL policy scenarios in container network.
   - `ST2` Relay no-data-hosting regression scenario for policy-enforcement paths.
   - `ST3` Deterministic pass/fail probes and result manifest output.
   - Artifacts: `containers/v1.6/*`, `scripts/v16-rbac-scenarios.sh`, `docs/v1.6/phase3/p3-podman-scenarios.md`.
 
 ### Phase 4 - v17 spec package (G6)
-- [ ] `P4-T1` Produce moderation + audit specification package.
+- [x] `P4-T1` Produce moderation + audit specification package.
   - `ST1` Redaction, timeout, ban, slow mode, lockdown contracts.
   - `ST2` Signed-event requirements and audit visibility rules.
   - `ST3` Official-client enforcement status signaling.
   - Artifacts: `docs/v1.6/phase4/f17-moderation-spec.md`, `docs/v1.6/phase4/f17-proto-delta.md`, `docs/v1.6/phase4/f17-acceptance-matrix.md`.
 
 ### Phase 5 - Closure and evidence (G7)
-- [ ] `P5-T1` Publish v16 evidence bundle and promotion recommendation.
+- [x] `P5-T1` Publish v16 evidence bundle and promotion recommendation.
   - `ST1` Command outputs for compatibility/test/e2e/perf checks.
   - `ST2` Podman scenario outputs and deterministic result manifests.
   - `ST3` `F16` as-built conformance report against v15 `F16` specs.

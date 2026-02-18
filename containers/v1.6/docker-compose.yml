@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  rbac-service:
+    image: alpine:3.18
+    command: ["/bin/sh", "-c", "echo rbac placeholder"]
+    environment:
+      - SERVICE=rbac
+  relay-policy:
+    image: alpine:3.18
+    command: ["/bin/sh", "-c", "echo relay placeholder"]
+    environment:
+      - SERVICE=relay
