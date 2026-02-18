@@ -63,7 +63,7 @@ Planning artifact only. This file defines v13 implementation and validation requ
 ## Phase plan
 
 ### Phase 0 - Scope lock and import (G0)
-- [ ] `P0-T1` Freeze v13 requirements and acceptance matrix.
+- [x] `P0-T1` Freeze v13 requirements and acceptance matrix.
   - `ST1` Map each v13 requirement to code/test/docs.
   - `ST2` Lock deferred set (`v20+` backlog only).
   - `ST3` Produce requirement-to-artifact traceability matrix.
@@ -71,44 +71,44 @@ Planning artifact only. This file defines v13 implementation and validation requ
   - Artifacts: `docs/v1.3/phase0/p0-scope-lock.md`, `docs/v1.3/phase0/p0-traceability-matrix.md`, `docs/v1.3/phase0/p0-gate-ownership.md`.
 
 ### Phase 1 - Space lifecycle and policy engine (G2)
-- [ ] `P1-T1` Implement Space lifecycle runtime.
+- [x] `P1-T1` Implement Space lifecycle runtime.
   - `ST1` Create Space flow with founder/admin auto-assignment.
   - `ST2` Persist Space metadata and policy state.
   - `ST3` Implement space-level update and ownership transfer guardrails.
   - Artifacts: `pkg/v13/spaces/*`, `pkg/v13/spaces/*_test.go`.
 
-- [ ] `P1-T2` Implement join policies.
+- [x] `P1-T2` Implement join policies.
   - `ST1` Invite-only baseline and invite token verification.
   - `ST2` Request-to-join approval/deny lifecycle.
   - `ST3` Open mode with abuse controls baseline.
   - Artifacts: `pkg/v13/joinpolicy/*`, `tests/e2e/v13/join_policy_test.go`.
 
 ### Phase 2 - Text channels and chat baseline (G3)
-- [ ] `P2-T1` Implement channel model and channel operations.
+- [x] `P2-T1` Implement channel model and channel operations.
   - `ST1` Channel create/list/update/archive lifecycle.
   - `ST2` Space-channel bindings and membership checks.
   - Artifacts: `pkg/v13/channels/*`, `pkg/v13/channels/*_test.go`.
 
-- [ ] `P2-T2` Implement chat lifecycle.
+- [x] `P2-T2` Implement chat lifecycle.
   - `ST1` Send/receive/ack states and deterministic error reasons.
   - `ST2` Read marker and unread counter convergence rules.
   - `ST3` Draft persistence hooks for later continuity work.
   - Artifacts: `pkg/v13/chat/*`, `pkg/v13/chat/*_test.go`.
 
-- [ ] `P2-T3` Implement minimal Gio Spaces/chat UX.
+- [x] `P2-T3` Implement minimal Gio Spaces/chat UX.
   - `ST1` Space list, preview, join controls.
   - `ST2` Channel list, timeline, composer, delivery state UI.
   - `ST3` Deterministic no-limbo messaging states.
   - Artifacts: `pkg/v13/ui/*`, `docs/v1.3/phase2/p2-ux-contract.md`.
 
 ### Phase 3 - Validation matrix (G4, G5)
-- [ ] `P3-T1` Add test coverage for policy and messaging flows.
+- [x] `P3-T1` Add test coverage for policy and messaging flows.
   - `ST1` Positive join and chat journeys.
   - `ST2` Negative policy denials and replay/invalid invite tests.
   - `ST3` Degraded path tests (transient disconnect and retry).
   - Artifacts: `tests/e2e/v13/*`, `tests/perf/v13/*`.
 
-- [ ] `P3-T2` Add Podman multi-node scenarios.
+- [x] `P3-T2` Add Podman multi-node scenarios.
   - `ST1` Space creation + invite join in container network.
   - `ST2` Request-to-join moderation decision scenario.
   - `ST3` Relay no-data-hosting regression scenario for chat/join paths.
@@ -116,17 +116,17 @@ Planning artifact only. This file defines v13 implementation and validation requ
   - Artifacts: `containers/v1.3/*`, `scripts/v13-e2e-podman.sh`, `docs/v1.3/phase3/p3-podman-scenarios.md`.
 
 ### Phase 4 - v14 spec package (G6)
-- [ ] `P4-T1` Produce voice baseline spec.
+- [x] `P4-T1` Produce voice baseline spec.
   - `ST1` Voice join/leave/signaling state model.
   - `ST2` Topology and fallback contract (direct/mesh/SFU/TURN).
   - `ST3` Call setup and recovery SLO targets.
   - Artifacts: `docs/v1.3/phase4/f14-voice-spec.md`.
 
-- [ ] `P4-T2` Produce v14 proto and test delta package.
+- [x] `P4-T2` Produce v14 proto and test delta package.
   - Artifacts: `docs/v1.3/phase4/f14-proto-delta.md`, `docs/v1.3/phase4/f14-acceptance-matrix.md`.
 
 ### Phase 5 - Closure and evidence (G7)
-- [ ] `P5-T1` Publish evidence bundle and promotion decision.
+- [x] `P5-T1` Publish evidence bundle and promotion decision.
   - `ST1` Command outputs for compatibility/test/e2e/perf checks.
   - `ST2` Podman scenario outputs and deterministic result manifests.
   - `ST3` `F13` as-built conformance report against v12 `F13` specs.

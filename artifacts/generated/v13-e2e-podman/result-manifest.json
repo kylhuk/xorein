@@ -1,0 +1,6 @@
+{
+  "status": "pass",
+  "timestamp": "2026-02-18T15:39:30Z",
+  "checks": ["e2e", "perf"],
+  "invocation": "scripts/v13-e2e-podman.sh"
+}

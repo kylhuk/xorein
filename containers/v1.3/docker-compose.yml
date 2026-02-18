@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  relay:
+    image: alpine:3.20
+    command: ["/bin/sh", "-c", "sleep 3600"]
+    networks:
+      - v13-net
+  app:
+    image: alpine:3.20
+    command: ["/bin/sh", "-c", "echo v13 placeholder && sleep 3600"]
+    depends_on:
+      - relay
+    networks:
+      - v13-net
+networks:
+  v13-net:
+    driver: bridge
