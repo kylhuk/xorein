@@ -21,6 +21,7 @@
 | EV-v12-G6-002 | G6 | F13 chat flow spec | docs/v1.2/phase4/f13-chat-flows.md | spec | pass |
 | EV-v12-G6-003 | G6 | F13 proto delta and acceptance matrix | docs/v1.2/phase4/f13-proto-delta.md, docs/v1.2/phase4/f13-acceptance-matrix.md | spec | pass |
 | EV-v12-G7-001 | G7 | `make check-full` | artifacts/generated/v12-evidence/make-check-full.txt | release | pass |
+| EV-v12-G7-002 | G7 | `make v12-gate-runner` | artifacts/generated/v12-evidence/v12-gate-runner.txt | release | pass |
 | EV-v12-G8-001 | G8 | Relay no-data-hosting regression scenario | tests/e2e/v12/recovery_flow_test.go, artifacts/generated/v12-evidence/go-test-e2e-v12.txt | qa | pass |
 | EV-v12-G9-001 | G9 | As-built conformance report | docs/v1.2/phase5/p5-as-built-conformance.md | release | pass |
 

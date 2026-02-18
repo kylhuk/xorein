@@ -12,6 +12,7 @@ This artifact tracks mandatory command evidence and gate closure proof for v1.2 
 | `go test ./tests/e2e/v12/...` | EV-v12-G4-002 | artifacts/generated/v12-evidence/go-test-e2e-v12.txt | pass |
 | `go test ./tests/perf/v12/...` | EV-v12-G4-003 | artifacts/generated/v12-evidence/go-test-perf-v12.txt | pass |
 | `make check-full` | EV-v12-G7-001 | artifacts/generated/v12-evidence/make-check-full.txt | pass |
+| `make v12-gate-runner` | EV-v12-G7-002 | artifacts/generated/v12-evidence/v12-gate-runner.txt | pass |
 | `scripts/v12-recovery-scenarios.sh` | EV-v12-G5-001 | artifacts/generated/v12-recovery-scenarios/result-manifest.json | pass |
 
 ## Notes
