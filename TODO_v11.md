@@ -60,7 +60,7 @@ Planning artifact only. This file defines v11 scope, gates, and evidence require
 ## Phase plan
 
 ### Phase 0 - Scope and governance freeze (G0)
-- [ ] `P0-T1` Freeze v11 in-scope and non-goals.
+- [x] `P0-T1` Freeze v11 in-scope and non-goals.
   - `ST1` Write explicit in-scope list and defer list.
   - `ST2` Add dependency graph and carry-back policy.
   - `ST3` Produce requirement-to-artifact traceability matrix.
@@ -68,34 +68,34 @@ Planning artifact only. This file defines v11 scope, gates, and evidence require
   - Acceptance: in-scope and deferred items are mutually exclusive and traceable.
   - Artifacts: `docs/v1.1/phase0/p0-scope-lock.md`, `docs/v1.1/phase0/p0-traceability-matrix.md`, `docs/v1.1/phase0/p0-gate-ownership.md`.
 
-- [ ] `P0-T2` Freeze version-isolation promotion rules.
+- [x] `P0-T2` Freeze version-isolation promotion rules.
   - `ST1` Define binary promotion states (`open`, `blocked`, `promoted`).
   - `ST2` Define fail-close behavior (failed gate blocks advancement).
   - Acceptance: promotion policy is machine-checkable and human-readable.
   - Artifacts: `docs/v1.1/phase0/p0-promotion-contract.md`.
 
 ### Phase 1 - Gate runner implementation (G2)
-- [ ] `P1-T1` Add v11 gate runner package.
+- [x] `P1-T1` Add v11 gate runner package.
   - `ST1` Implement gate state model and per-gate status file parser.
   - `ST2` Implement command entrypoint to print deterministic pass/fail summary.
   - `ST3` Add tests for missing artifacts, stale artifacts, and pass-path.
   - Acceptance: deterministic output for pass/fail conditions.
   - Artifacts: `pkg/v11/gates/*`, `pkg/v11/gates/*_test.go`.
 
-- [ ] `P1-T2` Wire gate runner into developer workflow.
+- [x] `P1-T2` Wire gate runner into developer workflow.
   - `ST1` Add make target(s) for v11 gate execution.
   - `ST2` Add artifact directory conventions and status stamps.
   - Acceptance: single command evaluates all v11 gates.
   - Artifacts: `Makefile`, `docs/v1.1/phase1/p1-gate-runner.md`.
 
 ### Phase 2 - Relay no-data-hosting boundary (G3)
-- [ ] `P2-T1` Define allowed vs forbidden relay data classes.
+- [x] `P2-T1` Define allowed vs forbidden relay data classes.
   - `ST1` Allowed: transient transport/session metadata only.
   - `ST2` Forbidden: durable message bodies, attachment payloads, media frame archives.
   - Acceptance: policy table and examples are explicit.
   - Artifacts: `docs/v1.1/phase2/p2-relay-data-boundary.md`.
 
-- [ ] `P2-T2` Implement policy checks and tests.
+- [x] `P2-T2` Implement policy checks and tests.
   - `ST1` Add config/runtime guardrails preventing forbidden persistence modes.
   - `ST2` Add negative tests proving forbidden modes fail to start.
   - `ST3` Add positive tests for allowed transient metadata paths.
@@ -103,34 +103,33 @@ Planning artifact only. This file defines v11 scope, gates, and evidence require
   - Artifacts: `pkg/v11/relaypolicy/*`, `pkg/v11/relaypolicy/*_test.go`, `tests/e2e/v11/relay_boundary_test.go`.
 
 ### Phase 3 - Podman smoke baseline (G4)
-- [ ] `P3-T1` Add deterministic relay smoke scenarios for Podman.
+- [x] `P3-T1` Add deterministic relay smoke scenarios for Podman.
   - `ST1` Start relay container with minimal profile.
   - `ST2` Run health probe and policy probe.
   - `ST3` Capture logs and deterministic result manifest.
   - Acceptance: smoke scenario returns explicit pass/fail exit code.
   - Artifacts: `containers/v1.1/*`, `scripts/v11-relay-smoke.sh`, `docs/v1.1/phase3/p3-podman-smoke.md`.
 
-### Phase 4 - v12 spec package (G5)
-- [ ] `P4-T1` Produce unique identity spec.
+- [x] `P4-T1` Produce unique identity spec.
   - `ST1` Define immutable global identity rules.
   - `ST2` Define "no password reset" behavior and UX warning contract.
   - `ST3` Define identity conflict and migration semantics.
   - Artifacts: `docs/v1.1/phase4/f12-identity-backup-spec.md`.
 
-- [ ] `P4-T2` Produce local backup and recovery spec.
+- [x] `P4-T2` Produce local backup and recovery spec.
   - `ST1` Define `BackupID + BackupPassword` model and local storage format.
   - `ST2` Define backup encryption profile and corruption handling.
   - `ST3` Define restore-on-new-device journey with deterministic error taxonomy.
   - Artifacts: `docs/v1.1/phase4/f12-backup-recovery-flows.md`.
 
-- [ ] `P4-T3` Produce v12 proto/test/docs acceptance matrix.
+- [x] `P4-T3` Produce v12 proto/test/docs acceptance matrix.
   - `ST1` Draft additive proto delta list.
   - `ST2` Define required unit/integration/e2e/perf/security tests for v12.
   - `ST3` Define docs and operator updates required for v12 closure.
   - Artifacts: `docs/v1.1/phase4/f12-proto-delta.md`, `docs/v1.1/phase4/f12-acceptance-matrix.md`.
 
 ### Phase 5 - Evidence and closure (G6)
-- [ ] `P5-T1` Build v11 evidence bundle.
+- [x] `P5-T1` Build v11 evidence bundle.
   - `ST1` Capture gate command outputs and test outputs.
   - `ST2` Capture Podman smoke outputs and deterministic result manifests.
   - `ST3` Capture known risks and signed deferrals.
