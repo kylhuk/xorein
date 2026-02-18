@@ -1,0 +1,38 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  check:
+    name: CI check matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        profile: [fast, full]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Podman
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y podman
+          podman version
+      - name: Run profile target
+        run: |
+          if [[ "${{ matrix.profile }}" == "fast" ]]; then
+            make check-fast
+          else
+            make check-full
+          fi
+      - name: Run protocol contract tests
+        if: matrix.profile == 'full'
+        run: |
+          podman run --rm --userns=keep-id -v "$PWD":/workspace:Z -w /workspace docker.io/library/golang:1.24.6 \
+            go test ./pkg/protocol -run '^TestP3T7' -count=1
+      - name: Run integration test sweep
+        if: matrix.profile == 'full'
+        run: |
+          podman run --rm --userns=keep-id -v "$PWD":/workspace:Z -w /workspace docker.io/library/golang:1.24.6 \
+            go test ./... -count=1

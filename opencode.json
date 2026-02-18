@@ -1,0 +1,196 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "autoupdate": true,
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 15000
+  },
+  "watcher": {
+    "ignore": [
+      ".git/**",
+      "node_modules/**",
+      "vendor/**",
+      "dist/**",
+      "build/**",
+      "tmp/**",
+      ".cache/**",
+      ".venv/**",
+      ".idea/**",
+      ".vscode/**",
+      ".vestige/**"
+    ]
+  },
+  "instructions": [
+    "SPRINT_GUIDELINES.md",
+    ".opencode/rules/*.md"
+  ],
+  "formatter": {
+    "prettier": {
+      "disabled": true
+    },
+    "biome": {
+      "disabled": true
+    },
+    "gofmt": {
+      "disabled": true
+    },
+    "goimports": {
+      "command": [
+        "goimports",
+        "-w",
+        "$FILE"
+      ],
+      "extensions": [
+        ".go"
+      ]
+    },
+    "buf-format": {
+      "command": [
+        "buf",
+        "format",
+        "-w",
+        "$FILE"
+      ],
+      "extensions": [
+        ".proto"
+      ]
+    }
+  },
+  "mcp": {
+    "vestige": {
+      "type": "local",
+      "command": [
+        "vestige-mcp",
+        "--data-dir",
+        "./.vestige"
+      ],
+      "enabled": true
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@playwright/mcp@0.0.38"],
+      "enabled": true,
+      "timeout": 15000
+    },
+
+    "brave-search": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-brave-search"],
+      "enabled": true,
+      "environment": {
+        "BRAVE_API_KEY": "BSApAQPyJveK134bPiUVy5WBHVvqCNc"
+      }
+    },
+
+
+
+
+
+
+
+
+    "git": {
+      "type": "local",
+      "command": ["uvx", "mcp-server-git"],
+      "enabled": true,
+      "timeout": 15000
+    },
+
+    "fetch": {
+      "type": "local",
+      "command": ["uvx", "mcp-server-fetch"],
+      "enabled": true,
+      "timeout": 15000
+    },
+
+    "dart": {
+      "type": "local",
+      "command": ["dart", "mcp-server"],
+      "enabled": true,
+      "timeout": 15000
+    }
+  },
+  "permission": {
+    "task": "ask",
+    "webfetch": "ask",
+    "external_directory": "ask",
+    "doom_loop": "ask",
+    "read": {
+      "*": "allow",
+      ".env": "deny",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      ".env.*": "deny",
+      "*.env.example": "allow",
+      ".env.example": "allow",
+      "**/.env": "deny",
+      "**/.env.*": "deny",
+      "**/*.env": "deny",
+      "**/*.env.*": "deny",
+      "**/*.env.example": "allow",
+      "**/.ssh/**": "deny",
+      ".ssh/**": "deny",
+      "**/*id_rsa*": "deny",
+      "**/*.pem": "deny",
+      "**/*.key": "deny"
+    },
+    "edit": {
+      "*": "allow",
+      ".env": "deny",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      ".env.*": "deny",
+      "**/.env": "deny",
+      "**/.env.*": "deny",
+      "**/*.env": "deny",
+      "**/*.env.*": "deny"
+    },
+    "bash": {
+      "*": "ask",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "git show*": "allow",
+      "git rev-parse*": "allow",
+      "git ls-files*": "allow",
+      "grep *": "allow",
+      "rg *": "allow",
+      "find *": "allow",
+      "ls*": "allow",
+      "cat *": "allow",
+      "sed *": "allow",
+      "awk *": "allow",
+      "go version*": "allow",
+      "go env*": "allow",
+      "go list*": "allow",
+      "go test": "allow",
+      "go test *": "allow",
+      "go vet*": "allow",
+      "go *": "allow",
+      "gofmt*": "allow",
+      "goimports*": "allow",
+      "golangci-lint*": "allow",
+      "buf*": "allow",
+      "make*": "ask",
+      "rm*": "deny",
+      "sudo*": "deny",
+      "curl*": "ask",
+      "wget*": "ask",
+      "docker*": "ask",
+      "kubectl*": "ask",
+      "cat .env*": "deny",
+      "cat *.env*": "deny",
+      "cat **/.env*": "deny",
+      "cat **/*.env*": "deny",
+      "cat *id_rsa*": "deny",
+      "cat *.pem": "deny",
+      "cat *.key": "deny",
+      "cat **/*id_rsa*": "deny",
+      "cat **/*.pem": "deny",
+      "cat **/*.key": "deny"
+    },
+    "websearch": "allow"
+  },
+  "default_agent": "proj-lead"
+}
