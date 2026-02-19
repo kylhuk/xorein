@@ -30,12 +30,3 @@
 | --- | --- | --- | --- | --- | --- |
 | `EV-v23-G9-001` | G9 | N/A (spec input package list compiled for reviewers) | `artifacts/generated/v23-evidence/f23-spec-inputs.txt` | recorded | Provides the F23 spec input package set for reviewer intake and regression traceability. |
 | `EV-v23-G9-002` | G9 | N/A (as-built conformance review) | `docs/v2.3/phase5/p5-as-built-conformance.md` | reviewed | Narrative review confirms the documented as-built posture matches the ST1–ST4 command bundle and relay boundary expectations. |
-
-## Artifact placeholders
-- Replace each "pending" artifact with the corresponding command output, manifest, or checksum once the artifact exists.
-- Ensure each row above points to a persistent location (artifacts directory, blob storage, etc.) so reviewers can replay the verification.
-
-## Next steps
-1. Run each command in the matrix, capturing stdout, exit codes, and any generated artifacts (manifests, binaries, checksums).
-2. Update this table with the artifact location, remove the "PENDING EVIDENCE" flag, and link the log/checksum for `G7` traceability.
-3. Sync the gate record (`p5-go-no-go-record.md`) once all rows read PASS.

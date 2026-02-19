@@ -5,7 +5,7 @@
 - Aligns with Gates `G7`, `G8`, and `G9` by documenting the required command/regression/relay-boundary outputs along with the as-built review artifacts while keeping the existing advisory-warning note for non-blocking lint/trivy output.
 
 ## ST1–ST4 mapping
-| ST | Focus | Critical evidence placeholder | Status |
+| ST | Focus | Evidence | Status |
 | --- | --- | --- | --- |
 | ST1 | Regression scenario coverage | Podman/log manifests covering offline catch-up, live stream, degraded continuity, and recovery recorded under `artifacts/generated/v23-regression-scenarios/`. | PASS (EV-v23-G7-009) |
 | ST2 | E2E regression signal | Deterministic verification of the `tests/e2e/v23` suite against the latest scenario catalog (`artifacts/generated/v23-evidence/go-test-e2e-v23.txt`). | PASS (EV-v23-G7-004) |

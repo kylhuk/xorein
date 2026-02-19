@@ -1,7 +1,7 @@
 # Phase 5 as-built conformance summary (P5-T1 ST1–ST4)
 
 ## Purpose
-- Declares the "as-built" runtime/test/build posture to be audited by Gate `G7` once the Phase 5 command suite and regression scenarios are executed.
+- Declares the "as-built" runtime/test/build posture audited by Gate `G7` based on the executed Phase 5 command suite and regression scenarios.
 
 ## ST1–ST4 evidence checkpoints
 | ST | As-built target | Verification target |

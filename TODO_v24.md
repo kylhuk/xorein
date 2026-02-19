@@ -124,7 +124,7 @@ v24 implementation closure artifact. This file records completed implementation,
 ## Phase plan
 
 ### Phase 0 - Scope lock and API surface freeze (G0, G1)
-- [ ] `P0-T1` Freeze v24 scope to the local-daemon split and local API.
+- [x] `P0-T1` Freeze v24 scope to the local-daemon split and local API.
   - `ST1` Import v23 `F24` acceptance matrix; convert to explicit go/no-go checks.
   - `ST2` Produce requirement-to-artifact traceability matrix (spec → code → tests → docs).
   - `ST3` Freeze non-goals (no remote API exposure; no plugin sandbox).
@@ -139,7 +139,7 @@ v24 implementation closure artifact. This file records completed implementation,
     - `docs/v2.4/phase0/p0-gate-ownership.md`
     - `docs/v2.4/phase0/p0-local-api-evolution.md`
 
-- [ ] `P0-T2` Write the local API specification and transport security profile.
+- [x] `P0-T2` Write the local API specification and transport security profile.
   - `ST1` Specify transport targets:
     - Linux/macOS: Unix domain socket path conventions + file perms
     - Windows: named pipe path + ACL requirements
@@ -159,8 +159,7 @@ v24 implementation closure artifact. This file records completed implementation,
     - `docs/v2.4/phase0/p0-local-api-threat-model.md`
     - `docs/v2.4/phase0/p0-error-taxonomy.md`
 
-### Phase 1 - Xorein daemon runtime (G2, G9)
-- [ ] `P1-T1` Implement local API server scaffolding in Xorein.
+- [x] `P1-T1` Implement local API server scaffolding in Xorein.
   - `ST1` Define local API protobuf surface (separate from network proto):
     - `proto/xorein_local/v1/*.proto`
     - codegen target: `gen/go/xorein_local/v1/*`
@@ -176,7 +175,7 @@ v24 implementation closure artifact. This file records completed implementation,
     - `pkg/v24/localapi/*_test.go`
     - `docs/v2.4/phase1/p1-local-api-as-built.md`
 
-- [ ] `P1-T2` Implement daemon lifecycle management.
+- [x] `P1-T2` Implement daemon lifecycle management.
   - `ST1` One-per-user locking:
     - lockfile or OS-native singleton
     - deterministic refusal reason for “already running”
@@ -191,7 +190,7 @@ v24 implementation closure artifact. This file records completed implementation,
     - `scripts/xorein-doctor.sh` (optional)
     - `docs/v2.4/phase1/p1-daemon-lifecycle.md`
 
-- [ ] `P1-T3` Enforce “no UI deps” and package boundaries in CI.
+- [x] `P1-T3` Enforce “no UI deps” and package boundaries in CI.
   - `ST1` Add CI rule: `cmd/xorein` and `pkg/xorein/**` must not import Gio packages.
   - `ST2` Add CI rule: `cmd/harmolyn` must not import protocol runtime internals directly (only local API client + thin glue).
   - Artifacts:

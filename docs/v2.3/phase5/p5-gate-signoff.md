@@ -10,5 +10,5 @@
 | As-built/spec inputs and narrative review validate the `G9` posture. | Architecture Lead | Ensures the executed posture comments on the same spec packages described in the plan. | pass (EV-v23-G9-001, EV-v23-G9-002; review is document-only, no command run) |
 
 ## Additional approvals
-- `p5-final-evidence-bundle.md`, `p5-as-built-conformance.md`, and `p5-evidence-index.md` must be reviewed together for consistency before `G7` status transitions from PENDING.
+- `p5-final-evidence-bundle.md`, `p5-as-built-conformance.md`, and `p5-evidence-index.md` must be reviewed together for consistency before `G7` status is confirmed.
 - `p5-final-evidence-bundle.md`, `p5-as-built-conformance.md`, `p5-evidence-index.md`, and `p5-go-no-go-record.md` now document that G7, G8, and G9 are satisfied (warnings remain advisory).

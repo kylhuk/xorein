@@ -16,7 +16,7 @@ This phase-5 evidence run cross-checks those constraints against the v25 command
 | --- | --- | --- | --- |
 | ST1 | v25 scenario coverage for manifest, transfer, crypto, replication, and relay-boundary probes. | v24 F25 acceptance and spec scope. | `EV-v25-G9-005` and `artifacts/generated/v25-blob-scenarios/manifest.txt`. |
 | ST2 | Deterministic v25 functional regression signal. | v24 F25 handoff stability expectations for testable behavior. | `EV-v25-G9-003` (`go test ./tests/e2e/v25/...`). |
-| ST3 | Workspace/build/CI evidence and lint/breaking posture. | v24 F25 closure expectations to pass hygiene and boundary checks before progression. | `EV-v25-G9-001`, `EV-v25-G10-001`, `EV-v25-G9-002`, `EV-v25-G10-004`, `EV-v25-G10-003`, `EV-v25-G9-004`. |
+| ST3 | Workspace/build/CI evidence and lint/breaking posture. | v24 F25 closure expectations to pass hygiene and boundary checks before progression. | `EV-v25-G9-001`, `EV-v25-G10-001`, `EV-v25-G9-002`, `EV-v25-G9-006`, `EV-v25-G10-003`, `EV-v25-G9-004`. |
 
 ## Conformance outcome
 - Command evidence is fully captured and replayable under `artifacts/generated/v25-evidence` and `artifacts/generated/v25-blob-scenarios`.
