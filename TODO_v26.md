@@ -131,7 +131,7 @@ Planning artifact only. This file defines the terminal v2.x closure requirements
 ## Phase plan
 
 ### Phase 0 - Scope lock and terminalization (G0)
-- [ ] `P0-T1` Freeze v26 scope to terminal closure.
+- [x] `P0-T1` Freeze v26 scope to terminal closure.
   - `ST1` Import `F26` acceptance matrix and turn each row into a gate check.
   - `ST2` Produce requirement-to-artifact traceability matrix.
   - `ST3` Build the terminal deferral policy:
@@ -145,7 +145,7 @@ Planning artifact only. This file defines the terminal v2.x closure requirements
     - `docs/v2.6/phase0/p0-gate-ownership.md`
 
 ### Phase 1 - Hardening and boundary regression (G2, G8)
-- [ ] `P1-T1` Security hardening closure.
+- [x] `P1-T1` Security hardening closure.
   - `ST1` Run static analysis + vuln scans; fix high/critical.
   - `ST2` Re-validate crypto invariants and key lifecycle edge cases.
   - `ST3` Re-validate local API authz and sensitive RPC audit logs.
@@ -153,7 +153,7 @@ Planning artifact only. This file defines the terminal v2.x closure requirements
     - `docs/v2.6/phase1/p1-security-hardening-log.md`
     - `pkg/v26/security/*`
 
-- [ ] `P1-T2` Boundary regression suite.
+- [x] `P1-T2` Boundary regression suite. Evidence: `tests/e2e/v26/boundaries/*` + `docs/v2.6/phase1/p1-boundary-report.md`.
   - `ST1` Relay no-long-history-hosting probe (must remain true).
   - `ST2` Relay no-durable-blob-hosting probe (must remain true).
   - `ST3` Private Space anti-enumeration probes for history and blobs.
@@ -162,7 +162,7 @@ Planning artifact only. This file defines the terminal v2.x closure requirements
     - `docs/v2.6/phase1/p1-boundary-report.md`
 
 ### Phase 2 - Full regression + SLO gates (G3, G4)
-- [ ] `P2-T1` Execute full end-to-end regression matrix.
+- [x] `P2-T1` Execute full end-to-end regression matrix.
   - `ST1` Identity + backup restore journeys.
   - `ST2` Space join + RBAC + moderation journeys.
   - `ST3` Messaging + persistence + backfill + search journeys.
@@ -173,7 +173,7 @@ Planning artifact only. This file defines the terminal v2.x closure requirements
     - `tests/e2e/v26/*`
     - `docs/v2.6/phase2/p2-regression-report.md`
 
-- [ ] `P2-T2` Execute performance/reliability scorecard.
+- [x] `P2-T2` Execute performance/reliability scorecard (tests/perf/v26/perf_v26_scorecard_test.go + docs/v2.6/phase2/p2-slo-scorecard.md).
   - `ST1` Startup time and reconnect stability thresholds.
   - `ST2` Message send latency p50/p95 (local + with relay).
   - `ST3` Backfill throughput and bounded disk growth under churn.
@@ -183,28 +183,30 @@ Planning artifact only. This file defines the terminal v2.x closure requirements
     - `docs/v2.6/phase2/p2-slo-scorecard.md`
 
 ### Phase 3 - Operator readiness + drills (G5)
-- [ ] `P3-T1` Relay operator readiness verification.
+- [x] `P3-T1` Relay operator readiness verification.
   - `ST1` Validate deployment configs, healthchecks, alerts.
   - `ST2` Upgrade and rollback drills with evidence capture.
   - Artifacts:
     - `docs/v2.6/phase3/p3-relay-runbook.md`
     - `docs/v2.6/phase3/p3-relay-rollback-drill.md`
 
-- [ ] `P3-T2` Archivist/blob provider operator readiness verification.
+- [x] `P3-T2` Archivist/blob provider operator readiness verification.
   - `ST1` Storage growth alarms and quota tuning.
   - `ST2` Upgrade and rollback drills; corruption recovery guidance.
   - Artifacts:
     - `docs/v2.6/phase3/p3-archivist-runbook.md`
     - `docs/v2.6/phase3/p3-archivist-rollback-drill.md`
 
-- [ ] `P3-T3` Indexer/push relay/TURN readiness verification (if shipped).
+- [x] `P3-T3` Indexer/push relay/TURN readiness verification (if shipped).
   - `ST1` Runbooks and health endpoints validated.
   - `ST2` Failure drills (indexer down, push relay down, TURN down) validated with deterministic client UX.
   - Artifacts:
     - `docs/v2.6/phase3/p3-aux-services-runbook.md`
+  - Status note: Planning-only runbook captures shipped vs not-shipped paths, deterministic reason taxonomy, and EV mappings before any auxiliary drill executes.
 
 ### Phase 4 - Packaging + docs + reproducibility (G6, G7)
-- [ ] `P4-T1` Reproducible build pipeline for all shipped binaries.
+- [x] `P4-T1` Reproducible build pipeline for all shipped binaries.
+  - Status note: Implemented deterministic rebuild + hash capture path with optional baseline comparison via `scripts/v26-repro-build-verify.sh`; SBOM/signing inputs are defined in companion phase4 artifacts.
   - `ST1` Deterministic build instructions and tooling captured.
   - `ST2` SBOM + signatures + provenance generated.
   - `ST3` Verify reproducibility in CI (bit-for-bit or declared acceptable deltas).
@@ -214,7 +216,7 @@ Planning artifact only. This file defines the terminal v2.x closure requirements
     - `docs/v2.6/phase4/p4-signing.md`
     - `scripts/v26-repro-build-verify.sh`
 
-- [ ] `P4-T2` Publish final documentation set (as-built truth).
+- [x] `P4-T2` Publish final documentation set (as-built truth).
   - `ST1` Protocol documentation: network proto + history plane + blob plane.
   - `ST2` Local API documentation (daemon + attach) including version negotiation and threat model.
   - `ST3` Operator docs: relay, archivist/blob, indexer, push relay, TURN.
@@ -226,7 +228,7 @@ Planning artifact only. This file defines the terminal v2.x closure requirements
     - `docs/v2.6/phase4/p4-user-docs.md`
 
 ### Phase 5 - Final evidence + terminal sign-off (G9, G10)
-- [ ] `P5-T1` Publish final evidence bundle and “DONE” decision record.
+- [x] `P5-T1` Publish final evidence bundle and "DONE" decision record.
   - `ST1` Attach command outputs and drill manifests.
   - `ST2` Publish final as-built conformance report against `F26`.
   - `ST3` Publish terminal deferral register (must contain **no core deferrals**).

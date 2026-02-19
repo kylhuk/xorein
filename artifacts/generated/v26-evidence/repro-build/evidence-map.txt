@@ -1,0 +1,3 @@
+EV-v26-G6-001|scripts/v26-repro-build-verify.sh|deterministic rebuild of cmd/xorein and cmd/harmolyn|pass
+EV-v26-G6-002|scripts/v26-repro-build-verify.sh|sha256 checksums output written to checksums.txt|pass
+EV-v26-G6-003|scripts/v26-repro-build-verify.sh --baseline <path>|baseline hash comparison against checksums.txt|not-run

@@ -1,0 +1,4 @@
+=== RUN   TestRestartInvariant
+--- PASS: TestRestartInvariant (0.00s)
+PASS
+ok  	github.com/aether/code_aether/pkg/v21/store/tombstone	0.001s

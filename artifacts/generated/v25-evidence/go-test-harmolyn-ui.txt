@@ -1,0 +1,5 @@
+go test ./pkg/v25/harmolyn/ui -count=1
+ok  	github.com/aether/code_aether/pkg/v25/harmolyn/ui	0.002s
+
+go test ./tests/e2e/v25/... -run Harmolyn -count=1
+ok  	github.com/aether/code_aether/tests/e2e/v25	0.002s [no tests to run]

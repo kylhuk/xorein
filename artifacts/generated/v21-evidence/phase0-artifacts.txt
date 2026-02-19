@@ -1,0 +1,40 @@
+  File: docs/v2.1/phase0/p0-scope-lock.md
+  Size: 746       	Blocks: 8          IO Block: 4096   regular file
+Device: 0,53	Inode: 1909144     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/   wenga)   Gid: ( 1000/   wenga)
+Access: 2026-02-18 21:25:34.198216305 +0100
+Modify: 2026-02-18 21:38:23.700134752 +0100
+Change: 2026-02-18 21:38:23.700134752 +0100
+ Birth: 2026-02-18 21:25:34.198216305 +0100
+  File: docs/v2.1/phase0/p0-traceability-matrix.md
+  Size: 768       	Blocks: 8          IO Block: 4096   regular file
+Device: 0,53	Inode: 1909289     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/   wenga)   Gid: ( 1000/   wenga)
+Access: 2026-02-18 21:26:08.091735447 +0100
+Modify: 2026-02-18 21:26:08.092823448 +0100
+Change: 2026-02-18 21:26:08.092823448 +0100
+ Birth: 2026-02-18 21:26:08.091735447 +0100
+  File: docs/v2.1/phase0/p0-gate-ownership.md
+  Size: 554       	Blocks: 8          IO Block: 4096   regular file
+Device: 0,53	Inode: 1909357     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/   wenga)   Gid: ( 1000/   wenga)
+Access: 2026-02-18 21:26:15.269845499 +0100
+Modify: 2026-02-18 21:26:15.270845514 +0100
+Change: 2026-02-18 21:26:15.270845514 +0100
+ Birth: 2026-02-18 21:26:15.269845499 +0100
+  File: docs/v2.1/phase0/p0-decisions.md
+  Size: 820       	Blocks: 8          IO Block: 4096   regular file
+Device: 0,53	Inode: 1909382     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/   wenga)   Gid: ( 1000/   wenga)
+Access: 2026-02-18 21:26:20.439924785 +0100
+Modify: 2026-02-18 21:26:20.440924800 +0100
+Change: 2026-02-18 21:26:20.440924800 +0100
+ Birth: 2026-02-18 21:26:20.439924785 +0100
+  File: docs/v2.1/phase0/p0-binary-boundary.md
+  Size: 621       	Blocks: 8          IO Block: 4096   regular file
+Device: 0,53	Inode: 1909433     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/   wenga)   Gid: ( 1000/   wenga)
+Access: 2026-02-18 21:26:22.847961720 +0100
+Modify: 2026-02-18 21:26:22.848961735 +0100
+Change: 2026-02-18 21:26:22.848961735 +0100
+ Birth: 2026-02-18 21:26:22.847961720 +0100

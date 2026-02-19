@@ -1,0 +1,24 @@
+  File: docs/v2.1/phase4/f22-history-backfill-spec.md
+  Size: 4050      	Blocks: 8          IO Block: 4096   regular file
+Device: 0,53	Inode: 1926121     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/   wenga)   Gid: ( 1000/   wenga)
+Access: 2026-02-18 22:17:16.942340727 +0100
+Modify: 2026-02-18 22:17:16.943504818 +0100
+Change: 2026-02-18 22:17:16.943504818 +0100
+ Birth: 2026-02-18 22:17:16.942340727 +0100
+  File: docs/v2.1/phase4/f22-proto-delta.md
+  Size: 3147      	Blocks: 8          IO Block: 4096   regular file
+Device: 0,53	Inode: 1926135     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/   wenga)   Gid: ( 1000/   wenga)
+Access: 2026-02-18 22:17:28.062511807 +0100
+Modify: 2026-02-18 22:17:28.063155280 +0100
+Change: 2026-02-18 22:17:28.063155280 +0100
+ Birth: 2026-02-18 22:17:28.062511807 +0100
+  File: docs/v2.1/phase4/f22-acceptance-matrix.md
+  Size: 1622      	Blocks: 8          IO Block: 4096   regular file
+Device: 0,53	Inode: 1926148     Links: 1
+Access: (0644/-rw-r--r--)  Uid: ( 1000/   wenga)   Gid: ( 1000/   wenga)
+Access: 2026-02-18 22:17:35.474625846 +0100
+Modify: 2026-02-18 22:17:35.475537485 +0100
+Change: 2026-02-18 22:17:35.475537485 +0100
+ Birth: 2026-02-18 22:17:35.474625846 +0100

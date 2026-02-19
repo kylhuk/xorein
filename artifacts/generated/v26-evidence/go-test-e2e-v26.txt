@@ -1,0 +1,4 @@
+[command] go test ./tests/e2e/v26/...
+[artifact] artifacts/generated/v26-evidence/go-test-e2e-v26.txt
+ok  	github.com/aether/code_aether/tests/e2e/v26	(cached)
+ok  	github.com/aether/code_aether/tests/e2e/v26/boundaries	(cached)

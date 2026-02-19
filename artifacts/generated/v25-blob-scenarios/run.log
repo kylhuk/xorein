@@ -1,0 +1,33 @@
+[2026-02-19T10:29:24Z] podman runtime check passed
+[2026-02-19T10:29:24Z] RUN scenario=BlobRef manifest validation rules
+[2026-02-19T10:29:24Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestBlobRefManifestValidation -count=1 -v'
+[2026-02-19T10:29:25Z] exit_code=0
+[2026-02-19T10:29:25Z] status=pass reason=none
+[2026-02-19T10:29:25Z] RUN scenario=Manifest chunk sum rejection
+[2026-02-19T10:29:25Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestBlobRefManifestRejectsChunkSumMismatch -count=1 -v'
+[2026-02-19T10:29:25Z] exit_code=0
+[2026-02-19T10:29:25Z] status=pass reason=none
+[2026-02-19T10:29:25Z] RUN scenario=Successful blob transfer path
+[2026-02-19T10:29:25Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestBlobTransferSuccess -count=1 -v'
+[2026-02-19T10:29:26Z] exit_code=0
+[2026-02-19T10:29:26Z] status=pass reason=none
+[2026-02-19T10:29:26Z] RUN scenario=Blob transfer refusal paths
+[2026-02-19T10:29:26Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestBlobTransferRefusals -count=1 -v'
+[2026-02-19T10:29:27Z] exit_code=0
+[2026-02-19T10:29:27Z] status=pass reason=none
+[2026-02-19T10:29:27Z] RUN scenario=Blob crypto envelope roundtrip
+[2026-02-19T10:29:27Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestBlobCryptoEnvelopeRoundtrip -count=1 -v'
+[2026-02-19T10:29:28Z] exit_code=0
+[2026-02-19T10:29:28Z] status=pass reason=none
+[2026-02-19T10:29:28Z] RUN scenario=Replication selection and repair policy
+[2026-02-19T10:29:28Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestReplicationPolicyPublishPrefersLocalAndDiversifies -count=1 -v'
+[2026-02-19T10:29:28Z] exit_code=0
+[2026-02-19T10:29:28Z] status=pass reason=none
+[2026-02-19T10:29:28Z] RUN scenario=Private-space anti-enumeration boundary
+[2026-02-19T10:29:28Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestPrivateSpaceAntiEnumeration -count=1 -v'
+[2026-02-19T10:29:29Z] exit_code=0
+[2026-02-19T10:29:29Z] status=pass reason=none
+[2026-02-19T10:29:29Z] RUN scenario=Assets preview/download flow
+[2026-02-19T10:29:29Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestAssetsPreviewDownloadFlow -count=1 -v'
+[2026-02-19T10:29:30Z] exit_code=0
+[2026-02-19T10:29:30Z] status=pass reason=none

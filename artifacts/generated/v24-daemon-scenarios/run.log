@@ -1,0 +1,13 @@
+[2026-02-19T09:16:29Z] podman runtime check passed
+[2026-02-19T09:16:29Z] RUN scenario=Two clients read concurrently, writes serialized
+[2026-02-19T09:16:29Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v24 -run TestScenarioDualClientsParallelReadsAndSerializedWrites -count=1 -v'
+[2026-02-19T09:16:30Z] exit_code=0
+[2026-02-19T09:16:30Z] status=pass reason=none
+[2026-02-19T09:16:30Z] RUN scenario=Daemon crash mid-call and reattach path
+[2026-02-19T09:16:30Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v24 -run TestScenarioDaemonCrashMidCallReattach -count=1 -v'
+[2026-02-19T09:16:31Z] exit_code=0
+[2026-02-19T09:16:31Z] status=pass reason=none
+[2026-02-19T09:16:31Z] RUN scenario=Stale socket auto-repair path
+[2026-02-19T09:16:31Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v24 -run TestScenarioStaleSocketAutoRepair -count=1 -v'
+[2026-02-19T09:16:31Z] exit_code=0
+[2026-02-19T09:16:31Z] status=pass reason=none

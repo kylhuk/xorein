@@ -1,7 +1,7 @@
 # TODO v22 - Xorein (backend) + harmolyn (frontend) Execution Plan (v2.2)
 
 ## Status
-Planning artifact only. This file defines v22 implementation and validation requirements. It does not claim implementation completion.
+As-built: v22 implementation, validation, and evidence artifacts are complete. Refer to `docs/v2.2/phase5/p5-evidence-bundle.md`, `p5-as-built-conformance.md`, and `p5-evidence-index.md` for the gate results that fed this document's conformance claims.
 
 ## Naming + binary split note (carry-forward)
 - **Xorein**: backend node/runtime binary (`cmd/xorein`).
@@ -113,7 +113,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
 ## Phase plan
 
 ### Phase 0 - Scope lock and architecture map (G0)
-- [ ] `P0-T1` Freeze v22 implementation scope and role boundaries.
+- [x] `P0-T1` Freeze v22 implementation scope and role boundaries.
   - `ST1` Confirm Archivist is a capability flag/config (no privileged protocol authority).
   - `ST2` Produce requirement-to-artifact traceability matrix.
   - `ST3` Produce threat model delta for history-plane:
@@ -129,7 +129,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - `docs/v2.2/phase0/p0-gate-ownership.md`
 
 ### Phase 1 - Archivist capability runtime (G2)
-- [ ] `P1-T1` Implement Archivist capability advertisement and selection signals.
+- [x] `P1-T1` Implement Archivist capability advertisement and selection signals.
   - `ST1` Implement `ArchivistAdvertisement` publication/refresh semantics (per F22 spec).
   - `ST2` Implement client selection inputs:
     - prefer same-Space operator list (if any)
@@ -140,7 +140,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - `pkg/v22/archivist/advertise/*_test.go`
     - `docs/v2.2/phase1/p1-archivist-selection-contract.md`
 
-- [ ] `P1-T2` Implement ciphertext history segment storage engine.
+- [x] `P1-T2` Implement ciphertext history segment storage engine.
   - `ST1` Implement storage model:
     - segments keyed by `{SpaceID, ChannelID, SegmentID}`
     - segment references are opaque; no plaintext metadata required beyond size/time range if specified
@@ -156,7 +156,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - `pkg/v22/archivist/store/*_test.go`
     - `docs/v2.2/phase1/p1-archivist-quota-retention.md`
 
-- [ ] `P1-T3` Implement replication and healing pipeline (ciphertext-only).
+- [x] `P1-T3` Implement replication and healing pipeline (ciphertext-only).
   - `ST1` Define replication policy:
     - default replica count `r` (e.g., 3) and minimum acceptable `r_min` (e.g., 2)
     - when `r` cannot be met: deterministic degraded-mode labeling (`HISTORY_DURABILITY_DEGRADED`)
@@ -174,7 +174,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - `docs/v2.2/phase1/p1-replication-contract.md`
 
 ### Phase 2 - History integrity + retrieval protocol (G3)
-- [ ] `P2-T1` Implement history integrity primitives.
+- [x] `P2-T1` Implement history integrity primitives.
   - `ST1` Implement `HistoryHead` production/verification:
     - signed head commits to latest segment manifest(s)
   - `ST2` Implement `HistorySegmentManifest` structure:
@@ -190,7 +190,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - `pkg/v22/history/integrity/*_test.go`
     - `docs/v2.2/phase2/p2-integrity-reason-taxonomy.md`
 
-- [ ] `P2-T2` Implement retrieval endpoints and private Space anti-enumeration.
+- [x] `P2-T2` Implement retrieval endpoints and private Space anti-enumeration.
   - `ST1` Implement retrieval endpoints for:
     - `HistoryHead`
     - `HistorySegmentManifest`
@@ -206,7 +206,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - `pkg/v22/history/retrieve/*_test.go`
     - `docs/v2.2/phase2/p2-private-space-anti-enumeration.md`
 
-- [ ] `P2-T3` Integrate moderation redaction/tombstones into backfill apply semantics.
+- [x] `P2-T3` Integrate moderation redaction/tombstones into backfill apply semantics.
   - `ST1` Ensure tombstone events override any backfilled plaintext deterministically.
   - `ST2` Define and test “cannot guarantee deletion” disclosure surfaces (docs + UI wording).
   - `ST3` Ensure tombstoned content is never re-indexed into local FTS during backfill.
@@ -216,7 +216,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - `docs/v2.2/phase2/p2-redaction-backfill-contract.md`
 
 ### Phase 3 - Client backfill + search coverage integration (G4)
-- [ ] `P3-T1` Implement time-range backfill protocol in client runtime.
+- [x] `P3-T1` Implement time-range backfill protocol in client runtime.
   - `ST1` Backfill request model:
     - request `{SpaceID, ChannelID, TimeRange, MaxBytes/MaxSegments}`
     - no keyword-bearing requests by default
@@ -231,7 +231,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - `pkg/v22/history/backfill/*_test.go`
     - `tests/e2e/v22/backfill_*`
 
-- [ ] `P3-T2` Extend harmolyn search UX to reflect coverage + offer backfill.
+- [x] `P3-T2` Extend harmolyn search UX to reflect coverage + offer backfill.
   - `ST1` Coverage labeling:
     - show “searched local history from A..B”
     - show missing windows and offer backfill-by-time-range
@@ -245,7 +245,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - `docs/v2.2/phase3/p3-history-search-ux-contract.md`
 
 ### Phase 4 - Validation matrix and Podman scenarios (G5, G6)
-- [ ] `P4-T1` Add adversarial/privacy/abuse tests for history-plane.
+- [x] `P4-T1` Add adversarial/privacy/abuse tests for history-plane.
   - `ST1` Anti-enumeration tests for private Spaces.
   - `ST2` Forged manifest/head signature tests.
   - `ST3` Quota/retention enforcement tests (abuse and edge cases).
@@ -255,7 +255,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - healing under archivist churn
   - Artifacts: `tests/e2e/v22/*`, `tests/perf/v22/*`
 
-- [ ] `P4-T2` Add Podman multi-node history scenarios (Xorein nodes).
+- [x] `P4-T2` Add Podman multi-node history scenarios (Xorein nodes).
   - `ST1` Offline catch-up: client offline → messages sent → client backfill on reconnect.
   - `ST2` Multi-archivist selection + failover scenario.
   - `ST3` Quota exceeded scenario with deterministic refusal reasons.
@@ -268,7 +268,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - `docs/v2.2/phase4/p4-podman-scenarios.md`
 
 ### Phase 5 - v23 spec package and closure (G7, G8)
-- [ ] `P5-T1` Produce `F23` hardening specification package.
+- [x] `P5-T1` Produce `F23` hardening specification package (see docs/v2.2/phase4/f23-history-hardening-spec.md, f23-proto-delta.md, f23-acceptance-matrix.md and the evidence bundle).
   - `ST1` Security hardening gates for history/search:
     - abuse resistance, quota defaults, retention defaults
     - privacy conformance (no keyword leakage by default)
@@ -282,7 +282,7 @@ Planning artifact only. This file defines v22 implementation and validation requ
     - `docs/v2.2/phase4/f23-proto-delta.md`
     - `docs/v2.2/phase4/f23-acceptance-matrix.md`
 
-- [ ] `P5-T2` Publish v22 evidence bundle and promotion recommendation.
+- [x] `P5-T2` Publish v22 evidence bundle and promotion recommendation (see docs/v2.2/phase5/p5-evidence-bundle.md, p5-as-built-conformance.md, p5-gate-signoff.md, and p5-risk-register.md).
   - `ST1` Command outputs for compatibility/test/e2e/perf checks.
   - `ST2` Podman scenario outputs and deterministic result manifests.
   - `ST3` `F22` as-built conformance report against v21 `F22` specs.

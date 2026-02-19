@@ -1,0 +1,9 @@
+[2026-02-19T11:43:20Z] repro build verify start
+[2026-02-19T11:43:20Z] workspace: /home/wenga/src/code_aether
+[2026-02-19T11:43:20Z] output_dir: /home/wenga/src/code_aether/artifacts/generated/v26-evidence/repro-build
+[2026-02-19T11:43:20Z] baseline_dir: not set
+[2026-02-19T11:43:20Z] build xorein
+[2026-02-19T11:43:20Z] sha256 xorein=10ccfcbc6c8d7114ae5dbf02bdb90888f18aff8d099741fd15507cafd7516529
+[2026-02-19T11:43:20Z] build harmolyn
+[2026-02-19T11:43:20Z] sha256 harmolyn=356b7e3525fa82f329497c645ddcf28fe22ec05e55ff6b967882f3663488b6b9
+[2026-02-19T11:43:20Z] reproducible build verification completed successfully

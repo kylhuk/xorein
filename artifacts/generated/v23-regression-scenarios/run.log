@@ -1,0 +1,21 @@
+[2026-02-19T07:47:12Z] podman runtime check passed
+[2026-02-19T07:47:12Z] RUN scenario=Offline catch-up across network chaos
+[2026-02-19T07:47:12Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v23 -run TestScenarioOfflineCatchup -count=1 -v'
+[2026-02-19T07:47:13Z] exit_code=0
+[2026-02-19T07:47:13Z] status=pass reason=none
+[2026-02-19T07:47:13Z] RUN scenario=Redaction tombstone regression
+[2026-02-19T07:47:13Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v23 -run TestScenarioRedactionTombstoneRegression -count=1 -v'
+[2026-02-19T07:47:13Z] exit_code=0
+[2026-02-19T07:47:13Z] status=pass reason=none
+[2026-02-19T07:47:13Z] RUN scenario=Private Space anti-enumeration
+[2026-02-19T07:47:13Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v23 -run TestScenarioPrivateSpaceAntiEnumeration -count=1 -v'
+[2026-02-19T07:47:14Z] exit_code=0
+[2026-02-19T07:47:14Z] status=pass reason=none
+[2026-02-19T07:47:14Z] RUN scenario=Replica healing under churn
+[2026-02-19T07:47:14Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v23 -run TestScenarioReplicaHealingUnderChurn -count=1 -v'
+[2026-02-19T07:47:15Z] exit_code=0
+[2026-02-19T07:47:15Z] status=pass reason=none
+[2026-02-19T07:47:15Z] RUN scenario=Relay no-long-history-hosting boundary
+[2026-02-19T07:47:15Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v23 -run TestScenarioRelayNoHistoryHosting -count=1 -v'
+[2026-02-19T07:47:15Z] exit_code=0
+[2026-02-19T07:47:15Z] status=pass reason=none

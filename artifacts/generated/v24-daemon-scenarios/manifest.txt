@@ -1,0 +1,38 @@
+suite: v24-daemon-scenarios
+generated_at: "2026-02-19T09:16:31Z"
+podman_image: "docker.io/library/golang:1.24.12"
+podman_available: true
+podman_blocker: ""
+artifact_dir: "/home/wenga/src/code_aether/artifacts/generated/v24-daemon-scenarios"
+log: "/home/wenga/src/code_aether/artifacts/generated/v24-daemon-scenarios/run.log"
+scenarios:
+  - slug: dual-client-parallel-reads
+    status: pass
+    package: ./tests/e2e/v24
+    test_pattern: TestScenarioDualClientsParallelReadsAndSerializedWrites
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v24 -run TestScenarioDualClientsParallelReadsAndSerializedWrites -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v24-daemon-scenarios/dual-client-parallel-reads.log"
+  - slug: crash-mid-call-recovery
+    status: pass
+    package: ./tests/e2e/v24
+    test_pattern: TestScenarioDaemonCrashMidCallReattach
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v24 -run TestScenarioDaemonCrashMidCallReattach -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v24-daemon-scenarios/crash-mid-call-recovery.log"
+  - slug: stale-socket-repair
+    status: pass
+    package: ./tests/e2e/v24
+    test_pattern: TestScenarioStaleSocketAutoRepair
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v24 -run TestScenarioStaleSocketAutoRepair -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v24-daemon-scenarios/stale-socket-repair.log"

@@ -1,0 +1,21 @@
+[2026-02-18T22:30:55Z] podman runtime check passed
+[2026-02-18T22:30:55Z] RUN scenario=Offline catch-up probe
+[2026-02-18T22:30:55Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v22 -run TestScenarioOfflineCatchup -count=1 -v'
+[2026-02-18T22:30:56Z] exit_code=0
+[2026-02-18T22:30:56Z] status=pass reason=none
+[2026-02-18T22:30:56Z] RUN scenario=Multi-archivist failover probe
+[2026-02-18T22:30:56Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v22 -run TestScenarioMultiArchivistFailover -count=1 -v'
+[2026-02-18T22:30:56Z] exit_code=0
+[2026-02-18T22:30:56Z] status=pass reason=none
+[2026-02-18T22:30:56Z] RUN scenario=Quota refusal probe
+[2026-02-18T22:30:56Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v22 -run TestScenarioQuotaRefusal -count=1 -v'
+[2026-02-18T22:30:57Z] exit_code=0
+[2026-02-18T22:30:57Z] status=pass reason=none
+[2026-02-18T22:30:57Z] RUN scenario=Replica healing probe
+[2026-02-18T22:30:57Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v22 -run TestScenarioReplicaHealing -count=1 -v'
+[2026-02-18T22:30:58Z] exit_code=0
+[2026-02-18T22:30:58Z] status=pass reason=none
+[2026-02-18T22:30:58Z] RUN scenario=Relay no-history-hosting regression probe
+[2026-02-18T22:30:58Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v22 -run TestScenarioRelayNoHistoryHosting -count=1 -v'
+[2026-02-18T22:30:58Z] exit_code=0
+[2026-02-18T22:30:58Z] status=pass reason=none

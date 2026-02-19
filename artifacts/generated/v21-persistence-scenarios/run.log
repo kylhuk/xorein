@@ -1,0 +1,13 @@
+[2026-02-18T21:21:04Z] podman runtime check passed
+[2026-02-18T21:21:04Z] RUN scenario=multi-peer restart/resume probe
+[2026-02-18T21:21:04Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./pkg/v21/store/tombstone -run TestRestartInvariant -count=1 -v'
+[2026-02-18T21:21:05Z] exit_code=0
+[2026-02-18T21:21:05Z] status=pass reason=none
+[2026-02-18T21:21:05Z] RUN scenario=local history clear/recovery probe
+[2026-02-18T21:21:05Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./pkg/v21/store/retention -run TestPruneWindowAndLimit -count=1 -v'
+[2026-02-18T21:21:06Z] exit_code=0
+[2026-02-18T21:21:06Z] status=pass reason=none
+[2026-02-18T21:21:06Z] RUN scenario=relay no-long-history-hosting boundary probe
+[2026-02-18T21:21:06Z] command=podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./pkg/v21/search -run TestSearchFiltersAndCoverage -count=1 -v'
+[2026-02-18T21:21:06Z] exit_code=0
+[2026-02-18T21:21:06Z] status=pass reason=none

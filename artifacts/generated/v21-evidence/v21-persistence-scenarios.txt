@@ -1,0 +1,5 @@
+[v21-persistence-scenarios] multi-peer restart/resume probe -> pass
+[v21-persistence-scenarios] local history clear/recovery probe -> pass
+[v21-persistence-scenarios] relay no-long-history-hosting boundary probe -> pass
+[v21-persistence-scenarios] wrote manifest: /home/wenga/src/code_aether/artifacts/generated/v21-persistence-scenarios/manifest.txt
+[v21-persistence-scenarios] wrote log: /home/wenga/src/code_aether/artifacts/generated/v21-persistence-scenarios/run.log

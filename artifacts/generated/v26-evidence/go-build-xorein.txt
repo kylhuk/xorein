@@ -1,0 +1,2 @@
+[command] go build ./cmd/xorein
+[artifact] artifacts/generated/v26-evidence/go-build-xorein.txt

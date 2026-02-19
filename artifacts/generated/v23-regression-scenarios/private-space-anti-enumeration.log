@@ -1,0 +1,4 @@
+=== RUN   TestScenarioPrivateSpaceAntiEnumeration
+--- PASS: TestScenarioPrivateSpaceAntiEnumeration (0.00s)
+PASS
+ok  	github.com/aether/code_aether/tests/e2e/v23	0.001s

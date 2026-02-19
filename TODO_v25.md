@@ -122,7 +122,7 @@ Planning artifact only. This file defines v25 implementation and validation requ
 ## Phase plan
 
 ### Phase 0 - Scope lock and data-class mapping (G0)
-- [ ] `P0-T1` Freeze v25 blob store scope and data-class coverage.
+- [x] `P0-T1` Freeze v25 blob store scope and data-class coverage.
   - `ST1` Import v24 `F25` acceptance matrix; convert to explicit go/no-go checks.
   - `ST2` Produce requirement-to-artifact traceability matrix.
   - `ST3` Freeze supported mime types and size tiers (desktop vs mobile defaults).
@@ -136,24 +136,30 @@ Planning artifact only. This file defines v25 implementation and validation requ
     - `docs/v2.5/phase0/p0-traceability-matrix.md`
     - `docs/v2.5/phase0/p0-asset-coverage-map.md`
 
+- [x] `P0-T2` Document proto compatibility guardrails for v25 blob store/asset flows.
+  - `ST1` Enumerate the new messages/fields that must land in the v25 proto delta (chunk/manifest endpoints, asset references, capability enforcement metadata).
+  - `ST2` Capture the additive-only checklist (no renumbering, no type changes, no required fields, reserve removed numbers) so future tweaks stay backward-compatible.
+  - `ST3` Clarify downgrade/read-old expectations (relay/clients may see mixed-version blobs, assets, or blob metadata) with explicit guidance for old clients and roll-over reads.
+  - Artifact: `docs/v2.5/phase0/p0-proto-compat-checklist.md`.
+
 ### Phase 1 - Blob model + encryption (G2)
-- [ ] `P1-T1` Implement BlobRef + manifest schema.
+- [x] `P1-T1` Implement BlobRef + manifest schema.
   - `ST1` Define canonical `BlobRef`:
-    - `hash` (e.g., BLAKE3/SHA-256; must be fixed by spec)
+    - `hashAlgorithm` (predefined algorithms such as BLAKE3 or SHA-256)
+    - `contentHash`
     - `size`
-    - `mime`
-    - `chunk_size`
-    - `root_manifest_hash` (if chunked)
-  - `ST2` Implement manifest verification rules:
-    - chunk list integrity
-    - content hash match
-    - deterministic failure codes
+    - `mimeType`
+    - `chunkSize`
+    - `chunkProfile`
+    - optional `encryptedMetadataPointer`
+  - `ST2` Implement manifest verification rules that surface deterministic refusal codes for chunk, size, and digest mismatches.
+  - `ST3` Allow forward-extensible metadata sections that round-trip unknown keys while leaving validation untouched.
   - Artifacts:
     - `pkg/v25/blobref/*`
     - `pkg/v25/blobref/*_test.go`
-    - `docs/v2.5/phase1/p1-blobref-as-built.md`
+    - `docs/v2.5/phase1/p1-blobref-spec.md`
 
-- [ ] `P1-T2` Implement encryption envelope.
+- [x] `P1-T2` Implement encryption envelope.
   - `ST1` Per-blob DEK generation + AEAD encryption.
   - `ST2` DEK wrapping:
     - Space assets: wrap under Space asset key
@@ -165,7 +171,7 @@ Planning artifact only. This file defines v25 implementation and validation requ
     - `docs/v2.5/phase1/p1-blobcrypto-profile.md`
 
 ### Phase 2 - Provider protocol + replication (G3, G4, G10)
-- [ ] `P2-T1` Implement provider endpoints and bounded transfer.
+- [x] `P2-T1` Implement provider endpoints and bounded transfer.
   - `ST1` Add proto endpoints for:
     - `PutBlobChunk`, `GetBlobChunk`
     - `PutManifest`, `GetManifest`
@@ -178,7 +184,7 @@ Planning artifact only. This file defines v25 implementation and validation requ
     - `pkg/v25/blobproto/*`
     - `tests/e2e/v25/blob_transfer_*`
 
-- [ ] `P2-T2` Implement replication and repair policy.
+- [x] `P2-T2` Implement replication and repair policy.
   - `ST1` Publish to `r_blob` providers; record replica set in local metadata.
   - `ST2` Verify replica health; repair under churn.
   - `ST3` Define and enforce provider selection policy:
@@ -189,15 +195,16 @@ Planning artifact only. This file defines v25 implementation and validation requ
     - `docs/v2.5/phase2/p2-replication-policy.md`
     - `tests/e2e/v25/replication_*`
 
-- [ ] `P2-T3` Enforce relay no-durable-blob-hosting boundary.
-  - `ST1` Add regression probe: relays refuse blob storage endpoints.
-  - `ST2` Add Podman scenario that fails if relay stores blob artifacts on disk.
+- [x] `P2-T3` Enforce relay no-durable-blob-hosting boundary.
+  - `ST1` Relay rejects `PutManifest`/`PutBlobChunk` uploads with deterministic refusal errors.
+  - `ST2` Relay retains only manifest pointers/tokens; payload bytes never persist.
+  - `ST3` Unauthorized private-space lookups return indistinguishable not-found errors for existing and missing blobs.
   - Artifacts:
-    - `tests/e2e/v25/relay_boundary_*`
-    - `docs/v2.5/phase2/p2-relay-boundary-regressions.md`
+    - `tests/e2e/v25/relay_blob_boundary_test.go`
+    - `docs/v2.5/phase2/p2-relay-boundary-report.md`
 
 ### Phase 3 - Product integration (G5, G6)
-- [ ] `P3-T1` Integrate attachments into messaging flows.
+- [x] `P3-T1` Integrate attachments into messaging flows.
   - `ST1` Send path: encrypt+upload blob(s) → send message with BlobRef(s).
   - `ST2` Receive path: lazy download with verification; deterministic failure reasons.
   - `ST3` Redaction behavior:
@@ -208,7 +215,7 @@ Planning artifact only. This file defines v25 implementation and validation requ
     - `tests/e2e/v25/attachments_*`
     - `docs/v2.5/phase3/p3-attachments-contract.md`
 
-- [ ] `P3-T2` Integrate avatars/icons/emojis as BlobRef-backed assets.
+- [x] `P3-T2` Integrate avatars/icons/emojis as BlobRef-backed assets.
   - `ST1` User avatar set/update path + caching rules.
   - `ST2` Space icon set/update path + caching rules.
   - `ST3` Emoji asset fetch rules (if present).
@@ -216,8 +223,10 @@ Planning artifact only. This file defines v25 implementation and validation requ
     - `pkg/v25/assets/*`
     - `tests/e2e/v25/assets_*`
     - `docs/v2.5/phase3/p3-assets-contract.md`
+    - `docs/v2.5/phase3/p3-bridge-asset-policy.md`
+    - `tests/e2e/v25/bridge_asset_policy_test.go`
 
-- [ ] `P3-T3` harmolyn asset UX.
+- [x] `P3-T3` harmolyn asset UX.
   - `ST1` Upload/download progress and cancellation.
   - `ST2` “Tap to download” / “download on Wi‑Fi only” toggles (if present).
   - `ST3` Offline badges and deterministic error surfaces.
@@ -226,17 +235,17 @@ Planning artifact only. This file defines v25 implementation and validation requ
     - `docs/v2.5/phase3/p3-asset-ux-contract.md`
 
 ### Phase 4 - v26 final closure spec package (G8)
-- [ ] `P4-T1` Produce `F26` final closure specification package.
+- [x] `P4-T1` Produce `F26` final closure specification package.
   - `ST1` Define system-wide “DONE” criteria (no open core-feature deferrals).
   - `ST2` Define full-stack regression matrix requirements (identity → messaging → media → moderation → discovery → persistence → blob store).
   - `ST3` Define release packaging and reproducible build requirements for all binaries.
   - Artifacts:
-    - `docs/v2.5/phase4/f26-final-closure-spec.md`
-    - `docs/v2.5/phase4/f26-proto-delta.md`
-    - `docs/v2.5/phase4/f26-acceptance-matrix.md`
+    - `docs/v2.5/phase4/f26-final-closure-spec.md` (planning-only system specification)
+    - `docs/v2.5/phase4/f26-proto-delta.md` (additive proto delta plan)
+    - `docs/v2.5/phase4/f26-acceptance-matrix.md` (acceptance/evidence anchors)
 
 ### Phase 5 - Closure and evidence (G9)
-- [ ] `P5-T1` Publish v25 evidence bundle and promotion recommendation.
+- [x] `P5-T1` Publish v25 evidence bundle and promotion recommendation.
   - `ST1` Attach all command outputs and scenario manifests.
   - `ST2` Publish `F25` as-built conformance report against v24 `F25` package.
   - `ST3` Publish gate sign-off sheet and evidence index using templates.

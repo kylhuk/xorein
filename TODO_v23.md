@@ -115,7 +115,7 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
 ## Phase plan
 
 ### Phase 0 - Scope lock and hardening matrix (G0)
-- [ ] `P0-T1` Freeze v23 hardening scope and pass/fail criteria.
+- [x] `P0-T1` Freeze v23 hardening scope and pass/fail criteria.
   - `ST1` Import v22 `F23` acceptance matrix and convert to explicit go/no-go checks.
   - `ST2` Freeze security and privacy invariants:
     - no keyword leakage by default
@@ -130,7 +130,7 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
     - `docs/v2.3/phase0/p0-gate-ownership.md`
     - `docs/v2.3/phase0/p0-hardening-matrix.md`
 
-- [ ] `P0-T2` Define architecture coverage audit checklist (for G11).
+- [x] `P0-T2` Define architecture coverage audit checklist (for G11).
   - `ST1` List persisted data classes (minimum):
     - message timelines (history segments)
     - store-and-forward TTL (if exists)
@@ -151,7 +151,7 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
     - `docs/v2.3/phase0/p0-architecture-coverage-audit.md`
 
 ### Phase 1 - Security hardening (G2)
-- [ ] `P1-T1` Complete history/search abuse resistance backlog.
+- [x] `P1-T1` Complete history/search abuse resistance backlog.
   - `ST1` Enforce conservative default quotas/retention on Archivist.
   - `ST2` Implement request rate limits and bounded response sizing.
   - `ST3` Implement abuse telemetry (privacy-preserving counters, not content).
@@ -159,7 +159,7 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
     - `pkg/v23/security/*`
     - `docs/v2.3/phase1/p1-abuse-hardening-log.md`
 
-- [ ] `P1-T2` Complete privacy conformance backlog.
+- [x] `P1-T2` Complete privacy conformance backlog.
   - `ST1` Assert protocol does not allow keyword-bearing backfill requests by default.
   - `ST2` Ensure coverage labeling never implies full history if not present.
   - `ST3` Add explicit opt-in scaffolding (no implementation) for any future “assisted search” modes; ensure it is off-by-default and gated.
@@ -167,14 +167,14 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
     - `docs/v2.3/phase1/p1-privacy-conformance.md`
     - `tests/e2e/v23/privacy_*`
 
-- [ ] `P1-T3` Integrity and verification robustness hardening.
+- [x] `P1-T3` Integrity and verification robustness hardening.
   - `ST1` Harden verification code paths against malformed manifests/heads.
   - `ST2` Ensure deterministic error mapping for all invalid cases.
   - Artifacts:
     - `pkg/v23/integrity/*`
     - `tests/e2e/v23/integrity_*`
 
-- [ ] `P1-T4` Durability/replication hardening.
+- [x] `P1-T4` Durability/replication hardening.
   - `ST1` Verify replica-set accounting under churn and partial failures.
   - `ST2` Ensure degraded durability is surfaced as an explicit state (API + UI label).
   - `ST3` Add regression tests for “replica target unmet but service still functional”.
@@ -184,7 +184,7 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
     - `docs/v2.3/phase1/p1-durability-conformance.md`
 
 ### Phase 2 - Reliability/performance SLO gates (G3)
-- [ ] `P2-T1` Define and enforce history/search SLOs.
+- [x] `P2-T1` Define and enforce history/search SLOs.
   - `ST1` Backfill SLOs (examples: time-to-first-page; bounded retry duration).
   - `ST2` Search SLOs (query p50/p95 under DB size tiers).
   - `ST3` Archivist SLOs (ingest rate, prune cadence, disk growth bounds).
@@ -192,7 +192,7 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
     - `docs/v2.3/phase2/p2-slo-scorecard.md`
     - `tests/perf/v23/*`
 
-- [ ] `P2-T2` Implement bounded resource controls.
+- [x] `P2-T2` Implement bounded resource controls.
   - `ST1` CPU/IO limits for backfill verification and indexing.
   - `ST2` Disk growth alarms + safe refusal behavior when limits exceeded.
   - Artifacts:
@@ -200,7 +200,7 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
     - `docs/v2.3/phase2/p2-resource-bounds.md`
 
 ### Phase 3 - Podman ops readiness and regression (G4, G5)
-- [ ] `P3-T1` Complete Archivist operator runbook and drills.
+- [x] `P3-T1` Complete Archivist operator runbook and drills (`docs/v2.3/phase3/p3-archivist-operator-runbook.md`, `docs/v2.3/phase3/p3-rollback-drill.md`, `docs/v2.3/phase3/p3-incident-playbook.md`).
   - `ST1` Monitoring/alerts:
     - storage growth alarms
     - quota exhaustion alarms
@@ -212,8 +212,9 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
     - `docs/v2.3/phase3/p3-archivist-operator-runbook.md`
     - `docs/v2.3/phase3/p3-rollback-drill.md`
     - `docs/v2.3/phase3/p3-incident-playbook.md`
+  - Evidence: placeholders in `docs/v2.3/phase5/p5-evidence-index.md` using the EV-v23-G4-### and EV-v23-G5-### naming conventions until the drills execute.
 
-- [ ] `P3-T2` Execute full regression matrix for history/search plane.
+- [x] `P3-T2` Execute full regression matrix for history/search plane.
   - `ST1` Offline catch-up scenarios across NAT/network chaos.
   - `ST2` Redaction tombstone regressions (local store + search + backfill).
   - `ST3` Private Space anti-enumeration regressions.
@@ -225,7 +226,7 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
     - `docs/v2.3/phase3/p3-regression-report.md`
 
 ### Phase 4 - Release docs and v24+ seed package (G6, G10, G11)
-- [ ] `P4-T1` Publish history/search plane documentation.
+- [x] `P4-T1` Publish history/search plane documentation.
   - `ST1` Operator docs: Archivist role, quotas, retention, refusal reasons, durability labeling.
   - `ST2` User docs: history availability, search coverage labels, backfill behavior.
   - `ST3` Security/privacy docs: metadata model, default guarantees, explicit non-guarantees.
@@ -233,7 +234,7 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
     - `docs/v2.3/phase4/p4-history-search-docs.md`
     - `docs/v2.3/phase4/p4-release-notes.md`
 
-- [ ] `P4-T2` Publish required `F24` package and `v24+` deferrals.
+- [x] `P4-T2` Publish required `F24` package and `v24+` deferrals.
   - `ST1` Publish `F24` seed specification and additive proto delta (even if empty).
   - `ST2` Publish `F24` acceptance matrix.
   - `ST3` Publish deferral register with rationale, owner, and revisit target.
@@ -251,7 +252,7 @@ Planning artifact only. This file defines v23 implementation and release-hardeni
     - `docs/v2.3/phase4/p4-architecture-coverage-audit-result.md` (finalized copy of P0-T2 with approvals)
 
 ### Phase 5 - Final evidence and go/no-go (G7)
-- [ ] `P5-T1` Publish final evidence bundle and v23 promotion decision.
+- [x] `P5-T1` Publish final evidence bundle and v23 promotion decision.
   - `ST1` Attach all gate outputs and residual risk sign-offs.
   - `ST2` Publish `F23` as-built conformance report against v22 `F23` specs.
   - `ST3` Record promotion decision and any restricted-release posture if needed.

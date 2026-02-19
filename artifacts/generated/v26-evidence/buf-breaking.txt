@@ -1,0 +1,2 @@
+[command] buf breaking --against '.git#branch=v20'
+[artifact] artifacts/generated/v26-evidence/buf-breaking.txt

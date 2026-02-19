@@ -1,0 +1,701 @@
+[generate] placeholder for proto/Dhall generation
+[compile] validating workspace readiness
+compile placeholder
+[roadmap] verifying v11-v20 roadmap docs
+Roadmap verification passed for TODO_v11.md..TODO_v20.md
+[lint] running baseline checks
+golangci-lint placeholder
+[test] running deterministic repro scaffolds
+Bootstrap plan artifacts written to artifacts/generated/bootstrap-plan/bootstrap-plan.json and artifacts/generated/bootstrap-plan/bootstrap-plan.txt
+[scan] running security suite
+[scan] govulncheck ./...
+go: downloading golang.org/x/vuln v1.1.4
+go: downloading golang.org/x/telemetry v0.0.0-20240522233618-39ace7a40ae7
+go: downloading golang.org/x/mod v0.22.0
+go: downloading golang.org/x/tools v0.29.0
+go: downloading golang.org/x/sync v0.10.0
+=== Symbol Results ===
+
+No vulnerabilities found.
+
+Your code is affected by 0 vulnerabilities.
+This scan also found 0 vulnerabilities in packages you import and 1
+vulnerability in modules you require, but your code doesn't appear to call these
+vulnerabilities.
+Use '-show verbose' for more details.
+[scan] gosec ./...
+go: downloading github.com/securego/gosec/v2 v2.22.2
+go: downloading gopkg.in/yaml.v3 v3.0.1
+go: downloading github.com/google/generative-ai-go v0.19.0
+go: downloading golang.org/x/tools v0.30.0
+go: downloading google.golang.org/api v0.223.0
+go: downloading github.com/google/uuid v1.6.0
+go: downloading github.com/gookit/color v1.5.4
+go: downloading github.com/ccojocar/zxcvbn-go v1.0.2
+go: downloading github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778
+go: downloading google.golang.org/protobuf v1.36.5
+go: downloading cloud.google.com/go/ai v0.8.0
+go: downloading github.com/googleapis/gax-go/v2 v2.14.1
+go: downloading google.golang.org/grpc v1.70.0
+go: downloading google.golang.org/genproto/googleapis/rpc v0.0.0-20250219182151-9fdb1cabc7b2
+go: downloading golang.org/x/mod v0.23.0
+go: downloading golang.org/x/sync v0.11.0
+go: downloading cloud.google.com/go v0.116.0
+go: downloading golang.org/x/sys v0.30.0
+go: downloading golang.org/x/net v0.35.0
+go: downloading cloud.google.com/go/longrunning v0.5.7
+go: downloading google.golang.org/genproto/googleapis/api v0.0.0-20241209162323-e6fa225c2576
+go: downloading golang.org/x/text v0.22.0
+go: downloading golang.org/x/oauth2 v0.26.0
+go: downloading cloud.google.com/go/auth v0.15.0
+go: downloading go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.59.0
+go: downloading github.com/googleapis/enterprise-certificate-proxy v0.3.4
+go: downloading github.com/google/s2a-go v0.1.9
+go: downloading cloud.google.com/go/compute/metadata v0.6.0
+go: downloading go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.59.0
+go: downloading golang.org/x/time v0.10.0
+go: downloading cloud.google.com/go/auth/oauth2adapt v0.2.7
+go: downloading go.opentelemetry.io/otel/trace v1.34.0
+go: downloading go.opentelemetry.io/otel v1.34.0
+go: downloading github.com/felixge/httpsnoop v1.0.4
+go: downloading go.opentelemetry.io/otel/metric v1.34.0
+go: downloading golang.org/x/crypto v0.35.0
+go: downloading github.com/go-logr/logr v1.4.2
+go: downloading github.com/go-logr/stdr v1.2.2
+go: downloading go.opentelemetry.io/auto/sdk v1.1.0
+go: downloading google.golang.org/protobuf v1.36.1
+go: downloading golang.org/x/crypto v0.46.1-0.20251210140736-7dacc380ba00
+go: downloading golang.org/x/sys v0.39.0
+[gosec] 2026/02/19 10:29:09 Including rules: default
+[gosec] 2026/02/19 10:29:09 Excluding rules: default
+[gosec] 2026/02/19 10:29:09 Including analyzers: default
+[gosec] 2026/02/19 10:29:09 Excluding analyzers: default
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/tests/e2e/v18
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v03/governance
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/phase9
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v04/audit
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v20/hardening
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v04/securitymode
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v18/indexer
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v07/merkle
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v02/governance
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v03/indexer
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v06/discovery
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v09/scenario
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v16/acl
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/tests/perf/v21
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/tests/perf/v22
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v05/sdk
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v13/chat
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v24/localapi
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v09/scale
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v10/publication
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v10/security
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/tests/e2e/v07
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v19/co
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/phase5
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v22/history/apply
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v25/replication
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v03/discovery
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v03/transfer
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v08/linkpreview
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v07/pushrelay
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v13/channels
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v14/signaling
+[gosec] 2026/02/19 10:29:09 Checking package: hardening
+[gosec] 2026/02/19 10:29:09 Checking file: /workspace/pkg/v20/hardening/hardening.go
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/tests/perf/v15
+[gosec] 2026/02/19 10:29:09 Checking package: governance
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/tests/perf/v23
+[gosec] 2026/02/19 10:29:09 Checking file: /workspace/pkg/v03/governance/metadata.go
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/storage
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v07/push
+[gosec] 2026/02/19 10:29:09 Checking package: chat
+[gosec] 2026/02/19 10:29:09 Checking file: /workspace/pkg/v13/chat/chat.go
+[gosec] 2026/02/19 10:29:09 Checking package: securitymode
+[gosec] 2026/02/19 10:29:09 Checking file: /workspace/pkg/v04/securitymode/contracts.go
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v07/retention
+[gosec] 2026/02/19 10:29:09 Checking package: governance
+[gosec] 2026/02/19 10:29:09 Checking file: /workspace/pkg/v02/governance/metadata.go
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v25/blobref
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/tests/e2e/v08
+[gosec] 2026/02/19 10:29:09 Checking package: merkle
+[gosec] 2026/02/19 10:29:09 Checking file: /workspace/pkg/v07/merkle/tree.go
+[gosec] 2026/02/19 10:29:09 Checking package: indexer
+[gosec] 2026/02/19 10:29:09 Checking file: /workspace/pkg/v03/indexer/contracts.go
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/tests/e2e/v16
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/tests/e2e/v25
+[gosec] 2026/02/19 10:29:09 Checking package: indexer
+[gosec] 2026/02/19 10:29:09 Checking file: /workspace/pkg/v18/indexer/indexer.go
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v07/history
+[gosec] 2026/02/19 10:29:09 Checking package: audit
+[gosec] 2026/02/19 10:29:09 Checking file: /workspace/pkg/v04/audit/contracts.go
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/pkg/v10/network
+[gosec] 2026/02/19 10:29:09 Checking package: scenario
+[gosec] 2026/02/19 10:29:09 Checking file: /workspace/pkg/v09/scenario/scenario.go
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/tests/e2e/v14
+[gosec] 2026/02/19 10:29:09 Import directory: /workspace/tests/perf/v13
+[gosec] 2026/02/19 10:29:09 Checking package: discovery
+[gosec] 2026/02/19 10:29:09 Checking file: /workspace/pkg/v06/discovery/contracts.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/cmd/indexer
+[gosec] 2026/02/19 10:29:10 Checking package: acl
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v16/acl/acl.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v05/discordshim
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v10/store
+[gosec] 2026/02/19 10:29:10 Checking package: phase9
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/phase9/relay.go
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/phase9/storeforward.go
+[gosec] 2026/02/19 10:29:10 Checking package: localapi
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v24/localapi/audit.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/gen/go/proto
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v24/localapi/cursor.go
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v24/localapi/frame.go
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v24/localapi/listener.go
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v24/localapi/session.go
+[gosec] 2026/02/19 10:29:10 Checking package: sdk
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v05/sdk/contracts.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v02/friends
+[gosec] 2026/02/19 10:29:10 Checking package: publication
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v10/publication/publication.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v21/store/tombstone
+[gosec] 2026/02/19 10:29:10 Checking package: scale
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v09/scale/plan.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/tests/e2e/v23
+[gosec] 2026/02/19 10:29:10 Checking package: security
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v10/security/audit.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/cmd/push-relay
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v10/security/engagement.go
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v10/security/lifecycle.go
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v10/security/threat.go
+[gosec] 2026/02/19 10:29:10 Checking package: co
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v19/co/co.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/phase4
+[gosec] 2026/02/19 10:29:10 Checking package: phase5
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/phase5/identity.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/phase7
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/phase5/profile.go
+[gosec] 2026/02/19 10:29:10 Checking package: apply
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v22/history/apply/apply.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v02/dmtransport
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v02/groupdm
+[gosec] 2026/02/19 10:29:10 Checking package: replication
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v25/replication/manager.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v04/roles
+[gosec] 2026/02/19 10:29:10 Checking package: transfer
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v03/transfer/contracts.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v06/search
+[gosec] 2026/02/19 10:29:10 Checking package: discovery
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v03/discovery/contracts.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v13/ui
+[gosec] 2026/02/19 10:29:10 Checking package: pushrelay
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v07/pushrelay/contracts.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/ui
+[gosec] 2026/02/19 10:29:10 Checking package: linkpreview
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v08/linkpreview/contracts.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v03/voice
+[gosec] 2026/02/19 10:29:10 Checking package: channels
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v13/channels/channels.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v14/voice
+[gosec] 2026/02/19 10:29:10 Checking package: signaling
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v14/signaling/signaling.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v16/rbac
+[gosec] 2026/02/19 10:29:10 Checking package: storage
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/storage/doc.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v17/moderation
+[gosec] 2026/02/19 10:29:10 Checking package: push
+[gosec] 2026/02/19 10:29:10 Checking file: /workspace/pkg/v07/push/service.go
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v19/ui
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/pkg/v21/search
+[gosec] 2026/02/19 10:29:10 Import directory: /workspace/tests/e2e/v20
+[gosec] 2026/02/19 10:29:11 Checking package: retention
+[gosec] 2026/02/19 10:29:11 Checking file: /workspace/pkg/v07/retention/contracts.go
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/pkg/phase6
+[gosec] 2026/02/19 10:29:11 Checking file: /workspace/pkg/v07/retention/store.go
+[gosec] 2026/02/19 10:29:11 Checking package: blobref
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/pkg/v02/dmqueue
+[gosec] 2026/02/19 10:29:11 Checking file: /workspace/pkg/v25/blobref/blobref.go
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/pkg/v08/i18n
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/pkg/v23/security
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/pkg/v25/blobproto
+[gosec] 2026/02/19 10:29:11 Checking package: history
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/tests/e2e/v17
+[gosec] 2026/02/19 10:29:11 Checking file: /workspace/pkg/v07/history/contracts.go
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/tests/perf/v18
+[gosec] 2026/02/19 10:29:11 Checking package: network
+[gosec] 2026/02/19 10:29:11 Checking file: /workspace/pkg/v10/network/topology.go
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/cmd/v12-gate-runner
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/pkg/protocol
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/pkg/v05/emoji
+[gosec] 2026/02/19 10:29:11 Checking package: main
+[gosec] 2026/02/19 10:29:11 Checking file: /workspace/cmd/indexer/main.go
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/pkg/v09/relay
+[gosec] 2026/02/19 10:29:11 Checking package: discordshim
+[gosec] 2026/02/19 10:29:11 Checking file: /workspace/pkg/v05/discordshim/contracts.go
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/pkg/v15/ui
+[gosec] 2026/02/19 10:29:11 Checking package: store
+[gosec] 2026/02/19 10:29:11 Checking file: /workspace/pkg/v10/store/store.go
+[gosec] 2026/02/19 10:29:11 Checking package: apb
+[gosec] 2026/02/19 10:29:11 Checking file: /workspace/gen/go/proto/aether.pb.go
+[gosec] 2026/02/19 10:29:11 Import directory: /workspace/pkg/v21/store
+[gosec] 2026/02/19 10:29:14 Checking package: main
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/cmd/push-relay/main.go
+[gosec] 2026/02/19 10:29:14 Import directory: /workspace/tests/e2e/v09
+[gosec] 2026/02/19 10:29:14 Checking package: tombstone
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/v21/store/tombstone/tombstone.go
+[gosec] 2026/02/19 10:29:14 Import directory: /workspace/pkg/v02/notify
+[gosec] 2026/02/19 10:29:14 Checking package: friends
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/v02/friends/authenticity.go
+[gosec] 2026/02/19 10:29:14 Import directory: /workspace/pkg/v05/conformance
+[gosec] 2026/02/19 10:29:14 Import directory: /workspace/pkg/v24/daemon
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/v02/friends/exchange.go
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/v02/friends/lifecycle.go
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/v02/friends/listsync.go
+[gosec] 2026/02/19 10:29:14 Checking package: phase7
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/phase7/bootstrap.go
+[gosec] 2026/02/19 10:29:14 Import directory: /workspace/pkg/v08/threads
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/phase7/channel.go
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/phase7/history.go
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/phase7/pipeline.go
+[gosec] 2026/02/19 10:29:14 Checking package: phase4
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/phase4/dht.go
+[gosec] 2026/02/19 10:29:14 Import directory: /workspace/pkg/v18/ui
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/phase4/host.go
+[gosec] 2026/02/19 10:29:14 Checking file: /workspace/pkg/phase4/mdns.go
+[gosec] 2026/02/19 10:29:15 Checking file: /workspace/pkg/phase4/nat_matrix.go
+[gosec] 2026/02/19 10:29:15 Checking file: /workspace/pkg/phase4/peer_cache.go
+[gosec] 2026/02/19 10:29:15 Checking file: /workspace/pkg/phase4/pubsub.go
+[gosec] 2026/02/19 10:29:15 Checking file: /workspace/pkg/phase4/traversal.go
+[gosec] 2026/02/19 10:29:15 Checking package: groupdm
+[gosec] 2026/02/19 10:29:15 Checking file: /workspace/pkg/v02/groupdm/contracts.go
+[gosec] 2026/02/19 10:29:15 Import directory: /workspace/pkg/v24/harmolyn/attach
+[gosec] 2026/02/19 10:29:15 Checking package: dmtransport
+[gosec] 2026/02/19 10:29:15 Checking file: /workspace/pkg/v02/dmtransport/contracts.go
+[gosec] 2026/02/19 10:29:15 Import directory: /workspace/pkg/v25/blobcrypto
+[gosec] 2026/02/19 10:29:15 Checking package: roles
+[gosec] 2026/02/19 10:29:15 Checking file: /workspace/pkg/v04/roles/contracts.go
+[gosec] 2026/02/19 10:29:15 Import directory: /workspace/pkg/crypto
+[gosec] 2026/02/19 10:29:15 Checking package: ui
+[gosec] 2026/02/19 10:29:15 Checking file: /workspace/pkg/v13/ui/ui.go
+[gosec] 2026/02/19 10:29:15 Import directory: /workspace/pkg/v02/conformance
+[gosec] 2026/02/19 10:29:15 Checking package: search
+[gosec] 2026/02/19 10:29:15 Checking file: /workspace/pkg/v06/search/contracts.go
+[gosec] 2026/02/19 10:29:15 Import directory: /workspace/pkg/v03/screenshare
+[gosec] 2026/02/19 10:29:15 Checking package: ui
+[gosec] 2026/02/19 10:29:15 Checking file: /workspace/pkg/ui/doc.go
+[gosec] 2026/02/19 10:29:15 Checking file: /workspace/pkg/ui/shell.go
+[gosec] 2026/02/19 10:29:15 Import directory: /workspace/pkg/v05/bot
+[gosec] 2026/02/19 10:29:16 Checking package: ui
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/v19/ui/nolimbo_ui.go
+[gosec] 2026/02/19 10:29:16 Import directory: /workspace/pkg/v12/backup
+[gosec] 2026/02/19 10:29:16 Checking package: voice
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/v14/voice/voice.go
+[gosec] 2026/02/19 10:29:16 Import directory: /workspace/pkg/v12/identity
+[gosec] 2026/02/19 10:29:16 Checking package: voice
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/v03/voice/contracts.go
+[gosec] 2026/02/19 10:29:16 Import directory: /workspace/pkg/v14/ui
+[gosec] 2026/02/19 10:29:16 Checking package: search
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/v21/search/search.go
+[gosec] 2026/02/19 10:29:16 Import directory: /workspace/pkg/v15/screenshare
+[gosec] 2026/02/19 10:29:16 Checking package: rbac
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/v16/rbac/rbac.go
+[gosec] 2026/02/19 10:29:16 Import directory: /workspace/pkg/v02/dmratchet
+[gosec] 2026/02/19 10:29:16 Checking package: moderation
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/v17/moderation/moderation.go
+[gosec] 2026/02/19 10:29:16 Import directory: /workspace/pkg/v08/voice
+[gosec] 2026/02/19 10:29:16 Import directory: /workspace/pkg/v16/enforcement
+[gosec] 2026/02/19 10:29:16 Checking package: dmqueue
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/v02/dmqueue/contracts.go
+[gosec] 2026/02/19 10:29:16 Import directory: /workspace/tests/e2e/v12
+[gosec] 2026/02/19 10:29:16 Checking package: phase6
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/phase6/deeplink.go
+[gosec] 2026/02/19 10:29:16 Import directory: /workspace/tests/e2e/v15
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/phase6/handshake.go
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/phase6/manifest.go
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/phase6/store.go
+[gosec] 2026/02/19 10:29:16 Checking package: i18n
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/v08/i18n/contracts.go
+[gosec] 2026/02/19 10:29:16 Import directory: /workspace/tests/e2e/v24
+[gosec] 2026/02/19 10:29:16 Checking package: blobproto
+[gosec] 2026/02/19 10:29:16 Checking file: /workspace/pkg/v25/blobproto/provider.go
+[gosec] 2026/02/19 10:29:16 Import directory: /workspace/tests/perf/v11
+[gosec] 2026/02/19 10:29:17 Checking package: security
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v23/security/assisted.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/tests/perf/v17
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v02/presence
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v23/security/coverage.go
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v23/security/privacy.go
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v23/security/quota.go
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v23/security/rate_limit.go
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v23/security/telemetry.go
+[gosec] 2026/02/19 10:29:17 Checking package: main
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/cmd/v12-gate-runner/main.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v03/conformance
+[gosec] 2026/02/19 10:29:17 Checking package: relay
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v09/relay/policy.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v06/reputation
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v09/ipfs
+[gosec] 2026/02/19 10:29:17 Checking package: emoji
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v05/emoji/contracts.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v22/archivist/advertise
+[gosec] 2026/02/19 10:29:17 Checking package: ui
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v15/ui/screenshare_ui.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v23/integrity
+[gosec] 2026/02/19 10:29:17 Checking package: protocol
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/protocol/capabilities.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v06/antiabuse
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/protocol/doc.go
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/protocol/registry.go
+[gosec] 2026/02/19 10:29:17 Checking package: store
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v21/store/types.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v13/joinpolicy
+[gosec] 2026/02/19 10:29:17 Checking package: notify
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v02/notify/contracts.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v17/ui
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v18/discoveryclient
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v02/notify/surface.go
+[gosec] 2026/02/19 10:29:17 Checking package: conformance
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v05/conformance/gates.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v19/continuity
+[gosec] 2026/02/19 10:29:17 Checking package: daemon
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v24/daemon/lock.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v21/store/hydrate
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v24/daemon/state.go
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v24/daemon/supervisor.go
+[gosec] 2026/02/19 10:29:17 Checking package: threads
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v08/threads/contracts.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v23/limits
+[gosec] 2026/02/19 10:29:17 Checking package: ui
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v18/ui/discovery_ui.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/tests/e2e/v1.0
+[gosec] 2026/02/19 10:29:17 Checking package: attach
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v24/harmolyn/attach/attach.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/artifacts/generated/release-pack/signing
+[gosec] 2026/02/19 10:29:17 Checking package: blobcrypto
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v25/blobcrypto/blobcrypto.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/cmd/aether
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v25/blobcrypto/helpers.go
+[gosec] 2026/02/19 10:29:17 Checking package: crypto
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/crypto/doc.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/network
+[gosec] 2026/02/19 10:29:17 Checking package: conformance
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v02/conformance/gates.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v10/docs
+[gosec] 2026/02/19 10:29:17 Checking package: screenshare
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v03/screenshare/contracts.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v17/audit
+[gosec] 2026/02/19 10:29:17 Checking package: bot
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v05/bot/contracts.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/pkg/v21/store/retention
+[gosec] 2026/02/19 10:29:17 Checking package: backup
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v12/backup/backup.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/tests/perf/v12
+[gosec] 2026/02/19 10:29:17 Checking package: identity
+[gosec] 2026/02/19 10:29:17 Checking file: /workspace/pkg/v12/identity/identity.go
+[gosec] 2026/02/19 10:29:17 Import directory: /workspace/cmd/harmolyn
+[gosec] 2026/02/19 10:29:18 Checking package: ui
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v14/ui/voice_ui.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v04/governance
+[gosec] 2026/02/19 10:29:18 Checking package: screenshare
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v15/screenshare/screenshare.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v06/conformance
+[gosec] 2026/02/19 10:29:18 Checking package: dmratchet
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v02/dmratchet/contracts.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v07/notification
+[gosec] 2026/02/19 10:29:18 Checking package: voice
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v08/voice/dtln.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v08/themes
+[gosec] 2026/02/19 10:29:18 Checking package: enforcement
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v16/enforcement/enforcement.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v21/store/ingest
+[gosec] 2026/02/19 10:29:18 Checking package: presence
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v02/presence/dissemination.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/tests/e2e/v21
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/tests/perf/v16
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v07/governance
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v02/prekey
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v10/repro
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v24/daemon/doctor
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v02/presence/schema.go
+[gosec] 2026/02/19 10:29:18 Checking package: conformance
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v03/conformance/gates.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/tests/e2e/v22
+[gosec] 2026/02/19 10:29:18 Checking package: reputation
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v06/reputation/contracts.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/cmd/aether-push-relay
+[gosec] 2026/02/19 10:29:18 Checking package: ipfs
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v09/ipfs/contracts.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/cmd/v11-gate-runner
+[gosec] 2026/02/19 10:29:18 Checking package: advertise
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v22/archivist/advertise/advertisement.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/cmd/xorein
+[gosec] 2026/02/19 10:29:18 Checking package: integrity
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v23/integrity/integrity.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/phase8
+[gosec] 2026/02/19 10:29:18 Checking package: antiabuse
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v06/antiabuse/contracts.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v18/directory
+[gosec] 2026/02/19 10:29:18 Checking package: hydrate
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v21/store/hydrate/hydrate.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v20/security
+[gosec] 2026/02/19 10:29:18 Checking package: ui
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v17/ui/enforcement_ui.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v25/harmolyn/ui
+[gosec] 2026/02/19 10:29:18 Checking package: joinpolicy
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v13/joinpolicy/joinpolicy.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v04/automod
+[gosec] 2026/02/19 10:29:18 Checking package: continuity
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v19/continuity/continuity.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v09/mobile
+[gosec] 2026/02/19 10:29:18 Checking package: discoveryclient
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v18/discoveryclient/discoveryclient.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v10/relay
+[gosec] 2026/02/19 10:29:18 Checking package: limits
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v23/limits/limits.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v13/spaces
+[gosec] 2026/02/19 10:29:18 Checking package: network
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/network/doc.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/tests/e2e/v19
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/tests/perf/v19
+[gosec] 2026/02/19 10:29:18 Checking package: docs
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v10/docs/docs.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v07/archivist
+[gosec] 2026/02/19 10:29:18 Checking package: main
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/artifacts/generated/release-pack/signing/release-pack-sign.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v07/conformance
+[gosec] 2026/02/19 10:29:18 Checking package: main
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/cmd/aether/main.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v08/pinning
+[gosec] 2026/02/19 10:29:18 Checking package: audit
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v17/audit/audit.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v10/governance
+[gosec] 2026/02/19 10:29:18 Checking package: retention
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v21/store/retention/retention.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v11/gates
+[gosec] 2026/02/19 10:29:18 Checking package: main
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/cmd/harmolyn/main.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v17/modsync
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/cmd/harmolyn/ux.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v25/bridge
+[gosec] 2026/02/19 10:29:18 Checking package: governance
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v04/governance/metadata.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/tests/fuzz/v24
+[gosec] 2026/02/19 10:29:18 Checking package: conformance
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v06/conformance/gates.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v02/policy
+[gosec] 2026/02/19 10:29:18 Checking package: themes
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v08/themes/contracts.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v04/policy
+[gosec] 2026/02/19 10:29:18 Checking package: notification
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v07/notification/contracts.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v06/governance
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v07/notification/pipeline.go
+[gosec] 2026/02/19 10:29:18 Checking package: ingest
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v21/store/ingest/ingest.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v07/storeforward
+[gosec] 2026/02/19 10:29:18 Checking package: prekey
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v02/prekey/lifecycle.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v08/accessibility
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v08/conformance
+[gosec] 2026/02/19 10:29:18 Checking package: repro
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v10/repro/verification.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v22/history/retrieve
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v25/assets
+[gosec] 2026/02/19 10:29:18 Checking package: governance
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v07/governance/metadata.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v06/filters
+[gosec] 2026/02/19 10:29:18 Checking package: doctor
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/pkg/v24/daemon/doctor/report.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v07/historysync
+[gosec] 2026/02/19 10:29:18 Checking package: main
+[gosec] 2026/02/19 10:29:18 Checking file: /workspace/cmd/aether-push-relay/main.go
+[gosec] 2026/02/19 10:29:18 Import directory: /workspace/pkg/v07/search
+[gosec] 2026/02/19 10:29:19 Checking package: main
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/cmd/v11-gate-runner/main.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v08/bookmarks
+[gosec] 2026/02/19 10:29:19 Checking package: main
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/cmd/xorein/main.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v12/gates
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v12/ui
+[gosec] 2026/02/19 10:29:19 Checking package: phase8
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/phase8/pipeline.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v16/ui
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/phase8/sframe.go
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/phase8/signaling.go
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/phase8/validation.go
+[gosec] 2026/02/19 10:29:19 Checking package: directory
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v18/directory/directory.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v23/durability
+[gosec] 2026/02/19 10:29:19 Checking package: security
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v20/security/security.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v02/rbac
+[gosec] 2026/02/19 10:29:19 Checking package: ui
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v25/harmolyn/ui/plan.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v05/governance
+[gosec] 2026/02/19 10:29:19 Checking package: bridge
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v25/bridge/policy.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v05/webhook
+[gosec] 2026/02/19 10:29:19 Checking package: conformance
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v07/conformance/gates.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v10/release
+[gosec] 2026/02/19 10:29:19 Checking package: policy
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v04/policy/contracts.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v22/archivist/replicate
+[gosec] 2026/02/19 10:29:19 Checking package: governance
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v06/governance/metadata.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v22/history/backfill
+[gosec] 2026/02/19 10:29:19 Checking package: spaces
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v13/spaces/spaces.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v24/harmolyn/journeys
+[gosec] 2026/02/19 10:29:19 Checking package: relay
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v10/relay/policy.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/tests/perf/v24
+[gosec] 2026/02/19 10:29:19 Checking package: archivist
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v07/archivist/advertisement.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/app
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v07/archivist/contracts.go
+[gosec] 2026/02/19 10:29:19 Checking package: gates
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v11/gates/gates.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v06/reporting
+[gosec] 2026/02/19 10:29:19 Checking package: modsync
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v17/modsync/modsync.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v09/governance
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v10/conformance
+[gosec] 2026/02/19 10:29:19 Checking package: automod
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v04/automod/contracts.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v10/scenario
+[gosec] 2026/02/19 10:29:19 Checking package: pinning
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v08/pinning/contracts.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/pkg/v10/website
+[gosec] 2026/02/19 10:29:19 Checking package: governance
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v10/governance/policies.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/tests/perf/v09
+[gosec] 2026/02/19 10:29:19 Checking package: policy
+[gosec] 2026/02/19 10:29:19 Checking file: /workspace/pkg/v02/policy/policy.go
+[gosec] 2026/02/19 10:29:19 Import directory: /workspace/tests/perf/v14
+[gosec] 2026/02/19 10:29:20 Checking package: storeforward
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v07/storeforward/contracts.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/pkg/phase11
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/pkg/v09/conformance
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v07/storeforward/logic.go
+[gosec] 2026/02/19 10:29:20 Checking package: mobile
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v09/mobile/budget.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/pkg/v11/relaypolicy
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/pkg/v15/capture
+[gosec] 2026/02/19 10:29:20 Checking package: assets
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v25/assets/state.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/pkg/v19/tunnel
+[gosec] 2026/02/19 10:29:20 Checking package: filters
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v06/filters/contracts.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/pkg/v22/archivist/store
+[gosec] 2026/02/19 10:29:20 Checking package: conformance
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v08/conformance/gates.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/tests/e2e/v11
+[gosec] 2026/02/19 10:29:20 Checking package: accessibility
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v08/accessibility/contracts.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/tests/e2e/v13
+[gosec] 2026/02/19 10:29:20 Checking package: retrieve
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v22/history/retrieve/retrieve.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/pkg/v04/conformance
+[gosec] 2026/02/19 10:29:20 Checking package: bookmarks
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v08/bookmarks/contracts.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/pkg/v22/history/integrity
+[gosec] 2026/02/19 10:29:20 Checking package: gates
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v12/gates/gates.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/tests/perf/v10
+[gosec] 2026/02/19 10:29:20 Checking package: ui
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v12/ui/flow.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/tests/perf/v20
+[gosec] 2026/02/19 10:29:20 Checking package: historysync
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v07/historysync/handlers.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/pkg/v08/scenario
+[gosec] 2026/02/19 10:29:20 Checking package: ui
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v16/ui/admin_ui.go
+[gosec] 2026/02/19 10:29:20 Import directory: /workspace/pkg/v09/sfu
+[gosec] 2026/02/19 10:29:20 Checking package: search
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v07/search/contracts.go
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v07/search/index.go
+[gosec] 2026/02/19 10:29:20 Checking package: durability
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v23/durability/durability.go
+[gosec] 2026/02/19 10:29:20 Checking package: release
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v10/release/manifest.go
+[gosec] 2026/02/19 10:29:20 Checking package: backfill
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v22/history/backfill/backfill.go
+[gosec] 2026/02/19 10:29:20 Checking package: governance
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v05/governance/metadata.go
+[gosec] 2026/02/19 10:29:20 Checking package: rbac
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v02/rbac/rbac.go
+[gosec] 2026/02/19 10:29:20 Checking package: journeys
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v24/harmolyn/journeys/journeys.go
+[gosec] 2026/02/19 10:29:20 Checking package: webhook
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v05/webhook/contracts.go
+[gosec] 2026/02/19 10:29:20 Checking package: replicate
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v22/archivist/replicate/policy.go
+[gosec] 2026/02/19 10:29:20 Checking package: conformance
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v10/conformance/gates.go
+[gosec] 2026/02/19 10:29:20 Checking package: website
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v10/website/landing.go
+[gosec] 2026/02/19 10:29:20 Checking package: reporting
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v06/reporting/contracts.go
+[gosec] 2026/02/19 10:29:20 Checking package: app
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/app/seams.go
+[gosec] 2026/02/19 10:29:20 Checking package: governance
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v09/governance/checklist.go
+[gosec] 2026/02/19 10:29:20 Checking package: scenario
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v10/scenario/scenario.go
+[gosec] 2026/02/19 10:29:20 Checking package: conformance
+[gosec] 2026/02/19 10:29:20 Checking file: /workspace/pkg/v09/conformance/gates.go
+[gosec] 2026/02/19 10:29:21 Checking package: tunnel
+[gosec] 2026/02/19 10:29:21 Checking file: /workspace/pkg/v19/tunnel/tunnel.go
+[gosec] 2026/02/19 10:29:21 Checking package: capture
+[gosec] 2026/02/19 10:29:21 Checking file: /workspace/pkg/v15/capture/capture.go
+[gosec] 2026/02/19 10:29:21 Checking package: phase11
+[gosec] 2026/02/19 10:29:21 Checking file: /workspace/pkg/phase11/first_contact.go
+[gosec] 2026/02/19 10:29:21 Checking package: relaypolicy
+[gosec] 2026/02/19 10:29:21 Checking file: /workspace/pkg/v11/relaypolicy/policy.go
+[gosec] 2026/02/19 10:29:21 Checking package: store
+[gosec] 2026/02/19 10:29:21 Checking file: /workspace/pkg/v22/archivist/store/store.go
+[gosec] 2026/02/19 10:29:21 Checking package: conformance
+[gosec] 2026/02/19 10:29:21 Checking file: /workspace/pkg/v04/conformance/gates.go
+[gosec] 2026/02/19 10:29:21 Checking package: integrity
+[gosec] 2026/02/19 10:29:21 Checking file: /workspace/pkg/v22/history/integrity/integrity.go
+[gosec] 2026/02/19 10:29:21 Checking package: sfu
+[gosec] 2026/02/19 10:29:21 Checking file: /workspace/pkg/v09/sfu/topology.go
+[gosec] 2026/02/19 10:29:21 Checking package: scenario
+[gosec] 2026/02/19 10:29:21 Checking file: /workspace/pkg/v08/scenario/echo.go
+Results:
+
+
+Summary:
+  Gosec  : dev
+  Files  : 216
+  Lines  : 33177
+  Nosec  : 8
+  Issues : 0
+
+[scan] trivy filesystem (vuln+secret)
+2026-02-19T10:29:22.772Z	[33mWARN[0m	'--security-checks' is deprecated. Use '--scanners' instead.
+2026-02-19T10:29:22.782Z	[34mINFO[0m	Vulnerability scanning is enabled
+2026-02-19T10:29:22.782Z	[34mINFO[0m	Secret scanning is enabled
+2026-02-19T10:29:22.782Z	[34mINFO[0m	If your scanning is slow, please try '--scanners vuln' to disable secret scanning
+2026-02-19T10:29:22.782Z	[34mINFO[0m	Please see also https://aquasecurity.github.io/trivy/v0.50/docs/scanner/secret/#recommendation for faster secret detection
+2026-02-19T10:29:23.493Z	[34mINFO[0m	To collect the license information of packages in "package-lock.json", "npm install" needs to be performed beforehand
+2026-02-19T10:29:23.511Z	[34mINFO[0m	Number of language-specific files: 1
+2026-02-19T10:29:23.511Z	[34mINFO[0m	Detecting gomod vulnerabilities...
+{
+  "SchemaVersion": 2,
+  "CreatedAt": "2026-02-19T10:29:23.512216481Z",
+  "ArtifactName": "/workspace",
+  "ArtifactType": "filesystem",
+  "Metadata": {
+    "ImageConfig": {
+      "architecture": "",
+      "created": "0001-01-01T00:00:00Z",
+      "os": "",
+      "rootfs": {
+        "type": "",
+        "diff_ids": null
+      },
+      "config": {}
+    }
+  }
+}

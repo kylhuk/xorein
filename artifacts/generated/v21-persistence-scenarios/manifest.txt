@@ -1,0 +1,38 @@
+suite: v21-persistence-scenarios
+generated_at: "2026-02-18T21:21:06Z"
+podman_image: "docker.io/library/golang:1.24.12"
+podman_available: true
+podman_blocker: ""
+artifact_dir: "/home/wenga/src/code_aether/artifacts/generated/v21-persistence-scenarios"
+log: "/home/wenga/src/code_aether/artifacts/generated/v21-persistence-scenarios/run.log"
+scenarios:
+  - name: multi-peer restart/resume probe
+    status: pass
+    package: ./pkg/v21/store/tombstone
+    test_pattern: TestRestartInvariant
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./pkg/v21/store/tombstone -run TestRestartInvariant -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v21-persistence-scenarios/multi-peer-restart-resume.log"
+  - name: local history clear/recovery probe
+    status: pass
+    package: ./pkg/v21/store/retention
+    test_pattern: TestPruneWindowAndLimit
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./pkg/v21/store/retention -run TestPruneWindowAndLimit -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v21-persistence-scenarios/local-history-clear-recovery.log"
+  - name: relay no-long-history-hosting boundary probe
+    status: pass
+    package: ./pkg/v21/search
+    test_pattern: TestSearchFiltersAndCoverage
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./pkg/v21/search -run TestSearchFiltersAndCoverage -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v21-persistence-scenarios/relay-no-long-history-hosting.log"

@@ -1,0 +1,2 @@
+go test ./tests/perf/v25/... -count=1
+ok  	github.com/aether/code_aether/tests/perf/v25	0.002s

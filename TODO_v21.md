@@ -1,7 +1,7 @@
 # TODO v21 - Xorein (backend) + harmolyn (frontend) Execution Plan (v2.1)
 
 ## Status
-Planning artifact only. This file defines v21 implementation and validation requirements. It does not claim implementation completion.
+As-built artifact. v21 implementation and mandatory evidence capture are complete; the executed commands are recorded in `docs/v2.1/phase5/p5-evidence-index.md` and support the promotion checklist. Ensure downstream reviewers reference the EV rows when gating release. Implementation evidence is recorded in `docs/v2.1/phase5/p5-evidence-index.md` (EV-v21-* entries).
 
 ## Naming + binary split note (architecture delta)
 - **Xorein**: backend node/runtime binary (headless-capable). Provides the protocol runtime, storage, crypto, DHT/pubsub, relay/archivist capabilities as configured.
@@ -119,7 +119,7 @@ Planning artifact only. This file defines v21 implementation and validation requ
 ## Phase plan
 
 ### Phase 0 - Scope lock and seed import (G0)
-- [ ] `P0-T1` Freeze v21 scope to `F21` persistence + local search baseline.
+- [x] `P0-T1` Freeze v21 scope to `F21` persistence + local search baseline.
   - `ST1` Import and reconcile v20 `F21` seeds; record any deltas as `v21` scoped decisions.
   - `ST2` Produce requirement-to-artifact traceability matrix (spec → code → tests → docs).
   - `ST3` Freeze explicit non-goals (no network backfill; no remote keyword search; no mandatory local-daemon split).
@@ -135,7 +135,7 @@ Planning artifact only. This file defines v21 implementation and validation requ
     - `docs/v2.1/phase0/p0-binary-boundary.md`
 
 ### Phase 1 - Encrypted local timeline store (G2)
-- [ ] `P1-T1` Define local store architecture and encryption profile (Xorein runtime).
+- [x] `P1-T1` Define local store architecture and encryption profile (Xorein runtime).
   - `ST1` Select store engine (SQLite + SQLCipher recommended) and document threat model:
     - adversary: filesystem compromise, offline copy, device theft
     - non-goals: malware with live access to decrypted process memory
@@ -151,7 +151,7 @@ Planning artifact only. This file defines v21 implementation and validation requ
     - `docs/v2.1/phase1/p1-store-schema.md`
     - `pkg/v21/store/*`
 
-- [ ] `P1-T2` Implement store ingestion, dedupe, and idempotent apply rules (Xorein runtime).
+- [x] `P1-T2` Implement store ingestion, dedupe, and idempotent apply rules (Xorein runtime).
   - `ST1` Canonical identity of a timeline event:
     - define “same event” equality rules (MessageID/EventID + channel + sender as needed)
     - define idempotent re-apply semantics under replay/duplicate delivery
@@ -165,7 +165,7 @@ Planning artifact only. This file defines v21 implementation and validation requ
     - `pkg/v21/store/ingest/*_test.go`
     - `docs/v2.1/phase1/p1-store-reason-taxonomy.md`
 
-- [ ] `P1-T3` Implement deterministic timeline hydration + pagination (Xorein runtime).
+- [x] `P1-T3` Implement deterministic timeline hydration + pagination (Xorein runtime).
   - `ST1` Define canonical ordering:
     - prefer protocol ordering primitives if available (Lamport/HLC/sequence)
     - otherwise define stable local ordering with explicit “order may differ across devices” disclaimer
@@ -179,7 +179,7 @@ Planning artifact only. This file defines v21 implementation and validation requ
     - `pkg/v21/store/hydrate/*_test.go`
     - `docs/v2.1/phase1/p1-hydration-contract.md`
 
-- [ ] `P1-T4` Implement retention/pruning baseline (Xorein runtime).
+- [x] `P1-T4` Implement retention/pruning baseline (Xorein runtime).
   - `ST1` Define default retention window and size cap (documented, configurable).
   - `ST2` Implement deterministic pruning policy:
     - prune oldest-first per channel, preserve pinned/system events if applicable
@@ -192,7 +192,7 @@ Planning artifact only. This file defines v21 implementation and validation requ
     - `docs/v2.1/phase1/p1-retention-policy.md`
 
 ### Phase 2 - Local search + moderation integration (G3)
-- [ ] `P2-T1` Implement local full-text search index over encrypted store (Xorein runtime).
+- [x] `P2-T1` Implement local full-text search index over encrypted store (Xorein runtime).
   - `ST1` Implement FTS index (inside encrypted DB) with:
     - per-channel scoping
     - sender filter
@@ -206,7 +206,7 @@ Planning artifact only. This file defines v21 implementation and validation requ
     - `pkg/v21/search/*_test.go`
     - `docs/v2.1/phase2/p2-search-contract.md`
 
-- [ ] `P2-T2` Integrate moderation redaction into persisted timelines (Xorein runtime).
+- [x] `P2-T2` Integrate moderation redaction into persisted timelines (Xorein runtime).
   - `ST1` Define tombstone behavior:
     - remove plaintext body and attachments preview text
     - preserve minimal envelope metadata + redaction reason code + audit pointer
@@ -218,7 +218,7 @@ Planning artifact only. This file defines v21 implementation and validation requ
     - `pkg/v21/store/tombstone/*_test.go`
     - `docs/v2.1/phase2/p2-redaction-persistence-contract.md`
 
-- [ ] `P2-T3` Implement harmolyn UX for persistence + search.
+- [x] `P2-T3` Implement harmolyn UX for persistence + search.
   - `ST1` Timeline hydration from local store with explicit empty/history-missing banners.
   - `ST2` Search UI with coverage labels and deterministic empty states.
   - `ST3` Minimal retention controls:
@@ -229,20 +229,20 @@ Planning artifact only. This file defines v21 implementation and validation requ
     - `docs/v2.1/phase2/p2-ux-contract.md`
 
 ### Phase 3 - Validation matrix and Podman scenarios (G4, G5)
-- [ ] `P3-T1` Add unit and integration tests for persistence invariants.
+- [x] `P3-T1` Add unit and integration tests for persistence invariants.
   - `ST1` Restart invariants: ordering stable, no duplication, no missing items after restart.
   - `ST2` Migration invariants: schema vN→vN+1 upgrades are deterministic.
   - `ST3` Corruption detection: corrupted DB produces deterministic refusal reason and safe recovery path.
   - `ST4` Retention/prune invariants: prune reasons deterministic; indexes consistent.
   - Artifacts: `pkg/v21/**/*_test.go`, `tests/e2e/v21/*`
 
-- [ ] `P3-T2` Add search correctness and privacy tests.
+- [x] `P3-T2` Add search correctness and privacy tests.
   - `ST1` Redaction removes results from search.
   - `ST2` Time range and channel scoping correctness.
   - `ST3` Large-DB stress tests with enforced query limits/timeouts.
   - Artifacts: `tests/e2e/v21/search_*`, `tests/perf/v21/*`
 
-- [ ] `P3-T3` Add Podman scenarios for persistence (Xorein nodes; harmolyn is not required in containers).
+- [x] `P3-T3` Add Podman scenarios for persistence (Xorein nodes; harmolyn is not required in containers).
   - `ST1` Multi-peer chat + restart + resume scenarios in container network.
   - `ST2` Local history clear and recovery scenarios.
   - `ST3` Relay no-long-history-hosting regression scenario for persistence/search (ensure relay does not store durable history segments).
@@ -253,7 +253,7 @@ Planning artifact only. This file defines v21 implementation and validation requ
     - `docs/v2.1/phase3/p3-podman-scenarios.md`
 
 ### Phase 4 - v22 spec package (G6)
-- [ ] `P4-T1` Produce distributed history/backfill specification package (`F22`).
+- [x] `P4-T1` Produce distributed history/backfill specification package (`F22`).
   - `ST1` Archivist capability model (non-privileged, opt-in):
     - advertisement + selection inputs
     - quota + retention windows + refusal reasons
@@ -277,7 +277,7 @@ Planning artifact only. This file defines v21 implementation and validation requ
     - `docs/v2.1/phase4/f22-acceptance-matrix.md`
 
 ### Phase 5 - Closure and evidence (G7)
-- [ ] `P5-T1` Publish v21 evidence bundle and promotion recommendation.
+- [x] `P5-T1` Publish v21 evidence bundle and promotion recommendation.
   - `ST1` Command outputs for compatibility/test/e2e/perf checks.
   - `ST2` Podman scenario outputs and deterministic result manifests.
   - `ST3` `F21` as-built conformance report against v20 `F21` seeds.

@@ -1,7 +1,7 @@
 # TODO v24 - Xorein (backend daemon) + harmolyn (frontend) Local API + Process Split (v2.4)
 
 ## Status
-Planning artifact only. This file defines v24 implementation and validation requirements. It does not claim implementation completion.
+v24 implementation closure artifact. This file records completed implementation, validation evidence, and release-gate outcomes for v24.
 
 ## Naming + architecture note (carry-forward, clarified)
 - **Xorein**: backend node/runtime binary (`cmd/xorein`). Must be fully headless-capable and must not depend on any UI packages.
@@ -199,7 +199,7 @@ Planning artifact only. This file defines v24 implementation and validation requ
     - `docs/v2.4/phase1/p1-boundary-enforcement.md`
 
 ### Phase 2 - harmolyn attach mode (G3)
-- [ ] `P2-T1` Implement harmolyn bootstrap/attach workflow.
+- [x] `P2-T1` Implement harmolyn bootstrap/attach workflow.
   - `ST1` Attach sequence:
     - detect running daemon (socket probe)
     - if missing: spawn `cmd/xorein --daemon` and wait for readiness
@@ -213,7 +213,7 @@ Planning artifact only. This file defines v24 implementation and validation requ
     - `pkg/v24/harmolyn/attach/*_test.go`
     - `docs/v2.4/phase2/p2-attach-ux-contract.md`
 
-- [ ] `P2-T2` Move critical user journeys to API-only execution.
+- [x] `P2-T2` Move critical user journeys to API-only execution.
   - `ST1` Identity journeys: create, restore from backup, device list/revoke (if present).
   - `ST2` Space/channel journeys: discover, join, list channels, send/receive messages.
   - `ST3` History journeys: local timeline, local search, backfill (if enabled from v22), coverage labels.
@@ -223,7 +223,7 @@ Planning artifact only. This file defines v24 implementation and validation requ
     - `tests/e2e/v24/journeys_*`
 
 ### Phase 3 - Security + multi-client validation (G4, G5)
-- [ ] `P3-T1` Add security tests for local API.
+- [x] `P3-T1` Add security tests for local API.
   - `ST1` Unauthorized access tests:
     - wrong user perms (UDS/named pipe)
     - invalid session token
@@ -238,7 +238,7 @@ Planning artifact only. This file defines v24 implementation and validation requ
     - `tests/fuzz/v24/*`
     - `docs/v2.4/phase3/p3-security-report.md`
 
-- [ ] `P3-T2` Multi-client attach and recovery scenarios.
+- [x] `P3-T2` Multi-client attach and recovery scenarios.
   - `ST1` Two harmolyn instances attach to one daemon (read-only concurrency allowed; writes serialized/deterministic).
   - `ST2` Daemon crash mid-call: harmolyn reconnects and shows deterministic recovery states.
   - `ST3` Stale socket simulation and auto-repair.
@@ -248,7 +248,7 @@ Planning artifact only. This file defines v24 implementation and validation requ
     - `docs/v2.4/phase3/p3-daemon-scenarios.md`
 
 ### Phase 4 - v25 spec package (G7)
-- [ ] `P4-T1` Produce ciphertext blob/asset distribution specification package (`F25`).
+- [x] `P4-T1` Produce ciphertext blob/asset distribution specification package (`F25`).
   - `ST1` Define supported data classes:
     - attachments (files)
     - avatars (user + Space)
@@ -266,7 +266,7 @@ Planning artifact only. This file defines v24 implementation and validation requ
     - `docs/v2.4/phase4/f25-acceptance-matrix.md`
 
 ### Phase 5 - Closure and evidence (G8)
-- [ ] `P5-T1` Publish v24 evidence bundle and promotion recommendation.
+- [x] `P5-T1` Publish v24 evidence bundle and promotion recommendation.
   - `ST1` Attach all command outputs and scenario manifests.
   - `ST2` Publish `F24` as-built conformance report against v23 `F24` package.
   - `ST3` Publish gate sign-off sheet and evidence index using templates.

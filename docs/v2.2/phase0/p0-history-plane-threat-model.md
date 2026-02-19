@@ -1,0 +1,12 @@
+# History-plane threat model (G0)
+
+This document records the planned countermeasures for the core history-plane threats listed in `TODO_v22.md`. No implementation is claimed; these are the design mitigations that must be confirmed by Phase 4/5 validation.
+
+| Threat vector | Mitigations in scope | Exit criteria / validation checks |
+| --- | --- | --- |
+| Storage abuse / DoS (Archivists targeted with over-sized uploads, retention spikes, replay floods). | Enforce per-Space and optional per-channel quotas, size caps, deterministic refusal reasons (`QUOTA_EXCEEDED`, `SEGMENT_TOO_LARGE`); rate-limit client uplinks; require proofs of membership before accepting manifest updates; document refusal reasons in `docs/v2.2/phase1`. | Pass `tests/e2e/v22/` abuse suites; `EV-v22-G5-###` entry showing quota/retention tests; replay flood tests from `scripts/v22-history-scenarios.sh`. |
+| Metadata leakage (keyword/semantic leakage via history queries). | Backfill APIs accept only time ranges and size limits; no keyword parameters are added to `HistorySegmentManifest` or retrieval endpoints; harmolyn search surfaces explicitly label coverage gaps and do not expose remote keyword entry points. | Privacy regression tests (`tests/e2e/v22/keyword_leakage_*`) prove keyword requests fail or never existed; `EV-v22-G5-###` entry references the privacy suite. |
+| Private-space enumeration (attackers learning Space IDs by probing history endpoints). | Retrieval keys derive from join secret / membership proofs; unauthorized requests are rate-limited, respond with generic `NOT_FOUND`, and manifest headers avoid enumerating replica lists. Document anti-enumeration logic in `docs/v2.2/phase2/p2-private-space-anti-enumeration.md`. | Anti-enumeration tests pass (`tests/e2e/v22/private_space_*`); rate-limit lessons recorded in `EV-v22-G5-###`. |
+| Replica churn / data loss (Archivists drop offline, healing lags, manifest mismatches). | Define default replica count `r` and minimum `r_min`, label degraded mode when `r` unmet (`HISTORY_DURABILITY_DEGRADED`); record replica health in `HistorySegmentManifest`; run healing pipeline to re-replicate; log minimized manifest metadata. | Replica heal/degarden tests in `tests/e2e/v22/replica_heal_*`, Podman scenario `ST4` verifying missing arch heal; `EV-v22-G6-###` entry with scenario manifest. |
+
+If any mitigations cannot be implemented, the associated gate (`G5` for abuse/privacy, `G6`/`G9` for scenario/regression) must be held open until compensating controls are demonstrated in later phases.

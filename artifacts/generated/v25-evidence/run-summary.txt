@@ -1,0 +1,9 @@
+buf lint:0
+buf breaking:0
+go test ./...:0
+go test ./tests/e2e/v25/...:0
+go test ./tests/perf/v25/...:0
+go build ./cmd/xorein:0
+go build ./cmd/harmolyn:0
+make check-full:0
+scripts/v25-blob-scenarios.sh:0

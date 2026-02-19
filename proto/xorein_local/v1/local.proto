@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package xorein_local.v1;
+
+option go_package = "gen/go/xorein_local/v1;localv1";
+
+// RefusalReason is a deterministic refusal taxonomy for the local API.
+enum RefusalReason {
+  REFUSAL_REASON_UNSPECIFIED = 0;
+  REFUSAL_REASON_NON_LOCAL_BIND = 1; // Must refuse bind attempts on non-local transports.
+  REFUSAL_REASON_INVALID_TOKEN = 2; // Session token is missing, expired, or malformed.
+  REFUSAL_REASON_UNAUTHORIZED_CAPABILITY = 3; // Client requested a capability that was not granted.
+}
+
+// ClientHello seeds the first handshake and declares capability requests.
+message ClientHello {
+  string client_id = 1; // deterministic per-device identifier (e.g., machine fingerprint).
+  string min_version = 2; // inclusive lower bound of supported protocol version range.
+  string max_version = 3; // inclusive upper bound of supported protocol version range.
+  bytes nonce = 4; // handshake nonce to prevent replay.
+  repeated string requested_capabilities = 5;
+}
+
+// HandshakeRequest wraps the hello payload for service compatibility.
+message HandshakeRequest {
+  ClientHello client_hello = 1;
+}
+
+// ServerHello accepts a version and returns a session token.
+message ServerHello {
+  string negotiated_version = 1;
+  bytes nonce = 2;
+  SessionToken session_token = 3;
+  repeated string granted_capabilities = 4;
+}
+
+// HandshakeResponse returns negotiated parameters and refusal details.
+message HandshakeResponse {
+  ServerHello server_hello = 1;
+  RefusalReason refusal_reason = 2;
+  string detail = 3;
+}
+
+// SessionToken is short-lived metadata used during RPCs.
+message SessionToken {
+  string value = 1;
+  int64 expires_at_unix = 2;
+}
+
+// AttachRequest validates an existing session and optionally scopes it.
+message AttachRequest {
+  SessionToken session_token = 1;
+  string space_id = 2;
+  string channel_id = 3;
+  string action = 4; // deterministic intent (e.g., "subscribe" or "control").
+}
+
+// AttachResponse acknowledges attach outcomes without exposing raw payloads.
+message AttachResponse {
+  bool ok = 1;
+  RefusalReason refusal_reason = 2;
+  string detail = 3;
+}
+
+// StreamCursor carries offset information for event streams.
+message StreamCursor {
+  uint64 position = 1;
+  string resume_token = 2;
+}
+
+// EventStreamResponse packages stream cursor metadata with an opaque payload.
+message EventStreamResponse {
+  StreamCursor cursor = 1;
+  bytes payload = 2;
+}
+
+// EventStreamRequest allows a client to resume from a known cursor.
+message EventStreamRequest {
+  StreamCursor cursor = 1;
+}
+
+service LocalAPIService {
+  rpc Handshake(HandshakeRequest) returns (HandshakeResponse);
+  rpc Attach(AttachRequest) returns (AttachResponse);
+  rpc EventStream(EventStreamRequest) returns (stream EventStreamResponse);
+}

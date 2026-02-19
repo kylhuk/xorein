@@ -1,0 +1,5 @@
+[v24-daemon-scenarios] dual-client-parallel-reads -> pass
+[v24-daemon-scenarios] crash-mid-call-recovery -> pass
+[v24-daemon-scenarios] stale-socket-repair -> pass
+[v24-daemon-scenarios] wrote manifest: /home/wenga/src/code_aether/artifacts/generated/v24-daemon-scenarios/manifest.txt
+[v24-daemon-scenarios] wrote log: /home/wenga/src/code_aether/artifacts/generated/v24-daemon-scenarios/run.log

@@ -1,0 +1,7 @@
+[v22-history-scenarios] offline-catchup -> pass
+[v22-history-scenarios] multi-archivist-failover -> pass
+[v22-history-scenarios] quota-refusal -> pass
+[v22-history-scenarios] replica-healing -> pass
+[v22-history-scenarios] relay-no-history-hosting -> pass
+[v22-history-scenarios] wrote manifest: /home/wenga/src/code_aether/artifacts/generated/v22-history-scenarios/manifest.txt
+[v22-history-scenarios] wrote log: /home/wenga/src/code_aether/artifacts/generated/v22-history-scenarios/run.log

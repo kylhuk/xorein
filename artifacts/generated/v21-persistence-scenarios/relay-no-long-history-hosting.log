@@ -1,0 +1,4 @@
+=== RUN   TestSearchFiltersAndCoverage
+--- PASS: TestSearchFiltersAndCoverage (0.00s)
+PASS
+ok  	github.com/aether/code_aether/pkg/v21/search	0.001s

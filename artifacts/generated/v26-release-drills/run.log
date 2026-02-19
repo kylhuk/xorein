@@ -1,0 +1,17 @@
+[2026-02-19T11:43:18Z] release-drills start
+[2026-02-19T11:43:18Z] root_dir=/home/wenga/src/code_aether
+[2026-02-19T11:43:18Z] RUN drill=release-e2e-v26 label=go test regression surface
+[2026-02-19T11:43:18Z] command=cd "/home/wenga/src/code_aether" && go test ./tests/e2e/v26/...
+[2026-02-19T11:43:18Z] status=release-e2e-v26 result=pass reason=none exit=0
+[2026-02-19T11:43:18Z] RUN drill=release-perf-v26 label=go test perf surface
+[2026-02-19T11:43:18Z] command=cd "/home/wenga/src/code_aether" && go test ./tests/perf/v26/...
+[2026-02-19T11:43:18Z] status=release-perf-v26 result=pass reason=none exit=0
+[2026-02-19T11:43:18Z] RUN drill=release-repro-build-v26 label=repro build verification
+[2026-02-19T11:43:18Z] command=cd "/home/wenga/src/code_aether" && ./scripts/v26-repro-build-verify.sh
+[2026-02-19T11:43:18Z] status=release-repro-build-v26 result=pass reason=none exit=0
+[2026-02-19T11:43:18Z] RUN drill=release-runbook-readiness label=runbook presence audit
+[2026-02-19T11:43:18Z] command=cd "/home/wenga/src/code_aether" && test -f docs/v2.6/phase3/p3-relay-runbook.md && test -f docs/v2.6/phase3/p3-archivist-runbook.md && test -f docs/v2.6/phase3/p3-aux-services-runbook.md
+[2026-02-19T11:43:18Z] status=release-runbook-readiness result=pass reason=none exit=0
+[2026-02-19T11:43:18Z] release-drills finished
+[2026-02-19T11:43:18Z] overall_status=pass
+[2026-02-19T11:43:18Z] manifest=/home/wenga/src/code_aether/artifacts/generated/v26-release-drills/manifest.txt

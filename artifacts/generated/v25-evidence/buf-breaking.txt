@@ -1,0 +1,2 @@
+Command: buf breaking --against '.git#branch=v20'
+Exit: 0

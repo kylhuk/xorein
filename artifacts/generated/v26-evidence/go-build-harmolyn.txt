@@ -1,0 +1,2 @@
+[command] go build ./cmd/harmolyn
+[artifact] artifacts/generated/v26-evidence/go-build-harmolyn.txt

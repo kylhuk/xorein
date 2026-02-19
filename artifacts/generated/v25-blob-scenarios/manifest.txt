@@ -1,0 +1,88 @@
+suite: v25-blob-scenarios
+generated_at: "2026-02-19T10:29:30Z"
+podman_image: "docker.io/library/golang:1.24.12"
+podman_available: true
+podman_blocker: ""
+artifact_dir: "/home/wenga/src/code_aether/artifacts/generated/v25-blob-scenarios"
+log: "/home/wenga/src/code_aether/artifacts/generated/v25-blob-scenarios/run.log"
+scenarios:
+  - slug: blobref-manifest-validation
+    status: pass
+    package: ./tests/e2e/v25
+    test_pattern: TestBlobRefManifestValidation
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestBlobRefManifestValidation -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v25-blob-scenarios/blobref-manifest-validation.log"
+  - slug: blobref-chunk-sum-mismatch
+    status: pass
+    package: ./tests/e2e/v25
+    test_pattern: TestBlobRefManifestRejectsChunkSumMismatch
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestBlobRefManifestRejectsChunkSumMismatch -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v25-blob-scenarios/blobref-chunk-sum-mismatch.log"
+  - slug: blob-transfer-success
+    status: pass
+    package: ./tests/e2e/v25
+    test_pattern: TestBlobTransferSuccess
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestBlobTransferSuccess -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v25-blob-scenarios/blob-transfer-success.log"
+  - slug: blob-transfer-refusals
+    status: pass
+    package: ./tests/e2e/v25
+    test_pattern: TestBlobTransferRefusals
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestBlobTransferRefusals -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v25-blob-scenarios/blob-transfer-refusals.log"
+  - slug: blob-crypto-envelope
+    status: pass
+    package: ./tests/e2e/v25
+    test_pattern: TestBlobCryptoEnvelopeRoundtrip
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestBlobCryptoEnvelopeRoundtrip -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v25-blob-scenarios/blob-crypto-envelope.log"
+  - slug: replication-policy
+    status: pass
+    package: ./tests/e2e/v25
+    test_pattern: TestReplicationPolicyPublishPrefersLocalAndDiversifies
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestReplicationPolicyPublishPrefersLocalAndDiversifies -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v25-blob-scenarios/replication-policy.log"
+  - slug: relay-boundary-private-anti-enum
+    status: pass
+    package: ./tests/e2e/v25
+    test_pattern: TestPrivateSpaceAntiEnumeration
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestPrivateSpaceAntiEnumeration -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v25-blob-scenarios/relay-boundary-private-anti-enum.log"
+  - slug: assets-preview-download
+    status: pass
+    package: ./tests/e2e/v25
+    test_pattern: TestAssetsPreviewDownloadFlow
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v25 -run TestAssetsPreviewDownloadFlow -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v25-blob-scenarios/assets-preview-download.log"

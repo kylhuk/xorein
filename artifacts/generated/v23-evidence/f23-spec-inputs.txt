@@ -1,0 +1,3 @@
+docs/v2.2/phase4/f23-acceptance-matrix.md
+docs/v2.2/phase4/f23-history-hardening-spec.md
+docs/v2.2/phase4/f23-proto-delta.md

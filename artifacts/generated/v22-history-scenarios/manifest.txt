@@ -1,0 +1,58 @@
+suite: v22-history-scenarios
+generated_at: "2026-02-18T22:30:58Z"
+podman_image: "docker.io/library/golang:1.24.12"
+podman_available: true
+podman_blocker: ""
+artifact_dir: "/home/wenga/src/code_aether/artifacts/generated/v22-history-scenarios"
+log: "/home/wenga/src/code_aether/artifacts/generated/v22-history-scenarios/run.log"
+scenarios:
+  - slug: offline-catchup
+    status: pass
+    package: ./tests/e2e/v22
+    test_pattern: TestScenarioOfflineCatchup
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v22 -run TestScenarioOfflineCatchup -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v22-history-scenarios/offline-catchup.log"
+  - slug: multi-archivist-failover
+    status: pass
+    package: ./tests/e2e/v22
+    test_pattern: TestScenarioMultiArchivistFailover
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v22 -run TestScenarioMultiArchivistFailover -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v22-history-scenarios/multi-archivist-failover.log"
+  - slug: quota-refusal
+    status: pass
+    package: ./tests/e2e/v22
+    test_pattern: TestScenarioQuotaRefusal
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v22 -run TestScenarioQuotaRefusal -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v22-history-scenarios/quota-refusal.log"
+  - slug: replica-healing
+    status: pass
+    package: ./tests/e2e/v22
+    test_pattern: TestScenarioReplicaHealing
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v22 -run TestScenarioReplicaHealing -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v22-history-scenarios/replica-healing.log"
+  - slug: relay-no-history-hosting
+    status: pass
+    package: ./tests/e2e/v22
+    test_pattern: TestScenarioRelayNoHistoryHosting
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v22 -run TestScenarioRelayNoHistoryHosting -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v22-history-scenarios/relay-no-history-hosting.log"

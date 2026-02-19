@@ -1,0 +1,58 @@
+suite: v23-regression-scenarios
+generated_at: "2026-02-19T07:47:15Z"
+podman_image: "docker.io/library/golang:1.24.12"
+podman_available: true
+podman_blocker: ""
+artifact_dir: "/home/wenga/src/code_aether/artifacts/generated/v23-regression-scenarios"
+log: "/home/wenga/src/code_aether/artifacts/generated/v23-regression-scenarios/run.log"
+scenarios:
+  - slug: offline-catchup
+    status: pass
+    package: ./tests/e2e/v23
+    test_pattern: TestScenarioOfflineCatchup
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v23 -run TestScenarioOfflineCatchup -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v23-regression-scenarios/offline-catchup.log"
+  - slug: redaction-tombstone
+    status: pass
+    package: ./tests/e2e/v23
+    test_pattern: TestScenarioRedactionTombstoneRegression
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v23 -run TestScenarioRedactionTombstoneRegression -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v23-regression-scenarios/redaction-tombstone.log"
+  - slug: private-space-anti-enumeration
+    status: pass
+    package: ./tests/e2e/v23
+    test_pattern: TestScenarioPrivateSpaceAntiEnumeration
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v23 -run TestScenarioPrivateSpaceAntiEnumeration -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v23-regression-scenarios/private-space-anti-enumeration.log"
+  - slug: replica-healing
+    status: pass
+    package: ./tests/e2e/v23
+    test_pattern: TestScenarioReplicaHealingUnderChurn
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v23 -run TestScenarioReplicaHealingUnderChurn -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v23-regression-scenarios/replica-healing.log"
+  - slug: relay-no-history-hosting
+    status: pass
+    package: ./tests/e2e/v23
+    test_pattern: TestScenarioRelayNoHistoryHosting
+    expected_exit_code: 0
+    actual_exit_code: 0
+    required_output: PASS
+    failure_reason: ""
+    command: "podman run --rm --userns=keep-id -v '/home/wenga/src/code_aether:/workspace:Z' -w /workspace docker.io/library/golang:1.24.12 bash -lc 'cd /workspace && /usr/local/go/bin/go test ./tests/e2e/v23 -run TestScenarioRelayNoHistoryHosting -count=1 -v'"
+    log: "/home/wenga/src/code_aether/artifacts/generated/v23-regression-scenarios/relay-no-history-hosting.log"
