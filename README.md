@@ -1,124 +1,90 @@
-<!-- Replace kylhuk/YOUR_REPO and links. Keep only what is true for your implementation. -->
+<div align="center">
+  <h1>xorein</h1>
+  <p><b>Protocol + runtime</b> for a secure-by-default, P2P-first chat system with explicit security modes.</p>
 
-<p align="center">
-  <img src="assets/xorein-banner.png" alt="Xorein" width="900" />
-</p>
+  <p>
+    <img alt="protocol" src="https://img.shields.io/badge/protocol-xorein-black" />
+    <img alt="p2p" src="https://img.shields.io/badge/network-libp2p%20%2B%20DHT%20%2B%20PubSub-blue" />
+    <img alt="crypto" src="https://img.shields.io/badge/crypto-Noise%20%2B%20E2EE%20profiles-success" />
+    <img alt="invariant" src="https://img.shields.io/badge/invariant-single%20binary%2C%20multi--mode-informational" />
+  </p>
 
-<h1 align="center">Xorein</h1>
-
-<p align="center">
-  A peer-to-peer protocol for end-to-end encrypted messaging, groups, and optional user-run nodes.
-</p>
-
-<p align="center">
-  <a href="https://github.com/kylhuk/xorein/releases"><img alt="Release" src="https://img.shields.io/github/v/release/kylhuk/xorein?display_name=tag&sort=semver"></a>
-  <a href="LICENSE"><img alt="License" src="https://img.shields.io/github/license/kylhuk/xorein"></a>
-  <a href="https://github.com/kylhuk/xorein/actions"><img alt="Build" src="https://img.shields.io/github/actions/workflow/status/kylhuk/xorein/ci.yml"></a>
-  <a href="https://github.com/kylhuk/xorein/security/policy"><img alt="Security Policy" src="https://img.shields.io/badge/security-policy-blue"></a>
-  <a href="https://securityscorecards.dev/viewer/?uri=github.com/kylhuk/xorein"><img alt="OpenSSF Scorecard" src="https://img.shields.io/ossf-scorecard/github.com/kylhuk/xorein?label=OpenSSF%20Scorecard"></a>
-</p>
-
-<p align="center">
-  <img alt="Spec" src="https://img.shields.io/badge/spec-versioned-informational">
-  <img alt="Crypto" src="https://img.shields.io/badge/crypto-agile-informational">
-  <img alt="Network" src="https://img.shields.io/badge/network-P2P-informational">
-</p>
+  <p>
+    <a href="https://github.com/kylhuk/xorein/releases"><img alt="release" src="https://img.shields.io/github/v/release/kylhuk/xorein?display_name=tag&sort=semver" /></a>
+    <a href="https://github.com/kylhuk/xorein/actions"><img alt="build" src="https://img.shields.io/github/actions/workflow/status/kylhuk/xorein/ci.yml" /></a>
+    <a href="https://github.com/kylhuk/xorein/security"><img alt="security-policy" src="https://img.shields.io/badge/security-policy-blue" /></a>
+    <a href="https://opensource.org/licenses/AGPL-3.0"><img alt="license" src="https://img.shields.io/github/license/kylhuk/xorein" /></a>
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="spec-license" src="https://img.shields.io/badge/spec-CC--BY--SA%204.0-lightgrey" /></a>
+  </p>
+</div>
 
 ---
 
-## What Xorein is
+## What xorein is
 
-Xorein is the protocol layer behind Harmolyn. It defines:
+xorein is both:
 
-- identity and device keys
-- end-to-end encryption for messages and media
-- peer discovery and routing over a peer-to-peer network
-- optional nodes that improve availability (without gaining the ability to read E2EE content)
-- version negotiation and crypto suite agility
+1) the **protocol family** (wire formats + versioning + security modes), and  
+2) the **runtime binary** that can operate in multiple roles.
 
-Xorein is intended for **advanced end users** who want to understand (and optionally operate) the network they rely on.
+No privileged “authority node class” exists. Differences are capability enablement only.
 
-## Security model (plain language)
+---
 
-Xorein aims to provide:
+## Roles (single binary, multiple modes)
 
-- **Confidentiality:** only intended participants can read content (E2EE)
-- **Authentication:** participants can verify who they are talking to
-- **Forward secrecy:** compromising a device later does not reveal all past traffic (depends on suite)
-- **Crypto agility:** algorithms can be upgraded without rewriting the whole protocol
+- **client**: P2P node used by Harmolyn
+- **relay**: connectivity + store-and-forward (ciphertext only)
+- **bootstrap**: minimal DHT entrypoint
+- **archivist** (capability role): long-lived ciphertext history segments + manifests + coverage semantics
+- **blob provider** (capability role): ciphertext attachments/assets distribution plane
 
-Limits (typical for P2P + E2EE systems):
-- metadata (IP/timing/traffic analysis) may be visible to network participants
-- discovery and availability may depend on nodes being online
+---
 
-## Crypto suites
+## Network design (what actually happens)
 
-Xorein should expose the active crypto suite in the client UI.
-This repository should define the canonical list of supported suites and their IDs.
+Discovery is layered and resilient:
+- local peer cache → LAN discovery → bootstrap list/DNS → DHT walking → rendezvous → peer exchange → manual peers
 
-Example format (replace with your actual suites):
+Transport security uses **Noise-secured libp2p connections** (fixed suite policy by default). Content security is per-surface (see below).
 
-| Suite ID | Key agreement | Signatures | AEAD | Hash/KDF | Typical use |
-|---:|---|---|---|---|---|
-| 1 | X25519 | Ed25519 | XChaCha20-Poly1305 | HKDF-SHA-256 | default messages + media |
-| 2 | P-256 | ECDSA P-256 | AES-256-GCM | HKDF-SHA-256 | FIPS-oriented environments |
+---
 
-See: `docs/crypto.md`
+## Security modes (explicit, user-visible)
 
-## Nodes (what they do)
+xorein defines per-surface security modes so “E2EE” is never a vague claim:
 
-Nodes are network participants that can provide some combination of:
-- discovery (help peers find each other)
-- routing/relaying (help messages traverse NATs/firewalls)
-- encrypted object storage replication (store ciphertext only)
-- public data distribution (e.g., signed network announcements)
+- **Seal**: 1:1 E2EE (X3DH + Double Ratchet)
+- **Tree**: interactive group E2EE (MLS)
+- **Crowd / Channel**: large-scale E2EE using epoch rotation (removal semantics are rotation-based)
+- **MediaShield**: E2EE media frames via SFrame where supported (fallback must be explicit)
+- **Clear**: readable by infrastructure (must be labeled; not default for private conversations)
 
-Nodes **do not** automatically mean “can read your chats” if E2EE is correctly implemented.
+---
 
-## What happens when nodes change?
+## Compatibility and versioning (built-in fragmentation control)
 
-- With **one node**, the network can function but becomes availability-centralized (security still depends on E2EE).
-- Adding nodes improves resilience and routing options.
-- Removing nodes triggers rerouting and (if you replicate data) re-replication.
+Three layers are used together:
+1) **Multistream-select**: per-subprotocol version negotiation (`/aether/<subsystem>/<major>.<minor>.<patch>`)
+2) **Protobuf evolution**: additive-only for minor changes
+3) **Capabilities exchange**: feature-level negotiation without forcing protocol bumps
 
-Clients should surface this as a connectivity/availability signal, not as a security downgrade (unless a downgrade actually occurs).
+Breaking changes:
+- ship under new multistream protocol IDs,
+- require downgrade negotiation,
+- require governance evidence and multi-implementation validation.
 
-## Versioning & compatibility
+---
 
-Xorein should have:
-- a protocol version handshake
-- a capability list (features, suites)
-- a policy for “minimum supported version” (to handle security fixes)
+## Operational guarantees (what you can expect)
 
-See: `docs/versioning.md`
+- Relays store **ciphertext only** and enforce quotas + TTLs.
+- Store-and-forward supports an MVP “relay-local” profile and a replicated “DHT” profile.
+- History/search surfaces are retention-aware and expose **coverage labels** and **durability labels**.
 
-## Operating a node (optional)
-
-If you provide prebuilt binaries, document:
-- hardware/network requirements
-- ports and NAT expectations
-- where encrypted data may be stored on disk
-- how to update safely
-- how the node learns “minimum supported versions”
-
-See: `docs/node.md`
-
-## Threat model
-
-Document what you defend against and what you do not:
-
-- passive network observers
-- malicious peers
-- compromised nodes
-- compromised client device
-- metadata adversaries (traffic analysis)
-
-See: `docs/threat-model.md`
-
-## Reporting vulnerabilities
-
-See `SECURITY.md`.
+---
 
 ## License
 
-See `LICENSE`.
+- Runtime/client/backend code: **AGPL-3.0**
+- Protocol/spec text: **CC-BY-SA 4.0**
