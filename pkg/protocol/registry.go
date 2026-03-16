@@ -29,6 +29,7 @@ const (
 type ProtocolVersion struct {
 	Major int
 	Minor int
+	Patch int
 }
 
 type ProtocolID struct {
@@ -38,7 +39,7 @@ type ProtocolID struct {
 }
 
 func (p ProtocolID) String() string {
-	return fmt.Sprintf("%s/%s/%d.%d", multistreamNamespace, strings.ToLower(string(p.Family)), p.Version.Major, p.Version.Minor)
+	return fmt.Sprintf("%s/%s/%d.%d.%d", multistreamNamespace, strings.ToLower(string(p.Family)), p.Version.Major, p.Version.Minor, p.Version.Patch)
 }
 
 var canonicalRegistry = map[ProtocolFamily][]ProtocolID{}
@@ -49,41 +50,45 @@ func registerCanonical(id ProtocolID) {
 	}
 	canonicalRegistry[id.Family] = append(canonicalRegistry[id.Family], id)
 	sort.SliceStable(canonicalRegistry[id.Family], func(i, j int) bool {
-		if canonicalRegistry[id.Family][i].Version.Major != canonicalRegistry[id.Family][j].Version.Major {
-			return canonicalRegistry[id.Family][i].Version.Major > canonicalRegistry[id.Family][j].Version.Major
+		left, right := canonicalRegistry[id.Family][i].Version, canonicalRegistry[id.Family][j].Version
+		if left.Major != right.Major {
+			return left.Major > right.Major
 		}
-		return canonicalRegistry[id.Family][i].Version.Minor > canonicalRegistry[id.Family][j].Version.Minor
+		if left.Minor != right.Minor {
+			return left.Minor > right.Minor
+		}
+		return left.Patch > right.Patch
 	})
 }
 
 var (
-	chatV01     = ProtocolID{Family: FamilyChat, Version: ProtocolVersion{Major: 0, Minor: 1}, Name: "chat/v0.1"}
-	voiceV01    = ProtocolID{Family: FamilyVoice, Version: ProtocolVersion{Major: 0, Minor: 1}, Name: "voice/v0.1"}
-	manifestV01 = ProtocolID{Family: FamilyManifest, Version: ProtocolVersion{Major: 0, Minor: 1}, Name: "manifest/v0.1"}
-	identityV01 = ProtocolID{Family: FamilyIdentity, Version: ProtocolVersion{Major: 0, Minor: 1}, Name: "identity/v0.1"}
-	syncV01     = ProtocolID{Family: FamilySync, Version: ProtocolVersion{Major: 0, Minor: 1}, Name: "sync/v0.1"}
-	dmV02       = ProtocolID{Family: FamilyDM, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "dm/v0.2"}
-	groupDMV02  = ProtocolID{Family: FamilyGroupDM, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "groupdm/v0.2"}
-	friendsV02  = ProtocolID{Family: FamilyFriends, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "friends/v0.2"}
-	presenceV02 = ProtocolID{Family: FamilyPresence, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "presence/v0.2"}
-	notifyV02   = ProtocolID{Family: FamilyNotify, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "notify/v0.2"}
-	modV02      = ProtocolID{Family: FamilyModeration, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "moderation/v0.2"}
-	govV02      = ProtocolID{Family: FamilyGovernance, Version: ProtocolVersion{Major: 0, Minor: 2}, Name: "governance/v0.2"}
+	chatV010       = ProtocolID{Family: FamilyChat, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "chat/v0.1.0"}
+	voiceV010      = ProtocolID{Family: FamilyVoice, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "voice/v0.1.0"}
+	manifestV010   = ProtocolID{Family: FamilyManifest, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "manifest/v0.1.0"}
+	identityV010   = ProtocolID{Family: FamilyIdentity, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "identity/v0.1.0"}
+	syncV010       = ProtocolID{Family: FamilySync, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "sync/v0.1.0"}
+	dmV020         = ProtocolID{Family: FamilyDM, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "dm/v0.2.0"}
+	groupDMV020    = ProtocolID{Family: FamilyGroupDM, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "groupdm/v0.2.0"}
+	friendsV020    = ProtocolID{Family: FamilyFriends, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "friends/v0.2.0"}
+	presenceV020   = ProtocolID{Family: FamilyPresence, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "presence/v0.2.0"}
+	notifyV020     = ProtocolID{Family: FamilyNotify, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "notify/v0.2.0"}
+	modV020        = ProtocolID{Family: FamilyModeration, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "moderation/v0.2.0"}
+	govV020        = ProtocolID{Family: FamilyGovernance, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "governance/v0.2.0"}
 )
 
 func init() {
-	registerCanonical(chatV01)
-	registerCanonical(voiceV01)
-	registerCanonical(manifestV01)
-	registerCanonical(identityV01)
-	registerCanonical(syncV01)
-	registerCanonical(dmV02)
-	registerCanonical(groupDMV02)
-	registerCanonical(friendsV02)
-	registerCanonical(presenceV02)
-	registerCanonical(notifyV02)
-	registerCanonical(modV02)
-	registerCanonical(govV02)
+	registerCanonical(chatV010)
+	registerCanonical(voiceV010)
+	registerCanonical(manifestV010)
+	registerCanonical(identityV010)
+	registerCanonical(syncV010)
+	registerCanonical(dmV020)
+	registerCanonical(groupDMV020)
+	registerCanonical(friendsV020)
+	registerCanonical(presenceV020)
+	registerCanonical(notifyV020)
+	registerCanonical(modV020)
+	registerCanonical(govV020)
 }
 
 func CanonicalByFamily(family ProtocolFamily) []ProtocolID {
@@ -92,7 +97,6 @@ func CanonicalByFamily(family ProtocolFamily) []ProtocolID {
 	return slice
 }
 
-// CanonicalProtocolByVersion returns the canonical entry for exactly matching family and version.
 func CanonicalProtocolByVersion(family ProtocolFamily, version ProtocolVersion) (ProtocolID, bool) {
 	for _, id := range canonicalRegistry[family] {
 		if id.Version == version {
@@ -116,7 +120,7 @@ func ParseProtocolID(input string) (ProtocolID, error) {
 		return ProtocolID{}, fmt.Errorf("protocol family required")
 	}
 	versionParts := strings.Split(parts[1], ".")
-	if len(versionParts) != 2 {
+	if len(versionParts) != 3 {
 		return ProtocolID{}, fmt.Errorf("unexpected version syntax: %s", parts[1])
 	}
 	major, err := parseProtocolVersionPart(versionParts[0], "major")
@@ -127,7 +131,11 @@ func ParseProtocolID(input string) (ProtocolID, error) {
 	if err != nil {
 		return ProtocolID{}, err
 	}
-	return ProtocolID{Family: family, Version: ProtocolVersion{Major: major, Minor: minor}, Name: fmt.Sprintf("%s/%d.%d", family, major, minor)}, nil
+	patch, err := parseProtocolVersionPart(versionParts[2], "patch")
+	if err != nil {
+		return ProtocolID{}, err
+	}
+	return ProtocolID{Family: family, Version: ProtocolVersion{Major: major, Minor: minor, Patch: patch}, Name: fmt.Sprintf("%s/%d.%d.%d", family, major, minor, patch)}, nil
 }
 
 func parseProtocolVersionPart(part string, label string) (int, error) {
@@ -150,10 +158,18 @@ func IntersectByFamily(local, offered ProtocolID) bool {
 	if local.Family != offered.Family {
 		return false
 	}
-	return local.Version.Major == offered.Version.Major && offered.Version.Minor <= local.Version.Minor
+	if local.Version.Major != offered.Version.Major {
+		return false
+	}
+	if offered.Version.Minor > local.Version.Minor {
+		return false
+	}
+	if offered.Version.Minor == local.Version.Minor && offered.Version.Patch > local.Version.Patch {
+		return false
+	}
+	return true
 }
 
-// CompatibilityPolicy decides whether a candidate protocol can satisfy a remote offer.
 type CompatibilityPolicy interface {
 	Name() string
 	Allows(candidate, offer ProtocolID) bool
@@ -189,6 +205,9 @@ func (p VersionCompatibilityPolicy) Allows(candidate, offer ProtocolID) bool {
 	if offer.Version.Minor > candidate.Version.Minor {
 		return p.allowMinorDowngrade
 	}
+	if offer.Version.Minor == candidate.Version.Minor && offer.Version.Patch > candidate.Version.Patch {
+		return p.allowMinorDowngrade
+	}
 	return true
 }
 
@@ -215,7 +234,16 @@ func (g DeprecationGuard) IsDeprecated(id ProtocolID) bool {
 	if id.Version.Major < anchor.Major {
 		return true
 	}
-	return id.Version.Major == anchor.Major && id.Version.Minor <= anchor.Minor
+	if id.Version.Major > anchor.Major {
+		return false
+	}
+	if id.Version.Minor < anchor.Minor {
+		return true
+	}
+	if id.Version.Minor > anchor.Minor {
+		return false
+	}
+	return id.Version.Patch <= anchor.Patch
 }
 
 var defaultDeprecationGuard = NewDeprecationGuard(nil)

@@ -2,240 +2,186 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
+	"os/signal"
+	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 
-	phase11 "github.com/aether/code_aether/pkg/phase11"
-	phase6 "github.com/aether/code_aether/pkg/phase6"
-	phase9 "github.com/aether/code_aether/pkg/phase9"
+	"github.com/aether/code_aether/pkg/node"
 )
 
 var (
-	dispatchScenarioFn = dispatchScenario
+	runRuntimeFn = runRuntime
 
-	runMode           = flag.String("mode", "client", "runtime mode: client|relay|bootstrap")
-	scenario          = flag.String("scenario", "", "optional scenario: create-server|join-deeplink|first-contact")
-	firstContactRuns  = flag.Int("first-contact-runs", 3, "number of repeated first-contact runs")
-	firstContactOut   = flag.String("first-contact-output", "artifacts/generated/first-contact", "output directory for first-contact scenario artifacts")
-	firstContactGoal  = flag.Duration("first-contact-target", 5*time.Minute, "target duration for each first-contact run")
-	serverID          = flag.String("server-id", "aether-server", "server identifier for manifest scenarios")
-	identity          = flag.String("identity", "aether-identity", "identity string used when signing manifests and joining")
-	description       = flag.String("description", "phase6 stub server", "server description for manifest metadata")
-	version           = flag.Int("version", 1, "manifest version value")
-	chatEnabled       = flag.Bool("capability-chat", true, "advertise chat capability")
-	voiceEnabled      = flag.Bool("capability-voice", false, "advertise voice capability")
-	deeplink          = flag.String("deeplink", "", "deeplink URI for join-deeplink scenario")
-	seedManifest      = flag.Bool("seed-manifest", false, "seed manifest store before join handshake")
-	relayListen       = flag.String("relay-listen", "0.0.0.0:4001", "relay listen address host:port")
-	relayStore        = flag.String("relay-store", "./artifacts/generated/relay-store", "relay store-and-forward data directory")
-	relayHealth       = flag.Duration("relay-health-interval", 30*time.Second, "relay health status emission interval")
-	relayReservations = flag.Int("relay-reservation-limit", 256, "maximum concurrent relay reservations")
-	relaySessionTTL   = flag.Duration("relay-session-timeout", 2*time.Minute, "maximum relay session lifetime")
-	relayMaxBytesSec  = flag.Int64("relay-max-bytes-per-sec", 1_000_000, "per-session relay bandwidth budget in bytes/sec")
+	runMode        = flag.String("mode", "client", "runtime mode: client|relay|bootstrap")
+	configPath     = flag.String("config", "", "optional JSON config file")
+	dataDir        = flag.String("data-dir", filepath.Join(os.TempDir(), "xorein"), "persistent data directory")
+	listenAddr     = flag.String("listen", "127.0.0.1:0", "node listen address")
+	bootstrapAddrs = flag.String("bootstrap-addrs", "", "comma-separated bootstrap node addresses")
+	manualPeers    = flag.String("manual-peers", "", "comma-separated manual peer addresses")
+	relayAddrs     = flag.String("relay-addrs", "", "comma-separated relay addresses")
+	controlPath    = flag.String("control", "", "control socket path or local endpoint")
+	scenario       = flag.String("scenario", "", "legacy flag retained for compatibility; must be empty")
 )
 
-type scenarioHandlers struct {
-	runCreateServer func(*phase6.ManifestStore)
-	runJoinDeepLink func(*phase6.ManifestStore)
-	runFirstContact func()
-	runRelayMode    func()
-}
-
-func defaultScenarioHandlers() scenarioHandlers {
-	return scenarioHandlers{
-		runCreateServer: runCreateServer,
-		runJoinDeepLink: runJoinDeepLink,
-		runFirstContact: runFirstContactScenario,
-		runRelayMode:    runRelayMode,
-	}
+type fileConfig struct {
+	Mode              string   `json:"mode"`
+	DataDir           string   `json:"data_dir"`
+	ListenAddr        string   `json:"listen_addr"`
+	BootstrapAddrs    []string `json:"bootstrap_addrs"`
+	ManualPeers       []string `json:"manual_peers"`
+	RelayAddrs        []string `json:"relay_addrs"`
+	ControlEndpoint   string   `json:"control_endpoint"`
+	DiscoveryInterval string   `json:"discovery_interval"`
+	HistoryLimit      int      `json:"history_limit"`
 }
 
 func main() {
 	flag.Parse()
-	store := phase6.NewManifestStore(0)
-	exitCode := dispatchScenarioFn(*runMode, *scenario, store, defaultScenarioHandlers())
-	if exitCode != 0 {
-		os.Exit(exitCode)
-	}
-}
-
-func dispatchScenario(mode string, scenario string, store *phase6.ManifestStore, handlers scenarioHandlers) int {
-	switch mode {
-	case "client", "relay", "bootstrap":
-		// valid modes maintained for compatibility.
-	default:
-		fmt.Fprintf(os.Stderr, "invalid --mode %q; expected client|relay|bootstrap\n", mode)
-		return 2
-	}
-
-	switch strings.ToLower(scenario) {
-	case "":
-		if mode == "relay" {
-			handlers.runRelayMode()
-			return 0
-		}
-		fmt.Printf("Phase 2 foundation stub: cmd/aether mode=%s\n", mode)
-		return 0
-	case "create-server":
-		handlers.runCreateServer(store)
-		return 0
-	case "join-deeplink":
-		handlers.runJoinDeepLink(store)
-		return 0
-	case "first-contact":
-		handlers.runFirstContact()
-		return 0
-	default:
-		fmt.Fprintf(os.Stderr, "unknown scenario %q; valid scenarios: create-server, join-deeplink, first-contact\n", scenario)
-		return 3
-	}
-}
-
-func runFirstContactScenario() {
-	summary, runs, err := phase11.RunFirstContact(context.Background(), phase11.Options{
-		Runs:           *firstContactRuns,
-		OutputDir:      *firstContactOut,
-		ServerIDPrefix: *serverID,
-		IdentityPrefix: *identity,
-		TargetDuration: *firstContactGoal,
-	})
+	cfg, err := buildNodeConfig()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "first-contact scenario failed: %v\n", err)
-		os.Exit(15)
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(2)
 	}
-
-	fmt.Printf("First-contact baseline generated: runs=%d passed=%d failed=%d pass_rate=%.2f output=%s\n",
-		summary.RunsCompleted,
-		summary.PassedRuns,
-		summary.FailedRuns,
-		summary.PassRate,
-		*firstContactOut,
-	)
-	fmt.Printf("Duration metrics: target=%s mean_ms=%d median_ms=%d\n", summary.TargetDuration, summary.MeanDurationMS, summary.MedianDurationMS)
-	for _, run := range runs {
-		fmt.Printf("Run %02d success=%t target_met=%t duration=%s\n", run.RunID, run.Success, run.TargetMet, run.Duration)
-		if !run.Success {
-			fmt.Printf("  failure: %s (owner: %s)\n", run.FailureReason, run.FailureOwner)
-		}
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	if err := runRuntimeFn(ctx, cfg); err != nil && !errors.Is(err, context.Canceled) {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 }
 
-func runRelayMode() {
-	if strings.TrimSpace(*relayListen) == "" {
-		fmt.Fprintln(os.Stderr, "invalid relay configuration: --relay-listen must be non-empty host:port")
-		os.Exit(11)
+func buildNodeConfig() (node.Config, error) {
+	if strings.TrimSpace(*scenario) != "" {
+		return node.Config{}, fmt.Errorf("legacy scenario mode is removed from normal execution path")
 	}
-	if strings.TrimSpace(*relayStore) == "" {
-		fmt.Fprintln(os.Stderr, "invalid relay configuration: --relay-store must be non-empty path")
-		os.Exit(12)
+	cfg := node.Config{
+		Role:              node.Role(strings.TrimSpace(*runMode)),
+		DataDir:           strings.TrimSpace(*dataDir),
+		ListenAddr:        strings.TrimSpace(*listenAddr),
+		BootstrapAddrs:    splitCSV(*bootstrapAddrs),
+		ManualPeers:       splitCSV(*manualPeers),
+		RelayAddrs:        splitCSV(*relayAddrs),
+		ControlEndpoint:   strings.TrimSpace(*controlPath),
+		DiscoveryInterval: 250 * time.Millisecond,
+		HistoryLimit:      32,
 	}
-	if *relayHealth <= 0 {
-		fmt.Fprintln(os.Stderr, "invalid relay configuration: --relay-health-interval must be greater than 0")
-		os.Exit(13)
+	if path := strings.TrimSpace(*configPath); path != "" {
+		loaded, err := loadFileConfig(path)
+		if err != nil {
+			return node.Config{}, err
+		}
+		cfg = mergeConfig(loaded, cfg)
 	}
+	if !cfg.Role.Valid() {
+		return node.Config{}, fmt.Errorf("invalid --mode %q; expected client|relay|bootstrap", cfg.Role)
+	}
+	if cfg.DataDir == "" {
+		return node.Config{}, fmt.Errorf("data dir is required")
+	}
+	return cfg, nil
+}
 
-	service, err := phase9.NewService(phase9.Config{
-		ReservationLimit: *relayReservations,
-		SessionTimeout:   *relaySessionTTL,
-		MaxBytesPerSec:   *relayMaxBytesSec,
-	})
+func runRuntime(ctx context.Context, cfg node.Config) error {
+	service, err := node.NewService(cfg)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "invalid relay policy: %v\n", err)
-		os.Exit(14)
+		return err
 	}
-
-	startedAt := time.Now().UTC()
+	if err := service.Start(ctx); err != nil {
+		return err
+	}
+	defer service.Close()
 	snapshot := service.Snapshot()
-	fmt.Printf("Relay runtime active mode=relay listen=%s store=%s\n", *relayListen, *relayStore)
-	fmt.Printf("Relay policy: reservation_limit=%d session_timeout=%s max_bytes_per_sec=%d active=%d rejected=%d timed_out=%d established=%d\n",
-		snapshot.ReservationLimit,
-		snapshot.SessionTimeout,
-		snapshot.MaxBytesPerSec,
-		snapshot.Active,
-		snapshot.Rejected,
-		snapshot.TimedOut,
-		snapshot.Established,
-	)
-	fmt.Printf("Relay health status: state=ready started_at=%s next_health_in=%s\n", startedAt.Format(time.RFC3339Nano), relayHealth.String())
+	fmt.Printf("xorein runtime ready role=%s peer_id=%s listen=%s control=%s\n", snapshot.Role, snapshot.PeerID, first(snapshot.ListenAddresses), snapshot.ControlEndpoint)
+	<-ctx.Done()
+	return ctx.Err()
 }
 
-func runCreateServer(store *phase6.ManifestStore) {
-	manifest := &phase6.Manifest{
-		ServerID:    *serverID,
-		Version:     *version,
-		Description: *description,
-		UpdatedAt:   time.Now().UTC(),
-		Capabilities: phase6.Capabilities{
-			Chat:  *chatEnabled,
-			Voice: *voiceEnabled,
-		},
-	}
-
-	sig, err := manifest.Sign(*identity)
+func loadFileConfig(path string) (node.Config, error) {
+	raw, err := os.ReadFile(path)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to sign manifest: %v\n", err)
-		os.Exit(4)
+		return node.Config{}, err
 	}
-
-	if err := store.Publish(manifest); err != nil {
-		fmt.Fprintf(os.Stderr, "failed to publish manifest: %v\n", err)
-		os.Exit(5)
+	var file fileConfig
+	if err := json.Unmarshal(raw, &file); err != nil {
+		return node.Config{}, err
 	}
-
-	state := phase6.NewServerState(manifest)
-	state.AddMetadata("cli-scenario", "create-server")
-
-	fmt.Printf("Created server manifest for %s\n", manifest.ServerID)
-	fmt.Printf("Signed at %s with signature %s\n", manifest.UpdatedAt.Format(time.RFC3339Nano), sig)
-	fmt.Printf("Local state metadata: %+v\n", state.LocalMetadata)
+	cfg := node.Config{
+		Role:            node.Role(strings.TrimSpace(file.Mode)),
+		DataDir:         strings.TrimSpace(file.DataDir),
+		ListenAddr:      strings.TrimSpace(file.ListenAddr),
+		BootstrapAddrs:  append([]string(nil), file.BootstrapAddrs...),
+		ManualPeers:     append([]string(nil), file.ManualPeers...),
+		RelayAddrs:      append([]string(nil), file.RelayAddrs...),
+		ControlEndpoint: strings.TrimSpace(file.ControlEndpoint),
+		HistoryLimit:    file.HistoryLimit,
+	}
+	if cfg.HistoryLimit == 0 {
+		cfg.HistoryLimit = 32
+	}
+	if strings.TrimSpace(file.DiscoveryInterval) != "" {
+		d, err := time.ParseDuration(file.DiscoveryInterval)
+		if err != nil {
+			return node.Config{}, err
+		}
+		cfg.DiscoveryInterval = d
+	}
+	return cfg, nil
 }
 
-func runJoinDeepLink(store *phase6.ManifestStore) {
-	if *deeplink == "" {
-		fmt.Fprintln(os.Stderr, "--deeplink is required for join-deeplink scenario")
-		os.Exit(6)
+func mergeConfig(base, override node.Config) node.Config {
+	out := base
+	if override.Role.Valid() {
+		out.Role = override.Role
 	}
-
-	link, err := phase6.ParseJoinDeepLink(*deeplink)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to parse deeplink: %v\n", err)
-		os.Exit(7)
+	if override.DataDir != "" {
+		out.DataDir = override.DataDir
 	}
+	if override.ListenAddr != "" {
+		out.ListenAddr = override.ListenAddr
+	}
+	if len(override.BootstrapAddrs) > 0 {
+		out.BootstrapAddrs = override.BootstrapAddrs
+	}
+	if len(override.ManualPeers) > 0 {
+		out.ManualPeers = override.ManualPeers
+	}
+	if len(override.RelayAddrs) > 0 {
+		out.RelayAddrs = override.RelayAddrs
+	}
+	if override.ControlEndpoint != "" {
+		out.ControlEndpoint = override.ControlEndpoint
+	}
+	if override.DiscoveryInterval > 0 {
+		out.DiscoveryInterval = override.DiscoveryInterval
+	}
+	if override.HistoryLimit > 0 {
+		out.HistoryLimit = override.HistoryLimit
+	}
+	return out
+}
 
-	if *seedManifest {
-		seed := &phase6.Manifest{
-			ServerID:    link.ServerID,
-			Version:     *version,
-			Description: *description,
-			UpdatedAt:   time.Now().UTC(),
-			Capabilities: phase6.Capabilities{
-				Chat:  *chatEnabled,
-				Voice: *voiceEnabled,
-			},
+func splitCSV(raw string) []string {
+	parts := strings.Split(raw, ",")
+	out := make([]string, 0, len(parts))
+	for _, part := range parts {
+		part = strings.TrimSpace(part)
+		if part != "" {
+			out = append(out, part)
 		}
-		_, seedSignErr := seed.Sign(*identity)
-		if seedSignErr != nil {
-			fmt.Fprintf(os.Stderr, "failed to sign seed manifest: %v\n", seedSignErr)
-			os.Exit(8)
-		}
-		publishErr := store.Publish(seed)
-		if publishErr != nil {
-			fmt.Fprintf(os.Stderr, "failed to publish seed manifest: %v\n", publishErr)
-			os.Exit(9)
-		}
 	}
+	return out
+}
 
-	handshake := phase6.NewHandshakeMachine(store, *identity)
-	state, err := handshake.Join(link)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "join handshake failed: %v\n", err)
-		os.Exit(10)
+func first(values []string) string {
+	if len(values) == 0 {
+		return ""
 	}
-
-	fmt.Printf("Handshake succeeded for %s\n", state.ServerID)
-	fmt.Printf("Membership status: %s, chat enabled: %t, voice enabled: %t\n", state.Status, state.ChatReady, state.VoiceReady)
-	fmt.Printf("Last handshake: %s, retries: %d\n", state.LastHandshake.Format(time.RFC3339Nano), state.RetryCount)
+	return values[0]
 }
