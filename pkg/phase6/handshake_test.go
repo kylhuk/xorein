@@ -8,19 +8,16 @@ import (
 
 func TestHandshakeMachineJoinSuccess(t *testing.T) {
 	store := NewManifestStore(time.Hour)
-	manifest := &Manifest{
+	manifest := mustSignManifest(t, &Manifest{
 		ServerID:     "handshake-success",
 		Version:      3,
 		UpdatedAt:    time.Now().UTC(),
 		Capabilities: Capabilities{Chat: true, Voice: true},
-	}
-	if _, err := manifest.Sign("phase6"); err != nil {
-		t.Fatalf("sign manifest: %v", err)
-	}
+	}, "remote-signer")
 	if err := store.Publish(manifest); err != nil {
 		t.Fatalf("publish manifest: %v", err)
 	}
-	machine := NewHandshakeMachine(store, "phase6")
+	machine := NewHandshakeMachine(store, "local-client")
 	link := &DeepLink{ServerID: manifest.ServerID}
 	state, err := machine.Join(link)
 	if err != nil {
@@ -39,13 +36,21 @@ func TestHandshakeMachineJoinSuccess(t *testing.T) {
 		t.Fatalf("expected last handshake timestamp to be set")
 	}
 
+	state.Manifest.Description = "mutated externally"
+	if machine.state[link.ServerID].Manifest.Description == "mutated externally" {
+		t.Fatalf("returned state leaked internal manifest pointer")
+	}
+
 	state2, err := machine.Join(link)
 	var hsErr *HandshakeError
 	if !errors.As(err, &hsErr) || hsErr.Kind != HandshakeErrAlreadyJoined {
 		t.Fatalf("expected already joined error, got %v", err)
 	}
-	if state2 != state {
-		t.Fatalf("rejoining did not return same state pointer")
+	if state2 == state {
+		t.Fatalf("rejoining returned the same state pointer; expected detached clone")
+	}
+	if state2.ServerID != state.ServerID || state2.Status != state.Status {
+		t.Fatalf("rejoining returned inconsistent state clone")
 	}
 }
 
@@ -73,13 +78,11 @@ func TestHandshakeMachineJoinFailureScenarios(t *testing.T) {
 		t.Fatalf("retry count should increment on retries, got %d", state.RetryCount)
 	}
 
-	present := &Manifest{ServerID: "bad-signature", Version: ManifestVersionV1, UpdatedAt: time.Now().UTC(), Capabilities: Capabilities{Chat: true}}
-	if _, err := present.Sign("attacker"); err != nil {
-		t.Fatalf("sign present manifest: %v", err)
-	}
-	if err := store.Publish(present); err != nil {
-		t.Fatalf("publish present manifest: %v", err)
-	}
+	present := mustSignManifest(t, &Manifest{ServerID: "bad-signature", Version: ManifestVersionV1, UpdatedAt: time.Now().UTC(), Capabilities: Capabilities{Chat: true}}, "attacker")
+	present.Signature = "tampered"
+	store.mu.Lock()
+	store.entries[present.ServerID] = &manifestEntry{manifest: present.Clone(), expiresAt: time.Now().UTC().Add(time.Hour)}
+	store.mu.Unlock()
 	link.ServerID = present.ServerID
 	stateRetry, err := machine.Join(link)
 	if err == nil {
@@ -90,5 +93,9 @@ func TestHandshakeMachineJoinFailureScenarios(t *testing.T) {
 	}
 	if stateRetry.LastError != "invalid signature" {
 		t.Fatalf("expected invalid signature error message, got %q", stateRetry.LastError)
+	}
+	var hsErr *HandshakeError
+	if !errors.As(err, &hsErr) || hsErr.Kind != HandshakeErrInvalidSignature {
+		t.Fatalf("expected invalid signature handshake error, got %v", err)
 	}
 }

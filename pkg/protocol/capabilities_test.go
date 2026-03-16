@@ -13,10 +13,15 @@ func TestValidFeatureFlagName(t *testing.T) {
 	}{
 		{name: "valid chat", input: "cap.chat", valid: true},
 		{name: "valid dotted", input: "cap.voice.low-latency", valid: true},
+		{name: "valid numeric segment", input: "cap.voice.v2", valid: true},
 		{name: "missing prefix", input: "chat", valid: false},
 		{name: "upper-case", input: "cap.Chat", valid: false},
 		{name: "empty tail", input: "cap.", valid: false},
 		{name: "invalid rune", input: "cap.voice/opus", valid: false},
+		{name: "double dot", input: "cap.voice..opus", valid: false},
+		{name: "double hyphen separator", input: "cap.voice--opus", valid: false},
+		{name: "leading separator", input: "cap.-voice", valid: false},
+		{name: "trailing separator", input: "cap.voice-", valid: false},
 	}
 
 	for _, tt := range tests {
@@ -61,7 +66,7 @@ func TestNegotiateCapabilities(t *testing.T) {
 		result := NegotiateCapabilities(
 			local,
 			[]string{"cap.chat", "cap.voice"},
-			[]string{"cap.identity", "cap.sync", "bad"},
+			[]string{"cap.identity", "cap.sync", "bad", "cap.voice..opus"},
 		)
 
 		wantAccepted := []FeatureFlag{FeatureChat, FeatureVoice}
@@ -69,7 +74,7 @@ func TestNegotiateCapabilities(t *testing.T) {
 			t.Fatalf("accepted mismatch: got %#v want %#v", result.Accepted, wantAccepted)
 		}
 
-		wantMissing := []string{"bad", "cap.sync"}
+		wantMissing := []string{"bad", "cap.sync", "cap.voice..opus"}
 		if !reflect.DeepEqual(result.MissingRequired, wantMissing) {
 			t.Fatalf("missing mismatch: got %#v want %#v", result.MissingRequired, wantMissing)
 		}

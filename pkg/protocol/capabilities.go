@@ -91,19 +91,25 @@ func ValidFeatureFlagName(flag string) bool {
 	if tail == "" {
 		return false
 	}
+
+	lastWasSeparator := true
 	for _, r := range tail {
 		switch {
 		case r >= 'a' && r <= 'z':
-			continue
+			lastWasSeparator = false
 		case r >= '0' && r <= '9':
-			continue
+			lastWasSeparator = false
 		case r == '.' || r == '-':
-			continue
+			if lastWasSeparator {
+				return false
+			}
+			lastWasSeparator = true
 		default:
 			return false
 		}
 	}
-	return true
+
+	return !lastWasSeparator
 }
 
 // CapabilityFeedback is the user-facing deterministic outcome category for

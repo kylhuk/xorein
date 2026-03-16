@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -15,12 +16,15 @@ const (
 )
 
 var (
-	ErrManifestNil               = errors.New("manifest required")
-	ErrManifestIdentityRequired  = errors.New("identity required for signing")
-	ErrManifestServerIDRequired  = errors.New("server id required")
-	ErrManifestVersionInvalid    = errors.New("manifest version must be >= 1")
-	ErrManifestUpdatedAtRequired = errors.New("updated_at required")
-	ErrManifestStale             = errors.New("manifest is stale")
+	ErrManifestNil                  = errors.New("manifest required")
+	ErrManifestIdentityRequired     = errors.New("identity required for signing")
+	ErrManifestStoredIdentityNeeded = errors.New("manifest identity required")
+	ErrManifestSignatureRequired    = errors.New("manifest signature required")
+	ErrManifestInvalidSignature     = errors.New("manifest signature invalid")
+	ErrManifestServerIDRequired     = errors.New("server id required")
+	ErrManifestVersionInvalid       = errors.New("manifest version must be >= 1")
+	ErrManifestUpdatedAtRequired    = errors.New("updated_at required")
+	ErrManifestStale                = errors.New("manifest is stale")
 )
 
 // Capabilities enumerates the surface that a server promises to offer once
@@ -48,7 +52,7 @@ func (m *Manifest) ValidateFields() error {
 	if m == nil {
 		return ErrManifestNil
 	}
-	if m.ServerID == "" {
+	if strings.TrimSpace(m.ServerID) == "" {
 		return ErrManifestServerIDRequired
 	}
 	if m.Version < ManifestVersionV1 {
@@ -94,8 +98,8 @@ func (m *Manifest) Serialize() ([]byte, error) {
 	}
 
 	payload := canonical{
-		ServerID:     m.ServerID,
-		Identity:     m.Identity,
+		ServerID:     strings.TrimSpace(m.ServerID),
+		Identity:     strings.TrimSpace(m.Identity),
 		Version:      m.Version,
 		Description:  m.Description,
 		UpdatedAt:    m.UpdatedAt.UTC().Format(time.RFC3339Nano),
@@ -111,6 +115,7 @@ func (m *Manifest) Sign(identity string) (string, error) {
 	if m == nil {
 		return "", ErrManifestNil
 	}
+	identity = strings.TrimSpace(identity)
 	if identity == "" {
 		return "", ErrManifestIdentityRequired
 	}
@@ -129,7 +134,11 @@ func (m *Manifest) Sign(identity string) (string, error) {
 
 // ValidateSignature recreates the deterministic signature and compares it.
 func (m *Manifest) ValidateSignature(identity string) bool {
-	if m == nil || identity == "" {
+	if m == nil {
+		return false
+	}
+	identity = strings.TrimSpace(identity)
+	if identity == "" || strings.TrimSpace(m.Signature) == "" {
 		return false
 	}
 	current, err := m.Serialize()
@@ -137,7 +146,25 @@ func (m *Manifest) ValidateSignature(identity string) bool {
 		return false
 	}
 	digest := sha256.Sum256(append(current, []byte(identity)...))
-	return hex.EncodeToString(digest[:]) == m.Signature
+	return hex.EncodeToString(digest[:]) == strings.TrimSpace(m.Signature)
+}
+
+// ValidateStoredSignature validates the signer identity embedded in the manifest
+// together with the stored deterministic signature.
+func (m *Manifest) ValidateStoredSignature() error {
+	if err := m.ValidateFields(); err != nil {
+		return err
+	}
+	if strings.TrimSpace(m.Identity) == "" {
+		return ErrManifestStoredIdentityNeeded
+	}
+	if strings.TrimSpace(m.Signature) == "" {
+		return ErrManifestSignatureRequired
+	}
+	if !m.ValidateSignature(m.Identity) {
+		return ErrManifestInvalidSignature
+	}
+	return nil
 }
 
 // Clone deep copies the manifest to avoid shared mutation between callers.
@@ -163,7 +190,7 @@ type ServerState struct {
 // NewServerState returns a new ServerState for the provided manifest.
 func NewServerState(m *Manifest) *ServerState {
 	return &ServerState{
-		Manifest:      m,
+		Manifest:      m.Clone(),
 		PublishedAt:   time.Now().UTC(),
 		LocalMetadata: map[string]string{},
 	}

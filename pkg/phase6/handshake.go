@@ -35,6 +35,15 @@ func (s *MembershipState) VoiceFlowEnabled() bool {
 	return s.VoiceReady && s.Status == MembershipStatusActive
 }
 
+func (s *MembershipState) Clone() *MembershipState {
+	if s == nil {
+		return nil
+	}
+	clone := *s
+	clone.Manifest = s.Manifest.Clone()
+	return &clone
+}
+
 type HandshakeErrorKind string
 
 const (
@@ -73,9 +82,7 @@ func NewHandshakeMachine(store *ManifestStore, identity string) *HandshakeMachin
 	return &HandshakeMachine{store: store, identity: identity, state: map[string]*MembershipState{}}
 }
 
-func (h *HandshakeMachine) ensureState(serverID string) *MembershipState {
-	h.mu.Lock()
-	defer h.mu.Unlock()
+func (h *HandshakeMachine) ensureStateLocked(serverID string) *MembershipState {
 	if st, ok := h.state[serverID]; ok {
 		return st
 	}
@@ -88,10 +95,13 @@ func (h *HandshakeMachine) Join(link *DeepLink) (*MembershipState, error) {
 	if h == nil || h.store == nil || link == nil {
 		return nil, errors.New("handshake machine not ready")
 	}
-	st := h.ensureState(link.ServerID)
 
+	h.mu.Lock()
+	defer h.mu.Unlock()
+
+	st := h.ensureStateLocked(link.ServerID)
 	if st.Status == MembershipStatusActive {
-		return st, &HandshakeError{Kind: HandshakeErrAlreadyJoined, Err: errors.New("already joined")}
+		return st.Clone(), &HandshakeError{Kind: HandshakeErrAlreadyJoined, Err: errors.New("already joined")}
 	}
 
 	st.Status = MembershipStatusJoining
@@ -103,21 +113,21 @@ func (h *HandshakeMachine) Join(link *DeepLink) (*MembershipState, error) {
 		st.Status = MembershipStatusFailed
 		st.LastError = err.Error()
 		st.LastHandshake = time.Now().UTC()
-		return st, &HandshakeError{Kind: HandshakeErrManifestMissing, Err: err}
+		return st.Clone(), &HandshakeError{Kind: HandshakeErrManifestMissing, Err: err}
 	}
 
-	if !manifest.ValidateSignature(h.identity) {
+	if err := manifest.ValidateStoredSignature(); err != nil {
 		st.Status = MembershipStatusFailed
 		st.LastError = "invalid signature"
 		st.LastHandshake = time.Now().UTC()
-		return st, &HandshakeError{Kind: HandshakeErrInvalidSignature, Err: errors.New("signature mismatch")}
+		return st.Clone(), &HandshakeError{Kind: HandshakeErrInvalidSignature, Err: err}
 	}
 
-	st.Manifest = manifest
+	st.Manifest = manifest.Clone()
 	st.Status = MembershipStatusActive
 	st.ChatReady = manifest.Capabilities.Chat
 	st.VoiceReady = manifest.Capabilities.Voice
 	st.LastHandshake = time.Now().UTC()
 
-	return st, nil
+	return st.Clone(), nil
 }

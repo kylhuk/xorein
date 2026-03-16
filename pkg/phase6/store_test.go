@@ -8,12 +8,12 @@ import (
 
 func TestManifestStorePublishResolve(t *testing.T) {
 	store := NewManifestStore(time.Hour)
-	base := &Manifest{
+	base := mustSignManifest(t, &Manifest{
 		ServerID:    "resolve-server",
 		Version:     ManifestVersionV1,
 		Description: "base",
 		UpdatedAt:   time.Date(2025, time.December, 31, 23, 58, 0, 0, time.UTC),
-	}
+	}, "resolver")
 	if err := store.Publish(base); err != nil {
 		t.Fatalf("publish failed: %v", err)
 	}
@@ -45,22 +45,22 @@ func TestManifestStorePublishConditionalUpdate(t *testing.T) {
 	}{
 		{
 			name:            "newer version replaces",
-			initial:         &Manifest{ServerID: "srv-newer-version", Version: ManifestVersionV1, Description: "original", UpdatedAt: baseTime},
-			update:          &Manifest{ServerID: "srv-newer-version", Version: 2, Description: "new version", UpdatedAt: baseTime.Add(time.Minute)},
+			initial:         mustSignManifest(t, &Manifest{ServerID: "srv-newer-version", Version: ManifestVersionV1, Description: "original", UpdatedAt: baseTime}, "signer"),
+			update:          mustSignManifest(t, &Manifest{ServerID: "srv-newer-version", Version: 2, Description: "new version", UpdatedAt: baseTime.Add(time.Minute)}, "signer"),
 			expectedDesc:    "new version",
 			expectedVersion: 2,
 		},
 		{
 			name:            "reject older version",
-			initial:         &Manifest{ServerID: "srv-reject-older", Version: 2, Description: "current", UpdatedAt: baseTime},
-			update:          &Manifest{ServerID: "srv-reject-older", Version: ManifestVersionV1, Description: "older", UpdatedAt: baseTime.Add(-time.Minute)},
+			initial:         mustSignManifest(t, &Manifest{ServerID: "srv-reject-older", Version: 2, Description: "current", UpdatedAt: baseTime}, "signer"),
+			update:          mustSignManifest(t, &Manifest{ServerID: "srv-reject-older", Version: ManifestVersionV1, Description: "older", UpdatedAt: baseTime.Add(-time.Minute)}, "signer"),
 			expectedDesc:    "current",
 			expectedVersion: 2,
 		},
 		{
 			name:            "same version with newer timestamp",
-			initial:         &Manifest{ServerID: "srv-same-version", Version: ManifestVersionV1, Description: "first", UpdatedAt: baseTime},
-			update:          &Manifest{ServerID: "srv-same-version", Version: ManifestVersionV1, Description: "updated", UpdatedAt: baseTime.Add(time.Hour)},
+			initial:         mustSignManifest(t, &Manifest{ServerID: "srv-same-version", Version: ManifestVersionV1, Description: "first", UpdatedAt: baseTime}, "signer"),
+			update:          mustSignManifest(t, &Manifest{ServerID: "srv-same-version", Version: ManifestVersionV1, Description: "updated", UpdatedAt: baseTime.Add(time.Hour)}, "signer"),
 			expectedDesc:    "updated",
 			expectedVersion: ManifestVersionV1,
 		},
@@ -91,6 +91,7 @@ func TestManifestStorePublishConditionalUpdate(t *testing.T) {
 
 func TestManifestStorePublishRejectsInvalidManifest(t *testing.T) {
 	store := NewManifestStore(time.Hour)
+	signedBase := mustSignManifest(t, &Manifest{ServerID: "srv", Version: ManifestVersionV1, UpdatedAt: time.Now().UTC()}, "signer")
 	cases := []struct {
 		name    string
 		m       *Manifest
@@ -100,6 +101,9 @@ func TestManifestStorePublishRejectsInvalidManifest(t *testing.T) {
 		{name: "missing server id", m: &Manifest{Version: ManifestVersionV1, UpdatedAt: time.Now().UTC()}, wantErr: ErrManifestServerIDRequired},
 		{name: "invalid version", m: &Manifest{ServerID: "srv", Version: 0, UpdatedAt: time.Now().UTC()}, wantErr: ErrManifestVersionInvalid},
 		{name: "missing updated_at", m: &Manifest{ServerID: "srv", Version: ManifestVersionV1}, wantErr: ErrManifestUpdatedAtRequired},
+		{name: "missing signer identity", m: &Manifest{ServerID: signedBase.ServerID, Version: signedBase.Version, UpdatedAt: signedBase.UpdatedAt, Signature: signedBase.Signature}, wantErr: ErrManifestStoredIdentityNeeded},
+		{name: "missing signature", m: &Manifest{ServerID: signedBase.ServerID, Version: signedBase.Version, UpdatedAt: signedBase.UpdatedAt, Identity: signedBase.Identity}, wantErr: ErrManifestSignatureRequired},
+		{name: "tampered signature", m: func() *Manifest { clone := signedBase.Clone(); clone.Description = "tampered"; return clone }(), wantErr: ErrManifestInvalidSignature},
 	}
 
 	for _, tc := range cases {
@@ -114,7 +118,7 @@ func TestManifestStorePublishRejectsInvalidManifest(t *testing.T) {
 
 func TestManifestStoreTTLExpirationAndInvalidate(t *testing.T) {
 	store := NewManifestStore(time.Hour)
-	manifest := &Manifest{ServerID: "expiring-server", Version: 1, UpdatedAt: time.Now().UTC()}
+	manifest := mustSignManifest(t, &Manifest{ServerID: "expiring-server", Version: 1, UpdatedAt: time.Now().UTC()}, "signer")
 	if err := store.Publish(manifest); err != nil {
 		t.Fatalf("publish failed: %v", err)
 	}

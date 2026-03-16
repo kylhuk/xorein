@@ -81,6 +81,21 @@ func TestParseProtocolID(t *testing.T) {
 			t.Fatal("expected version error")
 		}
 	})
+	t.Run("negative version rejected", func(t *testing.T) {
+		if _, err := ParseProtocolID("/aether/chat/-1.0"); err == nil {
+			t.Fatal("expected negative version error")
+		}
+	})
+	t.Run("plus-prefixed version rejected", func(t *testing.T) {
+		if _, err := ParseProtocolID("/aether/chat/+1.0"); err == nil {
+			t.Fatal("expected plus-prefixed version error")
+		}
+	})
+	t.Run("empty family rejected", func(t *testing.T) {
+		if _, err := ParseProtocolID("/aether//0.1"); err == nil {
+			t.Fatal("expected family error")
+		}
+	})
 }
 
 func TestVersionCompatibilityPolicy(t *testing.T) {

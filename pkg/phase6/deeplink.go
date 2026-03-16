@@ -45,6 +45,13 @@ func ParseJoinDeepLink(raw string) (*DeepLink, error) {
 		return nil, &DeeplinkValidationError{Reason: "deeplink host must be join"}
 	}
 
+	if u.User != nil {
+		return nil, &DeeplinkValidationError{Reason: "userinfo is not allowed"}
+	}
+	if u.RawQuery != "" || u.Fragment != "" {
+		return nil, &DeeplinkValidationError{Reason: "query parameters and fragments are not allowed"}
+	}
+
 	trimmed := strings.Trim(u.Path, "/")
 	if trimmed == "" {
 		return nil, &DeeplinkValidationError{Reason: "missing server identifier"}

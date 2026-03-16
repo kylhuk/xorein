@@ -111,20 +111,39 @@ func ParseProtocolID(input string) (ProtocolID, error) {
 	if len(parts) != 2 {
 		return ProtocolID{}, fmt.Errorf("malformed protocol identifier: %s", trimmed)
 	}
-	family := ProtocolFamily(strings.ToLower(parts[0]))
+	family := ProtocolFamily(strings.ToLower(strings.TrimSpace(parts[0])))
+	if family == "" {
+		return ProtocolID{}, fmt.Errorf("protocol family required")
+	}
 	versionParts := strings.Split(parts[1], ".")
 	if len(versionParts) != 2 {
 		return ProtocolID{}, fmt.Errorf("unexpected version syntax: %s", parts[1])
 	}
-	major, err := strconv.Atoi(versionParts[0])
+	major, err := parseProtocolVersionPart(versionParts[0], "major")
 	if err != nil {
-		return ProtocolID{}, fmt.Errorf("invalid major version: %w", err)
+		return ProtocolID{}, err
 	}
-	minor, err := strconv.Atoi(versionParts[1])
+	minor, err := parseProtocolVersionPart(versionParts[1], "minor")
 	if err != nil {
-		return ProtocolID{}, fmt.Errorf("invalid minor version: %w", err)
+		return ProtocolID{}, err
 	}
 	return ProtocolID{Family: family, Version: ProtocolVersion{Major: major, Minor: minor}, Name: fmt.Sprintf("%s/%d.%d", family, major, minor)}, nil
+}
+
+func parseProtocolVersionPart(part string, label string) (int, error) {
+	if part == "" {
+		return 0, fmt.Errorf("invalid %s version: empty", label)
+	}
+	for _, r := range part {
+		if r < '0' || r > '9' {
+			return 0, fmt.Errorf("invalid %s version: %s", label, part)
+		}
+	}
+	value, err := strconv.Atoi(part)
+	if err != nil {
+		return 0, fmt.Errorf("invalid %s version: %w", label, err)
+	}
+	return value, nil
 }
 
 func IntersectByFamily(local, offered ProtocolID) bool {

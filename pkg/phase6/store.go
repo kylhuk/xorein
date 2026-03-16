@@ -38,7 +38,7 @@ func NewManifestStore(ttl time.Duration) *ManifestStore {
 // when the manifest version increases, or when the version is unchanged and the
 // timestamp is newer.
 func (s *ManifestStore) Publish(m *Manifest) error {
-	if err := m.ValidateFields(); err != nil {
+	if err := m.ValidateStoredSignature(); err != nil {
 		return err
 	}
 
@@ -67,19 +67,17 @@ func (s *ManifestStore) Publish(m *Manifest) error {
 
 // Resolve returns the cached manifest for the provided server ID if it has not expired.
 func (s *ManifestStore) Resolve(serverID string) (*Manifest, error) {
-	s.mu.RLock()
-	entry, ok := s.entries[serverID]
-	s.mu.RUnlock()
+	s.mu.Lock()
+	defer s.mu.Unlock()
 
+	entry, ok := s.entries[serverID]
 	if !ok {
 		return nil, ErrManifestNotFound
 	}
 
 	now := time.Now().UTC()
 	if now.After(entry.expiresAt) {
-		s.mu.Lock()
 		delete(s.entries, serverID)
-		s.mu.Unlock()
 		return nil, ErrManifestExpired
 	}
 

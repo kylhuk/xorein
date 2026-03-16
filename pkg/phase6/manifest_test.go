@@ -35,8 +35,11 @@ func TestManifestSerializeSignAndValidate(t *testing.T) {
 		t.Fatalf("manifest serialization is not deterministic\nfirst: %s\nsecond: %s", first, second)
 	}
 
-	if _, err := m.Sign("gatekeeper"); err != nil {
+	if _, err := m.Sign(" gatekeeper "); err != nil {
 		t.Fatalf("signing manifest failed: %v", err)
+	}
+	if m.Identity != "gatekeeper" {
+		t.Fatalf("expected trimmed identity, got %q", m.Identity)
 	}
 	if m.Signature == "" {
 		t.Fatalf("expected signature to be populated")
@@ -47,10 +50,65 @@ func TestManifestSerializeSignAndValidate(t *testing.T) {
 	if m.ValidateSignature("intruder") {
 		t.Fatalf("manifest accepted wrong identity")
 	}
+	if err := m.ValidateStoredSignature(); err != nil {
+		t.Fatalf("stored signature validation failed: %v", err)
+	}
 
 	invalid := &Manifest{ServerID: "another"}
 	if _, err := invalid.Sign(""); !errors.Is(err, ErrManifestIdentityRequired) {
 		t.Fatalf("expected ErrManifestIdentityRequired when signing without identity, got %v", err)
+	}
+	invalid.Identity = "somebody"
+	invalid.Signature = "abc"
+	if err := invalid.ValidateStoredSignature(); !errors.Is(err, ErrManifestVersionInvalid) {
+		t.Fatalf("expected ErrManifestVersionInvalid on incomplete manifest, got %v", err)
+	}
+}
+
+func TestManifestStoredSignatureValidationFailures(t *testing.T) {
+	base := mustSignManifest(t, &Manifest{
+		ServerID:    "signed-server",
+		Version:     ManifestVersionV1,
+		Description: "signed",
+		UpdatedAt:   time.Date(2026, time.January, 1, 0, 0, 0, 0, time.UTC),
+	}, "remote-signer")
+
+	cases := []struct {
+		name    string
+		mutate  func(*Manifest)
+		wantErr error
+	}{
+		{
+			name: "missing identity",
+			mutate: func(m *Manifest) {
+				m.Identity = ""
+			},
+			wantErr: ErrManifestStoredIdentityNeeded,
+		},
+		{
+			name: "missing signature",
+			mutate: func(m *Manifest) {
+				m.Signature = ""
+			},
+			wantErr: ErrManifestSignatureRequired,
+		},
+		{
+			name: "tampered payload",
+			mutate: func(m *Manifest) {
+				m.Description = "tampered"
+			},
+			wantErr: ErrManifestInvalidSignature,
+		},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			candidate := base.Clone()
+			tc.mutate(candidate)
+			if err := candidate.ValidateStoredSignature(); !errors.Is(err, tc.wantErr) {
+				t.Fatalf("expected %v, got %v", tc.wantErr, err)
+			}
+		})
 	}
 }
 
@@ -111,9 +169,17 @@ func TestManifestClone(t *testing.T) {
 }
 
 func TestServerStateMetadataHandling(t *testing.T) {
-	state := NewServerState(&Manifest{ServerID: "state-server"})
+	manifest := &Manifest{ServerID: "state-server", Version: ManifestVersionV1, UpdatedAt: time.Now().UTC()}
+	state := NewServerState(manifest)
 	if state.LocalMetadata == nil {
 		t.Fatalf("expected metadata map to be initialized")
+	}
+	if state.Manifest == manifest {
+		t.Fatalf("expected NewServerState to clone the manifest")
+	}
+	state.Manifest.ServerID = "mutated"
+	if manifest.ServerID != "state-server" {
+		t.Fatalf("mutating server state manifest mutated original")
 	}
 	state.AddMetadata("feature", "enabled")
 	if got := state.LocalMetadata["feature"]; got != "enabled" {

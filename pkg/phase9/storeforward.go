@@ -3,6 +3,7 @@ package phase9
 import (
 	"fmt"
 	"sort"
+	"sync"
 	"time"
 )
 
@@ -109,6 +110,7 @@ type storedEnvelope struct {
 
 // StoreService is an in-memory deterministic store-and-forward policy model.
 type StoreService struct {
+	mu  sync.Mutex
 	cfg StoreConfig
 
 	nextSeq uint64
@@ -132,6 +134,10 @@ func NewStoreService(cfg StoreConfig) (*StoreService, error) {
 
 // Store appends an opaque ciphertext envelope, applying ttl and quota policies.
 func (s *StoreService) Store(now time.Time, recipientID string, ciphertext []byte) StoreResult {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	now = normalizeStoreTime(now)
 	if recipientID == "" {
 		s.rejectedWrites++
 		return StoreResult{Stored: false, Reason: "recipient required"}
@@ -145,7 +151,7 @@ func (s *StoreService) Store(now time.Time, recipientID string, ciphertext []byt
 		return StoreResult{Stored: false, Reason: "payload exceeds max"}
 	}
 
-	result := s.compact(now)
+	result := s.compactLocked(now)
 
 	if int64(len(ciphertext)) > s.cfg.MaxBytes {
 		s.rejectedWrites++
@@ -157,8 +163,8 @@ func (s *StoreService) Store(now time.Time, recipientID string, ciphertext []byt
 	env := storedEnvelope{
 		recipientID: recipientID,
 		ciphertext:  append([]byte(nil), ciphertext...),
-		storedAt:    now.UTC(),
-		expiresAt:   now.UTC().Add(s.cfg.RetentionTTL),
+		storedAt:    now,
+		expiresAt:   now.Add(s.cfg.RetentionTTL),
 		seq:         s.nextSeq,
 	}
 	s.nextSeq++
@@ -181,7 +187,11 @@ func (s *StoreService) Store(now time.Time, recipientID string, ciphertext []byt
 
 // DrainRecipient returns and removes unexpired queued ciphertexts for recipient.
 func (s *StoreService) DrainRecipient(now time.Time, recipientID string) [][]byte {
-	s.compact(now)
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	now = normalizeStoreTime(now)
+	s.compactLocked(now)
 
 	if recipientID == "" {
 		return nil
@@ -204,7 +214,11 @@ func (s *StoreService) DrainRecipient(now time.Time, recipientID string) [][]byt
 
 // Snapshot returns deterministic store retention/quota counters.
 func (s *StoreService) Snapshot(now time.Time) StoreSnapshot {
-	s.compact(now)
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	now = normalizeStoreTime(now)
+	s.compactLocked(now)
 	return StoreSnapshot{
 		RetentionTTL:    s.cfg.RetentionTTL,
 		MaxMessages:     s.cfg.MaxMessages,
@@ -238,7 +252,7 @@ func (s *StoreService) PrivacyAuditSnapshot(now time.Time) StorePrivacyAuditReco
 	}
 }
 
-func (s *StoreService) compact(now time.Time) StoreResult {
+func (s *StoreService) compactLocked(now time.Time) StoreResult {
 	if len(s.items) == 0 {
 		return StoreResult{}
 	}
@@ -266,4 +280,11 @@ func (s *StoreService) compact(now time.Time) StoreResult {
 	}
 
 	return StoreResult{DroppedByTTL: dropped}
+}
+
+func normalizeStoreTime(now time.Time) time.Time {
+	if now.IsZero() {
+		return time.Now().UTC()
+	}
+	return now.UTC()
 }
