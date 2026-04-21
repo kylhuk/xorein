@@ -6,13 +6,19 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
+	"io"
 	"net"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/aether/code_aether/pkg/network"
+	"github.com/aether/code_aether/pkg/storage"
 )
 
 func TestNetworkFormationAndPeerCache(t *testing.T) {
@@ -39,6 +45,91 @@ func TestNetworkFormationAndPeerCache(t *testing.T) {
 	})
 }
 
+func TestDiscoverySurfacesSaveFailuresAndRollsBackPeerCache(t *testing.T) {
+	service, err := NewService(Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: time.Hour})
+	if err != nil {
+		t.Fatalf("NewService() error = %v", err)
+	}
+
+	originalSaveStateFn := saveStateFn
+	saveStateFn = func(string, persistedState) error { return errors.New("forced discovery save failure") }
+	defer func() { saveStateFn = originalSaveStateFn }()
+
+	if err := service.mergeDiscoveredPeers("bootstrap", []PeerInfo{{PeerID: "peer-1", Role: RoleRelay, Addresses: []string{"127.0.0.1:1234"}, PublicKey: "peer-key"}}); err == nil || !strings.Contains(err.Error(), "forced discovery save failure") {
+		t.Fatalf("mergeDiscoveredPeers() error = %v, want forced discovery save failure", err)
+	}
+	if hasPeer(service.Snapshot(), "peer-1") {
+		t.Fatal("expected discovery rollback to remove unsaved peer cache entry")
+	}
+}
+
+func TestCreateServerRollsBackOnSaveFailure(t *testing.T) {
+	service, err := NewService(Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: time.Hour})
+	if err != nil {
+		t.Fatalf("NewService() error = %v", err)
+	}
+
+	originalSaveStateFn := saveStateFn
+	saveStateFn = func(string, persistedState) error { return errors.New("forced server save failure") }
+	defer func() { saveStateFn = originalSaveStateFn }()
+
+	if _, err := service.CreateServer("rollback", "save failure"); err == nil || !strings.Contains(err.Error(), "forced server save failure") {
+		t.Fatalf("CreateServer() error = %v, want forced server save failure", err)
+	}
+	if len(service.Snapshot().Servers) != 0 {
+		t.Fatal("expected server creation rollback to leave no persisted server")
+	}
+}
+
+func TestRecordTelemetryRollsBackOnSaveFailure(t *testing.T) {
+	service, err := NewService(Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: time.Hour})
+	if err != nil {
+		t.Fatalf("NewService() error = %v", err)
+	}
+
+	originalSaveStateFn := saveStateFn
+	saveStateFn = func(string, persistedState) error { return errors.New("forced telemetry save failure") }
+	defer func() { saveStateFn = originalSaveStateFn }()
+
+	service.recordTelemetry("test.telemetry entry")
+	if containsTelemetry(service.Snapshot().Telemetry, "test.telemetry entry") {
+		t.Fatal("expected telemetry rollback to drop unsaved entry")
+	}
+}
+
+func TestPeerAddressFilteringNormalizesPersistenceAndTargets(t *testing.T) {
+	service, err := NewService(Config{
+		Role:              RoleClient,
+		DataDir:           t.TempDir(),
+		ListenAddr:        "127.0.0.1:0",
+		BootstrapAddrs:    []string{"http://127.0.0.1:4242/path", "192.168.0.1:80"},
+		RelayAddrs:        []string{"https://127.0.0.1:4343/relay", "10.0.0.1:90"},
+		ManualPeers:       []string{"http://127.0.0.1:4444", "203.0.113.1:1"},
+		DiscoveryInterval: time.Hour,
+	})
+	if err != nil {
+		t.Fatalf("NewService() error = %v", err)
+	}
+
+	service.mu.Lock()
+	service.upsertPeerLocked(PeerRecord{PeerID: "peer-1", Role: RoleRelay, Addresses: []string{"https://127.0.0.1:5555/path", "127.0.0.1:5555", "10.0.0.2:55"}, PublicKey: "peer-key"})
+	service.mu.Unlock()
+
+	peer, ok := peerByID(service.Snapshot(), "peer-1")
+	if !ok {
+		t.Fatal("expected peer-1 to be stored")
+	}
+	if !sameStringSet(peer.Addresses, []string{"/ip4/127.0.0.1/tcp/5555"}) {
+		t.Fatalf("peer addresses = %#v want normalized loopback target", peer.Addresses)
+	}
+	if !sameStringSet(service.bootstrapTargets(), []string{"/ip4/127.0.0.1/tcp/4242"}) {
+		t.Fatalf("bootstrap targets = %#v want filtered loopback target", service.bootstrapTargets())
+	}
+	if !sameStringSet(service.relayTargets(), []string{"/ip4/127.0.0.1/tcp/4343", "/ip4/127.0.0.1/tcp/5555"}) {
+		t.Fatalf("relay targets = %#v want filtered loopback targets", service.relayTargets())
+	}
+}
+
 func TestConfiguredManualPeersAreDiscovered(t *testing.T) {
 	manualTarget, stopManualTarget := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopManualTarget()
@@ -49,6 +140,57 @@ func TestConfiguredManualPeersAreDiscovered(t *testing.T) {
 	waitFor(t, 3*time.Second, func() bool {
 		peer, ok := peerByID(manualJoiner.Snapshot(), manualTarget.PeerID())
 		return ok && peer.Source == "manual" && len(peer.Addresses) > 0
+	})
+}
+
+func TestPeerExchangePrefersSharedServerPeersAndFiltersKnownPeers(t *testing.T) {
+	service, err := NewService(Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	if err != nil {
+		t.Fatalf("NewService() error = %v", err)
+	}
+
+	service.mu.Lock()
+	service.state.Identity.PeerID = "self"
+	service.state.KnownPeers["owner"] = PeerRecord{PeerID: "owner", Role: RoleArchivist, Addresses: []string{"owner.example:1"}, PublicKey: "owner-key"}
+	service.state.KnownPeers["member"] = PeerRecord{PeerID: "member", Role: RoleClient, Addresses: []string{"member.example:2"}, PublicKey: "member-key"}
+	service.state.KnownPeers["other"] = PeerRecord{PeerID: "other", Role: RoleRelay, Addresses: []string{"other.example:3"}, PublicKey: "other-key"}
+	service.state.Servers["srv"] = ServerRecord{ID: "srv", OwnerPeerID: "owner", Members: []string{"member", "self", "owner"}}
+	service.mu.Unlock()
+
+	peers := service.peerExchange(PeerExchangeRequest{KnownPeerIDs: []string{"other"}, ServerIDs: []string{"srv"}, Limit: 4})
+	if len(peers) != 2 {
+		t.Fatalf("peerExchange() returned %d peers want 2 (%+v)", len(peers), peers)
+	}
+	if peers[0].PeerID != "owner" || peers[1].PeerID != "member" {
+		t.Fatalf("peerExchange() order = %#v want owner/member first", peers)
+	}
+}
+
+func TestOfflineBootstrapBackoffPreservesKnownPeersAcrossRestart(t *testing.T) {
+	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	clientDir := t.TempDir()
+	bootstrapAddr := bootstrap.ListenAddress()
+	client, stopClient := startService(t, Config{Role: RoleClient, DataDir: clientDir, ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrapAddr}, DiscoveryInterval: 40 * time.Millisecond})
+
+	waitFor(t, 3*time.Second, func() bool {
+		return hasPeer(client.Snapshot(), bootstrap.PeerID())
+	})
+
+	stopBootstrap()
+
+	waitFor(t, 3*time.Second, func() bool {
+		snapshot := client.Snapshot()
+		return hasPeer(snapshot, bootstrap.PeerID()) && containsTelemetry(snapshot.Telemetry, "discovery.backoff layer=bootstrap-register")
+	})
+
+	stopClient()
+
+	restarted, stopRestarted := startService(t, Config{Role: RoleClient, DataDir: clientDir, ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrapAddr}, DiscoveryInterval: 40 * time.Millisecond})
+	defer stopRestarted()
+
+	waitFor(t, 3*time.Second, func() bool {
+		snapshot := restarted.Snapshot()
+		return hasPeer(snapshot, bootstrap.PeerID()) && containsTelemetry(snapshot.Telemetry, "discovery.backoff")
 	})
 }
 
@@ -180,6 +322,42 @@ func TestInviteJoinMessageRelayFallbackAndHistory(t *testing.T) {
 	expiredLink, _ := expiredInvite.Deeplink()
 	if _, err := lateGuest.JoinByDeeplink(expiredLink); err == nil || !strings.Contains(err.Error(), "expired") {
 		t.Fatalf("expected expired invite error, got %v", err)
+	}
+}
+
+func TestPreviewAndJoinRejectSignedInviteOwnerMismatch(t *testing.T) {
+	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	defer stopBootstrap()
+
+	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	defer stopHost()
+
+	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	defer stopGuest()
+
+	server, err := host.CreateServer("owner-check", "signed invite owner mismatch")
+	if err != nil {
+		t.Fatalf("CreateServer() error = %v", err)
+	}
+
+	invite, err := ParseDeeplink(server.Invite)
+	if err != nil {
+		t.Fatalf("ParseDeeplink() error = %v", err)
+	}
+	invite.OwnerPeerID = "attacker"
+	if err := invite.Sign(host.Snapshot().Identity); err != nil {
+		t.Fatalf("invite.Sign() error = %v", err)
+	}
+	badLink, err := invite.Deeplink()
+	if err != nil {
+		t.Fatalf("invite.Deeplink() error = %v", err)
+	}
+
+	if _, err := guest.PreviewDeeplink(badLink); err == nil || !strings.Contains(err.Error(), "owner peer mismatch") {
+		t.Fatalf("PreviewDeeplink() error = %v, want owner peer mismatch", err)
+	}
+	if _, err := guest.JoinByDeeplink(badLink); err == nil || !strings.Contains(err.Error(), "owner peer mismatch") {
+		t.Fatalf("JoinByDeeplink() error = %v, want owner peer mismatch", err)
 	}
 }
 
@@ -771,6 +949,42 @@ func TestApplyDeliveryRejectsForgedMessageMutations(t *testing.T) {
 		}
 	}
 	t.Fatalf("message %s not found in host snapshot", original.ID)
+}
+
+func TestPeerTransportRejectsBadDeliverySignature(t *testing.T) {
+	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	defer stopHost()
+
+	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	defer stopGuest()
+
+	participants := dedupeSorted([]string{host.PeerID(), guest.PeerID()})
+	delivery := Delivery{
+		ID:               randomID("dm"),
+		Kind:             "dm_create",
+		ScopeID:          strings.Join(participants, ":"),
+		ScopeType:        "dm",
+		SenderPeerID:     guest.PeerID(),
+		SenderPublicKey:  guest.Snapshot().Identity.PublicKey,
+		RecipientPeerIDs: []string{host.PeerID()},
+		CreatedAt:        time.Now().UTC(),
+	}
+	if err := delivery.Sign(guest.Snapshot().Identity); err != nil {
+		t.Fatalf("delivery.Sign() error = %v", err)
+	}
+	delivery.CreatedAt = delivery.CreatedAt.Add(time.Second)
+
+	_, err := network.NewClient(time.Second).Call(context.Background(), host.ListenAddress(), network.OperationDeliver, delivery, nil)
+	if err == nil {
+		t.Fatal("expected peer transport to reject tampered delivery signature")
+	}
+	transportErr, ok := err.(*network.Error)
+	if !ok {
+		t.Fatalf("transport error type = %T want *network.Error", err)
+	}
+	if transportErr.Code != "invalid_signature" {
+		t.Fatalf("transport error code = %q want invalid_signature", transportErr.Code)
+	}
 }
 
 func TestIncomingMentionEmitsNotificationCreatedEvent(t *testing.T) {
@@ -1724,125 +1938,52 @@ func TestControlAPINotificationsReadReturnsDMParticipantIDs(t *testing.T) {
 }
 
 func TestNotificationSummaryIncludesDirectAggregates(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	bob, stopBob := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBob()
-	if _, err := bob.CreateIdentity("bob", ""); err != nil {
-		t.Fatalf("bob.CreateIdentity() error = %v", err)
-	}
-
-	carol, stopCarol := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopCarol()
-	if _, err := carol.CreateIdentity("carol", ""); err != nil {
-		t.Fatalf("carol.CreateIdentity() error = %v", err)
-	}
-
-	hostBobDM, err := host.CreateDM(bob.PeerID())
-	if err != nil {
-		t.Fatalf("host.CreateDM(bob) error = %v", err)
-	}
-	hostCarolDM, err := host.CreateDM(carol.PeerID())
-	if err != nil {
-		t.Fatalf("host.CreateDM(carol) error = %v", err)
-	}
-	bobDM, err := bob.CreateDM(host.PeerID())
-	if err != nil {
-		t.Fatalf("bob.CreateDM(host) error = %v", err)
-	}
-	carolDM, err := carol.CreateDM(host.PeerID())
-	if err != nil {
-		t.Fatalf("carol.CreateDM(host) error = %v", err)
-	}
-	if hostBobDM.ID != bobDM.ID || hostCarolDM.ID != carolDM.ID {
-		t.Fatal("expected symmetric DM ids")
-	}
-
-	if _, err := bob.SendDMMessage(bobDM.ID, "hello @alice one"); err != nil {
-		t.Fatalf("bob.SendDMMessage(one) error = %v", err)
-	}
-	if _, err := bob.SendDMMessage(bobDM.ID, "hello @alice two"); err != nil {
-		t.Fatalf("bob.SendDMMessage(two) error = %v", err)
-	}
-	if _, err := carol.SendDMMessage(carolDM.ID, "hello @alice three"); err != nil {
-		t.Fatalf("carol.SendDMMessage() error = %v", err)
-	}
+	bob := newTestIdentity(t, "bob")
+	carol := newTestIdentity(t, "carol")
+	bobDM := dmScopeID(host.PeerID(), bob.PeerID)
+	carolDM := dmScopeID(host.PeerID(), carol.PeerID)
+	applyRemoteMessage(t, host, bob, "dm", bobDM, "", "hello @alice one")
+	applyRemoteMessage(t, host, bob, "dm", bobDM, "", "hello @alice two")
+	applyRemoteMessage(t, host, carol, "dm", carolDM, "", "hello @alice three")
 
 	waitFor(t, 2*time.Second, func() bool { return host.NotificationSummary().TotalUnread == 3 })
 	summary := host.NotificationSummary()
 	if len(summary.Directs) != 2 {
 		t.Fatalf("direct aggregate count = %d want 2; summary=%#v", len(summary.Directs), summary)
 	}
-	bobBucket, ok := notificationDirectBucketByID(summary.Directs, bobDM.ID)
+	bobBucket, ok := notificationDirectBucketByID(summary.Directs, bobDM)
 	if !ok {
 		t.Fatalf("bob direct aggregate missing in %#v", summary.Directs)
 	}
-	if bobBucket.ScopeName != bob.PeerID() || bobBucket.UnreadCount != 2 {
+	if bobBucket.ScopeName != bob.PeerID || bobBucket.UnreadCount != 2 {
 		t.Fatalf("bob direct aggregate = %#v", bobBucket)
 	}
-	carolBucket, ok := notificationDirectBucketByID(summary.Directs, carolDM.ID)
+	carolBucket, ok := notificationDirectBucketByID(summary.Directs, carolDM)
 	if !ok {
 		t.Fatalf("carol direct aggregate missing in %#v", summary.Directs)
 	}
-	if carolBucket.ScopeName != carol.PeerID() || carolBucket.UnreadCount != 1 {
+	if carolBucket.ScopeName != carol.PeerID || carolBucket.UnreadCount != 1 {
 		t.Fatalf("carol direct aggregate = %#v", carolBucket)
 	}
 }
 
 func TestControlAPINotificationSummaryIncludesDirectAggregates(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	bob, stopBob := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBob()
-	if _, err := bob.CreateIdentity("bob", ""); err != nil {
-		t.Fatalf("bob.CreateIdentity() error = %v", err)
-	}
-	carol, stopCarol := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopCarol()
-	if _, err := carol.CreateIdentity("carol", ""); err != nil {
-		t.Fatalf("carol.CreateIdentity() error = %v", err)
-	}
-
-	hostBobDM, err := host.CreateDM(bob.PeerID())
-	if err != nil {
-		t.Fatalf("host.CreateDM(bob) error = %v", err)
-	}
-	_, err = host.CreateDM(carol.PeerID())
-	if err != nil {
-		t.Fatalf("host.CreateDM(carol) error = %v", err)
-	}
-	bobDM, err := bob.CreateDM(host.PeerID())
-	if err != nil {
-		t.Fatalf("bob.CreateDM(host) error = %v", err)
-	}
-	carolDM, err := carol.CreateDM(host.PeerID())
-	if err != nil {
-		t.Fatalf("carol.CreateDM(host) error = %v", err)
-	}
-	if hostBobDM.ID != bobDM.ID {
-		t.Fatal("expected symmetric bob DM id")
-	}
-
-	if _, err := bob.SendDMMessage(bobDM.ID, "hello @alice one"); err != nil {
-		t.Fatalf("bob.SendDMMessage() error = %v", err)
-	}
-	if _, err := carol.SendDMMessage(carolDM.ID, "hello @alice two"); err != nil {
-		t.Fatalf("carol.SendDMMessage() error = %v", err)
-	}
+	bob := newTestIdentity(t, "bob")
+	carol := newTestIdentity(t, "carol")
+	bobDM := dmScopeID(host.PeerID(), bob.PeerID)
+	carolDM := dmScopeID(host.PeerID(), carol.PeerID)
+	applyRemoteMessage(t, host, bob, "dm", bobDM, "", "hello @alice one")
+	applyRemoteMessage(t, host, carol, "dm", carolDM, "", "hello @alice two")
 
 	token, err := ControlTokenFromDataDir(host.cfg.DataDir)
 	if err != nil {
@@ -1856,34 +1997,29 @@ func TestControlAPINotificationSummaryIncludesDirectAggregates(t *testing.T) {
 	if err := CallControlJSON(host.ControlEndpoint(), token, http.MethodGet, "/v1/notifications/summary", nil, &summary); err != nil {
 		t.Fatalf("GET /v1/notifications/summary error = %v", err)
 	}
-	bobBucket, ok := notificationDirectBucketByID(summary.Directs, bobDM.ID)
+	bobBucket, ok := notificationDirectBucketByID(summary.Directs, bobDM)
 	if !ok {
 		t.Fatalf("bob direct aggregate missing in %#v", summary.Directs)
 	}
-	if bobBucket.ScopeName != bob.PeerID() || bobBucket.UnreadCount != 1 {
+	if bobBucket.ScopeName != bob.PeerID || bobBucket.UnreadCount != 1 {
 		t.Fatalf("bob direct aggregate = %#v", bobBucket)
 	}
-	carolBucket, ok := notificationDirectBucketByID(summary.Directs, carolDM.ID)
+	carolBucket, ok := notificationDirectBucketByID(summary.Directs, carolDM)
 	if !ok {
 		t.Fatalf("carol direct aggregate missing in %#v", summary.Directs)
 	}
-	if carolBucket.ScopeName != carol.PeerID() || carolBucket.UnreadCount != 1 {
+	if carolBucket.ScopeName != carol.PeerID || carolBucket.UnreadCount != 1 {
 		t.Fatalf("carol direct aggregate = %#v", carolBucket)
 	}
 }
 
 func TestNotificationSummaryIncludesPerServerAggregates(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
+	guest := newTestIdentity(t, "guest")
 
 	serverA, err := host.CreateServer("alpha", "first aggregate")
 	if err != nil {
@@ -1893,27 +2029,15 @@ func TestNotificationSummaryIncludesPerServerAggregates(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateServer(serverB) error = %v", err)
 	}
-	if _, err := guest.JoinByDeeplink(serverA.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink(serverA) error = %v", err)
-	}
-	if _, err := guest.JoinByDeeplink(serverB.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink(serverB) error = %v", err)
-	}
 	channelA := firstChannelID(serverA)
 	channelB := firstChannelID(serverB)
 	if channelA == "" || channelB == "" {
 		t.Fatal("expected default channels")
 	}
 
-	if _, err := guest.SendChannelMessage(channelA, "one @alice"); err != nil {
-		t.Fatalf("guest.SendChannelMessage(serverA one) error = %v", err)
-	}
-	if _, err := guest.SendChannelMessage(channelA, "two @alice"); err != nil {
-		t.Fatalf("guest.SendChannelMessage(serverA two) error = %v", err)
-	}
-	if _, err := guest.SendChannelMessage(channelB, "three @alice"); err != nil {
-		t.Fatalf("guest.SendChannelMessage(serverB) error = %v", err)
-	}
+	applyRemoteMessage(t, host, guest, "channel", channelA, serverA.ID, "one @alice")
+	applyRemoteMessage(t, host, guest, "channel", channelA, serverA.ID, "two @alice")
+	applyRemoteMessage(t, host, guest, "channel", channelB, serverB.ID, "three @alice")
 
 	waitFor(t, 2*time.Second, func() bool {
 		return host.NotificationSummary().TotalUnread == 3
@@ -1946,17 +2070,12 @@ func TestNotificationSummaryIncludesPerServerAggregates(t *testing.T) {
 }
 
 func TestControlAPINotificationSummaryIncludesServerAggregates(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
+	guest := newTestIdentity(t, "guest")
 
 	serverA, err := host.CreateServer("alpha-api", "first api aggregate")
 	if err != nil {
@@ -1966,24 +2085,14 @@ func TestControlAPINotificationSummaryIncludesServerAggregates(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateServer(serverB) error = %v", err)
 	}
-	if _, err := guest.JoinByDeeplink(serverA.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink(serverA) error = %v", err)
-	}
-	if _, err := guest.JoinByDeeplink(serverB.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink(serverB) error = %v", err)
-	}
 	channelA := firstChannelID(serverA)
 	channelB := firstChannelID(serverB)
 	if channelA == "" || channelB == "" {
 		t.Fatal("expected default channels")
 	}
 
-	if _, err := guest.SendChannelMessage(channelA, "one @alice"); err != nil {
-		t.Fatalf("guest.SendChannelMessage(serverA) error = %v", err)
-	}
-	if _, err := guest.SendChannelMessage(channelB, "two @alice"); err != nil {
-		t.Fatalf("guest.SendChannelMessage(serverB) error = %v", err)
-	}
+	applyRemoteMessage(t, host, guest, "channel", channelA, serverA.ID, "one @alice")
+	applyRemoteMessage(t, host, guest, "channel", channelB, serverB.ID, "two @alice")
 
 	token, err := ControlTokenFromDataDir(host.cfg.DataDir)
 	if err != nil {
@@ -2250,28 +2359,14 @@ func TestSendDMMessageUsesLivePeerRegistry(t *testing.T) {
 }
 
 func TestNotificationSummaryDirectAggregatesIncludeParticipantIDs(t *testing.T) {
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
-	hostIdentity, err := host.CreateIdentity("alice", "host")
-	if err != nil {
+	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
-	guestIdentity, err := guest.CreateIdentity("bob", "guest")
-	if err != nil {
-		t.Fatalf("guest.CreateIdentity() error = %v", err)
-	}
-	dm, err := host.CreateDM(guestIdentity.PeerID)
-	if err != nil {
-		t.Fatalf("host.CreateDM() error = %v", err)
-	}
-	if _, err := guest.CreateDM(hostIdentity.PeerID); err != nil {
-		t.Fatalf("guest.CreateDM() error = %v", err)
-	}
-	if _, err := guest.SendDMMessage(dm.ID, "hello @alice"); err != nil {
-		t.Fatalf("guest.SendDMMessage() error = %v", err)
-	}
+	guestIdentity := newTestIdentity(t, "bob")
+	dmID := dmScopeID(host.PeerID(), guestIdentity.PeerID)
+	applyRemoteMessage(t, host, guestIdentity, "dm", dmID, "", "hello @alice")
 	waitFor(t, 2*time.Second, func() bool { return host.NotificationSummary().TotalUnread == 1 })
 	summary := host.NotificationSummary()
 	if len(summary.Directs) != 1 {
@@ -2286,28 +2381,14 @@ func TestNotificationSummaryDirectAggregatesIncludeParticipantIDs(t *testing.T) 
 }
 
 func TestControlAPIDirectNotificationAggregatesIncludeParticipantIDs(t *testing.T) {
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
-	hostIdentity, err := host.CreateIdentity("alice", "host")
-	if err != nil {
+	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
-	guestIdentity, err := guest.CreateIdentity("bob", "guest")
-	if err != nil {
-		t.Fatalf("guest.CreateIdentity() error = %v", err)
-	}
-	dm, err := host.CreateDM(guestIdentity.PeerID)
-	if err != nil {
-		t.Fatalf("host.CreateDM() error = %v", err)
-	}
-	if _, err := guest.CreateDM(hostIdentity.PeerID); err != nil {
-		t.Fatalf("guest.CreateDM() error = %v", err)
-	}
-	if _, err := guest.SendDMMessage(dm.ID, "hello @alice"); err != nil {
-		t.Fatalf("guest.SendDMMessage() error = %v", err)
-	}
+	guestIdentity := newTestIdentity(t, "bob")
+	dmID := dmScopeID(host.PeerID(), guestIdentity.PeerID)
+	applyRemoteMessage(t, host, guestIdentity, "dm", dmID, "", "hello @alice")
 	token, err := ControlTokenFromDataDir(host.cfg.DataDir)
 	if err != nil {
 		t.Fatalf("ControlTokenFromDataDir() error = %v", err)
@@ -2336,38 +2417,25 @@ func TestShouldAdvanceNotificationSummaryMessagePrefersLargerIDOnTie(t *testing.
 }
 
 func TestNotificationSummaryLatestMessageIDUsesLargerIDOnTiedTimestamp(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
+	guest := newTestIdentity(t, "guest")
 
 	server, err := host.CreateServer("tiebreak", "latest id tiebreak")
 	if err != nil {
 		t.Fatalf("CreateServer() error = %v", err)
-	}
-	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink() error = %v", err)
 	}
 	channelID := firstChannelID(server)
 	if channelID == "" {
 		t.Fatal("expected default channel")
 	}
 
-	msgA, err := guest.SendChannelMessage(channelID, "hello @alice one")
-	if err != nil {
-		t.Fatalf("guest.SendChannelMessage(one) error = %v", err)
-	}
-	msgB, err := guest.SendChannelMessage(channelID, "hello @alice two")
-	if err != nil {
-		t.Fatalf("guest.SendChannelMessage(two) error = %v", err)
-	}
+	base := time.Now().UTC()
+	msgA := applyRemoteMessageAt(t, host, guest, "channel", channelID, server.ID, "hello @alice one", base)
+	msgB := applyRemoteMessageAt(t, host, guest, "channel", channelID, server.ID, "hello @alice two", base.Add(time.Millisecond))
 
 	waitFor(t, 2*time.Second, func() bool { return host.NotificationSummary().TotalUnread == 2 })
 
@@ -2398,17 +2466,12 @@ func TestNotificationSummaryLatestMessageIDUsesLargerIDOnTiedTimestamp(t *testin
 }
 
 func TestNotificationSummaryBucketsExposeLatestMessageIDs(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
+	guest := newTestIdentity(t, "guest")
 
 	server, err := host.CreateServer("summary-latest", "latest message ids")
 	if err != nil {
@@ -2418,26 +2481,15 @@ func TestNotificationSummaryBucketsExposeLatestMessageIDs(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateChannel() error = %v", err)
 	}
-	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink() error = %v", err)
-	}
 	generalID := firstChannelID(server)
 	if generalID == "" {
 		t.Fatal("expected default channel")
 	}
 
-	msg1, err := guest.SendChannelMessage(generalID, "one @alice")
-	if err != nil {
-		t.Fatalf("guest.SendChannelMessage(general one) error = %v", err)
-	}
-	msg2, err := guest.SendChannelMessage(generalID, "two @alice")
-	if err != nil {
-		t.Fatalf("guest.SendChannelMessage(general two) error = %v", err)
-	}
-	msg3, err := guest.SendChannelMessage(alerts.ID, "three @alice")
-	if err != nil {
-		t.Fatalf("guest.SendChannelMessage(alerts) error = %v", err)
-	}
+	base := time.Now().UTC()
+	msg1 := applyRemoteMessageAt(t, host, guest, "channel", generalID, server.ID, "one @alice", base)
+	msg2 := applyRemoteMessageAt(t, host, guest, "channel", generalID, server.ID, "two @alice", base.Add(time.Millisecond))
+	msg3 := applyRemoteMessageAt(t, host, guest, "channel", alerts.ID, server.ID, "three @alice", base.Add(2*time.Millisecond))
 
 	waitFor(t, 2*time.Second, func() bool { return host.NotificationSummary().TotalUnread == 3 })
 	summary := host.NotificationSummary()
@@ -2446,70 +2498,61 @@ func TestNotificationSummaryBucketsExposeLatestMessageIDs(t *testing.T) {
 	if !ok {
 		t.Fatalf("expected general bucket in %#v", summary.Buckets)
 	}
-	if generalBucket.LatestMessageID != msg2.ID {
-		t.Fatalf("general latest message id = %q want %q", generalBucket.LatestMessageID, msg2.ID)
+	generalLatestID, ok := latestMessageIDForIDs(host, msg1.ID, msg2.ID)
+	if !ok {
+		t.Fatal("expected general messages in host state")
 	}
-	if generalBucket.LatestSenderPeerID != guest.PeerID() {
-		t.Fatalf("general latest sender peer id = %q want %q", generalBucket.LatestSenderPeerID, guest.PeerID())
+	if generalBucket.LatestMessageID != generalLatestID {
+		t.Fatalf("general latest message id = %q want %q", generalBucket.LatestMessageID, generalLatestID)
+	}
+	if generalBucket.LatestSenderPeerID != guest.PeerID {
+		t.Fatalf("general latest sender peer id = %q want %q", generalBucket.LatestSenderPeerID, guest.PeerID)
 	}
 
 	alertsBucket, ok := notificationBucketByScope(summary.Buckets, alerts.ID)
 	if !ok {
 		t.Fatalf("expected alerts bucket in %#v", summary.Buckets)
 	}
-	if alertsBucket.LatestMessageID != msg3.ID {
-		t.Fatalf("alerts latest message id = %q want %q", alertsBucket.LatestMessageID, msg3.ID)
+	alertsLatestID, ok := latestMessageIDForIDs(host, msg3.ID)
+	if !ok {
+		t.Fatal("expected alerts message in host state")
 	}
-	if alertsBucket.LatestSenderPeerID != guest.PeerID() {
-		t.Fatalf("alerts latest sender peer id = %q want %q", alertsBucket.LatestSenderPeerID, guest.PeerID())
+	if alertsBucket.LatestMessageID != alertsLatestID {
+		t.Fatalf("alerts latest message id = %q want %q", alertsBucket.LatestMessageID, alertsLatestID)
+	}
+	if alertsBucket.LatestSenderPeerID != guest.PeerID {
+		t.Fatalf("alerts latest sender peer id = %q want %q", alertsBucket.LatestSenderPeerID, guest.PeerID)
 	}
 
 	serverBucket, ok := notificationServerBucketByID(summary.Servers, server.ID)
 	if !ok {
 		t.Fatalf("expected server aggregate in %#v", summary.Servers)
 	}
-	if serverBucket.LatestMessageID != msg3.ID {
-		t.Fatalf("server latest message id = %q want %q", serverBucket.LatestMessageID, msg3.ID)
+	serverLatestID, ok := latestMessageIDForIDs(host, msg1.ID, msg2.ID, msg3.ID)
+	if !ok {
+		t.Fatal("expected server messages in host state")
 	}
-	if serverBucket.LatestSenderPeerID != guest.PeerID() {
-		t.Fatalf("server latest sender peer id = %q want %q", serverBucket.LatestSenderPeerID, guest.PeerID())
+	if serverBucket.LatestMessageID != serverLatestID {
+		t.Fatalf("server latest message id = %q want %q", serverBucket.LatestMessageID, serverLatestID)
+	}
+	if serverBucket.LatestSenderPeerID != guest.PeerID {
+		t.Fatalf("server latest sender peer id = %q want %q", serverBucket.LatestSenderPeerID, guest.PeerID)
 	}
 
 	_ = msg1
 }
 
 func TestControlAPINotificationSummaryDirectAggregatesExposeLatestMessageID(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
-	hostIdentity, err := host.CreateIdentity("alice", "")
-	if err != nil {
+	if _, err := host.CreateIdentity("alice", ""); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
-	guestIdentity, err := guest.CreateIdentity("bob", "")
-	if err != nil {
-		t.Fatalf("guest.CreateIdentity() error = %v", err)
-	}
-
-	dm, err := host.CreateDM(guestIdentity.PeerID)
-	if err != nil {
-		t.Fatalf("host.CreateDM() error = %v", err)
-	}
-	if _, err := guest.CreateDM(hostIdentity.PeerID); err != nil {
-		t.Fatalf("guest.CreateDM() error = %v", err)
-	}
-	if _, err := guest.SendDMMessage(dm.ID, "hello @alice one"); err != nil {
-		t.Fatalf("guest.SendDMMessage(one) error = %v", err)
-	}
-	msg2, err := guest.SendDMMessage(dm.ID, "hello @alice two")
-	if err != nil {
-		t.Fatalf("guest.SendDMMessage(two) error = %v", err)
-	}
+	guestIdentity := newTestIdentity(t, "bob")
+	dmID := dmScopeID(host.PeerID(), guestIdentity.PeerID)
+	base := time.Now().UTC()
+	msg1 := applyRemoteMessageAt(t, host, guestIdentity, "dm", dmID, "", "hello @alice one", base)
+	msg2 := applyRemoteMessageAt(t, host, guestIdentity, "dm", dmID, "", "hello @alice two", base.Add(time.Millisecond))
 
 	token, err := ControlTokenFromDataDir(host.cfg.DataDir)
 	if err != nil {
@@ -2524,48 +2567,39 @@ func TestControlAPINotificationSummaryDirectAggregatesExposeLatestMessageID(t *t
 	if err := CallControlJSON(host.ControlEndpoint(), token, http.MethodGet, "/v1/notifications/summary", nil, &summary); err != nil {
 		t.Fatalf("GET /v1/notifications/summary error = %v", err)
 	}
-	directBucket, ok := notificationDirectBucketByID(summary.Directs, dm.ID)
+	directBucket, ok := notificationDirectBucketByID(summary.Directs, dmID)
 	if !ok {
 		t.Fatalf("expected direct aggregate in %#v", summary.Directs)
 	}
-	if directBucket.LatestMessageID != msg2.ID {
-		t.Fatalf("direct latest message id = %q want %q", directBucket.LatestMessageID, msg2.ID)
+	directLatestID, ok := latestMessageIDForIDs(host, msg1.ID, msg2.ID)
+	if !ok {
+		t.Fatal("expected direct messages in host state")
+	}
+	if directBucket.LatestMessageID != directLatestID {
+		t.Fatalf("direct latest message id = %q want %q", directBucket.LatestMessageID, directLatestID)
 	}
 }
 
 func TestNotificationSummaryIncludesKindAggregates(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
+	guest := newTestIdentity(t, "guest")
 
 	server, err := host.CreateServer("kind-summary", "kind aggregates")
 	if err != nil {
 		t.Fatalf("CreateServer() error = %v", err)
-	}
-	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink() error = %v", err)
 	}
 	channelID := firstChannelID(server)
 	if channelID == "" {
 		t.Fatal("expected default channel")
 	}
 
-	msg1, err := guest.SendChannelMessage(channelID, "one @alice")
-	if err != nil {
-		t.Fatalf("guest.SendChannelMessage(one) error = %v", err)
-	}
-	msg2, err := guest.SendChannelMessage(channelID, "two @alice")
-	if err != nil {
-		t.Fatalf("guest.SendChannelMessage(two) error = %v", err)
-	}
+	base := time.Now().UTC()
+	msg1 := applyRemoteMessageAt(t, host, guest, "channel", channelID, server.ID, "one @alice", base)
+	msg2 := applyRemoteMessageAt(t, host, guest, "channel", channelID, server.ID, "two @alice", base.Add(time.Millisecond))
 
 	waitFor(t, 2*time.Second, func() bool { return host.NotificationSummary().TotalUnread == 2 })
 	summary := host.NotificationSummary()
@@ -2575,8 +2609,12 @@ func TestNotificationSummaryIncludesKindAggregates(t *testing.T) {
 	if summary.Kinds[0].Kind != "mention" || summary.Kinds[0].UnreadCount != 2 {
 		t.Fatalf("kind aggregate = %#v", summary.Kinds[0])
 	}
-	if summary.Kinds[0].LatestMessageID != msg2.ID {
-		t.Fatalf("kind latest message id = %q want %q", summary.Kinds[0].LatestMessageID, msg2.ID)
+	kindLatestID, ok := latestMessageIDForIDs(host, msg1.ID, msg2.ID)
+	if !ok {
+		t.Fatal("expected kind messages in host state")
+	}
+	if summary.Kinds[0].LatestMessageID != kindLatestID {
+		t.Fatalf("kind latest message id = %q want %q", summary.Kinds[0].LatestMessageID, kindLatestID)
 	}
 	if summary.Kinds[0].LatestServerID != server.ID || summary.Kinds[0].LatestServerName != "kind-summary" {
 		t.Fatalf("kind latest server context = %#v", summary.Kinds[0])
@@ -2591,34 +2629,23 @@ func TestNotificationSummaryIncludesKindAggregates(t *testing.T) {
 }
 
 func TestControlAPINotificationSummaryIncludesKindAggregates(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
+	guest := newTestIdentity(t, "guest")
 
 	server, err := host.CreateServer("kind-summary-api", "kind aggregates api")
 	if err != nil {
 		t.Fatalf("CreateServer() error = %v", err)
-	}
-	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink() error = %v", err)
 	}
 	channelID := firstChannelID(server)
 	if channelID == "" {
 		t.Fatal("expected default channel")
 	}
 
-	msg, err := guest.SendChannelMessage(channelID, "api @alice")
-	if err != nil {
-		t.Fatalf("guest.SendChannelMessage() error = %v", err)
-	}
+	msg := applyRemoteMessage(t, host, guest, "channel", channelID, server.ID, "api @alice")
 
 	token, err := ControlTokenFromDataDir(host.cfg.DataDir)
 	if err != nil {
@@ -2642,34 +2669,14 @@ func TestControlAPINotificationSummaryIncludesKindAggregates(t *testing.T) {
 }
 
 func TestControlAPINotificationSummaryKindAggregateIncludesDMContext(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
-	hostIdentity, err := host.CreateIdentity("alice", "")
-	if err != nil {
+	if _, err := host.CreateIdentity("alice", ""); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
-	guestIdentity, err := guest.CreateIdentity("bob", "")
-	if err != nil {
-		t.Fatalf("guest.CreateIdentity() error = %v", err)
-	}
-
-	dm, err := host.CreateDM(guestIdentity.PeerID)
-	if err != nil {
-		t.Fatalf("host.CreateDM() error = %v", err)
-	}
-	if _, err := guest.CreateDM(hostIdentity.PeerID); err != nil {
-		t.Fatalf("guest.CreateDM() error = %v", err)
-	}
-	msg, err := guest.SendDMMessage(dm.ID, "hello @alice")
-	if err != nil {
-		t.Fatalf("guest.SendDMMessage() error = %v", err)
-	}
+	guestIdentity := newTestIdentity(t, "bob")
+	dmID := dmScopeID(host.PeerID(), guestIdentity.PeerID)
+	msg := applyRemoteMessage(t, host, guestIdentity, "dm", dmID, "", "hello @alice")
 
 	token, err := ControlTokenFromDataDir(host.cfg.DataDir)
 	if err != nil {
@@ -2695,7 +2702,7 @@ func TestControlAPINotificationSummaryKindAggregateIncludesDMContext(t *testing.
 	if kind.LatestServerID != "" || kind.LatestServerName != "" {
 		t.Fatalf("unexpected server context on dm kind aggregate = %#v", kind)
 	}
-	if kind.LatestScopeType != "dm" || kind.LatestScopeID != dm.ID || kind.LatestScopeName != guestIdentity.PeerID {
+	if kind.LatestScopeType != "dm" || kind.LatestScopeID != dmID || kind.LatestScopeName != guestIdentity.PeerID {
 		t.Fatalf("dm kind latest scope context = %#v", kind)
 	}
 	if len(kind.LatestParticipantIDs) != 1 || kind.LatestParticipantIDs[0] != guestIdentity.PeerID {
@@ -2704,17 +2711,12 @@ func TestControlAPINotificationSummaryKindAggregateIncludesDMContext(t *testing.
 }
 
 func TestNotificationSummaryServerAggregatesExposeLatestScopeContext(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
+	guest := newTestIdentity(t, "guest")
 
 	server, err := host.CreateServer("server-scope", "server aggregate scope context")
 	if err != nil {
@@ -2724,21 +2726,14 @@ func TestNotificationSummaryServerAggregatesExposeLatestScopeContext(t *testing.
 	if err != nil {
 		t.Fatalf("CreateChannel() error = %v", err)
 	}
-	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink() error = %v", err)
-	}
 	generalID := firstChannelID(server)
 	if generalID == "" {
 		t.Fatal("expected default channel")
 	}
 
-	if _, err := guest.SendChannelMessage(generalID, "general @alice"); err != nil {
-		t.Fatalf("guest.SendChannelMessage(general) error = %v", err)
-	}
-	msg, err := guest.SendChannelMessage(alerts.ID, "alerts @alice")
-	if err != nil {
-		t.Fatalf("guest.SendChannelMessage(alerts) error = %v", err)
-	}
+	base := time.Now().UTC()
+	msg1 := applyRemoteMessageAt(t, host, guest, "channel", generalID, server.ID, "general @alice", base)
+	msg := applyRemoteMessageAt(t, host, guest, "channel", alerts.ID, server.ID, "alerts @alice", base.Add(time.Millisecond))
 
 	waitFor(t, 2*time.Second, func() bool { return host.NotificationSummary().TotalUnread == 2 })
 	summary := host.NotificationSummary()
@@ -2746,46 +2741,33 @@ func TestNotificationSummaryServerAggregatesExposeLatestScopeContext(t *testing.
 	if !ok {
 		t.Fatalf("expected server aggregate in %#v", summary.Servers)
 	}
-	if bucket.LatestMessageID != msg.ID {
-		t.Fatalf("latest message id = %q want %q", bucket.LatestMessageID, msg.ID)
+	serverLatest, ok := latestMessageRecordForIDs(t, host, msg1.ID, msg.ID)
+	if !ok {
+		t.Fatal("expected server messages in host state")
 	}
-	if bucket.LatestScopeType != "channel" || bucket.LatestScopeID != alerts.ID || bucket.LatestScopeName != "alerts" {
+	if bucket.LatestMessageID != serverLatest.ID {
+		t.Fatalf("latest message id = %q want %q", bucket.LatestMessageID, serverLatest.ID)
+	}
+	expectedScopeName := "general"
+	if serverLatest.ID == msg.ID {
+		expectedScopeName = "alerts"
+	}
+	if bucket.LatestScopeType != "channel" || bucket.LatestScopeID != serverLatest.ScopeID || bucket.LatestScopeName != expectedScopeName {
 		t.Fatalf("server latest scope context = %#v", bucket)
 	}
 }
 
 func TestControlAPINotificationSummaryDirectAggregatesExposeLatestSenderPeerID(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
-	hostIdentity, err := host.CreateIdentity("alice", "")
-	if err != nil {
+	if _, err := host.CreateIdentity("alice", ""); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
-	guestIdentity, err := guest.CreateIdentity("bob", "")
-	if err != nil {
-		t.Fatalf("guest.CreateIdentity() error = %v", err)
-	}
-
-	dm, err := host.CreateDM(guestIdentity.PeerID)
-	if err != nil {
-		t.Fatalf("host.CreateDM() error = %v", err)
-	}
-	if _, err := guest.CreateDM(hostIdentity.PeerID); err != nil {
-		t.Fatalf("guest.CreateDM() error = %v", err)
-	}
-	if _, err := guest.SendDMMessage(dm.ID, "hello @alice one"); err != nil {
-		t.Fatalf("guest.SendDMMessage(one) error = %v", err)
-	}
-	msg2, err := guest.SendDMMessage(dm.ID, "hello @alice two")
-	if err != nil {
-		t.Fatalf("guest.SendDMMessage(two) error = %v", err)
-	}
+	guestIdentity := newTestIdentity(t, "bob")
+	dmID := dmScopeID(host.PeerID(), guestIdentity.PeerID)
+	base := time.Now().UTC()
+	msg1 := applyRemoteMessageAt(t, host, guestIdentity, "dm", dmID, "", "hello @alice one", base)
+	msg2 := applyRemoteMessageAt(t, host, guestIdentity, "dm", dmID, "", "hello @alice two", base.Add(time.Millisecond))
 
 	token, err := ControlTokenFromDataDir(host.cfg.DataDir)
 	if err != nil {
@@ -2801,12 +2783,16 @@ func TestControlAPINotificationSummaryDirectAggregatesExposeLatestSenderPeerID(t
 	if err := CallControlJSON(host.ControlEndpoint(), token, http.MethodGet, "/v1/notifications/summary", nil, &summary); err != nil {
 		t.Fatalf("GET /v1/notifications/summary error = %v", err)
 	}
-	direct, ok := notificationDirectBucketByID(summary.Directs, dm.ID)
+	direct, ok := notificationDirectBucketByID(summary.Directs, dmID)
 	if !ok {
 		t.Fatalf("expected direct aggregate in %#v", summary.Directs)
 	}
-	if direct.LatestMessageID != msg2.ID {
-		t.Fatalf("direct latest message id = %q want %q", direct.LatestMessageID, msg2.ID)
+	directLatestID, ok := latestMessageIDForIDs(host, msg1.ID, msg2.ID)
+	if !ok {
+		t.Fatal("expected direct messages in host state")
+	}
+	if direct.LatestMessageID != directLatestID {
+		t.Fatalf("direct latest message id = %q want %q", direct.LatestMessageID, directLatestID)
 	}
 	if direct.LatestSenderPeerID != guestIdentity.PeerID {
 		t.Fatalf("direct latest sender peer id = %q want %q", direct.LatestSenderPeerID, guestIdentity.PeerID)
@@ -2814,17 +2800,12 @@ func TestControlAPINotificationSummaryDirectAggregatesExposeLatestSenderPeerID(t
 }
 
 func TestNotificationSummaryIncludesServerAndScopeLabels(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
+	guest := newTestIdentity(t, "guest")
 
 	server, err := host.CreateServer("ops", "labels")
 	if err != nil {
@@ -2834,12 +2815,7 @@ func TestNotificationSummaryIncludesServerAndScopeLabels(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateChannel() error = %v", err)
 	}
-	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink() error = %v", err)
-	}
-	if _, err := guest.SendChannelMessage(channel.ID, "ping @alice"); err != nil {
-		t.Fatalf("guest.SendChannelMessage() error = %v", err)
-	}
+	applyRemoteMessage(t, host, guest, "channel", channel.ID, server.ID, "ping @alice")
 
 	waitFor(t, 2*time.Second, func() bool {
 		summary := host.NotificationSummary()
@@ -2861,24 +2837,16 @@ func TestNotificationSummaryIncludesServerAndScopeLabels(t *testing.T) {
 }
 
 func TestNotificationSummaryGroupsUnreadByScope(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
+	guest := newTestIdentity(t, "guest")
 
 	server, err := host.CreateServer("notifications-summary", "summary surface")
 	if err != nil {
 		t.Fatalf("CreateServer() error = %v", err)
-	}
-	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink() error = %v", err)
 	}
 	generalID := firstChannelID(server)
 	if generalID == "" {
@@ -2889,15 +2857,9 @@ func TestNotificationSummaryGroupsUnreadByScope(t *testing.T) {
 		t.Fatalf("CreateChannel() error = %v", err)
 	}
 
-	if _, err := guest.SendChannelMessage(generalID, "one @alice"); err != nil {
-		t.Fatalf("guest.SendChannelMessage(general one) error = %v", err)
-	}
-	if _, err := guest.SendChannelMessage(alerts.ID, "two @alice"); err != nil {
-		t.Fatalf("guest.SendChannelMessage(alerts) error = %v", err)
-	}
-	if _, err := guest.SendChannelMessage(generalID, "three @alice"); err != nil {
-		t.Fatalf("guest.SendChannelMessage(general two) error = %v", err)
-	}
+	applyRemoteMessage(t, host, guest, "channel", generalID, server.ID, "one @alice")
+	applyRemoteMessage(t, host, guest, "channel", alerts.ID, server.ID, "two @alice")
+	applyRemoteMessage(t, host, guest, "channel", generalID, server.ID, "three @alice")
 
 	waitFor(t, 2*time.Second, func() bool {
 		return host.NotificationSummary().TotalUnread == 3
@@ -2927,32 +2889,22 @@ func TestNotificationSummaryGroupsUnreadByScope(t *testing.T) {
 }
 
 func TestControlAPINotificationSummaryReflectsMarkRead(t *testing.T) {
-	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
-	defer stopBootstrap()
-
-	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
+	host, stopHost := startControlOnlyService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
 	defer stopHost()
 	if _, err := host.CreateIdentity("alice", "host"); err != nil {
 		t.Fatalf("host.CreateIdentity() error = %v", err)
 	}
-
-	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: 40 * time.Millisecond})
-	defer stopGuest()
+	guest := newTestIdentity(t, "guest")
 
 	server, err := host.CreateServer("notifications-summary-api", "summary api surface")
 	if err != nil {
 		t.Fatalf("CreateServer() error = %v", err)
 	}
-	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
-		t.Fatalf("JoinByDeeplink() error = %v", err)
-	}
 	channelID := firstChannelID(server)
 	if channelID == "" {
 		t.Fatal("expected default channel")
 	}
-	if _, err := guest.SendChannelMessage(channelID, "ping @alice"); err != nil {
-		t.Fatalf("guest.SendChannelMessage() error = %v", err)
-	}
+	applyRemoteMessage(t, host, guest, "channel", channelID, server.ID, "ping @alice")
 
 	token, err := ControlTokenFromDataDir(host.cfg.DataDir)
 	if err != nil {
@@ -3280,6 +3232,140 @@ func TestLocalControlAPIBackupRestoreAndEvents(t *testing.T) {
 	}
 }
 
+func TestLocalControlAPIIdentityRestoreKeepsStateAndControlsAligned(t *testing.T) {
+	service, stop := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	defer stop()
+
+	token, err := ControlTokenFromDataDir(service.cfg.DataDir)
+	if err != nil {
+		t.Fatalf("ControlTokenFromDataDir() error = %v", err)
+	}
+
+	var original Identity
+	if err := CallControlJSON(service.ControlEndpoint(), token, http.MethodPost, "/v1/identities", CreateIdentityRequest{DisplayName: "alice", Bio: "first"}, &original); err != nil {
+		t.Fatalf("POST /v1/identities original error = %v", err)
+	}
+	var server ServerRecord
+	if err := CallControlJSON(service.ControlEndpoint(), token, http.MethodPost, "/v1/servers", CreateServerRequest{Name: "restorable", Description: "owned locally"}, &server); err != nil {
+		t.Fatalf("POST /v1/servers error = %v", err)
+	}
+	channelID := firstChannelID(server)
+	if channelID == "" {
+		t.Fatal("expected default channel")
+	}
+
+	backupRaw := fetchControlRaw(t, service.ControlEndpoint(), token, http.MethodGet, "/v1/identities/backup", nil)
+
+	var changed Identity
+	if err := CallControlJSON(service.ControlEndpoint(), token, http.MethodPost, "/v1/identities", CreateIdentityRequest{DisplayName: "bob", Bio: "second"}, &changed); err != nil {
+		t.Fatalf("POST /v1/identities changed error = %v", err)
+	}
+	if changed.PeerID == original.PeerID {
+		t.Fatalf("expected changed peer id, got %s", changed.PeerID)
+	}
+
+	var restored Identity
+	if err := CallControlJSON(service.ControlEndpoint(), token, http.MethodPost, "/v1/identities/restore", json.RawMessage(backupRaw), &restored); err != nil {
+		t.Fatalf("POST /v1/identities/restore error = %v", err)
+	}
+	if restored.PeerID != original.PeerID {
+		t.Fatalf("restored peer id = %s want %s", restored.PeerID, original.PeerID)
+	}
+
+	var snapshot Snapshot
+	if err := CallControlJSON(service.ControlEndpoint(), token, http.MethodGet, "/v1/state", nil, &snapshot); err != nil {
+		t.Fatalf("GET /v1/state error = %v", err)
+	}
+	if snapshot.Identity.PeerID != original.PeerID {
+		t.Fatalf("snapshot identity peer id = %s want %s", snapshot.Identity.PeerID, original.PeerID)
+	}
+	owned, ok := serverByID(snapshot.Servers, server.ID)
+	if !ok {
+		t.Fatalf("snapshot missing server %s", server.ID)
+	}
+	if owned.OwnerPeerID != original.PeerID {
+		t.Fatalf("server owner = %s want %s", owned.OwnerPeerID, original.PeerID)
+	}
+	if !contains(owned.Members, original.PeerID) || contains(owned.Members, changed.PeerID) {
+		t.Fatalf("server members = %#v want restored self only", owned.Members)
+	}
+	if owned.Manifest.OwnerPeerID != original.PeerID {
+		t.Fatalf("manifest owner = %s want %s", owned.Manifest.OwnerPeerID, original.PeerID)
+	}
+	invite, err := ParseDeeplink(owned.Invite)
+	if err != nil {
+		t.Fatalf("ParseDeeplink() error = %v", err)
+	}
+	if invite.OwnerPeerID != original.PeerID {
+		t.Fatalf("invite owner = %s want %s", invite.OwnerPeerID, original.PeerID)
+	}
+	if hasPeer(snapshot, changed.PeerID) {
+		t.Fatalf("snapshot should not retain stale self peer %s", changed.PeerID)
+	}
+
+	var created MessageRecord
+	if err := CallControlJSON(service.ControlEndpoint(), token, http.MethodPost, "/v1/channels/"+channelID+"/messages", SendMessageRequest{Body: "after restore"}, &created); err != nil {
+		t.Fatalf("POST /v1/channels/{id}/messages error = %v", err)
+	}
+	var edited MessageRecord
+	if err := CallControlJSON(service.ControlEndpoint(), token, http.MethodPatch, "/v1/messages/"+created.ID, EditMessageRequest{Body: "edited after restore"}, &edited); err != nil {
+		t.Fatalf("PATCH /v1/messages/{id} error = %v", err)
+	}
+	if edited.Body != "edited after restore" {
+		t.Fatalf("edited body = %q want edited after restore", edited.Body)
+	}
+	if err := CallControlJSON(service.ControlEndpoint(), token, http.MethodDelete, "/v1/messages/"+created.ID, nil, nil); err != nil {
+		t.Fatalf("DELETE /v1/messages/{id} error = %v", err)
+	}
+	deleted, ok := messageByID(service.Snapshot(), created.ID)
+	if !ok || !deleted.Deleted || deleted.Body != "" {
+		t.Fatalf("expected deleted message state, got %#v ok=%v", deleted, ok)
+	}
+}
+
+func TestLocalControlAPIRejectsRemoteAndBadBearer(t *testing.T) {
+	service, stop := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	defer stop()
+
+	token, err := ControlTokenFromDataDir(service.cfg.DataDir)
+	if err != nil {
+		t.Fatalf("ControlTokenFromDataDir() error = %v", err)
+	}
+	handler := service.controlMux()
+
+	remoteReq := httptest.NewRequest(http.MethodGet, "/v1/state", nil)
+	remoteReq.RemoteAddr = "203.0.113.10:4242"
+	remoteReq.Header.Set("Authorization", "Bearer "+token)
+	remoteResp := httptest.NewRecorder()
+	handler.ServeHTTP(remoteResp, remoteReq)
+	if remoteResp.Code != http.StatusForbidden {
+		t.Fatalf("remote status = %d want %d", remoteResp.Code, http.StatusForbidden)
+	}
+	var remoteErr APIError
+	if err := json.NewDecoder(remoteResp.Body).Decode(&remoteErr); err != nil {
+		t.Fatalf("decode remote error = %v", err)
+	}
+	if remoteErr.Code != "forbidden" {
+		t.Fatalf("remote error code = %q want forbidden", remoteErr.Code)
+	}
+
+	badTokenReq := httptest.NewRequest(http.MethodGet, "/v1/state", nil)
+	badTokenReq.RemoteAddr = "127.0.0.1:4242"
+	badTokenReq.Header.Set("Authorization", "Bearer wrong-token")
+	badTokenResp := httptest.NewRecorder()
+	handler.ServeHTTP(badTokenResp, badTokenReq)
+	if badTokenResp.Code != http.StatusUnauthorized {
+		t.Fatalf("bad token status = %d want %d", badTokenResp.Code, http.StatusUnauthorized)
+	}
+	var authErr APIError
+	if err := json.NewDecoder(badTokenResp.Body).Decode(&authErr); err != nil {
+		t.Fatalf("decode auth error = %v", err)
+	}
+	if authErr.Code != "unauthorized" {
+		t.Fatalf("auth error code = %q want unauthorized", authErr.Code)
+	}
+}
+
 func TestStateMigrationAndCorruptRecovery(t *testing.T) {
 	legacyDir := t.TempDir()
 	identity, err := GenerateIdentity("legacy")
@@ -3296,12 +3382,15 @@ func TestStateMigrationAndCorruptRecovery(t *testing.T) {
 	if service.PeerID() != identity.PeerID {
 		t.Fatalf("migrated peer id = %s want %s", service.PeerID(), identity.PeerID)
 	}
-	migratedRaw, err := os.ReadFile(filepath.Join(legacyDir, "state.json"))
+	backups, err := filepath.Glob(filepath.Join(legacyDir, "state.migrated-*.json"))
 	if err != nil {
-		t.Fatalf("Read migrated state error = %v", err)
+		t.Fatalf("Glob migrated state backups error = %v", err)
 	}
-	if !bytes.Contains(migratedRaw, []byte(`"schema_version": 2`)) {
-		t.Fatalf("expected migrated schema version, got %s", migratedRaw)
+	if len(backups) == 0 {
+		t.Fatal("expected migrated legacy state backup")
+	}
+	if _, err := os.Stat(filepath.Join(legacyDir, storage.StoreFileName)); err != nil {
+		t.Fatalf("Stat(state.db) error = %v", err)
 	}
 
 	corruptDir := t.TempDir()
@@ -3385,6 +3474,78 @@ func TestDuplicateSuppressionAndVoiceTransport(t *testing.T) {
 	}
 }
 
+type stubRuntime struct {
+	listenAddr string
+}
+
+func (r *stubRuntime) Start(context.Context) error { return nil }
+func (r *stubRuntime) Close() error               { return nil }
+func (r *stubRuntime) ListenAddress() string {
+	if strings.TrimSpace(r.listenAddr) == "" {
+		return "127.0.0.1:0"
+	}
+	return r.listenAddr
+}
+
+func startControlOnlyService(t *testing.T, cfg Config) (*Service, func()) {
+	t.Helper()
+	ctx, cancel := context.WithCancel(context.Background())
+	service, err := NewService(cfg, WithPeerRuntime(&stubRuntime{listenAddr: cfg.ListenAddr}))
+	if err != nil {
+		cancel()
+		t.Fatalf("NewService() error = %v", err)
+	}
+	if err := service.Start(ctx); err != nil {
+		cancel()
+		t.Fatalf("Start() error = %v", err)
+	}
+	waitFor(t, 2*time.Second, func() bool { return service.ControlEndpoint() != "" })
+	return service, func() {
+		cancel()
+		_ = service.Close()
+	}
+}
+
+func newTestIdentity(t *testing.T, displayName string) Identity {
+	t.Helper()
+	identity, err := GenerateIdentity(displayName)
+	if err != nil {
+		t.Fatalf("GenerateIdentity(%q) error = %v", displayName, err)
+	}
+	return identity
+}
+
+func dmScopeID(hostPeerID, remotePeerID string) string {
+	return strings.Join(dedupeSorted([]string{hostPeerID, remotePeerID}), ":")
+}
+
+func applyRemoteMessage(t *testing.T, host *Service, sender Identity, scopeType, scopeID, serverID, body string) MessageRecord {
+	return applyRemoteMessageAt(t, host, sender, scopeType, scopeID, serverID, body, time.Now().UTC())
+}
+
+func applyRemoteMessageAt(t *testing.T, host *Service, sender Identity, scopeType, scopeID, serverID, body string, createdAt time.Time) MessageRecord {
+	t.Helper()
+	delivery := Delivery{
+		ID:               randomID("msg"),
+		Kind:             scopeType + "_message",
+		ScopeID:          scopeID,
+		ScopeType:        scopeType,
+		ServerID:         serverID,
+		SenderPeerID:     sender.PeerID,
+		SenderPublicKey:  sender.PublicKey,
+		RecipientPeerIDs: []string{host.PeerID()},
+		Body:             body,
+		CreatedAt:        createdAt,
+	}
+	if err := delivery.Sign(sender); err != nil {
+		t.Fatalf("delivery.Sign() error = %v", err)
+	}
+	if err := host.applyDelivery(delivery); err != nil {
+		t.Fatalf("host.applyDelivery() error = %v", err)
+	}
+	return MessageRecord{ID: delivery.ID, ScopeType: scopeType, ScopeID: scopeID, ServerID: serverID, SenderPeerID: sender.PeerID, Body: body, CreatedAt: createdAt}
+}
+
 func startService(t *testing.T, cfg Config) (*Service, func()) {
 	t.Helper()
 	ctx, cancel := context.WithCancel(context.Background())
@@ -3392,6 +3553,12 @@ func startService(t *testing.T, cfg Config) (*Service, func()) {
 	if err != nil {
 		t.Fatalf("NewService() error = %v", err)
 	}
+	runtime, err := network.NewP2PRuntime(network.Config{Mode: network.Mode(cfg.Role), ListenAddr: cfg.ListenAddr})
+	if err != nil {
+		t.Fatalf("NewP2PRuntime() error = %v", err)
+	}
+	runtime.SetHandler(service)
+	service.peerRuntime = runtime
 	if err := service.Start(ctx); err != nil {
 		cancel()
 		t.Fatalf("Start() error = %v", err)
@@ -3400,6 +3567,16 @@ func startService(t *testing.T, cfg Config) (*Service, func()) {
 	return service, func() {
 		cancel()
 		_ = service.Close()
+	}
+}
+
+func TestStartRequiresInjectedPeerRuntime(t *testing.T) {
+	service, err := NewService(Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	if err != nil {
+		t.Fatalf("NewService() error = %v", err)
+	}
+	if err := service.Start(context.Background()); err == nil || !strings.Contains(err.Error(), "peer runtime is required") {
+		t.Fatalf("Start() error = %v, want peer runtime is required", err)
 	}
 }
 
@@ -3415,6 +3592,40 @@ func waitFor(t *testing.T, timeout time.Duration, fn func() bool) {
 	t.Fatal("condition not met before timeout")
 }
 
+func latestMessageRecordForIDs(t *testing.T, svc *Service, ids ...string) (MessageRecord, bool) {
+	t.Helper()
+	latestID, ok := latestMessageIDForIDs(svc, ids...)
+	if !ok {
+		return MessageRecord{}, false
+	}
+	svc.mu.RLock()
+	defer svc.mu.RUnlock()
+	msg, ok := svc.state.Messages[latestID]
+	if !ok {
+		return MessageRecord{}, false
+	}
+	return msg, true
+}
+
+func latestMessageIDForIDs(svc *Service, ids ...string) (string, bool) {
+	svc.mu.RLock()
+	defer svc.mu.RUnlock()
+	var latest MessageRecord
+	for _, id := range ids {
+		msg, ok := svc.state.Messages[id]
+		if !ok {
+			return "", false
+		}
+		if shouldAdvanceNotificationSummaryMessage(messageSortTime(latest), latest.ID, messageSortTime(msg), msg.ID) {
+			latest = msg
+		}
+	}
+	if latest.ID == "" {
+		return "", false
+	}
+	return latest.ID, true
+}
+
 func hasPeer(snapshot Snapshot, peerID string) bool {
 	_, ok := peerByID(snapshot, peerID)
 	return ok
@@ -3427,6 +3638,56 @@ func peerByID(snapshot Snapshot, peerID string) (PeerRecord, bool) {
 		}
 	}
 	return PeerRecord{}, false
+}
+
+func serverByID(servers []ServerRecord, serverID string) (ServerRecord, bool) {
+	for _, server := range servers {
+		if server.ID == serverID {
+			return server, true
+		}
+	}
+	return ServerRecord{}, false
+}
+
+func messageByID(snapshot Snapshot, messageID string) (MessageRecord, bool) {
+	for _, msg := range snapshot.Messages {
+		if msg.ID == messageID {
+			return msg, true
+		}
+	}
+	return MessageRecord{}, false
+}
+
+func fetchControlRaw(t *testing.T, endpoint, token, method, path string, body []byte) []byte {
+	t.Helper()
+	client, base := NewControlClient(endpoint, token)
+	var reader io.Reader
+	if body == nil {
+		reader = nil
+	} else {
+		reader = bytes.NewReader(body)
+	}
+	req, err := http.NewRequest(method, base+path, reader)
+	if err != nil {
+		t.Fatalf("http.NewRequest(%s %s) error = %v", method, path, err)
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+	if body != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		t.Fatalf("client.Do(%s %s) error = %v", method, path, err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 400 {
+		t.Fatalf("%s %s status = %d", method, path, resp.StatusCode)
+	}
+	payload, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("io.ReadAll(%s %s) error = %v", method, path, err)
+	}
+	return payload
 }
 
 func hasMessage(snapshot Snapshot, messageID string) bool {
@@ -3481,6 +3742,258 @@ func TestJoinByDeeplinkInfersArchivistOwnerRoleFromManifest(t *testing.T) {
 		peer, ok := peerByID(guest.Snapshot(), host.PeerID())
 		return ok && peer.Role == RoleArchivist
 	})
+}
+
+func TestRelayStoreRequiresRelayRoleAndBoundsQueues(t *testing.T) {
+	client, stopClient := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	defer stopClient()
+
+	recipientIdentity, err := GenerateIdentity("recipient")
+	if err != nil {
+		t.Fatalf("GenerateIdentity() error = %v", err)
+	}
+
+	relay, stopRelay := startService(t, Config{Role: RoleRelay, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: 40 * time.Millisecond})
+	defer stopRelay()
+
+	identity := client.Snapshot().Identity
+	for i := 0; i < relayQueueLimit+5; i++ {
+		delivery := Delivery{
+			ID:               randomID("msg"),
+			Kind:             "channel_message",
+			ScopeID:          "channel-1",
+			ScopeType:        "channel",
+			ServerID:         "server-1",
+			SenderPeerID:     identity.PeerID,
+			SenderPublicKey:  identity.PublicKey,
+			RecipientPeerIDs: []string{recipientIdentity.PeerID},
+			Body:             "queued",
+			CreatedAt:        time.Now().UTC().Add(time.Duration(i) * time.Millisecond),
+		}
+		if err := delivery.Sign(identity); err != nil {
+			t.Fatalf("delivery.Sign() error = %v", err)
+		}
+		if transportErr := relay.peerRelayStore(delivery); transportErr != nil {
+			t.Fatalf("relay.peerRelayStore() error = %+v", transportErr)
+		}
+	}
+
+	relay.mu.RLock()
+	queued := append([]RelayQueueEntry(nil), relay.state.RelayQueues[recipientIdentity.PeerID]...)
+	relay.mu.RUnlock()
+	if len(queued) != relayQueueLimit {
+		t.Fatalf("relay queue length = %d want %d", len(queued), relayQueueLimit)
+	}
+	if len(queued[0].Payload) == 0 || bytes.Contains(queued[0].Payload, []byte("queued")) {
+		t.Fatalf("expected encrypted relay payload, got %q", string(queued[0].Payload))
+	}
+	decoded, err := decodeRelayDelivery(relay.cfg.DataDir, queued[0])
+	if err != nil {
+		t.Fatalf("decodeRelayDelivery() error = %v", err)
+	}
+	if decoded.Body != "queued" {
+		t.Fatalf("decoded relay body = %q want %q", decoded.Body, "queued")
+	}
+
+	invalid := Delivery{ID: randomID("msg"), Kind: "channel_message", SenderPeerID: identity.PeerID, SenderPublicKey: identity.PublicKey, CreatedAt: time.Now().UTC()}
+	if err := invalid.Sign(identity); err != nil {
+		t.Fatalf("invalid.Sign() error = %v", err)
+	}
+	if transportErr := relay.peerRelayStore(invalid); transportErr == nil || transportErr.Code != "invalid_request" {
+		t.Fatalf("relay.peerRelayStore() invalid request = %+v, want invalid_request", transportErr)
+	}
+
+	valid := Delivery{
+		ID:               randomID("msg"),
+		Kind:             "channel_message",
+		ScopeID:          "channel-1",
+		ScopeType:        "channel",
+		ServerID:         "server-1",
+		SenderPeerID:     identity.PeerID,
+		SenderPublicKey:  identity.PublicKey,
+		RecipientPeerIDs: []string{recipientIdentity.PeerID},
+		Body:             "plaintext stays opaque to relay runtime",
+		CreatedAt:        time.Now().UTC(),
+	}
+	if err := valid.Sign(identity); err != nil {
+		t.Fatalf("valid.Sign() error = %v", err)
+	}
+	if transportErr := client.peerRelayStore(valid); transportErr == nil || transportErr.Code != "unsupported_operation" {
+		t.Fatalf("client.peerRelayStore() error = %+v, want unsupported_operation", transportErr)
+	}
+
+	drainReq, err := signedDrainRequest(recipientIdentity, RoleClient, "")
+	if err != nil {
+		t.Fatalf("signedDrainRequest() error = %v", err)
+	}
+	drained, transportErr := relay.peerRelayDrain(drainReq)
+	if transportErr != nil {
+		t.Fatalf("relay.peerRelayDrain() error = %+v", transportErr)
+	}
+	if len(drained) != relayQueueLimit {
+		t.Fatalf("drained queue length = %d want %d", len(drained), relayQueueLimit)
+	}
+	if drained[0].Body != "queued" {
+		t.Fatalf("drained relay body = %q want %q", drained[0].Body, "queued")
+	}
+	if drained[0].Kind != "channel_message" {
+		t.Fatalf("drained kind = %q want channel_message", drained[0].Kind)
+	}
+	relay.mu.RLock()
+	remaining := len(relay.state.RelayQueues[recipientIdentity.PeerID])
+	relay.mu.RUnlock()
+	if remaining != 0 {
+		t.Fatalf("remaining relay queue length = %d want 0", remaining)
+	}
+}
+
+func TestRelayDrainPrunesExpiredEntries(t *testing.T) {
+	relay, stopRelay := startService(t, Config{Role: RoleRelay, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: time.Hour})
+	defer stopRelay()
+
+	recipientIdentity, err := GenerateIdentity("recipient-expired")
+	if err != nil {
+		t.Fatalf("GenerateIdentity() error = %v", err)
+	}
+	delivery := Delivery{ID: randomID("msg"), Kind: "channel_message", ScopeID: "channel-1", ScopeType: "channel", ServerID: "server-1", SenderPeerID: recipientIdentity.PeerID, SenderPublicKey: recipientIdentity.PublicKey, RecipientPeerIDs: []string{recipientIdentity.PeerID}, Body: "expired", CreatedAt: time.Now().UTC().Add(-relayQueueTTL - time.Minute)}
+	if err := delivery.Sign(recipientIdentity); err != nil {
+		t.Fatalf("delivery.Sign() error = %v", err)
+	}
+	entry, err := encodeRelayDelivery(relay.cfg.DataDir, delivery)
+	if err != nil {
+		t.Fatalf("encodeRelayDelivery() error = %v", err)
+	}
+	entry.EnqueuedAt = time.Now().UTC().Add(-relayQueueTTL - time.Minute)
+	entry.ExpiresAt = time.Now().UTC().Add(-time.Minute)
+	relay.mu.Lock()
+	relay.state.RelayQueues[recipientIdentity.PeerID] = []RelayQueueEntry{entry}
+	relay.mu.Unlock()
+
+	drainReq, err := signedDrainRequest(recipientIdentity, RoleRelay, "")
+	if err != nil {
+		t.Fatalf("signedDrainRequest() error = %v", err)
+	}
+	drained, transportErr := relay.peerRelayDrain(drainReq)
+	if transportErr != nil {
+		t.Fatalf("relay.peerRelayDrain() error = %+v", transportErr)
+	}
+	if len(drained) != 0 {
+		t.Fatalf("drained expired queue length = %d want 0", len(drained))
+	}
+	relay.mu.RLock()
+	remaining := len(relay.state.RelayQueues[recipientIdentity.PeerID])
+	relay.mu.RUnlock()
+	if remaining != 0 {
+		t.Fatalf("remaining expired relay queue length = %d want 0", remaining)
+	}
+}
+
+func TestPeerJoinSurfacesSaveFailuresAndRollsBackState(t *testing.T) {
+	bootstrap, stopBootstrap := startService(t, Config{Role: RoleBootstrap, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: time.Hour})
+	defer stopBootstrap()
+
+	host, stopHost := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: time.Hour})
+	defer stopHost()
+
+	guest, stopGuest := startService(t, Config{Role: RoleClient, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", BootstrapAddrs: []string{bootstrap.ListenAddress()}, DiscoveryInterval: time.Hour})
+	defer stopGuest()
+
+	server, err := host.CreateServer("rollback", "save failure")
+	if err != nil {
+		t.Fatalf("CreateServer() error = %v", err)
+	}
+
+	originalSaveStateFn := saveStateFn
+	saveStateFn = func(string, persistedState) error { return errors.New("forced save failure") }
+	defer func() { saveStateFn = originalSaveStateFn }()
+
+	if _, err := guest.JoinByDeeplink(server.Invite); err == nil || !strings.Contains(err.Error(), "forced save failure") {
+		t.Fatalf("JoinByDeeplink() error = %v, want forced save failure", err)
+	}
+
+	hostSnapshot := host.Snapshot()
+	joinedServer, ok := serverByID(hostSnapshot.Servers, server.ID)
+	if !ok {
+		t.Fatal("expected server to remain present after failed join")
+	}
+	if len(joinedServer.Members) != 1 {
+		t.Fatalf("server members after rollback = %d want 1", len(joinedServer.Members))
+	}
+	if hasPeer(hostSnapshot, guest.PeerID()) {
+		t.Fatalf("guest peer %s should not persist after failed join", guest.PeerID())
+	}
+}
+
+func TestRelayDrainRequiresSignedRequesterIdentity(t *testing.T) {
+	relay, stopRelay := startService(t, Config{Role: RoleRelay, DataDir: t.TempDir(), ListenAddr: "127.0.0.1:0", DiscoveryInterval: time.Hour})
+	defer stopRelay()
+
+	recipientIdentity, err := GenerateIdentity("recipient")
+	if err != nil {
+		t.Fatalf("GenerateIdentity(recipient) error = %v", err)
+	}
+	attackerIdentity, err := GenerateIdentity("attacker")
+	if err != nil {
+		t.Fatalf("GenerateIdentity(attacker) error = %v", err)
+	}
+
+	delivery := Delivery{
+		ID:               randomID("msg"),
+		Kind:             "channel_message",
+		ScopeID:          "channel-1",
+		ScopeType:        "channel",
+		ServerID:         "server-1",
+		SenderPeerID:     attackerIdentity.PeerID,
+		SenderPublicKey:  attackerIdentity.PublicKey,
+		RecipientPeerIDs: []string{recipientIdentity.PeerID},
+		Body:             "queued for recipient",
+		CreatedAt:        time.Now().UTC(),
+	}
+	if err := delivery.Sign(attackerIdentity); err != nil {
+		t.Fatalf("delivery.Sign() error = %v", err)
+	}
+	if transportErr := relay.peerRelayStore(delivery); transportErr != nil {
+		t.Fatalf("relay.peerRelayStore() error = %+v", transportErr)
+	}
+
+	forgedReq, err := signedDrainRequest(attackerIdentity, RoleClient, "")
+	if err != nil {
+		t.Fatalf("signedDrainRequest(attacker) error = %v", err)
+	}
+	forgedReq.Requester.PeerID = recipientIdentity.PeerID
+	if drained, transportErr := relay.peerRelayDrain(forgedReq); transportErr == nil || !strings.Contains(transportErr.Message, "peer id mismatch") {
+		t.Fatalf("forged drain transport error = %+v, want peer id mismatch", transportErr)
+	} else if len(drained) != 0 {
+		t.Fatalf("forged drain returned %d queue entries want 0", len(drained))
+	}
+
+	relay.mu.RLock()
+	if got := len(relay.state.RelayQueues[recipientIdentity.PeerID]); got != 1 {
+		relay.mu.RUnlock()
+		t.Fatalf("recipient queue after forged drain = %d want 1", got)
+	}
+	relay.mu.RUnlock()
+
+	recipientReq, err := signedDrainRequest(recipientIdentity, RoleClient, "")
+	if err != nil {
+		t.Fatalf("signedDrainRequest(recipient) error = %v", err)
+	}
+	drained, transportErr := relay.peerRelayDrain(recipientReq)
+	if transportErr != nil {
+		t.Fatalf("relay.peerRelayDrain(recipient) error = %+v", transportErr)
+	}
+	if len(drained) != 1 {
+		t.Fatalf("recipient drain length = %d want 1", len(drained))
+	}
+	if drained[0].Body != "queued for recipient" {
+		t.Fatalf("recipient drain body = %q want %q", drained[0].Body, "queued for recipient")
+	}
+	relay.mu.RLock()
+	remaining := len(relay.state.RelayQueues[recipientIdentity.PeerID])
+	relay.mu.RUnlock()
+	if remaining != 0 {
+		t.Fatalf("recipient queue after authorized drain = %d want 0", remaining)
+	}
 }
 
 func TestSendChannelMessagePrunesPersistedServerHistoryToConfiguredLimit(t *testing.T) {
@@ -3557,6 +4070,19 @@ func TestStartPrunesExistingServerHistoryToConfiguredLimit(t *testing.T) {
 	if !hasMessage(snapshot, sent[2].ID) || !hasMessage(snapshot, sent[3].ID) {
 		t.Fatalf("expected newest messages to remain after restart, snapshot=%+v", snapshot.Messages)
 	}
+	if len(snapshot.Servers) != 1 {
+		t.Fatalf("expected one server after restart, got %d", len(snapshot.Servers))
+	}
+	restartedServer := snapshot.Servers[0]
+	if restartedServer.Manifest.HistoryRetentionMessages != 2 {
+		t.Fatalf("manifest HistoryRetentionMessages = %d want 2", restartedServer.Manifest.HistoryRetentionMessages)
+	}
+	if restartedServer.Manifest.HistoryCoverage != HistoryCoverageLocalWindow {
+		t.Fatalf("manifest HistoryCoverage = %q want %q", restartedServer.Manifest.HistoryCoverage, HistoryCoverageLocalWindow)
+	}
+	if restartedServer.Manifest.HistoryDurability != HistoryDurabilitySingleNode {
+		t.Fatalf("manifest HistoryDurability = %q want %q", restartedServer.Manifest.HistoryDurability, HistoryDurabilitySingleNode)
+	}
 }
 
 func countServerMessages(snapshot Snapshot, serverID string) int {
@@ -3581,6 +4107,15 @@ func presenceByPeerID(records []PresenceRecord, peerID string) (PresenceRecord, 
 func hasChannelNamed(channels []ChannelRecord, name string) bool {
 	for _, channel := range channels {
 		if channel.Name == name {
+			return true
+		}
+	}
+	return false
+}
+
+func containsTelemetry(entries []string, fragment string) bool {
+	for _, entry := range entries {
+		if strings.Contains(entry, fragment) {
 			return true
 		}
 	}

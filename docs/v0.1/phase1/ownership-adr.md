@@ -29,8 +29,8 @@
 3. **Context:** Why this decision matters for Phase 1 (trace back to scope contract or acceptance criteria). [`docs/v0.1/phase1/scope-contract.md:1`](docs/v0.1/phase1/scope-contract.md:1)
 4. **Decision:** Describe the selected option, mention additive evolution implications (no renumber). [`docs/v0.1/phase1/protocol-constraints.md:1`](docs/v0.1/phase1/protocol-constraints.md:1)
 5. **Consequences:** Explain impact on tasks, owners, and constraints.
-6. **Next Steps:** Link to follow-on actions (e.g., Buf config, QA verification, Podman runbooks). 
+6. **Next Steps:** Link to follow-on actions (e.g., Buf config, QA verification, Podman runbooks).
 
 ## Evidence Placeholders
-- Ownership matrix reviewed by stakeholders and linked from next release notes. 
-- ADR entries to be stored under `docs/adr/v0.1/`. 
+- Ownership matrix reviewed by stakeholders and linked from next release notes.
+- ADR entries to be stored under `docs/adr/v0.1/`.

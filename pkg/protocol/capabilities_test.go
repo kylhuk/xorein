@@ -114,3 +114,15 @@ func TestValidFeatureFlagNameAcceptsArchivistCapability(t *testing.T) {
 		t.Fatalf("expected %q to be a valid feature flag", FeatureArchivist)
 	}
 }
+
+func TestDefaultPeerTransportFeatureFlagsAreValid(t *testing.T) {
+	flags := DefaultPeerTransportFeatureFlags()
+	if len(flags) == 0 {
+		t.Fatal("expected peer transport feature flags")
+	}
+	for _, flag := range flags {
+		if !ValidFeatureFlagName(string(flag)) {
+			t.Fatalf("expected %q to be a valid feature flag", flag)
+		}
+	}
+}

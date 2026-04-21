@@ -1,0 +1,1 @@
+xorein runtime ready role=relay peer_id=83d03d72bb659b0616c60d13e9e3d0e2 listen=127.0.0.1:35443 control=/tmp/tmp.fvyqFhNEOW/xorein-control.sock

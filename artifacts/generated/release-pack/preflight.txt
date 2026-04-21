@@ -1,0 +1,394 @@
+Preflight report
+
+Repository snapshot
+root: /home/hal9000/docker/xorein
+git: available
+repo: detected
+branch: main
+latest commit: c3ee7452e8b9b1bf5b5405efbf64035db3e61545 1
+dirty files:
+  - AGENTS.md
+  - Makefile
+  - README.md
+  - SPRINT_GUIDELINES.md
+  - artifacts/generated/checksums.txt
+  - artifacts/generated/release-pack/checksums-stage.txt
+  - artifacts/generated/release-pack/checksums.txt
+  - artifacts/generated/release-pack/sbom/sbom.spdx.json
+  - artifacts/generated/release-pack/sbom/sbom.spdx.json.sha256
+  - artifacts/generated/release-pack/signature-verification.txt
+  - artifacts/generated/release-pack/signing/payload.txt
+  - artifacts/generated/release-pack/signing/sign-output.txt
+  - artifacts/generated/release-pack/signing/verify-output.txt
+  - artifacts/generated/security/gosec.txt
+  - artifacts/generated/security/govulncheck.txt
+  - artifacts/generated/stamp.txt
+  - bin/aether
+  - cmd/aether/main.go
+  - cmd/aether/main_test.go
+  - docs/v0.1/phase1/ownership-adr.md
+  - docs/v0.1/phase3/p3-t1-protocol-id-registry.md
+  - docs/v0.1/phase3/p3-t3-negotiation-rules.md
+  - docs/v0.1/phase3/p3-t5-compatibility-policy.md
+  - docs/v0.1/phase5/p5-t6-profile-privacy.md
+  - pkg/node/control.go
+  - pkg/node/service.go
+  - pkg/node/service_test.go
+  - pkg/node/state.go
+  - pkg/node/wire.go
+  - pkg/phase5/identity_test.go
+  - pkg/phase8/UI_DESIGN_PRD.md
+  - pkg/protocol/capabilities.go
+  - pkg/protocol/capabilities_test.go
+  - pkg/protocol/p3t7_contract_test.go
+  - pkg/protocol/registry.go
+  - pkg/protocol/registry_test.go
+  - pkg/storage/doc.go
+  - scripts/release-pack-verify.sh
+untracked files:
+  - .sisyphus/boulder.json
+  - .sisyphus/evidence/task-1-invalid-startup.log
+  - .sisyphus/evidence/task-1-relay-start.log
+  - .sisyphus/evidence/task-2-negotiation-fail.log
+  - .sisyphus/evidence/task-2-negotiation-pass.log
+  - .sisyphus/notepads/backend-server/decisions.md
+  - .sisyphus/notepads/backend-server/issues.md
+  - .sisyphus/notepads/backend-server/learnings.md
+  - .sisyphus/plans/backend-server.md
+  - aether
+  - artifacts/generated/release-pack/preflight.txt
+  - pkg/network/runtime.go
+  - pkg/network/runtime_test.go
+  - pkg/network/transport.go
+  - pkg/node/state_test.go
+  - pkg/phase5/race_disabled.go
+  - pkg/phase5/race_enabled.go
+  - pkg/protocol/transport.go
+  - pkg/protocol/transport_test.go
+  - pkg/storage/store.go
+  - pkg/storage/store_test.go
+  - scripts/buf
+  - scripts/golangci-lint
+  - scripts/gosec
+  - scripts/govulncheck
+  - scripts/pre-commit
+  - scripts/trivy
+recent commits:
+  - c3ee745 1
+  - 072022b v0.1-rc1
+  - f1f6732 patch1
+  - 8d49440 Update README.md
+  - 5d2dc5f Rename project to Xorein and enhance description
+
+Baseline health check
+root: /home/hal9000/docker/xorein
+build: passed (go build ./...)
+test: passed (go test ./...)
+  ?   	github.com/aether/code_aether/artifacts/generated/release-pack/signing	[no test files]
+  ok  	github.com/aether/code_aether/cmd/aether	0.215s
+  ?   	github.com/aether/code_aether/gen/go/proto	[no test files]
+  ?   	github.com/aether/code_aether/pkg/app	[no test files]
+  ?   	github.com/aether/code_aether/pkg/crypto	[no test files]
+  ok  	github.com/aether/code_aether/pkg/network	(cached)
+  ok  	github.com/aether/code_aether/pkg/node	(cached)
+  ok  	github.com/aether/code_aether/pkg/phase11	(cached)
+  ok  	github.com/aether/code_aether/pkg/phase4	(cached)
+  ok  	github.com/aether/code_aether/pkg/phase5	(cached)
+  ok  	github.com/aether/code_aether/pkg/phase6	(cached)
+  ok  	github.com/aether/code_aether/pkg/phase7	(cached)
+  ok  	github.com/aether/code_aether/pkg/phase8	(cached)
+  ok  	github.com/aether/code_aether/pkg/phase9	(cached)
+  ok  	github.com/aether/code_aether/pkg/protocol	(cached)
+  ok  	github.com/aether/code_aether/pkg/storage	(cached)
+  ok  	github.com/aether/code_aether/pkg/ui	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/conformance	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/dmqueue	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/dmratchet	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/dmtransport	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/friends	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/governance	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/groupdm	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/notify	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/policy	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/prekey	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/presence	(cached)
+  ok  	github.com/aether/code_aether/pkg/v02/rbac	(cached)
+  ok  	github.com/aether/code_aether/pkg/v03/conformance	(cached)
+  ok  	github.com/aether/code_aether/pkg/v03/discovery	(cached)
+  ok  	github.com/aether/code_aether/pkg/v03/governance	(cached)
+  ok  	github.com/aether/code_aether/pkg/v03/indexer	(cached)
+  ok  	github.com/aether/code_aether/pkg/v03/screenshare	(cached)
+  ok  	github.com/aether/code_aether/pkg/v03/transfer	(cached)
+  ok  	github.com/aether/code_aether/pkg/v03/voice	(cached)
+  ok  	github.com/aether/code_aether/pkg/v04/audit	(cached)
+  ok  	github.com/aether/code_aether/pkg/v04/automod	(cached)
+  ok  	github.com/aether/code_aether/pkg/v04/conformance	(cached)
+  ok  	github.com/aether/code_aether/pkg/v04/governance	(cached)
+  ok  	github.com/aether/code_aether/pkg/v04/policy	(cached)
+  ok  	github.com/aether/code_aether/pkg/v04/roles	(cached)
+  ok  	github.com/aether/code_aether/pkg/v04/securitymode	(cached)
+  ok  	github.com/aether/code_aether/pkg/v05/bot	(cached)
+  ok  	github.com/aether/code_aether/pkg/v05/conformance	(cached)
+  ok  	github.com/aether/code_aether/pkg/v05/discordshim	(cached)
+  ok  	github.com/aether/code_aether/pkg/v05/emoji	(cached)
+  ok  	github.com/aether/code_aether/pkg/v05/governance	(cached)
+  ok  	github.com/aether/code_aether/pkg/v05/sdk	(cached)
+  ok  	github.com/aether/code_aether/pkg/v05/webhook	(cached)
+  ok  	github.com/aether/code_aether/pkg/v06/antiabuse	(cached)
+  ok  	github.com/aether/code_aether/pkg/v06/conformance	(cached)
+  ok  	github.com/aether/code_aether/pkg/v06/discovery	(cached)
+  ok  	github.com/aether/code_aether/pkg/v06/filters	(cached)
+  ok  	github.com/aether/code_aether/pkg/v06/governance	(cached)
+  ok  	github.com/aether/code_aether/pkg/v06/reporting	(cached)
+  ok  	github.com/aether/code_aether/pkg/v06/reputation	(cached)
+  ok  	github.com/aether/code_aether/pkg/v06/search	(cached)
+lint: failed (golangci-lint run ./...)
+  level=warning msg="[config_reader] The configuration option `linters.govet.check-shadowing` is deprecated. Please enable `shadow` instead, if you are not using `enable-all`."
+  pkg/v04/conformance/gates_test.go:16:2: ineffectual assignment to got (ineffassign)
+  	got = append(got, "extra")
+  	^
+  cmd/aether/main.go:132:21: Error return value of `service.Close` is not checked (errcheck)
+  	defer service.Close()
+  	                   ^
+  pkg/node/control.go:101:20: Error return value of `writer.Flush` is not checked (errcheck)
+  	defer writer.Flush()
+  	                  ^
+  pkg/node/control.go:102:13: Error return value of `fmt.Fprintf` is not checked (errcheck)
+  	fmt.Fprintf(writer, "event: ready\ndata: {\"version\":\"%s\"}\n\n", ControlAPIVersion)
+  	           ^
+  pkg/node/control.go:103:14: Error return value of `writer.Flush` is not checked (errcheck)
+  	writer.Flush()
+  	            ^
+  pkg/node/control.go:114:15: Error return value of `fmt.Fprintf` is not checked (errcheck)
+  			fmt.Fprintf(writer, "event: %s\ndata: %s\n\n", event.Type, raw)
+  			           ^
+  pkg/node/control.go:115:16: Error return value of `writer.Flush` is not checked (errcheck)
+  			writer.Flush()
+  			            ^
+  pkg/node/control.go:552:23: Error return value of `resp.Body.Close` is not checked (errcheck)
+  	defer resp.Body.Close()
+  	                     ^
+  pkg/node/service_test.go:3327:17: Error return value of `resp.Body.Close` is not checked (errcheck)
+  	resp.Body.Close()
+  	               ^
+  pkg/node/service_test.go:3347:26: Error return value of `respSSE.Body.Close` is not checked (errcheck)
+  	defer respSSE.Body.Close()
+  	                        ^
+  pkg/node/service_test.go:3751:23: Error return value of `resp.Body.Close` is not checked (errcheck)
+  	defer resp.Body.Close()
+  	                     ^
+  pkg/node/service.go:2047:19: func `(*Service).historyForServer` is unused (unused)
+  func (s *Service) historyForServer(serverID string) []MessageRecord {
+                    ^
+  pkg/node/service.go:1799:2: S1011: should replace loop with `targets = append(targets, serverAddrs...)` (gosimple)
+  	for _, addr := range serverAddrs {
+  	^
+  pkg/node/service.go:1153:6: shadow: declaration of "err" shadows declaration at line 1147 (govet)
+  		if err := validateInviteManifest(invite, previewInfo.Manifest); err != nil {
+  		   ^
+  pkg/node/state.go:85:10: shadow: declaration of "err" shadows declaration at line 83 (govet)
+  		state, err := stateFromSnapshot(snapshot)
+  		       ^
+  pkg/node/state.go:113:11: shadow: declaration of "err" shadows declaration at line 83 (govet)
+  			state, err := defaultState()
+  			       ^
+  pkg/node/service_test.go:183:8: shadow: declaration of "err" shadows declaration at line 179 (govet)
+  	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:223:8: shadow: declaration of "err" shadows declaration at line 179 (govet)
+  	if _, err := lateGuest.JoinByDeeplink(badLink); err == nil {
+  	      ^
+  pkg/node/service_test.go:261:5: shadow: declaration of "err" shadows declaration at line 251 (govet)
+  	if err := invite.Sign(host.Snapshot().Identity); err != nil {
+  	   ^
+  pkg/node/service_test.go:290:8: shadow: declaration of "err" shadows declaration at line 286 (govet)
+  	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:332:8: shadow: declaration of "err" shadows declaration at line 328 (govet)
+  	if _, err := host.CreateChannel(server.ID, "voice", true); err != nil {
+  	      ^
+  pkg/node/service_test.go:541:5: shadow: declaration of "err" shadows declaration at line 533 (govet)
+  	if err := service.JoinVoice(voiceChannel.ID, false); err != nil {
+  	   ^
+  pkg/node/service_test.go:587:8: shadow: declaration of "err" shadows declaration at line 567 (govet)
+  	if _, err := service.SendChannelMessage(ops.ID, "deploy gamma"); err != nil {
+  	      ^
+  pkg/node/service_test.go:645:5: shadow: declaration of "err" shadows declaration at line 629 (govet)
+  	if err := service.DeleteMessage(deleted.ID); err != nil {
+  	   ^
+  pkg/node/service_test.go:704:8: shadow: declaration of "err" shadows declaration at line 689 (govet)
+  	if _, err := peer.CreateDM(selfIdentity.PeerID); err != nil {
+  	      ^
+  pkg/node/service_test.go:751:8: shadow: declaration of "err" shadows declaration at line 747 (govet)
+  	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:805:8: shadow: declaration of "err" shadows declaration at line 801 (govet)
+  	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:923:8: shadow: declaration of "err" shadows declaration at line 919 (govet)
+  	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:997:8: shadow: declaration of "err" shadows declaration at line 993 (govet)
+  	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:1058:8: shadow: declaration of "err" shadows declaration at line 1042 (govet)
+  	if _, err := guest.CreateDM(hostIdentity.PeerID); err != nil {
+  	      ^
+  pkg/node/service_test.go:1124:8: shadow: declaration of "err" shadows declaration at line 1109 (govet)
+  	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:1132:8: shadow: declaration of "err" shadows declaration at line 1109 (govet)
+  	if _, err := host.SendChannelMessage(channelID, "self ping @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1141:9: shadow: declaration of "err" shadows declaration at line 1109 (govet)
+  		resp, err := host.SearchNotifications(SearchNotificationsRequest{ServerID: server.ID, Limit: 10})
+  		      ^
+  pkg/node/service_test.go:1221:8: shadow: declaration of "err" shadows declaration at line 1217 (govet)
+  	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:1293:8: shadow: declaration of "err" shadows declaration at line 1285 (govet)
+  	if _, err := guest.JoinByDeeplink(serverA.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:1296:8: shadow: declaration of "err" shadows declaration at line 1285 (govet)
+  	if _, err := guest.JoinByDeeplink(serverB.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:1309:8: shadow: declaration of "err" shadows declaration at line 1285 (govet)
+  	if _, err := guest.SendChannelMessage(channelB, "hello server-b @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1372:8: shadow: declaration of "err" shadows declaration at line 1364 (govet)
+  	if _, err := guest.JoinByDeeplink(serverA.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:1375:8: shadow: declaration of "err" shadows declaration at line 1364 (govet)
+  	if _, err := guest.JoinByDeeplink(serverB.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:1388:8: shadow: declaration of "err" shadows declaration at line 1364 (govet)
+  	if _, err := guest.SendChannelMessage(channelB, "hello server-b @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1442:8: shadow: declaration of "err" shadows declaration at line 1438 (govet)
+  	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:1454:8: shadow: declaration of "err" shadows declaration at line 1438 (govet)
+  	if _, err := guest.SendChannelMessage(generalID, "general @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1457:8: shadow: declaration of "err" shadows declaration at line 1438 (govet)
+  	if _, err := guest.SendChannelMessage(alerts.ID, "alerts @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1523:8: shadow: declaration of "err" shadows declaration at line 1519 (govet)
+  	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:1535:8: shadow: declaration of "err" shadows declaration at line 1519 (govet)
+  	if _, err := guest.SendChannelMessage(generalID, "general @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1538:8: shadow: declaration of "err" shadows declaration at line 1519 (govet)
+  	if _, err := guest.SendChannelMessage(alerts.ID, "alerts @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1600:8: shadow: declaration of "err" shadows declaration at line 1596 (govet)
+  	if _, err := guest.JoinByDeeplink(server.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:1607:8: shadow: declaration of "err" shadows declaration at line 1596 (govet)
+  	if _, err := guest.SendChannelMessage(alerts.ID, "hello @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1612:9: shadow: declaration of "err" shadows declaration at line 1596 (govet)
+  		resp, err := host.SearchNotifications(SearchNotificationsRequest{ServerID: server.ID, ScopeType: "channel", ScopeID: alerts.ID, Limit: 10})
+  		      ^
+  pkg/node/service_test.go:1680:8: shadow: declaration of "err" shadows declaration at line 1664 (govet)
+  	if _, err := guest.CreateDM(hostIdentity.PeerID); err != nil {
+  	      ^
+  pkg/node/service_test.go:1683:8: shadow: declaration of "err" shadows declaration at line 1664 (govet)
+  	if _, err := guest.SendDMMessage(dm.ID, "hello @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1688:9: shadow: declaration of "err" shadows declaration at line 1664 (govet)
+  		resp, err := host.SearchNotifications(SearchNotificationsRequest{ScopeType: "dm", ScopeID: dm.ID, Limit: 10})
+  		      ^
+  pkg/node/service_test.go:1757:8: shadow: declaration of "err" shadows declaration at line 1741 (govet)
+  	if _, err := guest.CreateDM(hostIdentity.PeerID); err != nil {
+  	      ^
+  pkg/node/service_test.go:1760:8: shadow: declaration of "err" shadows declaration at line 1741 (govet)
+  	if _, err := guest.SendDMMessage(dm.ID, "hello @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1765:9: shadow: declaration of "err" shadows declaration at line 1741 (govet)
+  		resp, err := host.SearchNotifications(SearchNotificationsRequest{ScopeType: "dm", ScopeID: dm.ID, Limit: 10})
+  		      ^
+  pkg/node/service_test.go:1810:8: shadow: declaration of "err" shadows declaration at line 1794 (govet)
+  	if _, err := guest.CreateDM(hostIdentity.PeerID); err != nil {
+  	      ^
+  pkg/node/service_test.go:1813:8: shadow: declaration of "err" shadows declaration at line 1794 (govet)
+  	if _, err := guest.SendDMMessage(dm.ID, "hello @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1967:8: shadow: declaration of "err" shadows declaration at line 1947 (govet)
+  	if _, err := bob.SendDMMessage(bobDM.ID, "hello @alice one"); err != nil {
+  	      ^
+  pkg/node/service_test.go:1970:8: shadow: declaration of "err" shadows declaration at line 1947 (govet)
+  	if _, err := carol.SendDMMessage(carolDM.ID, "hello @alice two"); err != nil {
+  	      ^
+  pkg/node/service_test.go:2096:8: shadow: declaration of "err" shadows declaration at line 2088 (govet)
+  	if _, err := guest.JoinByDeeplink(serverA.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:2099:8: shadow: declaration of "err" shadows declaration at line 2088 (govet)
+  	if _, err := guest.JoinByDeeplink(serverB.Invite); err != nil {
+  	      ^
+  pkg/node/service_test.go:2108:8: shadow: declaration of "err" shadows declaration at line 2088 (govet)
+  	if _, err := guest.SendChannelMessage(channelA, "one @alice"); err != nil {
+  	      ^
+  pkg/node/service_test.go:2362:8: shadow: declaration of "err" shadows declaration at line 2348 (govet)
+  	if _, err := guest.CreateDM(hostIdentity.PeerID); err != nil {
+  	      ^
+typecheck: passed (go test -run ^$ ./...)
+  ?   	github.com/aether/code_aether/artifacts/generated/release-pack/signing	[no test files]
+  ok  	github.com/aether/code_aether/cmd/aether	(cached) [no tests to run]
+  ?   	github.com/aether/code_aether/gen/go/proto	[no test files]
+  ?   	github.com/aether/code_aether/pkg/app	[no test files]
+  ?   	github.com/aether/code_aether/pkg/crypto	[no test files]
+  ok  	github.com/aether/code_aether/pkg/network	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/node	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/phase11	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/phase4	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/phase5	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/phase6	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/phase7	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/phase8	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/phase9	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/protocol	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/storage	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/ui	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/conformance	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/dmqueue	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/dmratchet	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/dmtransport	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/friends	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/governance	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/groupdm	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/notify	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/policy	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/prekey	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/presence	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v02/rbac	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v03/conformance	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v03/discovery	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v03/governance	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v03/indexer	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v03/screenshare	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v03/transfer	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v03/voice	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v04/audit	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v04/automod	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v04/conformance	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v04/governance	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v04/policy	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v04/roles	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v04/securitymode	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v05/bot	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v05/conformance	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v05/discordshim	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v05/emoji	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v05/governance	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v05/sdk	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v05/webhook	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v06/antiabuse	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v06/conformance	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v06/discovery	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v06/filters	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v06/governance	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v06/reporting	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v06/reputation	(cached) [no tests to run]
+  ok  	github.com/aether/code_aether/pkg/v06/search	(cached) [no tests to run]

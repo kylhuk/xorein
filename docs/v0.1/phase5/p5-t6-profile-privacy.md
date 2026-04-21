@@ -29,4 +29,3 @@ Minimize the amount of profile data exposed by default and classify the remainin
 - Code: [`pkg/phase5/profile.go`](../../../pkg/phase5/profile.go)
 - Tests: [`pkg/phase5/profile_test.go`](../../../pkg/phase5/profile_test.go)
 - Verification command output captured via Podman (see execution log in this run).
-

@@ -34,6 +34,11 @@ func TestCanonicalRegistryEntries(t *testing.T) {
 }
 
 func TestCanonicalRegistryContainsV020Families(t *testing.T) {
+	peerIDs := CanonicalByFamily(FamilyPeer)
+	if len(peerIDs) == 0 || peerIDs[0] != peerV010 {
+		t.Fatalf("missing canonical IDs for %s", FamilyPeer)
+	}
+
 	v020Families := []ProtocolFamily{FamilyDM, FamilyGroupDM, FamilyFriends, FamilyPresence, FamilyNotify, FamilyModeration, FamilyGovernance}
 	for _, family := range v020Families {
 		ids := CanonicalByFamily(family)

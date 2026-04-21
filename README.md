@@ -24,7 +24,7 @@
 
 xorein is both:
 
-1) the **protocol family** (wire formats + versioning + security modes), and  
+1) the **protocol family** (wire formats + versioning + security modes), and
 2) the **runtime binary** that can operate in multiple roles.
 
 No privileged “authority node class” exists. Differences are capability enablement only.

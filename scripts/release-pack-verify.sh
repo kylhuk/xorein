@@ -1,11 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+export PATH="$ROOT_DIR/scripts:$ROOT_DIR/.cache/xorein-tools/bin:$PATH"
+cd "$ROOT_DIR"
+
 GENERATED_DIR="artifacts/generated"
 RELEASE_PACK_DIR="$GENERATED_DIR/release-pack"
 SIGN_DIR="$RELEASE_PACK_DIR/signing"
 BUILD_BIN="bin/aether"
-SIGN_IMAGE="${RELEASE_SIGNING_IMAGE:-docker.io/library/golang:1.24.8}"
 
 DEFAULT_RELEASE_SIGNING_SEED_HEX="000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
 RELEASE_SIGNING_SEED_HEX="${RELEASE_SIGNING_SEED_HEX:-$DEFAULT_RELEASE_SIGNING_SEED_HEX}"
@@ -19,8 +23,14 @@ if [[ "$RELEASE_SIGNING_SEED_HEX" != "$DEFAULT_RELEASE_SIGNING_SEED_HEX" && "${A
 fi
 
 mkdir -p "$RELEASE_PACK_DIR/sbom" "$SIGN_DIR"
+STAMP_COMMIT="$(git rev-parse HEAD 2>/dev/null || true)"
+printf 'release-pack-stamp\ncommit=%s\n' "${STAMP_COMMIT:-unknown}" > "$GENERATED_DIR/stamp.txt"
+sha256sum "$GENERATED_DIR/stamp.txt" "$BUILD_BIN" > "$GENERATED_DIR/checksums.txt"
+
 test -f "$GENERATED_DIR/stamp.txt"
-test -f "$BUILD_BIN"
+test -x "$BUILD_BIN"
+
+"$BUILD_BIN" --preflight --repo-root "$ROOT_DIR" > "$RELEASE_PACK_DIR/preflight.txt"
 
 sha256sum "$GENERATED_DIR/stamp.txt" "$BUILD_BIN" > "$RELEASE_PACK_DIR/checksums.txt"
 sha256sum "$GENERATED_DIR/checksums.txt" "$GENERATED_DIR/stamp.txt" > "$RELEASE_PACK_DIR/checksums-stage.txt"
@@ -132,14 +142,15 @@ sbom_sha256=$SBOM_SHA
 checksums_sha256=$CHECKSUMS_SHA
 EOF
 
-podman run --rm --userns=keep-id -e RELEASE_SIGNING_SEED_HEX="$RELEASE_SIGNING_SEED_HEX" -v "$PWD":/workspace:Z -w /workspace "$SIGN_IMAGE" bash -lc 'set -euo pipefail; export PATH="/usr/local/go/bin:$PATH"; go run artifacts/generated/release-pack/signing/release-pack-sign.go --mode sign --payload artifacts/generated/release-pack/signing/payload.txt --seed-hex "$RELEASE_SIGNING_SEED_HEX"' > "$SIGN_DIR/sign-output.txt"
+go run artifacts/generated/release-pack/signing/release-pack-sign.go --mode sign --payload artifacts/generated/release-pack/signing/payload.txt --seed-hex "$RELEASE_SIGNING_SEED_HEX" > "$SIGN_DIR/sign-output.txt"
 
-podman run --rm --userns=keep-id -v "$PWD":/workspace:Z -w /workspace "$SIGN_IMAGE" bash -lc 'set -euo pipefail; export PATH="/usr/local/go/bin:$PATH"; pub_hex=$(grep "^public_key_hex=" artifacts/generated/release-pack/signing/sign-output.txt | cut -d= -f2- | tr -d "\r\n"); sig_b64=$(grep "^signature_base64=" artifacts/generated/release-pack/signing/sign-output.txt | cut -d= -f2- | tr -d "\r\n"); go run artifacts/generated/release-pack/signing/release-pack-sign.go --mode verify --payload artifacts/generated/release-pack/signing/payload.txt --pub-hex "$pub_hex" --sig-b64 "$sig_b64"' > "$SIGN_DIR/verify-output.txt"
+pub_hex="$(grep '^public_key_hex=' "$SIGN_DIR/sign-output.txt" | cut -d= -f2- | tr -d '\r\n')"
+sig_b64="$(grep '^signature_base64=' "$SIGN_DIR/sign-output.txt" | cut -d= -f2- | tr -d '\r\n')"
+go run artifacts/generated/release-pack/signing/release-pack-sign.go --mode verify --payload artifacts/generated/release-pack/signing/payload.txt --pub-hex "$pub_hex" --sig-b64 "$sig_b64" > "$SIGN_DIR/verify-output.txt"
 
 cat > "$RELEASE_PACK_DIR/signature-verification.txt" <<EOF
 signature-workflow: ed25519-detached
-signing_method: go-ed25519-via-podman
-signing_image: $SIGN_IMAGE
+signing_method: go-ed25519-host
 payload: artifacts/generated/release-pack/signing/payload.txt
 sign_output:
 $(cat "$SIGN_DIR/sign-output.txt")

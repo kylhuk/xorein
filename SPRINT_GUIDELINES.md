@@ -192,4 +192,3 @@ Work is ready to enter a sprint only when:
 - [ ] Risk log is up to date with final statuses and residual risks.
 - [ ] Compatibility/governance checks are complete.
 - [ ] Open decisions remain unresolved unless authoritative source docs explicitly resolve them.
-

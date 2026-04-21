@@ -1,1 +1,2 @@
-phase2-scaffold-generated
+release-pack-stamp
+commit=c3ee7452e8b9b1bf5b5405efbf64035db3e61545

@@ -2,6 +2,8 @@ SHELL := /bin/bash
 BIN_DIR := bin
 BUILD_BIN := $(BIN_DIR)/aether
 GENERATED_DIR := artifacts/generated
+TOOLS_CACHE_DIR := .cache/xorein-tools
+TOOLS_BIN_DIR := $(TOOLS_CACHE_DIR)/bin
 RELAY_ARTIFACTS_DIR := $(GENERATED_DIR)/relay-container
 RELAY_CONTAINERFILE := containers/relay/Containerfile
 RELAY_IMAGE_REPO ?= localhost/aether-relay
@@ -10,39 +12,49 @@ RELAY_IMAGE := $(RELAY_IMAGE_REPO):$(RELAY_IMAGE_TAG)
 RELEASE_PACK_DIR := $(GENERATED_DIR)/release-pack
 RELEASE_PACK_SIGN_DIR := $(RELEASE_PACK_DIR)/signing
 RELEASE_SIGNING_IMAGE ?= docker.io/library/golang:1.24.8
+export PATH := $(CURDIR)/scripts:$(CURDIR)/$(TOOLS_BIN_DIR):$(PATH)
 
-.PHONY: all pipeline check-fast check-full generate compile lint test scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify
+.PHONY: all pipeline check-fast check-full generate compile lint test race scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify
 
-STAGE_ORDER := generate compile lint test scan
+STAGE_ORDER := generate compile lint test race scan build
 
 all: check-full build
 
-pipeline: generate compile lint test scan build
+pipeline: generate compile lint test race scan build
 
 check-fast: generate compile lint
-check-full: generate compile lint test scan
+check-full: generate compile lint test race scan
 
 generate:
-	@echo "[generate] placeholder for proto/Dhall generation"
-	@set -euo pipefail
-	@podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/library/busybox:1.36.1 \
-		sh -c 'mkdir -p "$(GENERATED_DIR)" && printf "phase2-scaffold-generated\n" > "$(GENERATED_DIR)/stamp.txt"'
+	@echo "[generate] running protobuf compatibility checks"
+	@set -euo pipefail; \
+	if [[ -f buf.yaml ]]; then \
+		buf lint; \
+		buf breaking --against '.git#branch=main'; \
+	else \
+		echo "[generate] skipping buf checks (buf.yaml missing)"; \
+	fi
 
 compile:
-	@echo "[compile] validating workspace readiness"
+	@echo "[compile] compiling all Go packages"
 	@set -euo pipefail
-	@podman run --rm --userns=keep-id -v "$(PWD)":"/work":Z -w "/work" docker.io/library/busybox:1.36.1 sh -c "test -f cmd/aether/main.go && echo compile placeholder"
+	@go build ./...
 
 lint:
-	@echo "[lint] running baseline checks"
+	@echo "[lint] running hygiene and Go lint checks"
 	@set -euo pipefail
-	@podman run --rm --userns=keep-id -v "$(PWD)":"/work":Z -w "/work" docker.io/library/busybox:1.36.1 sh -c "test -f .golangci.yml && echo golangci-lint placeholder"
+	@pre-commit run --all-files
+	@golangci-lint run ./...
 
 test:
-	@echo "[test] running deterministic repro scaffolds"
+	@echo "[test] running Go test suite"
 	@set -euo pipefail
-	@./scripts/dhall-verify.sh
-	@./scripts/repro-checksums.sh
+	@go test ./...
+
+race:
+	@echo "[race] running Go race test suite"
+	@set -euo pipefail
+	@go test -race ./...
 
 scan:
 	@echo "[scan] running security suite"
@@ -50,17 +62,19 @@ scan:
 	ART_DIR="$(GENERATED_DIR)/security"; \
 	mkdir -p "$$ART_DIR"; \
 	echo "[scan] govulncheck ./..."; \
-	podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/library/golang:1.24.8 bash -lc 'set -euo pipefail; export PATH="/usr/local/go/bin:/go/bin:$$PATH"; export GOMODCACHE=/tmp/gomodcache; go install golang.org/x/vuln/cmd/govulncheck@v1.1.4; govulncheck ./...' | tee "$$ART_DIR/govulncheck.txt"; \
+	govulncheck ./... | tee "$$ART_DIR/govulncheck.txt"; \
 	echo "[scan] gosec ./..."; \
-	podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/library/golang:1.24.8 bash -lc 'set -euo pipefail; export PATH="/usr/local/go/bin:/go/bin:$$PATH"; export GOMODCACHE=/tmp/gomodcache; go install github.com/securego/gosec/v2/cmd/gosec@v2.22.2; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test ./... >/tmp/gotest.log; CGO_ENABLED=0 GOOS=linux GOARCH=amd64 gosec -fmt text -severity medium -confidence medium ./...' | tee "$$ART_DIR/gosec.txt"; \
+	go test ./... >/tmp/gotest.log; \
+	gosec -fmt text -severity medium -confidence medium ./... | tee "$$ART_DIR/gosec.txt"; \
 	echo "[scan] trivy filesystem (vuln+secret)"; \
-	podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/aquasec/trivy:0.50.0 fs --scanners vuln,secret --security-checks vuln,secret --skip-dirs /workspace/.git --no-progress --exit-code 1 --severity HIGH,CRITICAL --format json /workspace | tee "$$ART_DIR/trivy-fs.json"
+	TRIVY_CACHE_DIR="$(CURDIR)/.cache/trivy" trivy fs --scanners vuln,secret --security-checks vuln,secret --skip-dirs .git,.cache,artifacts/generated,bin --no-progress --exit-code 1 --severity HIGH,CRITICAL --format json . | tee "$$ART_DIR/trivy-fs.json"
 
 build:
-	@echo "[build] packaging binaries into $(BUILD_BIN)"
+	@echo "[build] building runnable binary into $(BUILD_BIN)"
 	@set -euo pipefail
-	@podman run --rm --userns=keep-id -v "$(PWD)":"/workspace":Z -w "/workspace" docker.io/library/busybox:1.36.1 \
-		sh -c 'mkdir -p "$(BIN_DIR)" && printf "aether-phase2-placeholder-binary\n" > "$(BUILD_BIN)"'
+	@mkdir -p "$(BIN_DIR)"
+	@rm -f "$(BUILD_BIN)"
+	@go build -o "$(BUILD_BIN)" ./cmd/aether
 
 clean:
 	@echo "[clean] removing artifacts"
@@ -110,6 +124,6 @@ relay-container-publish-check:
 		'- Confirm rollback digest health before unpausing rollout.' \
 		> "$(RELAY_ARTIFACTS_DIR)/publication-checklist.txt"
 
-release-pack-verify:
+release-pack-verify: build
 	@echo "[release-pack] generating reproducible verification bundle"
 	@./scripts/release-pack-verify.sh

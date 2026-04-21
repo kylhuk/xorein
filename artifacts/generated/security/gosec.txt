@@ -6,21 +6,21 @@ Results:
   > 265: 		s.droppedByTTL += uint64(dropped)
     266: 	}
 
-Autofix: 
+Autofix:
 
 [/workspace/pkg/phase5/identity.go:155] - G407 (CWE-1204): Use of hardcoded IV/nonce for encryption by passing hardcoded slice/array (Confidence: HIGH, Severity: HIGH)
-    154: 
+    154:
   > 155: 	ciphertext := gcm.Seal(nil, nonce, private, nil)
     156: 	return StorageEnvelope{Salt: salt, Nonce: nonce, Ciphertext: ciphertext}, nil
 
-Autofix: 
+Autofix:
 
 [/workspace/pkg/phase7/pipeline.go:45] - G407 (CWE-1204): Use of hardcoded IV/nonce for encryption by passing a parameter to a function and by passing a value from function which doesn't use crypto/rand (Confidence: MEDIUM, Severity: HIGH)
     44: 	nonce := deriveNonce(plaintext, seq)
   > 45: 	ciphertext, err := encrypt(p.secret, nonce, plaintext)
     46: 	if err != nil {
 
-Autofix: 
+Autofix:
 
 Summary:
   Gosec  : dev
@@ -28,4 +28,3 @@ Summary:
   Lines  : 10382
   Nosec  : 3
   Issues : 3
-

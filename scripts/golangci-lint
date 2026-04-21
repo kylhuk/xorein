@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+BIN_DIR="$ROOT_DIR/.cache/xorein-tools/bin"
+if [[ ! -x "$BIN_DIR/golangci-lint" ]]; then
+	mkdir -p "$BIN_DIR"
+	GOBIN="$BIN_DIR" go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.2
+fi
+
+exec "$BIN_DIR/golangci-lint" "$@"

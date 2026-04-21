@@ -44,13 +44,20 @@ func (s *Service) controlMux() http.Handler {
 
 func withLocalOnly(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		host, _, err := net.SplitHostPort(r.RemoteAddr)
-		if err == nil {
-			ip := net.ParseIP(host)
-			if ip != nil && !ip.IsLoopback() {
-				writeError(w, http.StatusForbidden, APIError{Code: "forbidden", Message: "control API is local-only"})
+		if addr, ok := r.Context().Value(http.LocalAddrContextKey).(net.Addr); ok {
+			if network := strings.TrimSpace(addr.Network()); network == "unix" || strings.HasPrefix(network, "unix") {
+				next.ServeHTTP(w, r)
 				return
 			}
+		}
+		host, _, err := net.SplitHostPort(r.RemoteAddr)
+		if err != nil {
+			host = strings.TrimSpace(r.RemoteAddr)
+		}
+		ip := net.ParseIP(host)
+		if ip == nil || !ip.IsLoopback() {
+			writeError(w, http.StatusForbidden, APIError{Code: "forbidden", Message: "control API is local-only"})
+			return
 		}
 		next.ServeHTTP(w, r)
 	})

@@ -452,6 +452,9 @@ func TestStorageEnvelopeMarshalLengthsWithinBounds(t *testing.T) {
 }
 
 func TestStorageEnvelopeMarshalReturnsInvalidEnvelopeForSyntheticLengthOverflow(t *testing.T) {
+	if !syntheticOverflowTestEnabled() {
+		t.Skip("synthetic overflow test is disabled under -race")
+	}
 	overflowLen := uint64(math.MaxUint32) + 1
 	if storageEnvelopeMarshalLengthsWithinBounds(uint64(saltSize), uint64(nonceSize), overflowLen) {
 		t.Fatalf("expected helper to reject out-of-range ciphertext length")

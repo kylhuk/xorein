@@ -89,9 +89,16 @@ type VoiceParticipant struct {
 }
 
 type VoiceSession struct {
-	ChannelID    string                         `json:"channel_id"`
-	Participants map[string]VoiceParticipant    `json:"participants"`
-	LastFrameBy  map[string]time.Time           `json:"last_frame_by,omitempty"`
+	ChannelID    string                      `json:"channel_id"`
+	Participants map[string]VoiceParticipant `json:"participants"`
+	LastFrameBy  map[string]time.Time        `json:"last_frame_by,omitempty"`
+}
+
+type RelayQueueEntry struct {
+	Key        string    `json:"key"`
+	Payload    []byte    `json:"payload"`
+	EnqueuedAt time.Time `json:"enqueued_at,omitempty"`
+	ExpiresAt  time.Time `json:"expires_at,omitempty"`
 }
 
 type ServerRecord struct {
@@ -114,18 +121,18 @@ type Event struct {
 }
 
 type Snapshot struct {
-	Role            Role                    `json:"role"`
-	PeerID          string                  `json:"peer_id"`
-	ListenAddresses []string                `json:"listen_addresses"`
-	ControlEndpoint string                  `json:"control_endpoint"`
-	Identity        Identity                `json:"identity"`
-	KnownPeers      []PeerRecord            `json:"known_peers"`
-	Servers         []ServerRecord          `json:"servers"`
-	DMs             []DMRecord              `json:"dms"`
-	Messages        []MessageRecord         `json:"messages"`
-	VoiceSessions   []VoiceSession          `json:"voice_sessions"`
-	Settings        map[string]string       `json:"settings,omitempty"`
-	Telemetry       []string                `json:"telemetry,omitempty"`
+	Role            Role              `json:"role"`
+	PeerID          string            `json:"peer_id"`
+	ListenAddresses []string          `json:"listen_addresses"`
+	ControlEndpoint string            `json:"control_endpoint"`
+	Identity        Identity          `json:"identity"`
+	KnownPeers      []PeerRecord      `json:"known_peers"`
+	Servers         []ServerRecord    `json:"servers"`
+	DMs             []DMRecord        `json:"dms"`
+	Messages        []MessageRecord   `json:"messages"`
+	VoiceSessions   []VoiceSession    `json:"voice_sessions"`
+	Settings        map[string]string `json:"settings,omitempty"`
+	Telemetry       []string          `json:"telemetry,omitempty"`
 }
 
 type APIError struct {

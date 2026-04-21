@@ -13,6 +13,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/aether/code_aether/pkg/network"
 	"github.com/aether/code_aether/pkg/node"
 )
 
@@ -20,6 +21,7 @@ var (
 	runRuntimeFn        = runRuntime
 	runRepoSnapshotFn   = runRepoSnapshot
 	runBaselineHealthFn = runBaselineHealth
+	explicitCLIFlags    = map[string]bool{}
 
 	runMode        = flag.String("mode", "client", "runtime mode: client|relay|bootstrap|archivist")
 	configPath     = flag.String("config", "", "optional JSON config file")
@@ -50,6 +52,7 @@ type fileConfig struct {
 
 func main() {
 	flag.Parse()
+	captureExplicitCLIFlags()
 	if *preflight {
 		if err := runPreflight(os.Stdout, strings.TrimSpace(*repoRoot)); err != nil {
 			fmt.Fprintln(os.Stderr, err)
@@ -88,24 +91,19 @@ func buildNodeConfig() (node.Config, error) {
 	if strings.TrimSpace(*scenario) != "" {
 		return node.Config{}, fmt.Errorf("legacy scenario mode is removed from normal execution path")
 	}
-	cfg := node.Config{
-		Role:              node.Role(strings.TrimSpace(*runMode)),
-		DataDir:           strings.TrimSpace(*dataDir),
-		ListenAddr:        strings.TrimSpace(*listenAddr),
-		BootstrapAddrs:    splitCSV(*bootstrapAddrs),
-		ManualPeers:       splitCSV(*manualPeers),
-		RelayAddrs:        splitCSV(*relayAddrs),
-		ControlEndpoint:   strings.TrimSpace(*controlPath),
-		DiscoveryInterval: 250 * time.Millisecond,
-		HistoryLimit:      32,
+	if mode := strings.TrimSpace(*runMode); !node.Role(mode).Valid() {
+		return node.Config{}, fmt.Errorf("invalid --mode %q; expected client|relay|bootstrap|archivist", mode)
 	}
+	defaults := defaultNodeConfig()
+	cfg := defaults
 	if path := strings.TrimSpace(*configPath); path != "" {
 		loaded, err := loadFileConfig(path)
 		if err != nil {
 			return node.Config{}, err
 		}
-		cfg = mergeConfig(loaded, cfg)
+		cfg = mergeConfig(cfg, loaded)
 	}
+	cfg = mergeConfig(cfg, explicitCLIConfig())
 	if !cfg.Role.Valid() {
 		return node.Config{}, fmt.Errorf("invalid --mode %q; expected client|relay|bootstrap|archivist", cfg.Role)
 	}
@@ -115,11 +113,63 @@ func buildNodeConfig() (node.Config, error) {
 	return cfg, nil
 }
 
+func defaultNodeConfig() node.Config {
+	return node.Config{
+		Role:              node.RoleClient,
+		DataDir:           filepath.Join(os.TempDir(), "xorein"),
+		ListenAddr:        "127.0.0.1:0",
+		DiscoveryInterval: 250 * time.Millisecond,
+		HistoryLimit:      32,
+	}
+}
+
+func explicitCLIConfig() node.Config {
+	cfg := node.Config{}
+	if flagWasExplicitlySet("mode") {
+		cfg.Role = node.Role(strings.TrimSpace(*runMode))
+	}
+	if flagWasExplicitlySet("data-dir") {
+		cfg.DataDir = strings.TrimSpace(*dataDir)
+	}
+	if flagWasExplicitlySet("listen") {
+		cfg.ListenAddr = strings.TrimSpace(*listenAddr)
+	}
+	if flagWasExplicitlySet("bootstrap-addrs") {
+		cfg.BootstrapAddrs = splitCSV(*bootstrapAddrs)
+	}
+	if flagWasExplicitlySet("manual-peers") {
+		cfg.ManualPeers = splitCSV(*manualPeers)
+	}
+	if flagWasExplicitlySet("relay-addrs") {
+		cfg.RelayAddrs = splitCSV(*relayAddrs)
+	}
+	if flagWasExplicitlySet("control") {
+		cfg.ControlEndpoint = strings.TrimSpace(*controlPath)
+	}
+	return cfg
+}
+
+func captureExplicitCLIFlags() {
+	explicitCLIFlags = map[string]bool{}
+	flag.Visit(func(f *flag.Flag) {
+		explicitCLIFlags[f.Name] = true
+	})
+}
+
+func flagWasExplicitlySet(name string) bool {
+	return explicitCLIFlags[name]
+}
+
 func runRuntime(ctx context.Context, cfg node.Config) error {
-	service, err := node.NewService(cfg)
+	runtime, err := network.NewP2PRuntime(network.Config{Mode: network.Mode(cfg.Role), ListenAddr: cfg.ListenAddr})
 	if err != nil {
 		return err
 	}
+	service, err := node.NewService(cfg, node.WithPeerRuntime(runtime))
+	if err != nil {
+		return err
+	}
+	runtime.SetHandler(service)
 	if err := service.Start(ctx); err != nil {
 		return err
 	}
@@ -158,6 +208,9 @@ func loadFileConfig(path string) (node.Config, error) {
 			return node.Config{}, err
 		}
 		cfg.DiscoveryInterval = d
+	}
+	if file.Mode != "" && !cfg.Role.Valid() {
+		return node.Config{}, fmt.Errorf("invalid mode in config %q; expected client|relay|bootstrap|archivist", file.Mode)
 	}
 	return cfg, nil
 }

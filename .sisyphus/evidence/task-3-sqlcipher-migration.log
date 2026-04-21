@@ -1,0 +1,8 @@
+=== RUN   TestStoreMigratesLegacyDirectory
+--- PASS: TestStoreMigratesLegacyDirectory (0.00s)
+PASS
+ok  	github.com/aether/code_aether/pkg/storage	0.012s
+=== RUN   TestLoadStateMigratesLegacyJSONAndRecoversFromCorruption
+--- PASS: TestLoadStateMigratesLegacyJSONAndRecoversFromCorruption (0.01s)
+PASS
+ok  	github.com/aether/code_aether/pkg/node	0.016s

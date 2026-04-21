@@ -13,6 +13,7 @@ type ProtocolFamily string
 
 const (
 	FamilyChat       ProtocolFamily = "chat"
+	FamilyPeer       ProtocolFamily = "peer"
 	FamilyVoice      ProtocolFamily = "voice"
 	FamilyManifest   ProtocolFamily = "manifest"
 	FamilyIdentity   ProtocolFamily = "identity"
@@ -62,22 +63,24 @@ func registerCanonical(id ProtocolID) {
 }
 
 var (
-	chatV010       = ProtocolID{Family: FamilyChat, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "chat/v0.1.0"}
-	voiceV010      = ProtocolID{Family: FamilyVoice, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "voice/v0.1.0"}
-	manifestV010   = ProtocolID{Family: FamilyManifest, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "manifest/v0.1.0"}
-	identityV010   = ProtocolID{Family: FamilyIdentity, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "identity/v0.1.0"}
-	syncV010       = ProtocolID{Family: FamilySync, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "sync/v0.1.0"}
-	dmV020         = ProtocolID{Family: FamilyDM, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "dm/v0.2.0"}
-	groupDMV020    = ProtocolID{Family: FamilyGroupDM, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "groupdm/v0.2.0"}
-	friendsV020    = ProtocolID{Family: FamilyFriends, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "friends/v0.2.0"}
-	presenceV020   = ProtocolID{Family: FamilyPresence, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "presence/v0.2.0"}
-	notifyV020     = ProtocolID{Family: FamilyNotify, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "notify/v0.2.0"}
-	modV020        = ProtocolID{Family: FamilyModeration, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "moderation/v0.2.0"}
-	govV020        = ProtocolID{Family: FamilyGovernance, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "governance/v0.2.0"}
+	chatV010     = ProtocolID{Family: FamilyChat, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "chat/v0.1.0"}
+	peerV010     = ProtocolID{Family: FamilyPeer, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "peer/v0.1.0"}
+	voiceV010    = ProtocolID{Family: FamilyVoice, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "voice/v0.1.0"}
+	manifestV010 = ProtocolID{Family: FamilyManifest, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "manifest/v0.1.0"}
+	identityV010 = ProtocolID{Family: FamilyIdentity, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "identity/v0.1.0"}
+	syncV010     = ProtocolID{Family: FamilySync, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}, Name: "sync/v0.1.0"}
+	dmV020       = ProtocolID{Family: FamilyDM, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "dm/v0.2.0"}
+	groupDMV020  = ProtocolID{Family: FamilyGroupDM, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "groupdm/v0.2.0"}
+	friendsV020  = ProtocolID{Family: FamilyFriends, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "friends/v0.2.0"}
+	presenceV020 = ProtocolID{Family: FamilyPresence, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "presence/v0.2.0"}
+	notifyV020   = ProtocolID{Family: FamilyNotify, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "notify/v0.2.0"}
+	modV020      = ProtocolID{Family: FamilyModeration, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "moderation/v0.2.0"}
+	govV020      = ProtocolID{Family: FamilyGovernance, Version: ProtocolVersion{Major: 0, Minor: 2, Patch: 0}, Name: "governance/v0.2.0"}
 )
 
 func init() {
 	registerCanonical(chatV010)
+	registerCanonical(peerV010)
 	registerCanonical(voiceV010)
 	registerCanonical(manifestV010)
 	registerCanonical(identityV010)

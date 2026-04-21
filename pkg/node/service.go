@@ -1,8 +1,9 @@
 package node
 
 import (
-	"bytes"
 	"context"
+	"crypto/ed25519"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,13 +17,17 @@ import (
 	"sync"
 	"time"
 
+	"github.com/aether/code_aether/pkg/network"
 	"github.com/aether/code_aether/pkg/protocol"
+	"github.com/aether/code_aether/pkg/storage"
 )
 
 const (
 	notificationsReadThroughSetting      = "notifications_read_through"
 	notificationsServerReadThroughPrefix = "notifications_read_through_server:"
 	notificationsScopedReadThroughPrefix = "notifications_read_through_scope:"
+	relayQueueTTL                        = 24 * time.Hour
+	relayQueueLimit                      = 256
 )
 
 var (
@@ -32,10 +37,14 @@ var (
 
 func registerLivePeer(peerID, addr string) {
 	peerID = strings.TrimSpace(peerID)
-	addr = strings.TrimSpace(addr)
-	if peerID == "" || addr == "" {
+	if peerID == "" {
 		return
 	}
+	normalized := normalizePeerAddresses([]string{addr})
+	if len(normalized) == 0 {
+		return
+	}
+	addr = normalized[0]
 	livePeerRegistryMu.Lock()
 	livePeerRegistry[peerID] = dedupeSorted(append(append([]string(nil), livePeerRegistry[peerID]...), addr))
 	livePeerRegistryMu.Unlock()
@@ -43,15 +52,19 @@ func registerLivePeer(peerID, addr string) {
 
 func unregisterLivePeer(peerID, addr string) {
 	peerID = strings.TrimSpace(peerID)
-	addr = strings.TrimSpace(addr)
-	if peerID == "" || addr == "" {
+	if peerID == "" {
 		return
 	}
+	normalized := normalizePeerAddresses([]string{addr})
+	if len(normalized) == 0 {
+		return
+	}
+	addr = normalized[0]
 	livePeerRegistryMu.Lock()
 	defer livePeerRegistryMu.Unlock()
-	addresses := append([]string(nil), livePeerRegistry[peerID]...)
-	filtered := addresses[:0]
-	for _, existing := range addresses {
+	current := append([]string(nil), livePeerRegistry[peerID]...)
+	filtered := current[:0]
+	for _, existing := range current {
 		if existing != addr {
 			filtered = append(filtered, existing)
 		}
@@ -79,10 +92,12 @@ type Service struct {
 	mu    sync.RWMutex
 	state persistedState
 
-	listen          net.Listener
+	discoveryMu      sync.Mutex
+	discoveryBackoff map[string]discoveryBackoffState
+
 	controlListener net.Listener
-	httpServer      *http.Server
 	controlServer   *http.Server
+	peerRuntime     network.Runtime
 
 	eventsMu    sync.RWMutex
 	subscribers map[chan Event]struct{}
@@ -92,7 +107,20 @@ type Service struct {
 	wg     sync.WaitGroup
 }
 
-func NewService(cfg Config) (*Service, error) {
+type discoveryBackoffState struct {
+	Failures    int
+	NextAttempt time.Time
+}
+
+type Option func(*Service)
+
+func WithPeerRuntime(runtime network.Runtime) Option {
+	return func(s *Service) {
+		s.peerRuntime = runtime
+	}
+}
+
+func NewService(cfg Config, opts ...Option) (*Service, error) {
 	if !cfg.Role.Valid() {
 		return nil, fmt.Errorf("invalid role %q", cfg.Role)
 	}
@@ -112,30 +140,33 @@ func NewService(cfg Config) (*Service, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Service{
-		cfg:         cfg,
-		state:       state,
-		subscribers: map[chan Event]struct{}{},
-		closed:      make(chan struct{}),
-	}, nil
+	service := &Service{
+		cfg:              cfg,
+		state:            state,
+		discoveryBackoff: map[string]discoveryBackoffState{},
+		subscribers:      map[chan Event]struct{}{},
+		closed:           make(chan struct{}),
+	}
+	for _, opt := range opts {
+		if opt != nil {
+			opt(service)
+		}
+	}
+	return service, nil
 }
 
 func (s *Service) Start(ctx context.Context) error {
-	ln, err := net.Listen("tcp", s.cfg.ListenAddr)
-	if err != nil {
-		return fmt.Errorf("listen: %w", err)
+	if s.peerRuntime == nil {
+		return errors.New("peer runtime is required")
 	}
-	s.listen = ln
-	s.httpServer = &http.Server{Handler: s.networkMux()}
-	s.wg.Add(1)
-	go func() {
-		defer s.wg.Done()
-		_ = s.httpServer.Serve(ln)
-	}()
+	if err := s.peerRuntime.Start(ctx); err != nil {
+		return err
+	}
+	listenAddr := s.peerRuntime.ListenAddress()
 
 	controlListener, controlEndpoint, err := createControlListener(s.cfg.ControlEndpoint, s.cfg.DataDir)
 	if err != nil {
-		_ = s.listen.Close()
+		_ = s.peerRuntime.Close()
 		return err
 	}
 	s.controlListener = controlListener
@@ -143,11 +174,11 @@ func (s *Service) Start(ctx context.Context) error {
 	s.mu.Lock()
 	now := time.Now().UTC()
 	s.state.Settings["control_endpoint"] = controlEndpoint
-	s.state.Settings["listen_address"] = s.listen.Addr().String()
+	s.state.Settings["listen_address"] = listenAddr
 	s.upsertPeerLocked(PeerRecord{
 		PeerID:     s.state.Identity.PeerID,
 		Role:       s.cfg.Role,
-		Addresses:  []string{s.listen.Addr().String()},
+		Addresses:  []string{listenAddr},
 		PublicKey:  s.state.Identity.PublicKey,
 		Source:     "self",
 		LastSeenAt: now,
@@ -168,7 +199,7 @@ func (s *Service) Start(ctx context.Context) error {
 		err = ensureControlTokenFile(s.cfg.DataDir, token)
 	}
 	if err != nil {
-		_ = s.listen.Close()
+		_ = s.peerRuntime.Close()
 		_ = s.controlListener.Close()
 		return err
 	}
@@ -197,7 +228,9 @@ func (s *Service) Start(ctx context.Context) error {
 	}()
 
 	// Trigger initial discovery immediately.
-	s.runDiscoveryPass()
+	if err := s.runDiscoveryPass(); err != nil {
+		s.recordTelemetry("discovery.pass error=" + err.Error())
+	}
 	return nil
 }
 
@@ -215,16 +248,13 @@ func (s *Service) Close() error {
 				retErr = err
 			}
 		}
-		if s.httpServer != nil {
-			if err := s.httpServer.Shutdown(ctx); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		if s.peerRuntime != nil {
+			if err := s.peerRuntime.Close(); err != nil && !errors.Is(err, net.ErrClosed) {
 				retErr = err
 			}
 		}
 		if s.controlListener != nil {
 			_ = s.controlListener.Close()
-		}
-		if s.listen != nil {
-			_ = s.listen.Close()
 		}
 		s.wg.Wait()
 		s.eventsMu.Lock()
@@ -243,10 +273,10 @@ func (s *Service) Close() error {
 }
 
 func (s *Service) ListenAddress() string {
-	if s.listen == nil {
-		return ""
+	if s.peerRuntime != nil {
+		return s.peerRuntime.ListenAddress()
 	}
-	return s.listen.Addr().String()
+	return strings.TrimSpace(s.cfg.ListenAddr)
 }
 
 func (s *Service) ControlEndpoint() string {
@@ -308,27 +338,22 @@ func (s *Service) CreateIdentity(displayName, bio string) (Identity, error) {
 		return Identity{}, err
 	}
 	identity.Profile.Bio = strings.TrimSpace(bio)
+	now := time.Now().UTC()
 	s.mu.Lock()
 	oldPeerID := s.state.Identity.PeerID
 	listenAddr := s.listenAddressLocked()
-	s.state.Identity = identity
-	s.upsertPeerLocked(PeerRecord{
-		PeerID:     identity.PeerID,
-		Role:       s.cfg.Role,
-		Addresses:  []string{s.listenAddressLocked()},
-		PublicKey:  identity.PublicKey,
-		Source:     "self",
-		LastSeenAt: time.Now().UTC(),
-	})
-	err = s.saveLocked()
+	refreshedManifests, err := s.replaceIdentityLocked(identity, now)
 	s.mu.Unlock()
 	if err != nil {
 		return Identity{}, err
 	}
 	unregisterLivePeer(oldPeerID, listenAddr)
 	registerLivePeer(identity.PeerID, listenAddr)
+	for _, manifest := range refreshedManifests {
+		_ = s.publishManifest(manifest)
+	}
 	s.recordTelemetry("identity.created peer=" + identity.PeerID)
-	s.emitEvent(Event{Type: "identity.created", Time: time.Now().UTC(), Payload: map[string]any{"peer_id": identity.PeerID}})
+	s.emitEvent(Event{Type: "identity.created", Time: now, Payload: map[string]any{"peer_id": identity.PeerID}})
 	return identity, nil
 }
 
@@ -344,27 +369,116 @@ func (s *Service) RestoreIdentity(raw []byte) (Identity, error) {
 	if err != nil {
 		return Identity{}, err
 	}
+	now := time.Now().UTC()
 	s.mu.Lock()
 	oldPeerID := s.state.Identity.PeerID
 	listenAddr := s.listenAddressLocked()
-	s.state.Identity = identity
-	s.upsertPeerLocked(PeerRecord{
-		PeerID:     identity.PeerID,
-		Role:       s.cfg.Role,
-		Addresses:  []string{s.listenAddressLocked()},
-		PublicKey:  identity.PublicKey,
-		Source:     "self",
-		LastSeenAt: time.Now().UTC(),
-	})
-	err = s.saveLocked()
+	refreshedManifests, err := s.replaceIdentityLocked(identity, now)
 	s.mu.Unlock()
 	if err != nil {
 		return Identity{}, err
 	}
 	unregisterLivePeer(oldPeerID, listenAddr)
 	registerLivePeer(identity.PeerID, listenAddr)
+	for _, manifest := range refreshedManifests {
+		_ = s.publishManifest(manifest)
+	}
 	s.recordTelemetry("identity.restored peer=" + identity.PeerID)
+	s.emitEvent(Event{Type: "identity.restored", Time: now, Payload: map[string]any{"peer_id": identity.PeerID}})
 	return identity, nil
+}
+
+func (s *Service) replaceIdentityLocked(identity Identity, now time.Time) ([]Manifest, error) {
+	prior := clonePersistedState(s.state)
+	oldPeerID := s.state.Identity.PeerID
+	s.state.Identity = identity
+	if oldPeerID != "" && oldPeerID != identity.PeerID {
+		delete(s.state.KnownPeers, oldPeerID)
+	}
+	s.rebindLocalStateLocked(oldPeerID, identity.PeerID)
+	s.upsertPeerLocked(PeerRecord{
+		PeerID:     identity.PeerID,
+		Role:       s.cfg.Role,
+		Addresses:  []string{s.listenAddressLocked()},
+		PublicKey:  identity.PublicKey,
+		Source:     "self",
+		LastSeenAt: now,
+	})
+	refreshedManifests, err := s.refreshOwnedServerBindingsLocked(now)
+	if err != nil {
+		s.state = prior
+		return nil, err
+	}
+	if err := s.saveLockedWithRollback(prior); err != nil {
+		return nil, err
+	}
+	return refreshedManifests, nil
+}
+
+func (s *Service) rebindLocalStateLocked(oldPeerID, newPeerID string) {
+	if strings.TrimSpace(oldPeerID) == "" || strings.TrimSpace(newPeerID) == "" || oldPeerID == newPeerID {
+		return
+	}
+	for serverID, server := range s.state.Servers {
+		changed := false
+		if server.OwnerPeerID == oldPeerID {
+			server.OwnerPeerID = newPeerID
+			changed = true
+		}
+		updatedMembers, membersChanged := replacePeerID(server.Members, oldPeerID, newPeerID)
+		if membersChanged {
+			server.Members = updatedMembers
+			changed = true
+		}
+		if changed {
+			s.state.Servers[serverID] = server
+		}
+	}
+	for dmID, dm := range s.state.DMs {
+		updatedParticipants, changed := replacePeerID(dm.Participants, oldPeerID, newPeerID)
+		if !changed {
+			continue
+		}
+		dm.Participants = updatedParticipants
+		s.state.DMs[dmID] = dm
+	}
+	for channelID, session := range s.state.Voice {
+		changed := false
+		if participant, ok := session.Participants[oldPeerID]; ok {
+			delete(session.Participants, oldPeerID)
+			participant.PeerID = newPeerID
+			session.Participants[newPeerID] = participant
+			changed = true
+		}
+		if frameAt, ok := session.LastFrameBy[oldPeerID]; ok {
+			delete(session.LastFrameBy, oldPeerID)
+			session.LastFrameBy[newPeerID] = frameAt
+			changed = true
+		}
+		if changed {
+			s.state.Voice[channelID] = session
+		}
+	}
+}
+
+func replacePeerID(values []string, oldPeerID, newPeerID string) ([]string, bool) {
+	if oldPeerID == newPeerID {
+		return append([]string(nil), values...), false
+	}
+	updated := make([]string, 0, len(values))
+	changed := false
+	for _, value := range values {
+		value = strings.TrimSpace(value)
+		if value == oldPeerID {
+			value = newPeerID
+			changed = true
+		}
+		if value == "" || contains(updated, value) {
+			continue
+		}
+		updated = append(updated, value)
+	}
+	return updated, changed
 }
 
 func (s *Service) AddManualPeer(address string) error {
@@ -372,15 +486,16 @@ func (s *Service) AddManualPeer(address string) error {
 	if address == "" {
 		return errors.New("manual peer address is required")
 	}
-	peer, err := s.fetchPeerInfo(address)
+	peer, err := s.fetchPeerInfo("manual", address)
 	if err != nil {
 		return err
 	}
 	s.mu.Lock()
+	prior := clonePersistedState(s.state)
 	peer.Source = "manual"
 	peer.LastSeenAt = time.Now().UTC()
 	s.upsertPeerLocked(peer)
-	err = s.saveLocked()
+	err = s.saveLockedWithRollback(prior)
 	s.mu.Unlock()
 	if err != nil {
 		return err
@@ -395,6 +510,7 @@ func (s *Service) RemoveManualPeer(address string) error {
 		return errors.New("manual peer address is required")
 	}
 	s.mu.Lock()
+	prior := clonePersistedState(s.state)
 	for id, peer := range s.state.KnownPeers {
 		filtered := make([]string, 0, len(peer.Addresses))
 		for _, addr := range peer.Addresses {
@@ -409,7 +525,7 @@ func (s *Service) RemoveManualPeer(address string) error {
 		}
 		s.state.KnownPeers[id] = peer
 	}
-	err := s.saveLocked()
+	err := s.saveLockedWithRollback(prior)
 	s.mu.Unlock()
 	if err != nil {
 		return err
@@ -462,6 +578,9 @@ func (s *Service) refreshOwnedServerBindingsLocked(now time.Time) ([]Manifest, e
 			desiredRelayAddrs = dedupeSorted(append(desiredRelayAddrs, listenAddr))
 		}
 		desiredCapabilities := advertisedCapabilities(s.cfg.Role)
+		desiredHistoryRetention := s.cfg.HistoryLimit
+		desiredHistoryCoverage := HistoryCoverageLocalWindow
+		desiredHistoryDurability := HistoryDurabilitySingleNode
 
 		manifestChanged := manifest.ServerID != server.ID ||
 			manifest.Name != server.Name ||
@@ -472,6 +591,9 @@ func (s *Service) refreshOwnedServerBindingsLocked(now time.Time) ([]Manifest, e
 			!sameStringSet(manifest.BootstrapAddrs, desiredBootstrapAddrs) ||
 			!sameStringSet(manifest.RelayAddrs, desiredRelayAddrs) ||
 			!sameStringSet(manifest.Capabilities, desiredCapabilities) ||
+			manifest.HistoryRetentionMessages != desiredHistoryRetention ||
+			manifest.HistoryCoverage != desiredHistoryCoverage ||
+			manifest.HistoryDurability != desiredHistoryDurability ||
 			manifest.Signature == ""
 		if manifestChanged {
 			manifest.ServerID = server.ID
@@ -483,6 +605,9 @@ func (s *Service) refreshOwnedServerBindingsLocked(now time.Time) ([]Manifest, e
 			manifest.BootstrapAddrs = desiredBootstrapAddrs
 			manifest.RelayAddrs = desiredRelayAddrs
 			manifest.Capabilities = desiredCapabilities
+			manifest.HistoryRetentionMessages = desiredHistoryRetention
+			manifest.HistoryCoverage = desiredHistoryCoverage
+			manifest.HistoryDurability = desiredHistoryDurability
 			manifest.UpdatedAt = now
 			if err := manifest.Sign(identity); err != nil {
 				return nil, err
@@ -562,6 +687,7 @@ func (s *Service) CreateServer(name, description string) (ServerRecord, error) {
 	general := ChannelRecord{ID: randomID("channel"), ServerID: serverID, Name: "general", Voice: false, CreatedAt: now}
 	capabilities := advertisedCapabilities(s.cfg.Role)
 	s.mu.Lock()
+	prior := clonePersistedState(s.state)
 	manifest := Manifest{
 		ServerID:                 serverID,
 		Name:                     name,
@@ -620,7 +746,7 @@ func (s *Service) CreateServer(name, description string) (ServerRecord, error) {
 		Invite:      deeplink,
 	}
 	s.state.Servers[serverID] = server
-	if err := s.saveLocked(); err != nil {
+	if err := s.saveLockedWithRollback(prior); err != nil {
 		s.mu.Unlock()
 		return ServerRecord{}, err
 	}
@@ -912,6 +1038,7 @@ func (s *Service) MarkNotificationsReadScoped(req MarkNotificationsReadRequest) 
 		through = through.UTC()
 	}
 	s.mu.Lock()
+	prior := clonePersistedState(s.state)
 	current := notificationReadThroughForScopeLocked(s.state.Settings, serverID, scopeType, scopeID)
 	if through.Before(current) {
 		through = current
@@ -927,7 +1054,7 @@ func (s *Service) MarkNotificationsReadScoped(req MarkNotificationsReadRequest) 
 	default:
 		s.state.Settings[notificationsScopedReadThroughKey(serverID, scopeType, scopeID)] = through.Format(time.RFC3339Nano)
 	}
-	if err := s.saveLocked(); err != nil {
+	if err := s.saveLockedWithRollback(prior); err != nil {
 		s.mu.Unlock()
 		return time.Time{}, err
 	}
@@ -1042,8 +1169,8 @@ func (s *Service) PreviewDeeplink(raw string) (ServerPreview, error) {
 	}
 	previewInfo, previewErr := s.resolveServerPreview(invite.ServerID, invite.ServerAddrs)
 	if previewErr == nil {
-		if previewInfo.Manifest.Hash() != invite.ManifestHash {
-			return ServerPreview{}, errors.New("invite manifest hash mismatch")
+		if err := validateInviteManifest(invite, previewInfo.Manifest); err != nil {
+			return ServerPreview{}, err
 		}
 		ownerRole := previewInfo.OwnerRole
 		if ownerRole == "" {
@@ -1066,8 +1193,8 @@ func (s *Service) PreviewDeeplink(raw string) (ServerPreview, error) {
 	if err != nil {
 		return ServerPreview{}, err
 	}
-	if manifest.Hash() != invite.ManifestHash {
-		return ServerPreview{}, errors.New("invite manifest hash mismatch")
+	if err := validateInviteManifest(invite, manifest); err != nil {
+		return ServerPreview{}, err
 	}
 	return ServerPreview{Invite: invite, Manifest: manifest, OwnerRole: inferPeerRoleFromCapabilities("", manifest.Capabilities), SafetyLabels: safetyLabelsForManifest(manifest)}, nil
 }
@@ -1081,8 +1208,8 @@ func (s *Service) JoinByDeeplink(raw string) (ServerRecord, error) {
 	if err != nil {
 		return ServerRecord{}, err
 	}
-	if manifest.Hash() != invite.ManifestHash {
-		return ServerRecord{}, errors.New("invite manifest hash mismatch")
+	if err := validateInviteManifest(invite, manifest); err != nil {
+		return ServerRecord{}, err
 	}
 	joinReq := JoinRequest{
 		Invite: invite,
@@ -1094,11 +1221,11 @@ func (s *Service) JoinByDeeplink(raw string) (ServerRecord, error) {
 		},
 	}
 	joinReq.Capabilities = advertisedCapabilities(s.cfg.Role)
-	addresses := dedupeSorted(append([]string{}, invite.ServerAddrs...))
+	addresses := normalizePeerAddresses(invite.ServerAddrs)
 	var joinResp JoinResponse
 	var lastErr error
 	for _, addr := range addresses {
-		if err := s.postJSON(context.Background(), addr, "/_xorein/join", joinReq, &joinResp); err != nil {
+		if err := s.peerCall(context.Background(), addr, network.OperationJoin, joinReq, &joinResp); err != nil {
 			lastErr = err
 			continue
 		}
@@ -1111,7 +1238,14 @@ func (s *Service) JoinByDeeplink(raw string) (ServerRecord, error) {
 	if err := joinResp.Manifest.Verify(); err != nil {
 		return ServerRecord{}, err
 	}
+	if err := validateInviteManifest(invite, joinResp.Manifest); err != nil {
+		return ServerRecord{}, err
+	}
+	if joinResp.Server.ID != invite.ServerID {
+		return ServerRecord{}, errors.New("join response server mismatch")
+	}
 	s.mu.Lock()
+	prior := clonePersistedState(s.state)
 	owner := PeerRecord{
 		PeerID:     joinResp.Manifest.OwnerPeerID,
 		Role:       inferPeerRoleFromCapabilities(RoleClient, joinResp.Manifest.Capabilities),
@@ -1127,7 +1261,7 @@ func (s *Service) JoinByDeeplink(raw string) (ServerRecord, error) {
 	for _, msg := range joinResp.History {
 		s.state.Messages[msg.ID] = msg
 	}
-	if err := s.saveLocked(); err != nil {
+	if err := s.saveLockedWithRollback(prior); err != nil {
 		s.mu.Unlock()
 		return ServerRecord{}, err
 	}
@@ -1150,6 +1284,7 @@ func (s *Service) CreateChannel(serverID, name string, voice bool) (ChannelRecor
 		return ChannelRecord{}, errors.New("server not found")
 	}
 	channel := ChannelRecord{ID: randomID("channel"), ServerID: serverID, Name: name, Voice: voice, CreatedAt: now}
+	prior := clonePersistedState(s.state)
 	if server.Channels == nil {
 		server.Channels = map[string]ChannelRecord{}
 	}
@@ -1165,10 +1300,11 @@ func (s *Service) CreateChannel(serverID, name string, voice bool) (ChannelRecor
 	identity := s.state.Identity
 	delivery := Delivery{ID: channel.ID, Kind: "channel_create", ScopeID: channel.ID, ScopeType: "channel", ServerID: serverID, SenderPeerID: identity.PeerID, SenderPublicKey: identity.PublicKey, RecipientPeerIDs: dedupeSorted(recipients), Body: channel.Name, Muted: channel.Voice, CreatedAt: now}
 	if err := delivery.Sign(identity); err != nil {
+		s.state = prior
 		s.mu.Unlock()
 		return ChannelRecord{}, err
 	}
-	if err := s.saveLocked(); err != nil {
+	if err := s.saveLockedWithRollback(prior); err != nil {
 		s.mu.Unlock()
 		return ChannelRecord{}, err
 	}
@@ -1192,6 +1328,7 @@ func (s *Service) CreateDM(peerID string) (DMRecord, error) {
 	participants := dedupeSorted([]string{s.PeerID(), peerID})
 	dmID := strings.Join(participants, ":")
 	s.mu.Lock()
+	prior := clonePersistedState(s.state)
 	if dm, ok := s.state.DMs[dmID]; ok {
 		s.mu.Unlock()
 		return dm, nil
@@ -1201,10 +1338,11 @@ func (s *Service) CreateDM(peerID string) (DMRecord, error) {
 	identity := s.state.Identity
 	delivery := Delivery{ID: dm.ID, Kind: "dm_create", ScopeID: dm.ID, ScopeType: "dm", SenderPeerID: identity.PeerID, SenderPublicKey: identity.PublicKey, RecipientPeerIDs: dedupeSorted([]string{peerID}), CreatedAt: now}
 	if err := delivery.Sign(identity); err != nil {
+		s.state = prior
 		s.mu.Unlock()
 		return DMRecord{}, err
 	}
-	if err := s.saveLocked(); err != nil {
+	if err := s.saveLockedWithRollback(prior); err != nil {
 		s.mu.Unlock()
 		return DMRecord{}, err
 	}
@@ -1253,10 +1391,11 @@ func (s *Service) sendMessage(scopeType, scopeID, body string) (MessageRecord, e
 		return MessageRecord{}, err
 	}
 	s.mu.Lock()
+	prior := clonePersistedState(s.state)
 	s.state.Messages[msg.ID] = msg
 	s.state.Deliveries[delivery.ID] = struct{}{}
 	pruned := s.pruneServerHistoryLocked(serverID)
-	if err := s.saveLocked(); err != nil {
+	if err := s.saveLockedWithRollback(prior); err != nil {
 		s.mu.Unlock()
 		return MessageRecord{}, err
 	}
@@ -1287,21 +1426,24 @@ func (s *Service) EditMessage(messageID, body string) (MessageRecord, error) {
 		s.mu.Unlock()
 		return MessageRecord{}, errors.New("message is owned by another peer")
 	}
+	prior := clonePersistedState(s.state)
 	msg.Body = body
 	msg.UpdatedAt = time.Now().UTC()
 	s.state.Messages[msg.ID] = msg
 	scopeType, scopeID, serverID := msg.ScopeType, msg.ScopeID, msg.ServerID
 	recipients, _, err := s.scopeRecipientsLocked(scopeType, scopeID)
 	if err != nil {
+		s.state = prior
 		s.mu.Unlock()
 		return MessageRecord{}, err
 	}
 	delivery := Delivery{ID: messageID, Kind: "message_edit", ScopeID: scopeID, ScopeType: scopeType, ServerID: serverID, SenderPeerID: identity.PeerID, SenderPublicKey: identity.PublicKey, RecipientPeerIDs: recipients, Body: body, CreatedAt: msg.UpdatedAt}
 	if err := delivery.Sign(identity); err != nil {
+		s.state = prior
 		s.mu.Unlock()
 		return MessageRecord{}, err
 	}
-	if err := s.saveLocked(); err != nil {
+	if err := s.saveLockedWithRollback(prior); err != nil {
 		s.mu.Unlock()
 		return MessageRecord{}, err
 	}
@@ -1325,21 +1467,24 @@ func (s *Service) DeleteMessage(messageID string) error {
 		s.mu.Unlock()
 		return errors.New("message is owned by another peer")
 	}
+	prior := clonePersistedState(s.state)
 	msg.Body = ""
 	msg.Deleted = true
 	msg.UpdatedAt = time.Now().UTC()
 	s.state.Messages[msg.ID] = msg
 	recipients, _, err := s.scopeRecipientsLocked(msg.ScopeType, msg.ScopeID)
 	if err != nil {
+		s.state = prior
 		s.mu.Unlock()
 		return err
 	}
 	delivery := Delivery{ID: messageID, Kind: "message_delete", ScopeID: msg.ScopeID, ScopeType: msg.ScopeType, ServerID: msg.ServerID, SenderPeerID: identity.PeerID, SenderPublicKey: identity.PublicKey, RecipientPeerIDs: recipients, CreatedAt: msg.UpdatedAt}
 	if err := delivery.Sign(identity); err != nil {
+		s.state = prior
 		s.mu.Unlock()
 		return err
 	}
-	if err := s.saveLocked(); err != nil {
+	if err := s.saveLockedWithRollback(prior); err != nil {
 		s.mu.Unlock()
 		return err
 	}
@@ -1424,14 +1569,6 @@ func (s *Service) scopeRecipientsLocked(scopeType, scopeID string) ([]string, st
 	}
 }
 
-func (s *Service) runDiscoveryPass() {
-	_ = s.fetchConfiguredManualPeers()
-	_ = s.registerWithBootstraps()
-	_ = s.fetchPeersFromBootstraps()
-	_ = s.pingKnownPeers()
-	_ = s.drainRelays()
-}
-
 func (s *Service) discoveryLoop() {
 	ticker := time.NewTicker(s.cfg.DiscoveryInterval)
 	defer ticker.Stop()
@@ -1440,15 +1577,64 @@ func (s *Service) discoveryLoop() {
 		case <-s.closed:
 			return
 		case <-ticker.C:
-			s.runDiscoveryPass()
+			if err := s.runDiscoveryPass(); err != nil {
+				s.recordTelemetry("discovery.pass error=" + err.Error())
+			}
 		}
 	}
 }
 
+func (s *Service) runDiscoveryPass() error {
+	var errs []error
+	if err := s.discoverFromKnownPeerCache(); err != nil {
+		errs = append(errs, err)
+	}
+	if err := s.discoverLANPeers(); err != nil {
+		errs = append(errs, err)
+	}
+	if err := s.registerWithBootstraps(); err != nil {
+		errs = append(errs, err)
+	}
+	if err := s.fetchPeersFromBootstraps(); err != nil {
+		errs = append(errs, err)
+	}
+	if err := s.walkDiscoveryGraph(); err != nil {
+		errs = append(errs, err)
+	}
+	if err := s.discoverRendezvousPeers(); err != nil {
+		errs = append(errs, err)
+	}
+	if err := s.exchangePeers(); err != nil {
+		errs = append(errs, err)
+	}
+	if err := s.fetchConfiguredManualPeers(); err != nil {
+		errs = append(errs, err)
+	}
+	if err := s.drainRelays(); err != nil {
+		errs = append(errs, err)
+	}
+	return errors.Join(errs...)
+}
+
+func (s *Service) discoverFromKnownPeerCache() error {
+	return s.pingKnownPeers("cache", s.Snapshot().KnownPeers)
+}
+
+func (s *Service) discoverLANPeers() error {
+	local := []PeerRecord{}
+	for peerID, addresses := range livePeerRegistrySnapshot() {
+		if peerID == s.PeerID() {
+			continue
+		}
+		local = append(local, PeerRecord{PeerID: peerID, Addresses: normalizePeerAddresses(addresses), Source: "lan"})
+	}
+	return s.pingKnownPeers("lan", local)
+}
+
 func (s *Service) fetchConfiguredManualPeers() error {
 	var firstErr error
-	for _, addr := range dedupeSorted(s.cfg.ManualPeers) {
-		peer, err := s.fetchPeerInfo(addr)
+	for _, addr := range normalizePeerAddresses(s.cfg.ManualPeers) {
+		peer, err := s.fetchPeerInfo("manual", addr)
 		if err != nil {
 			if firstErr == nil {
 				firstErr = err
@@ -1457,10 +1643,11 @@ func (s *Service) fetchConfiguredManualPeers() error {
 			continue
 		}
 		s.mu.Lock()
+		priorPeers := clonePeerMap(s.state.KnownPeers)
 		peer.Source = "manual"
 		peer.LastSeenAt = time.Now().UTC()
 		s.upsertPeerLocked(peer)
-		err = s.saveLocked()
+		err = s.saveKnownPeersLocked(priorPeers)
 		s.mu.Unlock()
 		if err != nil {
 			if firstErr == nil {
@@ -1477,13 +1664,18 @@ func (s *Service) registerWithBootstraps() error {
 	self := s.selfPeerInfo()
 	var firstErr error
 	for _, addr := range s.bootstrapTargets() {
-		if err := s.postJSON(context.Background(), addr, "/_xorein/bootstrap/register", self, nil); err != nil {
+		if !s.shouldAttemptDiscovery("bootstrap-register", addr) {
+			continue
+		}
+		if err := s.peerCall(context.Background(), addr, network.OperationBootstrapRegister, self, nil); err != nil {
+			s.markDiscoveryFailure("bootstrap-register", addr, err)
 			if firstErr == nil {
 				firstErr = err
 			}
 			s.recordTelemetry("discovery.bootstrap.register.failed addr=" + addr + " err=" + err.Error())
 			continue
 		}
+		s.markDiscoverySuccess("bootstrap-register", addr)
 		s.recordTelemetry("discovery.bootstrap.registered addr=" + addr)
 	}
 	return firstErr
@@ -1492,46 +1684,99 @@ func (s *Service) registerWithBootstraps() error {
 func (s *Service) fetchPeersFromBootstraps() error {
 	var firstErr error
 	for _, addr := range s.bootstrapTargets() {
+		if !s.shouldAttemptDiscovery("bootstrap-peers", addr) {
+			continue
+		}
 		var peers []PeerInfo
-		if err := s.getJSON(context.Background(), addr, "/_xorein/bootstrap/peers", &peers); err != nil {
+		if err := s.peerCall(context.Background(), addr, network.OperationBootstrapPeers, nil, &peers); err != nil {
+			s.markDiscoveryFailure("bootstrap-peers", addr, err)
 			if firstErr == nil {
 				firstErr = err
 			}
 			continue
 		}
-		s.mu.Lock()
+		s.markDiscoverySuccess("bootstrap-peers", addr)
+		selfPeerID := s.PeerID()
 		for _, peer := range peers {
-			if peer.PeerID == s.state.Identity.PeerID {
+			if peer.PeerID == selfPeerID {
 				continue
 			}
+			s.mu.Lock()
+			priorPeers := clonePeerMap(s.state.KnownPeers)
 			s.upsertPeerLocked(PeerRecord{PeerID: peer.PeerID, Role: peer.Role, Addresses: peer.Addresses, PublicKey: peer.PublicKey, Source: "bootstrap", LastSeenAt: time.Now().UTC()})
+			if err := s.saveKnownPeersLocked(priorPeers); err != nil {
+				if firstErr == nil {
+					firstErr = err
+				}
+				s.mu.Unlock()
+				continue
+			}
+			s.mu.Unlock()
 		}
-		_ = s.saveLocked()
-		s.mu.Unlock()
 	}
 	return firstErr
 }
 
-func (s *Service) pingKnownPeers() error {
+func (s *Service) walkDiscoveryGraph() error {
+	seedTargets := append([]PeerRecord(nil), s.Snapshot().KnownPeers...)
+	for _, addr := range s.bootstrapTargets() {
+		seedTargets = append(seedTargets, PeerRecord{Addresses: []string{addr}, Source: "dht"})
+	}
+	return s.exchangePeersWithTargets("dht", seedTargets, PeerExchangeRequest{Limit: 32})
+}
+
+func (s *Service) discoverRendezvousPeers() error {
+	serverIDs := s.knownServerIDs()
+	if len(serverIDs) == 0 {
+		return nil
+	}
+	return s.exchangePeersWithTargets("rendezvous", s.Snapshot().KnownPeers, PeerExchangeRequest{ServerIDs: serverIDs, Limit: 32})
+}
+
+func (s *Service) exchangePeers() error {
+	knownPeerIDs := []string{s.PeerID()}
+	for _, peer := range s.Snapshot().KnownPeers {
+		knownPeerIDs = append(knownPeerIDs, peer.PeerID)
+	}
+	return s.exchangePeersWithTargets("pex", s.Snapshot().KnownPeers, PeerExchangeRequest{KnownPeerIDs: dedupeSorted(knownPeerIDs), Limit: 64})
+}
+
+func (s *Service) pingKnownPeers(source string, peers []PeerRecord) error {
 	var firstErr error
-	peers := s.Snapshot().KnownPeers
 	for _, peer := range peers {
 		if peer.PeerID == s.PeerID() {
 			continue
 		}
 		for _, addr := range dedupeSorted(peer.Addresses) {
-			info, err := s.fetchPeerInfo(addr)
+			if !s.shouldAttemptDiscovery("peer-info", addr) {
+				continue
+			}
+			info, err := s.fetchPeerInfo(source, addr)
 			if err != nil {
+				s.markDiscoveryFailure("peer-info", addr, err)
 				if firstErr == nil {
 					firstErr = err
 				}
 				continue
 			}
+			s.markDiscoverySuccess("peer-info", addr)
 			s.mu.Lock()
-			info.Source = peer.Source
+			priorPeers := clonePeerMap(s.state.KnownPeers)
+			if info.Source == "" {
+				info.Source = peer.Source
+			}
+			if info.Source == "" {
+				info.Source = source
+			}
 			info.LastSeenAt = time.Now().UTC()
 			s.upsertPeerLocked(info)
-			_ = s.saveLocked()
+			if err := s.saveKnownPeersLocked(priorPeers); err != nil {
+				if firstErr == nil {
+					firstErr = err
+				}
+				s.mu.Unlock()
+				continue
+			}
 			s.mu.Unlock()
 			break
 		}
@@ -1539,23 +1784,73 @@ func (s *Service) pingKnownPeers() error {
 	return firstErr
 }
 
+func (s *Service) exchangePeersWithTargets(layer string, peers []PeerRecord, request PeerExchangeRequest) error {
+	var firstErr error
+	for _, peer := range peers {
+		if peer.PeerID == s.PeerID() {
+			continue
+		}
+		for _, addr := range dedupeSorted(peer.Addresses) {
+			if !s.shouldAttemptDiscovery(layer, addr) {
+				continue
+			}
+			var discovered []PeerInfo
+			if err := s.peerCall(context.Background(), addr, network.OperationPeerExchange, request, &discovered); err != nil {
+				s.markDiscoveryFailure(layer, addr, err)
+				if firstErr == nil {
+					firstErr = err
+				}
+				continue
+			}
+			s.markDiscoverySuccess(layer, addr)
+			if err := s.mergeDiscoveredPeers(layer, discovered); err != nil && firstErr == nil {
+				firstErr = err
+			}
+			break
+		}
+	}
+	return firstErr
+}
+
+func (s *Service) mergeDiscoveredPeers(source string, peers []PeerInfo) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	priorPeers := clonePeerMap(s.state.KnownPeers)
+	updated := false
+	for _, peer := range peers {
+		if peer.PeerID == "" || peer.PeerID == s.state.Identity.PeerID {
+			continue
+		}
+		s.upsertPeerLocked(PeerRecord{PeerID: peer.PeerID, Role: peer.Role, Addresses: peer.Addresses, PublicKey: peer.PublicKey, Source: source, LastSeenAt: time.Now().UTC()})
+		updated = true
+	}
+	if !updated {
+		return nil
+	}
+	return s.saveKnownPeersLocked(priorPeers)
+}
+
 func (s *Service) drainRelays() error {
 	var firstErr error
+	req, err := signedDrainRequest(s.Snapshot().Identity, s.cfg.Role, s.ListenAddress())
+	if err != nil {
+		return err
+	}
 	for _, addr := range s.relayTargets() {
-		var deliveries []Delivery
-		if err := s.postJSON(context.Background(), addr, "/_xorein/relay/drain", DrainRequest{PeerID: s.PeerID()}, &deliveries); err != nil {
+		var queued []Delivery
+		if err := s.peerCall(context.Background(), addr, network.OperationRelayDrain, req, &queued); err != nil {
 			if firstErr == nil {
 				firstErr = err
 			}
 			continue
 		}
-		for _, delivery := range deliveries {
+		for _, delivery := range queued {
 			if err := s.applyDelivery(delivery); err != nil && firstErr == nil {
 				firstErr = err
 			}
 		}
-		if len(deliveries) > 0 {
-			s.recordTelemetry(fmt.Sprintf("relay.drain addr=%s count=%d", addr, len(deliveries)))
+		if len(queued) > 0 {
+			s.recordTelemetry(fmt.Sprintf("relay.drain addr=%s count=%d", addr, len(queued)))
 		}
 	}
 	return firstErr
@@ -1564,7 +1859,7 @@ func (s *Service) drainRelays() error {
 func (s *Service) publishManifest(manifest Manifest) error {
 	var firstErr error
 	for _, addr := range s.bootstrapTargets() {
-		if err := s.postJSON(context.Background(), addr, "/_xorein/manifests/publish", manifest, nil); err != nil {
+		if err := s.peerCall(context.Background(), addr, network.OperationManifestPublish, manifest, nil); err != nil {
 			if firstErr == nil {
 				firstErr = err
 			}
@@ -1574,16 +1869,13 @@ func (s *Service) publishManifest(manifest Manifest) error {
 }
 
 func (s *Service) resolveManifest(serverID string, bootstrapAddrs, serverAddrs []string) (Manifest, error) {
-	targets := dedupeSorted(append([]string{}, bootstrapAddrs...))
-	for _, addr := range serverAddrs {
-		targets = append(targets, addr)
-	}
+	targets := normalizePeerAddresses(bootstrapAddrs)
+	targets = append(targets, normalizePeerAddresses(serverAddrs)...)
 	targets = dedupeSorted(targets)
 	var lastErr error
 	for _, addr := range targets {
 		var manifest Manifest
-		path := "/_xorein/manifests/" + serverID
-		if err := s.getJSON(context.Background(), addr, path, &manifest); err != nil {
+		if err := s.peerCall(context.Background(), addr, network.OperationManifestFetch, map[string]string{"server_id": serverID}, &manifest); err != nil {
 			lastErr = err
 			continue
 		}
@@ -1600,12 +1892,11 @@ func (s *Service) resolveManifest(serverID string, bootstrapAddrs, serverAddrs [
 }
 
 func (s *Service) resolveServerPreview(serverID string, serverAddrs []string) (ServerPreviewInfo, error) {
-	targets := dedupeSorted(append([]string{}, serverAddrs...))
+	targets := normalizePeerAddresses(serverAddrs)
 	var lastErr error
 	for _, addr := range targets {
 		var preview ServerPreviewInfo
-		path := "/_xorein/preview/" + serverID
-		if err := s.getJSON(context.Background(), addr, path, &preview); err != nil {
+		if err := s.peerCall(context.Background(), addr, network.OperationPreviewFetch, map[string]string{"server_id": serverID}, &preview); err != nil {
 			lastErr = err
 			continue
 		}
@@ -1643,9 +1934,9 @@ func (s *Service) deliverToPeer(peerID string, delivery Delivery) error {
 	peer, ok = s.state.KnownPeers[peerID]
 	s.mu.RUnlock()
 	if ok {
-		addresses := dedupeSorted(peer.Addresses)
+		addresses := normalizePeerAddresses(peer.Addresses)
 		for _, addr := range addresses {
-			if err := s.postJSON(context.Background(), addr, "/_xorein/deliver", delivery, nil); err == nil {
+			if err := s.peerCall(context.Background(), addr, network.OperationDeliver, delivery, nil); err == nil {
 				s.recordTelemetry("delivery.direct peer=" + peerID + " addr=" + addr)
 				return nil
 			} else {
@@ -1653,8 +1944,8 @@ func (s *Service) deliverToPeer(peerID string, delivery Delivery) error {
 			}
 		}
 	}
-	for _, addr := range livePeerAddresses(peerID) {
-		if err := s.postJSON(context.Background(), addr, "/_xorein/deliver", delivery, nil); err == nil {
+	for _, addr := range normalizePeerAddresses(livePeerAddresses(peerID)) {
+		if err := s.peerCall(context.Background(), addr, network.OperationDeliver, delivery, nil); err == nil {
 			s.recordTelemetry("delivery.local peer=" + peerID + " addr=" + addr)
 			return nil
 		} else {
@@ -1662,7 +1953,7 @@ func (s *Service) deliverToPeer(peerID string, delivery Delivery) error {
 		}
 	}
 	for _, addr := range s.relayTargets() {
-		if err := s.postJSON(context.Background(), addr, "/_xorein/relay/store", delivery, nil); err == nil {
+		if err := s.peerCall(context.Background(), addr, network.OperationRelayStore, delivery, nil); err == nil {
 			s.recordTelemetry("delivery.relay peer=" + peerID + " addr=" + addr)
 			return nil
 		} else {
@@ -1678,6 +1969,9 @@ func (s *Service) applyDelivery(delivery Delivery) error {
 	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	if err := s.validateDeliveryLocked(delivery); err != nil {
+		return err
+	}
 	if _, seen := s.state.Deliveries[delivery.ID]; seen && delivery.Kind != "message_edit" && delivery.Kind != "message_delete" {
 		return nil
 	}
@@ -1848,11 +2142,11 @@ func (s *Service) selfPeerInfo() PeerInfo {
 }
 
 func (s *Service) bootstrapTargets() []string {
-	targets := append([]string{}, s.cfg.BootstrapAddrs...)
+	targets := normalizePeerAddresses(s.cfg.BootstrapAddrs)
 	s.mu.RLock()
 	for _, peer := range s.state.KnownPeers {
 		if peer.Role == RoleBootstrap {
-			targets = append(targets, peer.Addresses...)
+			targets = append(targets, normalizePeerAddresses(peer.Addresses)...)
 		}
 	}
 	s.mu.RUnlock()
@@ -1860,70 +2154,196 @@ func (s *Service) bootstrapTargets() []string {
 }
 
 func (s *Service) relayTargets() []string {
-	targets := append([]string{}, s.cfg.RelayAddrs...)
+	targets := normalizePeerAddresses(s.cfg.RelayAddrs)
 	s.mu.RLock()
 	for _, peer := range s.state.KnownPeers {
 		if peer.Role == RoleRelay || peer.Role == RoleBootstrap {
-			targets = append(targets, peer.Addresses...)
+			targets = append(targets, normalizePeerAddresses(peer.Addresses)...)
 		}
 	}
 	s.mu.RUnlock()
 	return dedupeSorted(targets)
 }
 
-func (s *Service) fetchPeerInfo(address string) (PeerRecord, error) {
-	var info PeerInfo
-	if err := s.getJSON(context.Background(), address, "/_xorein/meta", &info); err != nil {
-		return PeerRecord{}, err
-	}
-	return PeerRecord{PeerID: info.PeerID, Role: info.Role, Addresses: info.Addresses, PublicKey: info.PublicKey, LastSeenAt: time.Now().UTC()}, nil
+func (s *Service) peerClient() network.Client {
+	return network.NewClient(1200 * time.Millisecond)
 }
 
-func (s *Service) networkMux() http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/_xorein/meta", s.handleMeta)
-	mux.HandleFunc("/_xorein/bootstrap/register", s.handleBootstrapRegister)
-	mux.HandleFunc("/_xorein/bootstrap/peers", s.handleBootstrapPeers)
-	mux.HandleFunc("/_xorein/manifests/publish", s.handleManifestPublish)
-	mux.HandleFunc("/_xorein/manifests/", s.handleManifestGet)
-	mux.HandleFunc("/_xorein/preview/", s.handlePreviewGet)
-	mux.HandleFunc("/_xorein/join", s.handleJoin)
-	mux.HandleFunc("/_xorein/deliver", s.handleDeliver)
-	mux.HandleFunc("/_xorein/relay/store", s.handleRelayStore)
-	mux.HandleFunc("/_xorein/relay/drain", s.handleRelayDrain)
-	return mux
+func (s *Service) peerCall(ctx context.Context, address string, operation network.Operation, body any, out any) error {
+	_, err := s.peerClient().Call(ctx, address, operation, body, out)
+	return err
 }
 
-func (s *Service) handleMeta(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
-		return
+func internalNetworkError(err error) *network.Error {
+	if err == nil {
+		return nil
 	}
-	writeJSON(w, http.StatusOK, s.selfPeerInfo())
+	return &network.Error{Code: "internal_error", Message: err.Error()}
 }
 
-func (s *Service) handleBootstrapRegister(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
-		return
+func drainRequestPayload(requester PeerInfo) []byte {
+	return []byte(requester.PeerID + "\n" + requester.PublicKey)
+}
+
+func signedDrainRequest(identity Identity, role Role, listenAddr string) (DrainRequest, error) {
+	requester := PeerInfo{
+		PeerID:    identity.PeerID,
+		Role:      role,
+		Addresses: dedupeSorted([]string{strings.TrimSpace(listenAddr)}),
+		PublicKey: identity.PublicKey,
 	}
-	var peer PeerInfo
-	if err := decodeJSON(r.Body, &peer); err != nil {
-		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
-		return
+	signature, err := identity.SignCanonical(drainRequestPayload(requester))
+	if err != nil {
+		return DrainRequest{}, err
 	}
+	return DrainRequest{Requester: requester, Signature: signature}, nil
+}
+
+func validateDrainRequest(req DrainRequest) error {
+	requester := req.Requester
+	if strings.TrimSpace(requester.PeerID) == "" || strings.TrimSpace(requester.PublicKey) == "" {
+		return errors.New("requester peer info is incomplete")
+	}
+	if derived := derivePeerIDFromPublicKey(requester.PublicKey); derived != requester.PeerID {
+		return fmt.Errorf("requester peer id mismatch: got %s want %s", requester.PeerID, derived)
+	}
+	if err := VerifyCanonical(requester.PublicKey, drainRequestPayload(requester), req.Signature); err != nil {
+		return err
+	}
+	return nil
+}
+
+func derivePeerIDFromPublicKey(publicKey string) string {
+	pub, err := base64.RawURLEncoding.DecodeString(publicKey)
+	if err != nil {
+		return ""
+	}
+	return derivePeerID(ed25519.PublicKey(pub))
+}
+
+func marshalPeerPayload(payload any) ([]byte, *network.Error) {
+	raw, err := network.MarshalPayload(payload)
+	if err != nil {
+		return nil, &network.Error{Code: "invalid_request", Message: err.Error()}
+	}
+	return raw, nil
+}
+
+func (s *Service) HandlePeerOperation(_ context.Context, operation network.Operation, payload []byte) ([]byte, *network.Error) {
+	switch operation {
+	case network.OperationPeerInfo:
+		return marshalPeerPayload(s.selfPeerInfo())
+	case network.OperationPeerExchange:
+		var request PeerExchangeRequest
+		if err := network.UnmarshalPayload(payload, &request); err != nil {
+			return nil, &network.Error{Code: "invalid_request", Message: err.Error()}
+		}
+		return marshalPeerPayload(s.peerExchange(request))
+	case network.OperationBootstrapRegister:
+		var peer PeerInfo
+		if err := network.UnmarshalPayload(payload, &peer); err != nil {
+			return nil, &network.Error{Code: "invalid_request", Message: err.Error()}
+		}
+		if transportErr := s.bootstrapRegisterPeer(peer); transportErr != nil {
+			return nil, transportErr
+		}
+		return nil, nil
+	case network.OperationBootstrapPeers:
+		return marshalPeerPayload(s.bootstrapPeers())
+	case network.OperationManifestPublish:
+		var manifest Manifest
+		if err := network.UnmarshalPayload(payload, &manifest); err != nil {
+			return nil, &network.Error{Code: "invalid_request", Message: err.Error()}
+		}
+		if transportErr := s.publishPeerManifest(manifest); transportErr != nil {
+			return nil, transportErr
+		}
+		return nil, nil
+	case network.OperationManifestFetch:
+		var request struct {
+			ServerID string `json:"server_id"`
+		}
+		if err := network.UnmarshalPayload(payload, &request); err != nil {
+			return nil, &network.Error{Code: "invalid_request", Message: err.Error()}
+		}
+		manifest, transportErr := s.peerManifest(request.ServerID)
+		if transportErr != nil {
+			return nil, transportErr
+		}
+		return marshalPeerPayload(manifest)
+	case network.OperationPreviewFetch:
+		var request struct {
+			ServerID string `json:"server_id"`
+		}
+		if err := network.UnmarshalPayload(payload, &request); err != nil {
+			return nil, &network.Error{Code: "invalid_request", Message: err.Error()}
+		}
+		preview, transportErr := s.peerPreview(request.ServerID)
+		if transportErr != nil {
+			return nil, transportErr
+		}
+		return marshalPeerPayload(preview)
+	case network.OperationJoin:
+		var request JoinRequest
+		if err := network.UnmarshalPayload(payload, &request); err != nil {
+			return nil, &network.Error{Code: "invalid_request", Message: err.Error()}
+		}
+		response, transportErr := s.peerJoin(request)
+		if transportErr != nil {
+			return nil, transportErr
+		}
+		return marshalPeerPayload(response)
+	case network.OperationDeliver:
+		var delivery Delivery
+		if err := network.UnmarshalPayload(payload, &delivery); err != nil {
+			return nil, &network.Error{Code: "invalid_request", Message: err.Error()}
+		}
+		if err := s.applyDelivery(delivery); err != nil {
+			return nil, &network.Error{Code: "invalid_signature", Message: err.Error()}
+		}
+		return nil, nil
+	case network.OperationRelayStore:
+		var delivery Delivery
+		if err := network.UnmarshalPayload(payload, &delivery); err != nil {
+			return nil, &network.Error{Code: "invalid_request", Message: err.Error()}
+		}
+		if transportErr := s.peerRelayStore(delivery); transportErr != nil {
+			return nil, transportErr
+		}
+		return nil, nil
+	case network.OperationRelayDrain:
+		var request DrainRequest
+		if err := network.UnmarshalPayload(payload, &request); err != nil {
+			return nil, &network.Error{Code: "invalid_request", Message: err.Error()}
+		}
+		deliveries, transportErr := s.peerRelayDrain(request)
+		if transportErr != nil {
+			return nil, transportErr
+		}
+		return marshalPeerPayload(deliveries)
+	default:
+		return nil, &network.Error{Code: "unsupported_operation", Message: "unsupported peer operation"}
+	}
+}
+
+func (s *Service) bootstrapRegisterPeer(peer PeerInfo) *network.Error {
 	s.mu.Lock()
+	prior, hadPrior := s.state.KnownPeers[peer.PeerID]
 	s.upsertPeerLocked(PeerRecord{PeerID: peer.PeerID, Role: peer.Role, Addresses: peer.Addresses, PublicKey: peer.PublicKey, Source: "bootstrap-register", LastSeenAt: time.Now().UTC()})
-	_ = s.saveLocked()
+	if err := s.saveLocked(); err != nil {
+		if hadPrior {
+			s.state.KnownPeers[peer.PeerID] = prior
+		} else {
+			delete(s.state.KnownPeers, peer.PeerID)
+		}
+		s.mu.Unlock()
+		return internalNetworkError(err)
+	}
 	s.mu.Unlock()
-	writeJSON(w, http.StatusNoContent, nil)
+	return nil
 }
 
-func (s *Service) handleBootstrapPeers(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
-		return
-	}
+func (s *Service) bootstrapPeers() []PeerInfo {
 	peers := []PeerInfo{s.selfPeerInfo()}
 	s.mu.RLock()
 	for _, peer := range sortedPeers(s.state.KnownPeers) {
@@ -1933,30 +2353,71 @@ func (s *Service) handleBootstrapPeers(w http.ResponseWriter, r *http.Request) {
 		peers = append(peers, PeerInfo{PeerID: peer.PeerID, Role: peer.Role, Addresses: peer.Addresses, PublicKey: peer.PublicKey})
 	}
 	s.mu.RUnlock()
-	writeJSON(w, http.StatusOK, peers)
+	return peers
 }
 
-func (s *Service) handleManifestPublish(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
-		return
+func (s *Service) peerExchange(request PeerExchangeRequest) []PeerInfo {
+	selfPeerID := s.PeerID()
+	known := make(map[string]struct{}, len(request.KnownPeerIDs)+1)
+	for _, peerID := range request.KnownPeerIDs {
+		peerID = strings.TrimSpace(peerID)
+		if peerID != "" {
+			known[peerID] = struct{}{}
+		}
 	}
-	var manifest Manifest
-	if err := decodeJSON(r.Body, &manifest); err != nil {
-		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
-		return
+	limit := request.Limit
+	if limit <= 0 || limit > 64 {
+		limit = 32
 	}
+	out := []PeerInfo{}
+	appendPeer := func(peer PeerRecord) {
+		if len(out) >= limit || peer.PeerID == "" || peer.PeerID == selfPeerID {
+			return
+		}
+		if _, skip := known[peer.PeerID]; skip {
+			return
+		}
+		out = append(out, PeerInfo{PeerID: peer.PeerID, Role: peer.Role, Addresses: append([]string(nil), peer.Addresses...), PublicKey: peer.PublicKey})
+		known[peer.PeerID] = struct{}{}
+	}
+
+	s.mu.RLock()
+	for _, serverID := range dedupeSorted(request.ServerIDs) {
+		server, ok := s.state.Servers[serverID]
+		if !ok {
+			continue
+		}
+		owner, ok := s.state.KnownPeers[server.OwnerPeerID]
+		if ok {
+			appendPeer(owner)
+		}
+		for _, memberID := range server.Members {
+			peer, ok := s.state.KnownPeers[memberID]
+			if ok {
+				appendPeer(peer)
+			}
+		}
+	}
+	for _, peer := range sortedPeers(s.state.KnownPeers) {
+		appendPeer(peer)
+	}
+	s.mu.RUnlock()
+	return out
+}
+
+func (s *Service) publishPeerManifest(manifest Manifest) *network.Error {
 	if err := manifest.Verify(); err != nil {
-		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_signature", Message: err.Error()})
-		return
+		return &network.Error{Code: "invalid_signature", Message: err.Error()}
 	}
 	s.mu.Lock()
 	existing, ok := s.state.Servers[manifest.ServerID]
 	if ok && existing.Manifest.UpdatedAt.After(manifest.UpdatedAt) {
 		s.mu.Unlock()
-		writeJSON(w, http.StatusNoContent, nil)
-		return
+		return nil
 	}
+	hadServer := ok
+	priorServer := existing
+	priorPeer, hadPriorPeer := s.state.KnownPeers[manifest.OwnerPeerID]
 	server := existing
 	if server.ID == "" {
 		server = ServerRecord{ID: manifest.ServerID, Name: manifest.Name, Description: manifest.Description, OwnerPeerID: manifest.OwnerPeerID, CreatedAt: manifest.IssuedAt, UpdatedAt: manifest.UpdatedAt, Members: []string{manifest.OwnerPeerID}, Channels: map[string]ChannelRecord{}}
@@ -1968,39 +2429,42 @@ func (s *Service) handleManifestPublish(w http.ResponseWriter, r *http.Request) 
 	server.Manifest = manifest
 	s.state.Servers[server.ID] = server
 	s.upsertPeerLocked(PeerRecord{PeerID: manifest.OwnerPeerID, Role: inferPeerRoleFromCapabilities(RoleClient, manifest.Capabilities), Addresses: manifest.OwnerAddresses, PublicKey: manifest.OwnerPublicKey, Source: "manifest", LastSeenAt: time.Now().UTC()})
-	_ = s.saveLocked()
+	if err := s.saveLocked(); err != nil {
+		if hadServer {
+			s.state.Servers[server.ID] = priorServer
+		} else {
+			delete(s.state.Servers, server.ID)
+		}
+		if hadPriorPeer {
+			s.state.KnownPeers[manifest.OwnerPeerID] = priorPeer
+		} else {
+			delete(s.state.KnownPeers, manifest.OwnerPeerID)
+		}
+		s.mu.Unlock()
+		return internalNetworkError(err)
+	}
 	s.mu.Unlock()
-	writeJSON(w, http.StatusNoContent, nil)
+	return nil
 }
 
-func (s *Service) handleManifestGet(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
-		return
-	}
-	serverID := strings.TrimPrefix(r.URL.Path, "/_xorein/manifests/")
+func (s *Service) peerManifest(serverID string) (Manifest, *network.Error) {
+	serverID = strings.TrimSpace(serverID)
 	s.mu.RLock()
 	server, ok := s.state.Servers[serverID]
 	s.mu.RUnlock()
 	if !ok {
-		writeError(w, http.StatusNotFound, APIError{Code: "not_found", Message: "manifest not found"})
-		return
+		return Manifest{}, &network.Error{Code: "not_found", Message: "manifest not found"}
 	}
-	writeJSON(w, http.StatusOK, server.Manifest)
+	return server.Manifest, nil
 }
 
-func (s *Service) handlePreviewGet(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
-		return
-	}
-	serverID := strings.TrimPrefix(r.URL.Path, "/_xorein/preview/")
+func (s *Service) peerPreview(serverID string) (ServerPreviewInfo, *network.Error) {
+	serverID = strings.TrimSpace(serverID)
 	s.mu.RLock()
 	server, ok := s.state.Servers[serverID]
 	if !ok {
 		s.mu.RUnlock()
-		writeError(w, http.StatusNotFound, APIError{Code: "not_found", Message: "server preview not found"})
-		return
+		return ServerPreviewInfo{}, &network.Error{Code: "not_found", Message: "server preview not found"}
 	}
 	channels := make([]ChannelRecord, 0, len(server.Channels))
 	for _, channel := range server.Channels {
@@ -2009,47 +2473,50 @@ func (s *Service) handlePreviewGet(w http.ResponseWriter, r *http.Request) {
 	memberCount := len(server.Members)
 	s.mu.RUnlock()
 	sort.Slice(channels, func(i, j int) bool { return channels[i].ID < channels[j].ID })
-	writeJSON(w, http.StatusOK, ServerPreviewInfo{Manifest: server.Manifest, OwnerRole: inferPeerRoleFromCapabilities("", server.Manifest.Capabilities), Channels: channels, MemberCount: memberCount, SafetyLabels: safetyLabelsForManifest(server.Manifest)})
+	return ServerPreviewInfo{Manifest: server.Manifest, OwnerRole: inferPeerRoleFromCapabilities("", server.Manifest.Capabilities), Channels: channels, MemberCount: memberCount, SafetyLabels: safetyLabelsForManifest(server.Manifest)}, nil
 }
 
-func (s *Service) handleJoin(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
-		return
-	}
-	var req JoinRequest
-	if err := decodeJSON(r.Body, &req); err != nil {
-		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
-		return
-	}
+func (s *Service) peerJoin(req JoinRequest) (JoinResponse, *network.Error) {
 	if err := req.Invite.Verify(); err != nil {
 		code := "invalid_signature"
 		if strings.Contains(err.Error(), "expired") {
 			code = "expired_invite"
 		}
-		writeError(w, http.StatusBadRequest, APIError{Code: code, Message: err.Error()})
-		return
+		return JoinResponse{}, &network.Error{Code: code, Message: err.Error()}
 	}
 	s.mu.Lock()
 	server, ok := s.state.Servers[req.Invite.ServerID]
 	if !ok {
 		s.mu.Unlock()
-		writeError(w, http.StatusNotFound, APIError{Code: "not_found", Message: "server not found"})
-		return
+		return JoinResponse{}, &network.Error{Code: "not_found", Message: "server not found"}
 	}
 	if server.Manifest.Hash() != req.Invite.ManifestHash {
 		s.mu.Unlock()
-		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_manifest", Message: "invite/manifest mismatch"})
-		return
+		return JoinResponse{}, &network.Error{Code: "invalid_manifest", Message: "invite/manifest mismatch"}
+	}
+	if err := validateInviteManifest(req.Invite, server.Manifest); err != nil {
+		s.mu.Unlock()
+		return JoinResponse{}, &network.Error{Code: "invalid_manifest", Message: err.Error()}
 	}
 	if !contains(server.Members, req.Requester.PeerID) {
 		server.Members = append(server.Members, req.Requester.PeerID)
 		sort.Strings(server.Members)
 	}
 	server.UpdatedAt = time.Now().UTC()
+	priorServer := s.state.Servers[server.ID]
+	priorPeer, hadPriorPeer := s.state.KnownPeers[req.Requester.PeerID]
 	s.state.Servers[server.ID] = server
 	s.upsertPeerLocked(PeerRecord{PeerID: req.Requester.PeerID, Role: req.Requester.Role, Addresses: req.Requester.Addresses, PublicKey: req.Requester.PublicKey, Source: "join", LastSeenAt: time.Now().UTC()})
-	_ = s.saveLocked()
+	if err := s.saveLocked(); err != nil {
+		s.state.Servers[server.ID] = priorServer
+		if hadPriorPeer {
+			s.state.KnownPeers[req.Requester.PeerID] = priorPeer
+		} else {
+			delete(s.state.KnownPeers, req.Requester.PeerID)
+		}
+		s.mu.Unlock()
+		return JoinResponse{}, internalNetworkError(err)
+	}
 	history := s.historyForServerLocked(server.ID)
 	s.mu.Unlock()
 	channels := make([]ChannelRecord, 0, len(server.Channels))
@@ -2057,142 +2524,273 @@ func (s *Service) handleJoin(w http.ResponseWriter, r *http.Request) {
 		channels = append(channels, channel)
 	}
 	sort.Slice(channels, func(i, j int) bool { return channels[i].ID < channels[j].ID })
-	resp := JoinResponse{Manifest: server.Manifest, Server: server, Channels: channels, History: history}
-	writeJSON(w, http.StatusOK, resp)
+	return JoinResponse{Manifest: server.Manifest, Server: server, Channels: channels, History: history}, nil
 }
 
-func (s *Service) handleDeliver(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
-		return
-	}
-	var delivery Delivery
-	if err := decodeJSON(r.Body, &delivery); err != nil {
-		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
-		return
-	}
-	if err := s.applyDelivery(delivery); err != nil {
-		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_signature", Message: err.Error()})
-		return
-	}
-	writeJSON(w, http.StatusNoContent, nil)
-}
-
-func (s *Service) handleRelayStore(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
-		return
-	}
-	var delivery Delivery
-	if err := decodeJSON(r.Body, &delivery); err != nil {
-		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
-		return
+func (s *Service) peerRelayStore(delivery Delivery) *network.Error {
+	if !s.supportsRelayStore() {
+		return &network.Error{Code: "unsupported_operation", Message: "relay storage is not enabled for this role"}
 	}
 	if err := delivery.Verify(); err != nil {
-		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_signature", Message: err.Error()})
-		return
+		return &network.Error{Code: "invalid_signature", Message: err.Error()}
+	}
+	if err := validateRelayDelivery(delivery); err != nil {
+		return &network.Error{Code: "invalid_request", Message: err.Error()}
+	}
+	entry, err := encodeRelayDelivery(s.cfg.DataDir, delivery)
+	if err != nil {
+		return internalNetworkError(err)
 	}
 	s.mu.Lock()
+	now := time.Now().UTC()
+	priorQueues := make(map[string][]RelayQueueEntry)
 	for _, peerID := range dedupeSorted(delivery.RecipientPeerIDs) {
 		if peerID == s.state.Identity.PeerID {
 			continue
 		}
-		queue := append([]Delivery(nil), s.state.RelayQueues[peerID]...)
-		queue = append(queue, delivery)
+		if _, ok := priorQueues[peerID]; !ok {
+			priorQueues[peerID] = append([]RelayQueueEntry(nil), s.state.RelayQueues[peerID]...)
+		}
+		queue := append([]RelayQueueEntry(nil), s.state.RelayQueues[peerID]...)
+		queue, _ = pruneExpiredRelayQueue(queue, now)
+		queue = upsertRelayQueue(queue, entry, now)
 		s.state.RelayQueues[peerID] = queue
 	}
-	_ = s.saveLocked()
+	if err := s.saveLocked(); err != nil {
+		for peerID, queue := range priorQueues {
+			if len(queue) == 0 {
+				delete(s.state.RelayQueues, peerID)
+				continue
+			}
+			s.state.RelayQueues[peerID] = queue
+		}
+		s.mu.Unlock()
+		return internalNetworkError(err)
+	}
 	s.mu.Unlock()
-	writeJSON(w, http.StatusNoContent, nil)
+	return nil
 }
 
-func (s *Service) handleRelayDrain(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
-		return
+func (s *Service) peerRelayDrain(req DrainRequest) ([]Delivery, *network.Error) {
+	if !s.supportsRelayStore() {
+		return nil, &network.Error{Code: "unsupported_operation", Message: "relay drain is not enabled for this role"}
 	}
-	var req DrainRequest
-	if err := decodeJSON(r.Body, &req); err != nil {
-		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
-		return
+	if err := validateDrainRequest(req); err != nil {
+		code := "invalid_request"
+		if strings.Contains(err.Error(), "signature") {
+			code = "invalid_signature"
+		}
+		return nil, &network.Error{Code: code, Message: err.Error()}
 	}
 	s.mu.Lock()
-	queue := append([]Delivery(nil), s.state.RelayQueues[req.PeerID]...)
-	delete(s.state.RelayQueues, req.PeerID)
-	_ = s.saveLocked()
+	now := time.Now().UTC()
+	originalQueue := append([]RelayQueueEntry(nil), s.state.RelayQueues[req.Requester.PeerID]...)
+	queue := append([]RelayQueueEntry(nil), originalQueue...)
+	queue, pruned := pruneExpiredRelayQueue(queue, now)
+	if len(queue) == 0 {
+		if pruned {
+			delete(s.state.RelayQueues, req.Requester.PeerID)
+			if err := s.saveLocked(); err != nil {
+				s.state.RelayQueues[req.Requester.PeerID] = originalQueue
+				s.mu.Unlock()
+				return nil, internalNetworkError(err)
+			}
+		}
+		s.mu.Unlock()
+		return nil, nil
+	}
+	deliveries := make([]Delivery, 0, len(queue))
+	for _, entry := range queue {
+		delivery, err := decodeRelayDelivery(s.cfg.DataDir, entry)
+		if err != nil {
+			s.state.RelayQueues[req.Requester.PeerID] = originalQueue
+			s.mu.Unlock()
+			return nil, internalNetworkError(err)
+		}
+		deliveries = append(deliveries, delivery)
+	}
+	priorQueue := append([]RelayQueueEntry(nil), originalQueue...)
+	delete(s.state.RelayQueues, req.Requester.PeerID)
+	if err := s.saveLocked(); err != nil {
+		s.state.RelayQueues[req.Requester.PeerID] = priorQueue
+		s.mu.Unlock()
+		return nil, internalNetworkError(err)
+	}
 	s.mu.Unlock()
-	writeJSON(w, http.StatusOK, queue)
+	return deliveries, nil
 }
 
-func (s *Service) getJSON(ctx context.Context, address, path string, out any) error {
-	url := s.normalizedURL(address) + path
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return err
+func validateInviteManifest(invite Invite, manifest Manifest) error {
+	if manifest.ServerID != invite.ServerID {
+		return errors.New("invite server id mismatch")
 	}
-	resp, err := s.httpClient().Do(req)
-	if err != nil {
-		return err
+	if manifest.Hash() != invite.ManifestHash {
+		return errors.New("invite manifest hash mismatch")
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		return parseAPIError(resp)
+	if invite.OwnerPeerID != manifest.OwnerPeerID {
+		return errors.New("invite owner peer mismatch")
 	}
-	if out == nil || resp.StatusCode == http.StatusNoContent {
-		return nil
+	if invite.OwnerPublicKey != manifest.OwnerPublicKey {
+		return errors.New("invite owner public key mismatch")
 	}
-	return decodeJSON(resp.Body, out)
+	if !sameStringSet(invite.ServerAddrs, manifest.OwnerAddresses) {
+		return errors.New("invite server addresses mismatch")
+	}
+	if !sameStringSet(invite.BootstrapAddrs, manifest.BootstrapAddrs) {
+		return errors.New("invite bootstrap addresses mismatch")
+	}
+	if !sameStringSet(invite.RelayAddrs, manifest.RelayAddrs) {
+		return errors.New("invite relay addresses mismatch")
+	}
+	return nil
 }
 
-func (s *Service) postJSON(ctx context.Context, address, path string, body any, out any) error {
-	raw, err := json.Marshal(body)
-	if err != nil {
-		return err
+func (s *Service) validateDeliveryLocked(delivery Delivery) error {
+	if delivery.SenderPeerID == s.state.Identity.PeerID && delivery.SenderPublicKey != s.state.Identity.PublicKey {
+		return errors.New("delivery sender public key mismatch")
 	}
-	url := s.normalizedURL(address) + path
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(raw))
-	if err != nil {
-		return err
+	if peer, ok := s.state.KnownPeers[delivery.SenderPeerID]; ok && peer.PublicKey != "" && peer.PublicKey != delivery.SenderPublicKey {
+		return errors.New("delivery sender public key mismatch")
 	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := s.httpClient().Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode >= 400 {
-		return parseAPIError(resp)
-	}
-	if out == nil || resp.StatusCode == http.StatusNoContent {
-		return nil
-	}
-	return decodeJSON(resp.Body, out)
+	return nil
 }
 
-func (s *Service) httpClient() *http.Client {
-	return &http.Client{Timeout: 1200 * time.Millisecond}
+func (s *Service) fetchPeerInfo(source, address string) (PeerRecord, error) {
+	var info PeerInfo
+	if err := s.peerCall(context.Background(), address, network.OperationPeerInfo, nil, &info); err != nil {
+		return PeerRecord{}, err
+	}
+	return PeerRecord{PeerID: info.PeerID, Role: info.Role, Addresses: info.Addresses, PublicKey: info.PublicKey, Source: source, LastSeenAt: time.Now().UTC()}, nil
 }
 
-func (s *Service) normalizedURL(address string) string {
+func livePeerRegistrySnapshot() map[string][]string {
+	livePeerRegistryMu.RLock()
+	defer livePeerRegistryMu.RUnlock()
+	out := make(map[string][]string, len(livePeerRegistry))
+	for peerID, addresses := range livePeerRegistry {
+		out[peerID] = append([]string(nil), addresses...)
+	}
+	return out
+}
+
+func (s *Service) knownServerIDs() []string {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	ids := make([]string, 0, len(s.state.Servers))
+	for serverID := range s.state.Servers {
+		ids = append(ids, serverID)
+	}
+	sort.Strings(ids)
+	return ids
+}
+
+func (s *Service) shouldAttemptDiscovery(layer, address string) bool {
 	address = strings.TrimSpace(address)
-	if strings.HasPrefix(address, "http://") || strings.HasPrefix(address, "https://") {
-		return strings.TrimRight(address, "/")
+	if address == "" {
+		return false
 	}
-	return "http://" + strings.TrimRight(address, "/")
+	key := layer + "|" + address
+	now := time.Now().UTC()
+	s.discoveryMu.Lock()
+	defer s.discoveryMu.Unlock()
+	state, ok := s.discoveryBackoff[key]
+	if !ok || state.NextAttempt.IsZero() || !state.NextAttempt.After(now) {
+		return true
+	}
+	return false
+}
+
+func (s *Service) markDiscoverySuccess(layer, address string) {
+	address = strings.TrimSpace(address)
+	if address == "" {
+		return
+	}
+	key := layer + "|" + address
+	s.discoveryMu.Lock()
+	delete(s.discoveryBackoff, key)
+	s.discoveryMu.Unlock()
+}
+
+func (s *Service) markDiscoveryFailure(layer, address string, err error) {
+	address = strings.TrimSpace(address)
+	if address == "" {
+		return
+	}
+	key := layer + "|" + address
+	now := time.Now().UTC()
+	s.discoveryMu.Lock()
+	state := s.discoveryBackoff[key]
+	state.Failures++
+	if state.Failures > 6 {
+		state.Failures = 6
+	}
+	backoff := time.Duration(1<<uint(state.Failures-1)) * s.cfg.DiscoveryInterval
+	if backoff < s.cfg.DiscoveryInterval {
+		backoff = s.cfg.DiscoveryInterval
+	}
+	state.NextAttempt = now.Add(backoff)
+	s.discoveryBackoff[key] = state
+	s.discoveryMu.Unlock()
+	if err != nil {
+		s.recordTelemetry(fmt.Sprintf("discovery.backoff layer=%s addr=%s retry_in=%s err=%s", layer, address, backoff, err.Error()))
+	}
 }
 
 func (s *Service) saveLocked() error {
-	return saveState(s.cfg.DataDir, s.state)
+	return saveStateFn(s.cfg.DataDir, s.state)
+}
+
+func (s *Service) saveLockedWithRollback(prior persistedState) error {
+	if err := s.saveLocked(); err != nil {
+		s.state = prior
+		return err
+	}
+	return nil
+}
+
+func (s *Service) saveKnownPeersLocked(prior map[string]PeerRecord) error {
+	if err := s.saveLocked(); err != nil {
+		s.state.KnownPeers = prior
+		return err
+	}
+	return nil
+}
+
+func encodeRelayDelivery(dataDir string, delivery Delivery) (RelayQueueEntry, error) {
+	raw, err := json.Marshal(delivery)
+	if err != nil {
+		return RelayQueueEntry{}, err
+	}
+	encrypted, err := storage.SealPayload(dataDir, raw)
+	if err != nil {
+		return RelayQueueEntry{}, err
+	}
+	now := time.Now().UTC()
+	return RelayQueueEntry{Key: relayDeliveryKey(delivery), Payload: encrypted, EnqueuedAt: now, ExpiresAt: now.Add(relayQueueTTL)}, nil
+}
+
+func decodeRelayDelivery(dataDir string, entry RelayQueueEntry) (Delivery, error) {
+	raw, err := storage.OpenPayload(dataDir, entry.Payload)
+	if err != nil {
+		return Delivery{}, err
+	}
+	var delivery Delivery
+	if err := json.Unmarshal(raw, &delivery); err != nil {
+		return Delivery{}, err
+	}
+	return delivery, nil
 }
 
 func (s *Service) listenAddressLocked() string {
-	if s.listen == nil {
-		if addr := strings.TrimSpace(s.cfg.ListenAddr); addr != "" {
+	if s.peerRuntime != nil {
+		if addr := strings.TrimSpace(s.peerRuntime.ListenAddress()); addr != "" {
 			return addr
 		}
-		return ""
 	}
-	return s.listen.Addr().String()
+	if addr := strings.TrimSpace(s.cfg.ListenAddr); addr != "" {
+		return addr
+	}
+	return ""
 }
 
 func (s *Service) upsertPeerLocked(peer PeerRecord) {
@@ -2211,17 +2809,36 @@ func (s *Service) upsertPeerLocked(peer PeerRecord) {
 	}
 	existing.Source = peer.Source
 	existing.LastSeenAt = peer.LastSeenAt
-	existing.Addresses = dedupeSorted(append(existing.Addresses, peer.Addresses...))
+	existing.Addresses = normalizePeerAddresses(append(existing.Addresses, peer.Addresses...))
 	s.state.KnownPeers[peer.PeerID] = existing
 }
 
+func normalizePeerAddresses(addresses []string) []string {
+	normalized := make([]string, 0, len(addresses))
+	for _, address := range addresses {
+		addr, err := network.NormalizePeerAddress(address)
+		if err != nil {
+			continue
+		}
+		normalized = append(normalized, addr)
+	}
+	return dedupeSorted(normalized)
+}
+
 func (s *Service) recordTelemetry(entry string) {
+	var prior persistedState
 	s.mu.Lock()
+	prior = clonePersistedState(s.state)
 	s.state.Telemetry = append(s.state.Telemetry, fmt.Sprintf("%s %s", time.Now().UTC().Format(time.RFC3339Nano), entry))
 	if len(s.state.Telemetry) > 256 {
 		s.state.Telemetry = append([]string(nil), s.state.Telemetry[len(s.state.Telemetry)-256:]...)
 	}
-	_ = s.saveLocked()
+	if err := s.saveLocked(); err != nil {
+		s.state = prior
+		s.mu.Unlock()
+		_, _ = fmt.Fprintf(os.Stderr, "telemetry persistence failed: %v\n", err)
+		return
+	}
 	s.mu.Unlock()
 }
 
@@ -2589,6 +3206,67 @@ func sameStringSet(left, right []string) bool {
 		}
 	}
 	return true
+}
+
+func (s *Service) supportsRelayStore() bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return supportsRelayRole(s.cfg.Role)
+}
+
+func supportsRelayRole(role Role) bool {
+	return role == RoleRelay || role == RoleBootstrap
+}
+
+func validateRelayDelivery(delivery Delivery) error {
+	if strings.TrimSpace(delivery.ID) == "" {
+		return errors.New("delivery id is required")
+	}
+	if strings.TrimSpace(delivery.Kind) == "" {
+		return errors.New("delivery kind is required")
+	}
+	recipients := dedupeSorted(delivery.RecipientPeerIDs)
+	if len(recipients) == 0 {
+		return errors.New("relay delivery must target at least one recipient")
+	}
+	return nil
+}
+
+func pruneExpiredRelayQueue(queue []RelayQueueEntry, now time.Time) ([]RelayQueueEntry, bool) {
+	filtered := queue[:0]
+	pruned := false
+	for _, existing := range queue {
+		if !existing.ExpiresAt.IsZero() && !existing.ExpiresAt.After(now) {
+			pruned = true
+			continue
+		}
+		filtered = append(filtered, existing)
+	}
+	if !pruned {
+		return append([]RelayQueueEntry(nil), queue...), false
+	}
+	return append([]RelayQueueEntry(nil), filtered...), true
+}
+
+func upsertRelayQueue(queue []RelayQueueEntry, delivery RelayQueueEntry, now time.Time) []RelayQueueEntry {
+	key := strings.TrimSpace(delivery.Key)
+	prunedQueue, _ := pruneExpiredRelayQueue(queue, now)
+	filtered := prunedQueue[:0]
+	for _, existing := range prunedQueue {
+		if strings.TrimSpace(existing.Key) != key {
+			filtered = append(filtered, existing)
+		}
+	}
+	filtered = append(filtered, delivery)
+	if len(filtered) > relayQueueLimit {
+		filtered = append([]RelayQueueEntry(nil), filtered[len(filtered)-relayQueueLimit:]...)
+		return filtered
+	}
+	return append([]RelayQueueEntry(nil), filtered...)
+}
+
+func relayDeliveryKey(delivery Delivery) string {
+	return strings.TrimSpace(delivery.Kind) + ":" + strings.TrimSpace(delivery.ID)
 }
 
 func controlTokenPath(dataDir string) string {

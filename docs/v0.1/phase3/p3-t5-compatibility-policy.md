@@ -54,4 +54,3 @@ the Phase 1 review template:
 
 - [`docs/v0.1/phase1/review-template.md`](docs/v0.1/phase1/review-template.md)
 - [`docs/v0.1/phase1/protocol-constraints.md`](docs/v0.1/phase1/protocol-constraints.md)
-

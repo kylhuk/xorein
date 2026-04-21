@@ -35,4 +35,3 @@ and [`VersionCompatibilityPolicy.Allows()`](pkg/protocol/registry.go:130):
 
 This strategy is intentionally identical across all registered families for
 v0.1 to avoid family-specific ambiguity.
-

@@ -10,9 +10,9 @@ import (
 )
 
 func TestP3T7PositiveNegotiation(t *testing.T) {
-	protocolID, ok := NegotiateProtocol(FamilyChat, []ProtocolID{chatV01}, nil)
-	if !ok || protocolID != chatV01 {
-		t.Fatalf("unexpected negotiation result: got %v(%t) want %v(true)", protocolID, ok, chatV01)
+	protocolID, ok := NegotiateProtocol(FamilyChat, []ProtocolID{chatV010}, nil)
+	if !ok || protocolID != chatV010 {
+		t.Fatalf("unexpected negotiation result: got %v(%t) want %v(true)", protocolID, ok, chatV010)
 	}
 }
 
@@ -23,7 +23,7 @@ func TestP3T7MalformedAndDowngradeOffers(t *testing.T) {
 		want   bool
 	}{
 		{"mismatchedFamily", []ProtocolID{{Family: FamilyVoice, Version: ProtocolVersion{Major: 0, Minor: 1}}}, false},
-		{"belowMinimumMinor", []ProtocolID{chatV01}, false},
+		{"belowMinimumMinor", []ProtocolID{chatV010}, false},
 		{"majorDowngradeAllowedByPolicy", []ProtocolID{{Family: FamilyChat, Version: ProtocolVersion{Major: 0, Minor: 5}}}, true},
 	}
 

@@ -58,4 +58,3 @@ These map directly to [`CapabilityFeedback`](pkg/protocol/capabilities.go:74).
 
 This table is realized by [`VersionCompatibilityPolicy.Allows()`](pkg/protocol/registry.go:130)
 and [`NegotiateProtocol()`](pkg/protocol/registry.go:177).
-

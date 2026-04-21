@@ -1,0 +1,1 @@
+invalid --mode "invalid"; expected client|relay|bootstrap|archivist

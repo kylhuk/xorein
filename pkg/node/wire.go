@@ -85,7 +85,8 @@ type JoinResponse struct {
 }
 
 type DrainRequest struct {
-	PeerID string `json:"peer_id"`
+	Requester PeerInfo `json:"requester"`
+	Signature string   `json:"signature"`
 }
 
 type PeerInfo struct {
@@ -93,6 +94,12 @@ type PeerInfo struct {
 	Role      Role     `json:"role"`
 	Addresses []string `json:"addresses"`
 	PublicKey string   `json:"public_key"`
+}
+
+type PeerExchangeRequest struct {
+	KnownPeerIDs []string `json:"known_peer_ids,omitempty"`
+	ServerIDs    []string `json:"server_ids,omitempty"`
+	Limit        int      `json:"limit,omitempty"`
 }
 
 type ManualPeerRequest struct {

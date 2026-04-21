@@ -12,22 +12,29 @@ const featureFlagPrefix = "cap."
 type FeatureFlag string
 
 const (
-	FeatureChat       FeatureFlag = "cap.chat"
-	FeatureVoice      FeatureFlag = "cap.voice"
-	FeatureManagement FeatureFlag = "cap.management"
-	FeatureManifest   FeatureFlag = "cap.manifest"
-	FeatureIdentity   FeatureFlag = "cap.identity"
-	FeatureSync       FeatureFlag = "cap.sync"
-	FeatureArchivist  FeatureFlag = "cap.archivist"
-	FeatureDM         FeatureFlag = "cap.dm"
-	FeatureGroupDM    FeatureFlag = "cap.group-dm"
-	FeatureFriends    FeatureFlag = "cap.friends"
-	FeaturePresence   FeatureFlag = "cap.presence"
-	FeatureNotify     FeatureFlag = "cap.notify"
-	FeatureMentions   FeatureFlag = "cap.mentions"
-	FeatureModeration FeatureFlag = "cap.moderation"
-	FeatureRBAC       FeatureFlag = "cap.rbac"
-	FeatureSlowMode   FeatureFlag = "cap.slow-mode"
+	FeatureChat          FeatureFlag = "cap.chat"
+	FeatureVoice         FeatureFlag = "cap.voice"
+	FeatureManagement    FeatureFlag = "cap.management"
+	FeatureManifest      FeatureFlag = "cap.manifest"
+	FeatureIdentity      FeatureFlag = "cap.identity"
+	FeatureSync          FeatureFlag = "cap.sync"
+	FeaturePeerTransport FeatureFlag = "cap.peer.transport"
+	FeaturePeerMetadata  FeatureFlag = "cap.peer.metadata"
+	FeaturePeerBootstrap FeatureFlag = "cap.peer.bootstrap"
+	FeaturePeerManifest  FeatureFlag = "cap.peer.manifest"
+	FeaturePeerJoin      FeatureFlag = "cap.peer.join"
+	FeaturePeerDelivery  FeatureFlag = "cap.peer.delivery"
+	FeaturePeerRelay     FeatureFlag = "cap.peer.relay"
+	FeatureArchivist     FeatureFlag = "cap.archivist"
+	FeatureDM            FeatureFlag = "cap.dm"
+	FeatureGroupDM       FeatureFlag = "cap.group-dm"
+	FeatureFriends       FeatureFlag = "cap.friends"
+	FeaturePresence      FeatureFlag = "cap.presence"
+	FeatureNotify        FeatureFlag = "cap.notify"
+	FeatureMentions      FeatureFlag = "cap.mentions"
+	FeatureModeration    FeatureFlag = "cap.moderation"
+	FeatureRBAC          FeatureFlag = "cap.rbac"
+	FeatureSlowMode      FeatureFlag = "cap.slow-mode"
 )
 
 var defaultFeatureFlags = []FeatureFlag{
@@ -46,6 +53,16 @@ var defaultFeatureFlags = []FeatureFlag{
 	FeatureModeration,
 	FeatureRBAC,
 	FeatureSlowMode,
+}
+
+var defaultPeerTransportFeatureFlags = []FeatureFlag{
+	FeaturePeerTransport,
+	FeaturePeerMetadata,
+	FeaturePeerBootstrap,
+	FeaturePeerManifest,
+	FeaturePeerJoin,
+	FeaturePeerDelivery,
+	FeaturePeerRelay,
 }
 
 // SecurityMode is the negotiated conversation posture label.
@@ -77,6 +94,12 @@ type ModeNegotiationResult struct {
 func DefaultFeatureFlags() []FeatureFlag {
 	out := make([]FeatureFlag, len(defaultFeatureFlags))
 	copy(out, defaultFeatureFlags)
+	return out
+}
+
+func DefaultPeerTransportFeatureFlags() []FeatureFlag {
+	out := make([]FeatureFlag, len(defaultPeerTransportFeatureFlags))
+	copy(out, defaultPeerTransportFeatureFlags)
 	return out
 }
 

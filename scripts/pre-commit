@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+PY_DIR="$ROOT_DIR/.cache/xorein-tools/python"
+if [[ ! -d "$PY_DIR/pre_commit" ]]; then
+	mkdir -p "$PY_DIR"
+	python3 -m pip install --disable-pip-version-check --no-input --target "$PY_DIR" pre-commit==4.2.0
+fi
+
+PYTHONPATH="$PY_DIR${PYTHONPATH:+:$PYTHONPATH}" exec python3 -m pre_commit "$@"
