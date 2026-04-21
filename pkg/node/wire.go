@@ -15,22 +15,32 @@ const (
 	ControlAPIVersion = "v1"
 	joinScheme        = "aether"
 	joinHost          = "join"
+
+	// HistoryCoverageLocalWindow means the runtime only retains a local rolling
+	// window of recent messages for a scope.
+	HistoryCoverageLocalWindow = "local-window"
+	// HistoryDurabilitySingleNode means history currently lives on one runtime
+	// instance and is not replicated by an archivist quorum.
+	HistoryDurabilitySingleNode = "single-node"
 )
 
 type Manifest struct {
-	ServerID        string    `json:"server_id"`
-	Name            string    `json:"name"`
-	Description     string    `json:"description,omitempty"`
-	OwnerPeerID     string    `json:"owner_peer_id"`
-	OwnerPublicKey  string    `json:"owner_public_key"`
-	OwnerAddresses  []string  `json:"owner_addresses"`
-	BootstrapAddrs  []string  `json:"bootstrap_addrs,omitempty"`
-	RelayAddrs      []string  `json:"relay_addrs,omitempty"`
-	Capabilities    []string  `json:"capabilities"`
-	IssuedAt        time.Time `json:"issued_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
-	ExpiresAt       time.Time `json:"expires_at,omitempty"`
-	Signature       string    `json:"signature"`
+	ServerID                 string    `json:"server_id"`
+	Name                     string    `json:"name"`
+	Description              string    `json:"description,omitempty"`
+	OwnerPeerID              string    `json:"owner_peer_id"`
+	OwnerPublicKey           string    `json:"owner_public_key"`
+	OwnerAddresses           []string  `json:"owner_addresses"`
+	BootstrapAddrs           []string  `json:"bootstrap_addrs,omitempty"`
+	RelayAddrs               []string  `json:"relay_addrs,omitempty"`
+	Capabilities             []string  `json:"capabilities"`
+	HistoryRetentionMessages int       `json:"history_retention_messages,omitempty"`
+	HistoryCoverage          string    `json:"history_coverage,omitempty"`
+	HistoryDurability        string    `json:"history_durability,omitempty"`
+	IssuedAt                 time.Time `json:"issued_at"`
+	UpdatedAt                time.Time `json:"updated_at"`
+	ExpiresAt                time.Time `json:"expires_at,omitempty"`
+	Signature                string    `json:"signature"`
 }
 
 type Invite struct {
@@ -101,6 +111,181 @@ type CreateServerRequest struct {
 
 type JoinServerRequest struct {
 	Deeplink string `json:"deeplink"`
+}
+
+type PreviewServerRequest struct {
+	Deeplink string `json:"deeplink"`
+}
+
+type ServerPreviewInfo struct {
+	Manifest     Manifest        `json:"manifest"`
+	OwnerRole    Role            `json:"owner_role,omitempty"`
+	Channels     []ChannelRecord `json:"channels,omitempty"`
+	MemberCount  int             `json:"member_count,omitempty"`
+	SafetyLabels []string        `json:"safety_labels,omitempty"`
+}
+
+type ServerPreview struct {
+	Invite       Invite          `json:"invite"`
+	Manifest     Manifest        `json:"manifest"`
+	OwnerRole    Role            `json:"owner_role,omitempty"`
+	Channels     []ChannelRecord `json:"channels,omitempty"`
+	MemberCount  int             `json:"member_count,omitempty"`
+	SafetyLabels []string        `json:"safety_labels,omitempty"`
+}
+
+type SearchMessagesRequest struct {
+	Query          string `json:"query,omitempty"`
+	ServerID       string `json:"server_id,omitempty"`
+	ScopeType      string `json:"scope_type,omitempty"`
+	ScopeID        string `json:"scope_id,omitempty"`
+	Limit          int    `json:"limit,omitempty"`
+	IncludeDeleted bool   `json:"include_deleted,omitempty"`
+}
+
+type MessageSearchRecord struct {
+	Message        MessageRecord `json:"message"`
+	ServerName     string        `json:"server_name,omitempty"`
+	ScopeName      string        `json:"scope_name,omitempty"`
+	ParticipantIDs []string      `json:"participant_ids,omitempty"`
+}
+
+type SearchMessagesResponse struct {
+	Messages []MessageRecord       `json:"messages"`
+	Results  []MessageSearchRecord `json:"results,omitempty"`
+}
+
+type SearchMentionsRequest struct {
+	ServerID       string `json:"server_id,omitempty"`
+	ScopeType      string `json:"scope_type,omitempty"`
+	ScopeID        string `json:"scope_id,omitempty"`
+	Limit          int    `json:"limit,omitempty"`
+	IncludeDeleted bool   `json:"include_deleted,omitempty"`
+}
+
+type MentionRecord struct {
+	Message        MessageRecord `json:"message"`
+	Tokens         []string      `json:"tokens,omitempty"`
+	ServerName     string        `json:"server_name,omitempty"`
+	ScopeName      string        `json:"scope_name,omitempty"`
+	ParticipantIDs []string      `json:"participant_ids,omitempty"`
+}
+
+type SearchMentionsResponse struct {
+	Mentions []MentionRecord `json:"mentions"`
+}
+
+type SearchNotificationsRequest struct {
+	ServerID       string `json:"server_id,omitempty"`
+	ScopeType      string `json:"scope_type,omitempty"`
+	ScopeID        string `json:"scope_id,omitempty"`
+	Limit          int    `json:"limit,omitempty"`
+	IncludeDeleted bool   `json:"include_deleted,omitempty"`
+	UnreadOnly     bool   `json:"unread_only,omitempty"`
+}
+
+type NotificationRecord struct {
+	Kind           string        `json:"kind"`
+	Message        MessageRecord `json:"message"`
+	Tokens         []string      `json:"tokens,omitempty"`
+	Unread         bool          `json:"unread"`
+	CreatedAt      time.Time     `json:"created_at"`
+	ServerName     string        `json:"server_name,omitempty"`
+	ScopeName      string        `json:"scope_name,omitempty"`
+	ParticipantIDs []string      `json:"participant_ids,omitempty"`
+}
+
+type SearchNotificationsResponse struct {
+	Notifications []NotificationRecord `json:"notifications"`
+	UnreadCount   int                  `json:"unread_count"`
+	ReadThrough   time.Time            `json:"read_through,omitempty"`
+}
+
+type NotificationSummaryBucket struct {
+	ServerID           string    `json:"server_id,omitempty"`
+	ServerName         string    `json:"server_name,omitempty"`
+	ScopeType          string    `json:"scope_type"`
+	ScopeID            string    `json:"scope_id"`
+	ScopeName          string    `json:"scope_name,omitempty"`
+	UnreadCount        int       `json:"unread_count"`
+	LatestAt           time.Time `json:"latest_at,omitempty"`
+	LatestMessageID    string    `json:"latest_message_id,omitempty"`
+	LatestSenderPeerID string    `json:"latest_sender_peer_id,omitempty"`
+}
+
+type NotificationSummaryServerBucket struct {
+	ServerID           string    `json:"server_id"`
+	ServerName         string    `json:"server_name,omitempty"`
+	UnreadCount        int       `json:"unread_count"`
+	LatestAt           time.Time `json:"latest_at,omitempty"`
+	LatestMessageID    string    `json:"latest_message_id,omitempty"`
+	LatestSenderPeerID string    `json:"latest_sender_peer_id,omitempty"`
+	LatestScopeType    string    `json:"latest_scope_type,omitempty"`
+	LatestScopeID      string    `json:"latest_scope_id,omitempty"`
+	LatestScopeName    string    `json:"latest_scope_name,omitempty"`
+}
+
+type NotificationSummaryDirectBucket struct {
+	ScopeID            string    `json:"scope_id"`
+	ScopeName          string    `json:"scope_name,omitempty"`
+	ParticipantIDs     []string  `json:"participant_ids,omitempty"`
+	UnreadCount        int       `json:"unread_count"`
+	LatestAt           time.Time `json:"latest_at,omitempty"`
+	LatestMessageID    string    `json:"latest_message_id,omitempty"`
+	LatestSenderPeerID string    `json:"latest_sender_peer_id,omitempty"`
+}
+
+type NotificationSummaryKindBucket struct {
+	Kind                 string    `json:"kind"`
+	UnreadCount          int       `json:"unread_count"`
+	LatestAt             time.Time `json:"latest_at,omitempty"`
+	LatestMessageID      string    `json:"latest_message_id,omitempty"`
+	LatestSenderPeerID   string    `json:"latest_sender_peer_id,omitempty"`
+	LatestServerID       string    `json:"latest_server_id,omitempty"`
+	LatestServerName     string    `json:"latest_server_name,omitempty"`
+	LatestScopeType      string    `json:"latest_scope_type,omitempty"`
+	LatestScopeID        string    `json:"latest_scope_id,omitempty"`
+	LatestScopeName      string    `json:"latest_scope_name,omitempty"`
+	LatestParticipantIDs []string  `json:"latest_participant_ids,omitempty"`
+}
+
+type NotificationSummaryResponse struct {
+	TotalUnread int                               `json:"total_unread"`
+	Buckets     []NotificationSummaryBucket       `json:"buckets"`
+	Servers     []NotificationSummaryServerBucket `json:"servers,omitempty"`
+	Directs     []NotificationSummaryDirectBucket `json:"directs,omitempty"`
+	Kinds       []NotificationSummaryKindBucket   `json:"kinds,omitempty"`
+	ReadThrough time.Time                         `json:"read_through,omitempty"`
+}
+
+type MarkNotificationsReadRequest struct {
+	Through   time.Time `json:"through,omitempty"`
+	ServerID  string    `json:"server_id,omitempty"`
+	ScopeType string    `json:"scope_type,omitempty"`
+	ScopeID   string    `json:"scope_id,omitempty"`
+}
+
+type MarkNotificationsReadResponse struct {
+	ReadThrough    time.Time `json:"read_through"`
+	ServerID       string    `json:"server_id,omitempty"`
+	ServerName     string    `json:"server_name,omitempty"`
+	ScopeType      string    `json:"scope_type,omitempty"`
+	ScopeID        string    `json:"scope_id,omitempty"`
+	ScopeName      string    `json:"scope_name,omitempty"`
+	ParticipantIDs []string  `json:"participant_ids,omitempty"`
+}
+
+type PresenceRecord struct {
+	PeerID              string    `json:"peer_id"`
+	Role                Role      `json:"role"`
+	Source              string    `json:"source,omitempty"`
+	LastSeenAt          time.Time `json:"last_seen_at,omitempty"`
+	Status              string    `json:"status"`
+	ActiveVoiceChannels []string  `json:"active_voice_channels,omitempty"`
+}
+
+type PresenceResponse struct {
+	Peers []PresenceRecord `json:"peers"`
 }
 
 type CreateChannelRequest struct {

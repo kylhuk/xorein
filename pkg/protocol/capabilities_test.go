@@ -108,3 +108,9 @@ func TestNegotiateConversationSecurityModeV02(t *testing.T) {
 		t.Fatalf("unexpected reason: %q", rejected.Reason)
 	}
 }
+
+func TestValidFeatureFlagNameAcceptsArchivistCapability(t *testing.T) {
+	if !ValidFeatureFlagName(string(FeatureArchivist)) {
+		t.Fatalf("expected %q to be a valid feature flag", FeatureArchivist)
+	}
+}

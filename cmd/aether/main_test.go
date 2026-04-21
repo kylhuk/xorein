@@ -67,6 +67,20 @@ func TestBuildNodeConfigMergesFileConfig(t *testing.T) {
 	}
 }
 
+func TestBuildNodeConfigAcceptsArchivistMode(t *testing.T) {
+	resetFlags(t)
+	*runMode = "archivist"
+	*dataDir = t.TempDir()
+
+	cfg, err := buildNodeConfig()
+	if err != nil {
+		t.Fatalf("buildNodeConfig() error = %v", err)
+	}
+	if cfg.Role != node.RoleArchivist {
+		t.Fatalf("role = %s", cfg.Role)
+	}
+}
+
 func TestBuildNodeConfigRejectsLegacyScenario(t *testing.T) {
 	resetFlags(t)
 	*scenario = "first-contact"
@@ -99,4 +113,8 @@ func resetFlags(t *testing.T) {
 	*relayAddrs = ""
 	*controlPath = ""
 	*scenario = ""
+	*preflight = false
+	*repoSnapshot = false
+	*baselineHealth = false
+	*repoRoot = "."
 }

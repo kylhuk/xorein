@@ -25,11 +25,18 @@ func (s *Service) controlMux() http.Handler {
 	mux.HandleFunc("/v1/identities/restore", s.handleIdentityRestore)
 	mux.HandleFunc("/v1/servers", s.handleServers)
 	mux.HandleFunc("/v1/servers/join", s.handleServersJoin)
+	mux.HandleFunc("/v1/servers/preview", s.handleServersPreview)
 	mux.HandleFunc("/v1/servers/", s.handleServerSubresources)
+	mux.HandleFunc("/v1/presence", s.handlePresence)
+	mux.HandleFunc("/v1/notifications/search", s.handleNotificationsSearch)
+	mux.HandleFunc("/v1/notifications/summary", s.handleNotificationsSummary)
+	mux.HandleFunc("/v1/notifications/read", s.handleNotificationsRead)
+	mux.HandleFunc("/v1/mentions/search", s.handleMentionsSearch)
 	mux.HandleFunc("/v1/peers/manual", s.handleManualPeers)
 	mux.HandleFunc("/v1/dms", s.handleDMs)
 	mux.HandleFunc("/v1/dms/", s.handleDMSubresources)
 	mux.HandleFunc("/v1/channels/", s.handleChannelSubresources)
+	mux.HandleFunc("/v1/messages/search", s.handleMessagesSearch)
 	mux.HandleFunc("/v1/messages/", s.handleMessageSubresources)
 	mux.HandleFunc("/v1/voice/", s.handleVoiceSubresources)
 	return withLocalOnly(s.requireAuth(mux))
@@ -201,6 +208,28 @@ func (s *Service) handleServersJoin(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, server)
 }
 
+func (s *Service) handleServersPreview(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
+		return
+	}
+	var req PreviewServerRequest
+	if err := decodeJSON(r.Body, &req); err != nil {
+		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
+		return
+	}
+	preview, err := s.PreviewDeeplink(req.Deeplink)
+	if err != nil {
+		code := "preview_failed"
+		if strings.Contains(err.Error(), "expired") {
+			code = "expired_invite"
+		}
+		writeError(w, http.StatusBadRequest, APIError{Code: code, Message: err.Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, preview)
+}
+
 func (s *Service) handleServerSubresources(w http.ResponseWriter, r *http.Request) {
 	trimmed := strings.TrimPrefix(r.URL.Path, "/v1/servers/")
 	parts := strings.Split(trimmed, "/")
@@ -219,6 +248,94 @@ func (s *Service) handleServerSubresources(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	writeError(w, http.StatusNotFound, APIError{Code: "not_found", Message: "endpoint not found"})
+}
+
+func (s *Service) handlePresence(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
+		return
+	}
+	writeJSON(w, http.StatusOK, PresenceResponse{Peers: s.Presence()})
+}
+
+func (s *Service) handleNotificationsSearch(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
+		return
+	}
+	var req SearchNotificationsRequest
+	if err := decodeJSON(r.Body, &req); err != nil {
+		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
+		return
+	}
+	resp, err := s.SearchNotifications(req)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, resp)
+}
+
+func (s *Service) handleNotificationsRead(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
+		return
+	}
+	var req MarkNotificationsReadRequest
+	if err := decodeJSON(r.Body, &req); err != nil {
+		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
+		return
+	}
+	readThrough, err := s.MarkNotificationsReadScoped(req)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, s.notificationsReadResponse(strings.TrimSpace(req.ServerID), strings.TrimSpace(req.ScopeType), strings.TrimSpace(req.ScopeID), readThrough))
+}
+
+func (s *Service) handleNotificationsSummary(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
+		return
+	}
+	writeJSON(w, http.StatusOK, s.NotificationSummary())
+}
+
+func (s *Service) handleMessagesSearch(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
+		return
+	}
+	var req SearchMessagesRequest
+	if err := decodeJSON(r.Body, &req); err != nil {
+		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
+		return
+	}
+	messages, err := s.SearchMessages(req)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, SearchMessagesResponse{Messages: messages, Results: s.messageSearchRecords(messages)})
+}
+
+func (s *Service) handleMentionsSearch(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeError(w, http.StatusMethodNotAllowed, APIError{Code: "method_not_allowed", Message: "method not allowed"})
+		return
+	}
+	var req SearchMentionsRequest
+	if err := decodeJSON(r.Body, &req); err != nil {
+		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
+		return
+	}
+	mentions, err := s.SearchMentions(req)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, APIError{Code: "invalid_request", Message: err.Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, SearchMentionsResponse{Mentions: mentions})
 }
 
 func (s *Service) handleManualPeers(w http.ResponseWriter, r *http.Request) {

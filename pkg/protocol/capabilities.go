@@ -18,6 +18,7 @@ const (
 	FeatureManifest   FeatureFlag = "cap.manifest"
 	FeatureIdentity   FeatureFlag = "cap.identity"
 	FeatureSync       FeatureFlag = "cap.sync"
+	FeatureArchivist  FeatureFlag = "cap.archivist"
 	FeatureDM         FeatureFlag = "cap.dm"
 	FeatureGroupDM    FeatureFlag = "cap.group-dm"
 	FeatureFriends    FeatureFlag = "cap.friends"

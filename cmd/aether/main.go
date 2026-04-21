@@ -17,9 +17,11 @@ import (
 )
 
 var (
-	runRuntimeFn = runRuntime
+	runRuntimeFn        = runRuntime
+	runRepoSnapshotFn   = runRepoSnapshot
+	runBaselineHealthFn = runBaselineHealth
 
-	runMode        = flag.String("mode", "client", "runtime mode: client|relay|bootstrap")
+	runMode        = flag.String("mode", "client", "runtime mode: client|relay|bootstrap|archivist")
 	configPath     = flag.String("config", "", "optional JSON config file")
 	dataDir        = flag.String("data-dir", filepath.Join(os.TempDir(), "xorein"), "persistent data directory")
 	listenAddr     = flag.String("listen", "127.0.0.1:0", "node listen address")
@@ -28,6 +30,10 @@ var (
 	relayAddrs     = flag.String("relay-addrs", "", "comma-separated relay addresses")
 	controlPath    = flag.String("control", "", "control socket path or local endpoint")
 	scenario       = flag.String("scenario", "", "legacy flag retained for compatibility; must be empty")
+	preflight      = flag.Bool("preflight", false, "print repository snapshot and baseline health check and exit")
+	repoSnapshot   = flag.Bool("repo-snapshot", false, "print a repository snapshot and exit")
+	baselineHealth = flag.Bool("baseline-health", false, "run baseline build/test/lint/typecheck checks and exit")
+	repoRoot       = flag.String("repo-root", ".", "repository root used with --preflight, --repo-snapshot, and --baseline-health")
 )
 
 type fileConfig struct {
@@ -44,6 +50,27 @@ type fileConfig struct {
 
 func main() {
 	flag.Parse()
+	if *preflight {
+		if err := runPreflight(os.Stdout, strings.TrimSpace(*repoRoot)); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		return
+	}
+	if *repoSnapshot {
+		if err := runRepoSnapshot(os.Stdout, strings.TrimSpace(*repoRoot)); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		return
+	}
+	if *baselineHealth {
+		if err := runBaselineHealth(os.Stdout, strings.TrimSpace(*repoRoot)); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+		return
+	}
 	cfg, err := buildNodeConfig()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -80,7 +107,7 @@ func buildNodeConfig() (node.Config, error) {
 		cfg = mergeConfig(loaded, cfg)
 	}
 	if !cfg.Role.Valid() {
-		return node.Config{}, fmt.Errorf("invalid --mode %q; expected client|relay|bootstrap", cfg.Role)
+		return node.Config{}, fmt.Errorf("invalid --mode %q; expected client|relay|bootstrap|archivist", cfg.Role)
 	}
 	if cfg.DataDir == "" {
 		return node.Config{}, fmt.Errorf("data dir is required")

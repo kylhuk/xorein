@@ -8,11 +8,12 @@ const (
 	RoleClient    Role = "client"
 	RoleRelay     Role = "relay"
 	RoleBootstrap Role = "bootstrap"
+	RoleArchivist Role = "archivist"
 )
 
 func (r Role) Valid() bool {
 	switch r {
-	case RoleClient, RoleRelay, RoleBootstrap:
+	case RoleClient, RoleRelay, RoleBootstrap, RoleArchivist:
 		return true
 	default:
 		return false

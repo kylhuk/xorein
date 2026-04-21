@@ -1,16 +1,93 @@
 === Symbol Results ===
 
-Vulnerability #1: GO-2026-4341
+Vulnerability #1: GO-2026-4602
+    FileInfo can escape from a Root in os
+  More info: https://pkg.go.dev/vuln/GO-2026-4602
+  Standard library
+    Found in: os@go1.24.8
+    Fixed in: os@go1.25.8
+    Example traces found:
+      #1: pkg/node/service.go:138:11: node.Service.Close calls sync.Once.Do, which eventually calls os.ReadDir
+
+Vulnerability #2: GO-2026-4601
+    Incorrect parsing of IPv6 host literals in net/url
+  More info: https://pkg.go.dev/vuln/GO-2026-4601
+  Standard library
+    Found in: net/url@go1.24.8
+    Fixed in: net/url@go1.25.8
+    Example traces found:
+      #1: pkg/node/wire.go:231:21: node.ParseDeeplink calls url.Parse
+      #2: pkg/node/service.go:114:28: node.Start calls http.Server.Serve, which eventually calls url.ParseRequestURI
+      #3: pkg/node/control.go:424:24: node.CallControlJSON calls http.Client.Do, which eventually calls url.URL.Parse
+
+Vulnerability #3: GO-2026-4341
     Memory exhaustion in query parameter parsing in net/url
   More info: https://pkg.go.dev/vuln/GO-2026-4341
   Standard library
     Found in: net/url@go1.24.8
     Fixed in: net/url@go1.24.12
     Example traces found:
-      #1: pkg/v02/friends/exchange.go:216:20: friends.extractInvitePayloadBlob calls url.URL.Query
+      #1: pkg/node/wire.go:241:16: node.ParseDeeplink calls url.URL.Query
 
-Your code is affected by 1 vulnerability from the Go standard library.
-This scan also found 0 vulnerabilities in packages you import and 6
+Vulnerability #4: GO-2026-4340
+    Handshake messages may be processed at the incorrect encryption level in
+    crypto/tls
+  More info: https://pkg.go.dev/vuln/GO-2026-4340
+  Standard library
+    Found in: crypto/tls@go1.24.8
+    Fixed in: crypto/tls@go1.24.12
+    Example traces found:
+      #1: pkg/node/service.go:114:28: node.Start calls http.Server.Serve, which eventually calls tls.Conn.HandshakeContext
+      #2: pkg/node/identity.go:17:39: node.GenerateIdentity calls ed25519.GenerateKey, which eventually calls tls.Conn.Read
+      #3: artifacts/generated/release-pack/signing/release-pack-sign.go:39:13: signing.main calls fmt.Printf, which eventually calls tls.Conn.Write
+      #4: pkg/node/control.go:424:24: node.CallControlJSON calls http.Client.Do, which eventually calls tls.Dialer.DialContext
+
+Vulnerability #5: GO-2026-4337
+    Unexpected session resumption in crypto/tls
+  More info: https://pkg.go.dev/vuln/GO-2026-4337
+  Standard library
+    Found in: crypto/tls@go1.24.8
+    Fixed in: crypto/tls@go1.24.13
+    Example traces found:
+      #1: pkg/node/service.go:114:28: node.Start calls http.Server.Serve, which eventually calls tls.Conn.HandshakeContext
+      #2: pkg/node/identity.go:17:39: node.GenerateIdentity calls ed25519.GenerateKey, which eventually calls tls.Conn.Read
+      #3: artifacts/generated/release-pack/signing/release-pack-sign.go:39:13: signing.main calls fmt.Printf, which eventually calls tls.Conn.Write
+      #4: pkg/node/control.go:424:24: node.CallControlJSON calls http.Client.Do, which eventually calls tls.Dialer.DialContext
+
+Vulnerability #6: GO-2025-4175
+    Improper application of excluded DNS name constraints when verifying
+    wildcard names in crypto/x509
+  More info: https://pkg.go.dev/vuln/GO-2025-4175
+  Standard library
+    Found in: crypto/x509@go1.24.8
+    Fixed in: crypto/x509@go1.24.11
+    Example traces found:
+      #1: pkg/node/service.go:114:28: node.Start calls http.Server.Serve, which eventually calls x509.Certificate.Verify
+
+Vulnerability #7: GO-2025-4155
+    Excessive resource consumption when printing error string for host
+    certificate validation in crypto/x509
+  More info: https://pkg.go.dev/vuln/GO-2025-4155
+  Standard library
+    Found in: crypto/x509@go1.24.8
+    Fixed in: crypto/x509@go1.24.11
+    Example traces found:
+      #1: pkg/node/service.go:114:28: node.Start calls http.Server.Serve, which eventually calls x509.Certificate.Verify
+      #2: pkg/node/service.go:114:28: node.Start calls http.Server.Serve, which eventually calls x509.Certificate.VerifyHostname
+
+Vulnerability #8: GO-2025-4007
+    Quadratic complexity when checking name constraints in crypto/x509
+  More info: https://pkg.go.dev/vuln/GO-2025-4007
+  Standard library
+    Found in: crypto/x509@go1.24.8
+    Fixed in: crypto/x509@go1.24.9
+    Example traces found:
+      #1: pkg/node/service.go:138:11: node.Service.Close calls sync.Once.Do, which eventually calls x509.CertPool.AppendCertsFromPEM
+      #2: pkg/node/service.go:114:28: node.Start calls http.Server.Serve, which eventually calls x509.Certificate.Verify
+      #3: pkg/node/service.go:138:11: node.Service.Close calls sync.Once.Do, which eventually calls x509.ParseCertificate
+
+Your code is affected by 8 vulnerabilities from the Go standard library.
+This scan also found 0 vulnerabilities in packages you import and 2
 vulnerabilities in modules you require, but your code doesn't appear to call
 these vulnerabilities.
 Use '-show verbose' for more details.
