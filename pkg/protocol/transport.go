@@ -36,9 +36,9 @@ type PeerTransportNegotiation struct {
 
 func CanonicalProtocolStrings(family ProtocolFamily) []string {
 	ids := CanonicalByFamily(family)
-	out := make([]string, 0, len(ids))
-	for _, id := range ids {
-		out = append(out, id.String())
+	out := make([]string, len(ids))
+	for i, id := range ids {
+		out[i] = id.String()
 	}
 	return out
 }

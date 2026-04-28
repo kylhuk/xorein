@@ -61,6 +61,22 @@ func TestCanonicalProtocolByVersion(t *testing.T) {
 	}
 }
 
+func TestCanonicalByFamilyReturnsDefensiveCopy(t *testing.T) {
+	original := CanonicalByFamily(FamilyChat)
+	if len(original) == 0 {
+		t.Fatalf("expected canonical IDs for %s", FamilyChat)
+	}
+
+	mutated := CanonicalByFamily(FamilyChat)
+	mutated[0].Version.Minor = 99
+	mutated[0].Name = "tampered"
+
+	after := CanonicalByFamily(FamilyChat)
+	if after[0] != original[0] {
+		t.Fatalf("canonical registry was mutated through returned slice: got %+v want %+v", after[0], original[0])
+	}
+}
+
 func TestParseProtocolID(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		id, err := ParseProtocolID("/aether/chat/0.1.0")
@@ -71,14 +87,45 @@ func TestParseProtocolID(t *testing.T) {
 			t.Fatalf("wrong parse result: %+v", id)
 		}
 	})
+	t.Run("trim and normalize family case", func(t *testing.T) {
+		id, err := ParseProtocolID("  /aether/ChAt/1.2.3  ")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if id.Family != FamilyChat {
+			t.Fatalf("family should be normalized to lowercase, got %q", id.Family)
+		}
+		if got, want := id.Name, "chat/1.2.3"; got != want {
+			t.Fatalf("unexpected name: got %q want %q", got, want)
+		}
+	})
+	t.Run("trim whitespace around family segment", func(t *testing.T) {
+		id, err := ParseProtocolID("/aether/ chat /1.2.3")
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		if id.Family != FamilyChat {
+			t.Fatalf("family should be normalized to lowercase, got %q", id.Family)
+		}
+	})
 	t.Run("invalid namespace", func(t *testing.T) {
 		if _, err := ParseProtocolID("/bad/chat/0.1.0"); err == nil {
 			t.Fatal("expected namespace error")
 		}
 	})
+	t.Run("extra path segments rejected", func(t *testing.T) {
+		if _, err := ParseProtocolID("/aether/chat/0.1.0/extra"); err == nil {
+			t.Fatal("expected malformed protocol identifier error")
+		}
+	})
 	t.Run("invalid version", func(t *testing.T) {
 		if _, err := ParseProtocolID("/aether/chat/zero"); err == nil {
 			t.Fatal("expected version error")
+		}
+	})
+	t.Run("unicode digits rejected", func(t *testing.T) {
+		if _, err := ParseProtocolID("/aether/chat/١.٢.٣"); err == nil {
+			t.Fatal("expected unicode digit version error")
 		}
 	})
 	t.Run("negative version rejected", func(t *testing.T) {
@@ -202,5 +249,19 @@ func TestNegotiateProtocolDeprecationGuard(t *testing.T) {
 func TestNegotiateProtocolUnknownFamily(t *testing.T) {
 	if _, ok := NegotiateProtocol(FamilyChat, []ProtocolID{{Family: FamilyVoice, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}}}, nil); ok {
 		t.Fatal("expected no negotiation on mismatched families")
+	}
+}
+
+func TestNegotiateProtocolNilPolicyUsesDefault(t *testing.T) {
+	selected, ok := NegotiateProtocol(
+		FamilyChat,
+		[]ProtocolID{{Family: FamilyChat, Version: ProtocolVersion{Major: 0, Minor: 1, Patch: 0}}},
+		nil,
+	)
+	if !ok {
+		t.Fatal("expected negotiation success with default policy")
+	}
+	if selected != chatV010 {
+		t.Fatalf("unexpected negotiated protocol: got %+v want %+v", selected, chatV010)
 	}
 }

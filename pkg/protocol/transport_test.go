@@ -6,6 +6,21 @@ import (
 	"testing"
 )
 
+func TestNegotiationErrorError(t *testing.T) {
+	var nilErr *NegotiationError
+	if got := nilErr.Error(); got != "" {
+		t.Fatalf("nil error string = %q want empty", got)
+	}
+
+	if got := (&NegotiationError{Code: NegotiationErrorUnsupportedProtocol}).Error(); got != string(NegotiationErrorUnsupportedProtocol) {
+		t.Fatalf("code fallback string = %q", got)
+	}
+
+	if got := (&NegotiationError{Code: NegotiationErrorUnsupportedProtocol, Message: "  detailed message\t"}).Error(); got != "  detailed message\t" {
+		t.Fatalf("message string = %q", got)
+	}
+}
+
 func TestNegotiatePeerTransport(t *testing.T) {
 	t.Run("supported version and capabilities", func(t *testing.T) {
 		result, err := NegotiatePeerTransport(
@@ -29,7 +44,7 @@ func TestNegotiatePeerTransport(t *testing.T) {
 	})
 
 	t.Run("unsupported protocol fails closed", func(t *testing.T) {
-		_, err := NegotiatePeerTransport([]string{"/aether/peer/1.0.0"}, nil, nil)
+		_, err := NegotiatePeerTransport([]string{" /aether/peer/1.0.0 ", "/aether/peer/1.0.0", "bad"}, nil, nil)
 		if err == nil {
 			t.Fatal("expected unsupported protocol error")
 		}
@@ -39,6 +54,9 @@ func TestNegotiatePeerTransport(t *testing.T) {
 		}
 		if negotiationErr.Code != NegotiationErrorUnsupportedProtocol {
 			t.Fatalf("code = %q want %q", negotiationErr.Code, NegotiationErrorUnsupportedProtocol)
+		}
+		if !reflect.DeepEqual(negotiationErr.OfferedProtocols, []string{"/aether/peer/1.0.0", "bad"}) {
+			t.Fatalf("offered protocols = %#v", negotiationErr.OfferedProtocols)
 		}
 	})
 

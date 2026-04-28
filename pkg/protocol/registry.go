@@ -33,6 +33,9 @@ type ProtocolVersion struct {
 	Patch int
 }
 
+// ProtocolID identifies a concrete wire protocol for capability negotiation.
+//
+// Name is a human-readable label and is not used for negotiation logic.
 type ProtocolID struct {
 	Family  ProtocolFamily
 	Version ProtocolVersion
@@ -114,27 +117,33 @@ func ParseProtocolID(input string) (ProtocolID, error) {
 	if !strings.HasPrefix(trimmed, multistreamNamespace+"/") {
 		return ProtocolID{}, fmt.Errorf("invalid protocol namespace: %s", trimmed)
 	}
-	parts := strings.Split(strings.TrimPrefix(trimmed, multistreamNamespace+"/"), "/")
-	if len(parts) != 2 {
+	// Use Cut-based parsing to avoid temporary slices while preserving strict
+	// "<family>/<major>.<minor>.<patch>" validation semantics.
+	familyPart, versionPart, ok := strings.Cut(strings.TrimPrefix(trimmed, multistreamNamespace+"/"), "/")
+	if !ok || strings.Contains(versionPart, "/") {
 		return ProtocolID{}, fmt.Errorf("malformed protocol identifier: %s", trimmed)
 	}
-	family := ProtocolFamily(strings.ToLower(strings.TrimSpace(parts[0])))
+	family := ProtocolFamily(strings.ToLower(strings.TrimSpace(familyPart)))
 	if family == "" {
 		return ProtocolID{}, fmt.Errorf("protocol family required")
 	}
-	versionParts := strings.Split(parts[1], ".")
-	if len(versionParts) != 3 {
-		return ProtocolID{}, fmt.Errorf("unexpected version syntax: %s", parts[1])
+	majorPart, remainder, ok := strings.Cut(versionPart, ".")
+	if !ok {
+		return ProtocolID{}, fmt.Errorf("unexpected version syntax: %s", versionPart)
 	}
-	major, err := parseProtocolVersionPart(versionParts[0], "major")
+	minorPart, patchPart, ok := strings.Cut(remainder, ".")
+	if !ok || strings.Contains(patchPart, ".") {
+		return ProtocolID{}, fmt.Errorf("unexpected version syntax: %s", versionPart)
+	}
+	major, err := parseProtocolVersionPart(majorPart, "major")
 	if err != nil {
 		return ProtocolID{}, err
 	}
-	minor, err := parseProtocolVersionPart(versionParts[1], "minor")
+	minor, err := parseProtocolVersionPart(minorPart, "minor")
 	if err != nil {
 		return ProtocolID{}, err
 	}
-	patch, err := parseProtocolVersionPart(versionParts[2], "patch")
+	patch, err := parseProtocolVersionPart(patchPart, "patch")
 	if err != nil {
 		return ProtocolID{}, err
 	}
@@ -145,7 +154,9 @@ func parseProtocolVersionPart(part string, label string) (int, error) {
 	if part == "" {
 		return 0, fmt.Errorf("invalid %s version: empty", label)
 	}
-	for _, r := range part {
+	// Semantic version components are ASCII decimal numerals only.
+	for i := 0; i < len(part); i++ {
+		r := part[i]
 		if r < '0' || r > '9' {
 			return 0, fmt.Errorf("invalid %s version: %s", label, part)
 		}
@@ -218,6 +229,11 @@ type DeprecationGuard struct {
 	anchors map[ProtocolFamily]ProtocolVersion
 }
 
+// NewDeprecationGuard configures family-specific floor versions used to avoid
+// negotiating deprecated canonical candidates.
+//
+// Any canonical version less than or equal to the configured anchor is treated
+// as deprecated for that family.
 func NewDeprecationGuard(anchors map[ProtocolFamily]ProtocolVersion) DeprecationGuard {
 	copyAnchors := make(map[ProtocolFamily]ProtocolVersion, len(anchors))
 	for family, version := range anchors {
@@ -251,6 +267,10 @@ func (g DeprecationGuard) IsDeprecated(id ProtocolID) bool {
 
 var defaultDeprecationGuard = NewDeprecationGuard(nil)
 
+// NegotiateProtocol chooses the highest canonical protocol for a family that is
+// compatible with at least one offered protocol and is not deprecated.
+//
+// Canonical candidates are tried in descending semantic-version order.
 func NegotiateProtocol(family ProtocolFamily, offers []ProtocolID, policy CompatibilityPolicy) (ProtocolID, bool) {
 	if len(offers) == 0 {
 		return ProtocolID{}, false

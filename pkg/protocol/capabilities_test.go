@@ -14,14 +14,17 @@ func TestValidFeatureFlagName(t *testing.T) {
 		{name: "valid chat", input: "cap.chat", valid: true},
 		{name: "valid dotted", input: "cap.voice.low-latency", valid: true},
 		{name: "valid numeric segment", input: "cap.voice.v2", valid: true},
+		{name: "valid mode flag", input: "mode.tree", valid: true},
 		{name: "missing prefix", input: "chat", valid: false},
 		{name: "upper-case", input: "cap.Chat", valid: false},
 		{name: "empty tail", input: "cap.", valid: false},
+		{name: "mode trailing separator", input: "mode.tree.", valid: false},
 		{name: "invalid rune", input: "cap.voice/opus", valid: false},
 		{name: "double dot", input: "cap.voice..opus", valid: false},
 		{name: "double hyphen separator", input: "cap.voice--opus", valid: false},
 		{name: "leading separator", input: "cap.-voice", valid: false},
 		{name: "trailing separator", input: "cap.voice-", valid: false},
+		{name: "unicode letter rejected", input: "cap.voicé", valid: false},
 	}
 
 	for _, tt := range tests {
@@ -79,6 +82,27 @@ func TestNegotiateCapabilities(t *testing.T) {
 			t.Fatalf("missing mismatch: got %#v want %#v", result.MissingRequired, wantMissing)
 		}
 
+		if result.Feedback != CapabilityFeedbackUpgradeRequired {
+			t.Fatalf("feedback mismatch: got %q want %q", result.Feedback, CapabilityFeedbackUpgradeRequired)
+		}
+	})
+
+	t.Run("deduplicates-and-trims-capability-inputs", func(t *testing.T) {
+		result := NegotiateCapabilities(
+			local,
+			[]string{" cap.chat ", "cap.chat", "", "cap.unknown", "cap.unknown"},
+			[]string{" cap.sync ", "cap.sync", " ", "bad"},
+		)
+
+		if !reflect.DeepEqual(result.Accepted, []FeatureFlag{FeatureChat}) {
+			t.Fatalf("accepted mismatch: got %#v", result.Accepted)
+		}
+		if !reflect.DeepEqual(result.IgnoredRemote, []string{"cap.unknown"}) {
+			t.Fatalf("ignored mismatch: got %#v", result.IgnoredRemote)
+		}
+		if !reflect.DeepEqual(result.MissingRequired, []string{"bad", "cap.sync"}) {
+			t.Fatalf("missing mismatch: got %#v", result.MissingRequired)
+		}
 		if result.Feedback != CapabilityFeedbackUpgradeRequired {
 			t.Fatalf("feedback mismatch: got %q want %q", result.Feedback, CapabilityFeedbackUpgradeRequired)
 		}
