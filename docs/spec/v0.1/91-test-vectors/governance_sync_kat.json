@@ -1,0 +1,39 @@
+{
+  "description": "governance.sync: new joiner with known_policy_version=0 receives full role table; up-to-date peer gets empty list",
+  "source": "docs/spec/v0.1/51-family-governance.md §3.6",
+  "inputs": {
+    "governance_setup": [
+      {"server_id": "srv1", "peer_id": "alice", "role": "admin"},
+      {"server_id": "srv1", "peer_id": "bob", "role": "moderator"},
+      {"server_id": "srv1", "peer_id": "charlie", "role": "member"}
+    ],
+    "cases": [
+      {
+        "label": "new joiner requests full sync",
+        "operation": "governance.sync",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "requester_peer_id": "newpeer",
+          "server_id": "srv1",
+          "known_policy_version": 0
+        }
+      },
+      {
+        "label": "up-to-date peer gets empty list",
+        "operation": "governance.sync",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "requester_peer_id": "newpeer",
+          "server_id": "srv1",
+          "known_policy_version": 999999
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"up_to_date": false, "roles_count_gte": 3},
+      {"up_to_date": true, "roles_count": 0}
+    ]
+  }
+}

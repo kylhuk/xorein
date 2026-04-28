@@ -1,0 +1,43 @@
+{
+  "description": "governance.revoke_role: admin revokes moderator; member reverts to member; owner revocation is blocked",
+  "source": "docs/spec/v0.1/51-family-governance.md §3.3",
+  "inputs": {
+    "governance_setup": [
+      {"server_id": "srv1", "peer_id": "alice", "role": "admin"},
+      {"server_id": "srv1", "peer_id": "bob", "role": "moderator"},
+      {"server_id": "srv1", "peer_id": "owner1", "role": "owner"}
+    ],
+    "cases": [
+      {
+        "label": "admin revokes moderator",
+        "operation": "governance.revoke_role",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "target_peer_id": "bob",
+          "server_id": "srv1",
+          "role": "moderator",
+          "policy_version": 0
+        }
+      },
+      {
+        "label": "admin revokes owner - blocked",
+        "operation": "governance.revoke_role",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "target_peer_id": "owner1",
+          "server_id": "srv1",
+          "role": "owner",
+          "policy_version": 0
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"accepted": true},
+      {"error_code": "GOVERNANCE_OWNER_IMMUTABLE"}
+    ]
+  }
+}

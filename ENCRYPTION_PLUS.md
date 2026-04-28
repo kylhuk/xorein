@@ -1,3 +1,8 @@
+> **SUPERSEDED BY `docs/spec/v0.1/`** — This document is a historical design
+> narrative for security modes and capabilities. The normative specifications
+> are `01-cryptographic-primitives.md` and `11-mode-seal.md` through
+> `15-mode-mediashield.md`. Do not use this document as an implementation reference.
+
 # Capability and Security Model Specification (Discord-Parity, Secure-by-Default)
 
 ## 1. Scope

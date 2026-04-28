@@ -1,0 +1,53 @@
+{
+  "description": "moderation.delete_message: marks a stored message as deleted; missing message returns MESSAGE_NOT_FOUND",
+  "source": "docs/spec/v0.1/50-family-moderation.md §3.7",
+  "inputs": {
+    "governance_setup": [
+      {"server_id": "srv1", "peer_id": "alice", "role": "moderator"},
+      {"server_id": "srv1", "peer_id": "bob", "role": "member"}
+    ],
+    "stored_messages": ["msg-001", "msg-002"],
+    "cases": [
+      {
+        "label": "moderator deletes existing message - success",
+        "operation": "moderation.delete_message",
+        "advertised_caps": ["cap.moderation", "cap.slow-mode"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "message_id": "msg-001",
+          "server_id": "srv1",
+          "channel_id": "ch1"
+        }
+      },
+      {
+        "label": "delete non-existent message - MESSAGE_NOT_FOUND",
+        "operation": "moderation.delete_message",
+        "advertised_caps": ["cap.moderation", "cap.slow-mode"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "message_id": "msg-999",
+          "server_id": "srv1",
+          "channel_id": "ch1"
+        }
+      },
+      {
+        "label": "member cannot delete - unauthorized",
+        "operation": "moderation.delete_message",
+        "advertised_caps": ["cap.moderation", "cap.slow-mode"],
+        "payload": {
+          "actor_peer_id": "bob",
+          "message_id": "msg-002",
+          "server_id": "srv1",
+          "channel_id": "ch1"
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"accepted": true, "reason": "DELETE"},
+      {"error_code": "MESSAGE_NOT_FOUND"},
+      {"error_code": "MODERATION_UNAUTHORIZED"}
+    ]
+  }
+}

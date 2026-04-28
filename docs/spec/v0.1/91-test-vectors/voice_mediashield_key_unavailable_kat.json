@@ -1,0 +1,24 @@
+{
+  "description": "voice.join: no MediaShield PeerKey exists for the session scope → MEDIASHIELD_KEY_UNAVAILABLE",
+  "source": "docs/spec/v0.1/52-family-voice.md §3.1",
+  "inputs": {
+    "mediashield_peer_keys": {},
+    "cases": [
+      {
+        "label": "join with no PeerKey → MEDIASHIELD_KEY_UNAVAILABLE",
+        "operation": "voice.join",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s-nokey",
+          "peer_id": "peer-p1",
+          "codec": "opus"
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"error_code": "MEDIASHIELD_KEY_UNAVAILABLE"}
+    ]
+  }
+}

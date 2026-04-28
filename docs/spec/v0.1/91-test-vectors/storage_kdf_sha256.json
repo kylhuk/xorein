@@ -1,0 +1,11 @@
+{
+  "description": "SHA-256 KDF: store_key = SHA-256(salt || secret)",
+  "source": "docs/spec/v0.1/70-storage-and-key-derivation.md §3",
+  "inputs": {
+    "salt_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+    "secret_hex": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "expected_output": {
+    "store_key_hex": "f5a5fd42d16a20302798ef6ed309979b43003d2320d9f0e8ea9831a92759fb4b"
+  }
+}

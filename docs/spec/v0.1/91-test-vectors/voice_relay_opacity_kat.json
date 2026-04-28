@@ -1,0 +1,29 @@
+{
+  "description": "voice.frame to a relay-mode handler is rejected with RELAY_OPACITY_VIOLATION",
+  "source": "docs/spec/v0.1/52-family-voice.md §6",
+  "inputs": {
+    "relay_mode": true,
+    "mediashield_peer_keys": {"s1": {"peer-p1": "AAECBAUGB"}},
+    "session_setup": [
+      {"session_id": "s1", "peer_id": "peer-p1", "codec": "opus"}
+    ],
+    "cases": [
+      {
+        "label": "relay receives voice.frame → RELAY_OPACITY_VIOLATION",
+        "operation": "voice.frame",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "sender_peer_id": "peer-p1",
+          "counter": 1,
+          "ciphertext": "AQIDBA=="
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"error_code": "RELAY_OPACITY_VIOLATION"}
+    ]
+  }
+}

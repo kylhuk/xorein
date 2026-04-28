@@ -1,0 +1,43 @@
+{
+  "description": "governance.assign_role: second request with same policy_version is rejected as stale (replay protection via monotonic version)",
+  "source": "docs/spec/v0.1/51-family-governance.md §5",
+  "inputs": {
+    "governance_setup": [
+      {"server_id": "srv1", "peer_id": "alice", "role": "admin"},
+      {"server_id": "srv1", "peer_id": "bob", "role": "member"},
+      {"server_id": "srv1", "peer_id": "charlie", "role": "member"}
+    ],
+    "cases": [
+      {
+        "label": "first assign (policy_version=0)",
+        "operation": "governance.assign_role",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "target_peer_id": "bob",
+          "server_id": "srv1",
+          "role": "moderator",
+          "policy_version": 0
+        }
+      },
+      {
+        "label": "replay second assign with same policy_version=0",
+        "operation": "governance.assign_role",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "target_peer_id": "charlie",
+          "server_id": "srv1",
+          "role": "moderator",
+          "policy_version": 0
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"accepted": true},
+      {"error_code": "GOVERNANCE_STALE_VERSION"}
+    ]
+  }
+}

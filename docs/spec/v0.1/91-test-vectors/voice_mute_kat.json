@@ -1,0 +1,40 @@
+{
+  "description": "voice.mute: muting a peer causes subsequent voice.frame from that peer to be rejected with VOICE_NOT_AUTHORIZED",
+  "source": "docs/spec/v0.1/52-family-voice.md §3.5",
+  "inputs": {
+    "mediashield_peer_keys": {"s1": {"peer-p1": "AAECBAUGB"}},
+    "session_setup": [
+      {"session_id": "s1", "peer_id": "peer-p1", "codec": "opus"}
+    ],
+    "cases": [
+      {
+        "label": "mute peer-p1 in session s1",
+        "operation": "voice.mute",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "peer_id": "peer-p1",
+          "muted": true,
+          "sequence": 1
+        }
+      },
+      {
+        "label": "muted peer sends frame → VOICE_NOT_AUTHORIZED",
+        "operation": "voice.frame",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "sender_id": "peer-p1",
+          "counter": 1,
+          "ciphertext": "AQIDBA=="
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"ok": true},
+      {"error_code": "VOICE_NOT_AUTHORIZED"}
+    ]
+  }
+}

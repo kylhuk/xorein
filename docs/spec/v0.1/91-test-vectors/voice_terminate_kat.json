@@ -1,0 +1,38 @@
+{
+  "description": "voice.terminate: session is removed; subsequent voice.frame returns VOICE_SESSION_NOT_FOUND",
+  "source": "docs/spec/v0.1/52-family-voice.md §3.8",
+  "inputs": {
+    "mediashield_peer_keys": {"s1": {"peer-p1": "AAECBAUGB"}},
+    "session_setup": [
+      {"session_id": "s1", "peer_id": "peer-p1", "codec": "opus"}
+    ],
+    "cases": [
+      {
+        "label": "terminate session s1",
+        "operation": "voice.terminate",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "peer_id": "peer-p1"
+        }
+      },
+      {
+        "label": "frame after terminate → VOICE_SESSION_NOT_FOUND",
+        "operation": "voice.frame",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "sender_peer_id": "peer-p1",
+          "counter": 1,
+          "ciphertext": "AQIDBA=="
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"ok": true},
+      {"error_code": "VOICE_SESSION_NOT_FOUND"}
+    ]
+  }
+}

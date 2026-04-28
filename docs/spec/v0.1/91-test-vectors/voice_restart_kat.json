@@ -1,0 +1,51 @@
+{
+  "description": "voice.restart: resets signal state so a lower sequence number is accepted again after restart",
+  "source": "docs/spec/v0.1/52-family-voice.md §3.7",
+  "inputs": {
+    "mediashield_peer_keys": {"s1": {"peer-p1": "AAECBAUGB", "peer-p2": "AQIDBA=="}},
+    "session_setup": [
+      {"session_id": "s1", "peer_id": "peer-p1", "codec": "opus"},
+      {"session_id": "s1", "peer_id": "peer-p2", "codec": "opus"}
+    ],
+    "cases": [
+      {
+        "label": "initial offer sequence=5",
+        "operation": "voice.offer",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "peer_id": "peer-p1",
+          "sequence": 5,
+          "sdp": "v=0\r\no=- 5 5 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=rtpmap:111 opus/48000/2\r\n"
+        }
+      },
+      {
+        "label": "restart session",
+        "operation": "voice.restart",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "peer_id": "peer-p1"
+        }
+      },
+      {
+        "label": "offer sequence=1 after restart → accepted",
+        "operation": "voice.offer",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "peer_id": "peer-p1",
+          "sequence": 1,
+          "sdp": "v=0\r\no=- 1 1 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=rtpmap:111 opus/48000/2\r\n"
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"ok": true},
+      {"ok": true},
+      {"ok": true}
+    ]
+  }
+}

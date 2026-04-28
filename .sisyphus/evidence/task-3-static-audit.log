@@ -1,0 +1,134 @@
+=== RUN   TestValidFeatureFlagName
+=== RUN   TestValidFeatureFlagName/valid_chat
+=== RUN   TestValidFeatureFlagName/valid_dotted
+=== RUN   TestValidFeatureFlagName/valid_numeric_segment
+=== RUN   TestValidFeatureFlagName/missing_prefix
+=== RUN   TestValidFeatureFlagName/upper-case
+=== RUN   TestValidFeatureFlagName/empty_tail
+=== RUN   TestValidFeatureFlagName/invalid_rune
+=== RUN   TestValidFeatureFlagName/double_dot
+=== RUN   TestValidFeatureFlagName/double_hyphen_separator
+=== RUN   TestValidFeatureFlagName/leading_separator
+=== RUN   TestValidFeatureFlagName/trailing_separator
+--- PASS: TestValidFeatureFlagName (0.00s)
+    --- PASS: TestValidFeatureFlagName/valid_chat (0.00s)
+    --- PASS: TestValidFeatureFlagName/valid_dotted (0.00s)
+    --- PASS: TestValidFeatureFlagName/valid_numeric_segment (0.00s)
+    --- PASS: TestValidFeatureFlagName/missing_prefix (0.00s)
+    --- PASS: TestValidFeatureFlagName/upper-case (0.00s)
+    --- PASS: TestValidFeatureFlagName/empty_tail (0.00s)
+    --- PASS: TestValidFeatureFlagName/invalid_rune (0.00s)
+    --- PASS: TestValidFeatureFlagName/double_dot (0.00s)
+    --- PASS: TestValidFeatureFlagName/double_hyphen_separator (0.00s)
+    --- PASS: TestValidFeatureFlagName/leading_separator (0.00s)
+    --- PASS: TestValidFeatureFlagName/trailing_separator (0.00s)
+=== RUN   TestNegotiateCapabilities
+=== RUN   TestNegotiateCapabilities/accepts-known-ignores-unknown-advertised
+=== RUN   TestNegotiateCapabilities/fails-on-unsupported-required
+--- PASS: TestNegotiateCapabilities (0.00s)
+    --- PASS: TestNegotiateCapabilities/accepts-known-ignores-unknown-advertised (0.00s)
+    --- PASS: TestNegotiateCapabilities/fails-on-unsupported-required (0.00s)
+=== RUN   TestNegotiateConversationSecurityModeV02
+--- PASS: TestNegotiateConversationSecurityModeV02 (0.00s)
+=== RUN   TestValidFeatureFlagNameAcceptsArchivistCapability
+--- PASS: TestValidFeatureFlagNameAcceptsArchivistCapability (0.00s)
+=== RUN   TestDefaultPeerTransportFeatureFlagsAreValid
+--- PASS: TestDefaultPeerTransportFeatureFlagsAreValid (0.00s)
+=== RUN   TestP3T7PositiveNegotiation
+--- PASS: TestP3T7PositiveNegotiation (0.00s)
+=== RUN   TestP3T7MalformedAndDowngradeOffers
+=== RUN   TestP3T7MalformedAndDowngradeOffers/mismatchedFamily
+=== RUN   TestP3T7MalformedAndDowngradeOffers/belowMinimumMinor
+=== RUN   TestP3T7MalformedAndDowngradeOffers/majorDowngradeAllowedByPolicy
+--- PASS: TestP3T7MalformedAndDowngradeOffers (0.00s)
+    --- PASS: TestP3T7MalformedAndDowngradeOffers/mismatchedFamily (0.00s)
+    --- PASS: TestP3T7MalformedAndDowngradeOffers/belowMinimumMinor (0.00s)
+    --- PASS: TestP3T7MalformedAndDowngradeOffers/majorDowngradeAllowedByPolicy (0.00s)
+=== RUN   TestP3T7SignatureFailureClassification
+--- PASS: TestP3T7SignatureFailureClassification (0.00s)
+=== RUN   TestP3T7SignedEnvelopeUnknownFieldForwardCompat
+--- PASS: TestP3T7SignedEnvelopeUnknownFieldForwardCompat (0.00s)
+=== RUN   TestCanonicalRegistryEntries
+--- PASS: TestCanonicalRegistryEntries (0.00s)
+=== RUN   TestCanonicalRegistryContainsV020Families
+--- PASS: TestCanonicalRegistryContainsV020Families (0.00s)
+=== RUN   TestCanonicalProtocolByVersion
+--- PASS: TestCanonicalProtocolByVersion (0.00s)
+=== RUN   TestParseProtocolID
+=== RUN   TestParseProtocolID/valid
+=== RUN   TestParseProtocolID/invalid_namespace
+=== RUN   TestParseProtocolID/invalid_version
+=== RUN   TestParseProtocolID/negative_version_rejected
+=== RUN   TestParseProtocolID/plus-prefixed_version_rejected
+=== RUN   TestParseProtocolID/missing_patch_rejected
+=== RUN   TestParseProtocolID/empty_family_rejected
+--- PASS: TestParseProtocolID (0.00s)
+    --- PASS: TestParseProtocolID/valid (0.00s)
+    --- PASS: TestParseProtocolID/invalid_namespace (0.00s)
+    --- PASS: TestParseProtocolID/invalid_version (0.00s)
+    --- PASS: TestParseProtocolID/negative_version_rejected (0.00s)
+    --- PASS: TestParseProtocolID/plus-prefixed_version_rejected (0.00s)
+    --- PASS: TestParseProtocolID/missing_patch_rejected (0.00s)
+    --- PASS: TestParseProtocolID/empty_family_rejected (0.00s)
+=== RUN   TestVersionCompatibilityPolicy
+=== RUN   TestVersionCompatibilityPolicy/identical
+=== RUN   TestVersionCompatibilityPolicy/major_upgrade_rejected
+=== RUN   TestVersionCompatibilityPolicy/major_downgrade_allowed
+=== RUN   TestVersionCompatibilityPolicy/candidate_below_minimumMinor
+=== RUN   TestVersionCompatibilityPolicy/minor_downgrade_allowed
+=== RUN   TestVersionCompatibilityPolicy/patch_downgrade_allowed
+--- PASS: TestVersionCompatibilityPolicy (0.00s)
+    --- PASS: TestVersionCompatibilityPolicy/identical (0.00s)
+    --- PASS: TestVersionCompatibilityPolicy/major_upgrade_rejected (0.00s)
+    --- PASS: TestVersionCompatibilityPolicy/major_downgrade_allowed (0.00s)
+    --- PASS: TestVersionCompatibilityPolicy/candidate_below_minimumMinor (0.00s)
+    --- PASS: TestVersionCompatibilityPolicy/minor_downgrade_allowed (0.00s)
+    --- PASS: TestVersionCompatibilityPolicy/patch_downgrade_allowed (0.00s)
+=== RUN   TestDeprecationGuard
+=== RUN   TestDeprecationGuard/before
+=== RUN   TestDeprecationGuard/equal
+=== RUN   TestDeprecationGuard/after_patch
+=== RUN   TestDeprecationGuard/after_minor
+=== RUN   TestDeprecationGuard/other_family
+--- PASS: TestDeprecationGuard (0.00s)
+    --- PASS: TestDeprecationGuard/before (0.00s)
+    --- PASS: TestDeprecationGuard/equal (0.00s)
+    --- PASS: TestDeprecationGuard/after_patch (0.00s)
+    --- PASS: TestDeprecationGuard/after_minor (0.00s)
+    --- PASS: TestDeprecationGuard/other_family (0.00s)
+=== RUN   TestNegotiateProtocolDeprecationGuard
+--- PASS: TestNegotiateProtocolDeprecationGuard (0.00s)
+=== RUN   TestNegotiateProtocolUnknownFamily
+--- PASS: TestNegotiateProtocolUnknownFamily (0.00s)
+=== RUN   TestNegotiatePeerTransport
+=== RUN   TestNegotiatePeerTransport/supported_version_and_capabilities
+=== RUN   TestNegotiatePeerTransport/unsupported_protocol_fails_closed
+=== RUN   TestNegotiatePeerTransport/unsupported_required_capability_fails_closed
+--- PASS: TestNegotiatePeerTransport (0.00s)
+    --- PASS: TestNegotiatePeerTransport/supported_version_and_capabilities (0.00s)
+    --- PASS: TestNegotiatePeerTransport/unsupported_protocol_fails_closed (0.00s)
+    --- PASS: TestNegotiatePeerTransport/unsupported_required_capability_fails_closed (0.00s)
+=== RUN   TestPeerTransportCanonicalSurface
+--- PASS: TestPeerTransportCanonicalSurface (0.00s)
+PASS
+ok  	github.com/aether/code_aether/pkg/protocol	0.006s
+=== RUN   TestNewP2PRuntimeRejectsInvalidMode
+--- PASS: TestNewP2PRuntimeRejectsInvalidMode (0.00s)
+=== RUN   TestP2PRuntimeStartPublishesLibp2pListenAddress
+--- PASS: TestP2PRuntimeStartPublishesLibp2pListenAddress (0.03s)
+=== RUN   TestP2PRuntimeNegotiatesPeerTransport
+--- PASS: TestP2PRuntimeNegotiatesPeerTransport (0.05s)
+=== RUN   TestP2PRuntimeRejectsUnsupportedCapability
+--- PASS: TestP2PRuntimeRejectsUnsupportedCapability (0.06s)
+=== RUN   TestP2PRuntimeRejectsUnsupportedProtocolVersion
+--- PASS: TestP2PRuntimeRejectsUnsupportedProtocolVersion (0.07s)
+=== RUN   TestMarshalPayloadUsesProtobufBinary
+--- PASS: TestMarshalPayloadUsesProtobufBinary (0.00s)
+=== RUN   TestTransportRequestUsesProtobufStructEnvelope
+--- PASS: TestTransportRequestUsesProtobufStructEnvelope (0.00s)
+=== RUN   TestTransportResponseUsesProtobufStructEnvelope
+--- PASS: TestTransportResponseUsesProtobufStructEnvelope (0.00s)
+=== RUN   TestNormalizePeerAddressCanonicalizesLibp2pMultiaddr
+--- PASS: TestNormalizePeerAddressCanonicalizesLibp2pMultiaddr (0.00s)
+PASS
+ok  	github.com/aether/code_aether/pkg/network	0.239s

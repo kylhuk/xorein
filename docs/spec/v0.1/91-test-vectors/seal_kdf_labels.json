@@ -1,0 +1,57 @@
+{
+  "description": "Seal mode KDF label vectors — root-key and message-key derivation",
+  "source": "Constructed — computed from reference implementation (pkg/v0_1/crypto.DeriveKey)",
+  "vectors": [
+    {
+      "id": "seal-root-key",
+      "description": "Root key and initial chain key from hybrid_master via HKDF",
+      "operation": "HKDF-SHA-256",
+      "inputs": {
+        "ikm":      "0000000000000000000000000000000000000000000000000000000000000001",
+        "salt":     "",
+        "info":     "786f7265696e2f7365616c2f76312f726f6f742d6b6579",
+        "info_utf8": "xorein/seal/v1/root-key",
+        "length":   64
+      },
+      "expected_output": {
+        "okm_hex":   "03e7ed4512b6b61499c4142d82fe40551ba323e87d2701b4e73ede7af0b5726224c5c4ff328945af75991d3ab939619d20747517c92da45e9a105e489d709e7d",
+        "root_key":  "03e7ed4512b6b61499c4142d82fe40551ba323e87d2701b4e73ede7af0b57262",
+        "chain_key": "24c5c4ff328945af75991d3ab939619d20747517c92da45e9a105e489d709e7d"
+      }
+    },
+    {
+      "id": "seal-message-key",
+      "description": "Message key from chain key via HKDF (one ratchet step)",
+      "operation": "HKDF-SHA-256",
+      "inputs": {
+        "ikm":      "0000000000000000000000000000000000000000000000000000000000000002",
+        "salt":     "01",
+        "info":     "786f7265696e2f7365616c2f76312f6d6573736167652d6b6579",
+        "info_utf8": "xorein/seal/v1/message-key",
+        "length":   64
+      },
+      "expected_output": {
+        "okm_hex":        "cb410b46fc9080b2caf6304f4ece756910d39e7adfb7a2163a4950766869d2b4d5c8c62711faf7eb508bba28228307e42a28bab2e5166164537600369c4936b0",
+        "message_key":    "cb410b46fc9080b2caf6304f4ece756910d39e7adfb7a2163a4950766869d2b4",
+        "next_chain_key": "d5c8c62711faf7eb508bba28228307e42a28bab2e5166164537600369c4936b0"
+      }
+    },
+    {
+      "id": "seal-ratchet-step",
+      "description": "DH ratchet step: new root key and chain key from root_key + DH output",
+      "operation": "HKDF-SHA-256",
+      "inputs": {
+        "ikm":      "c3da55379de9c6908e94ea4df28d084f32eccf03491c71f754b4075577a28552",
+        "info_utf8": "xorein/seal/v1/ratchet-step",
+        "info":     "786f7265696e2f7365616c2f76312f726174636865742d73746570",
+        "salt":     "0000000000000000000000000000000000000000000000000000000000000003",
+        "length":   64
+      },
+      "expected_output": {
+        "okm_hex":      "f7a14f289c7f17fa73858aa9df6328945500f41bfa0195e72062fee6d93968cf799828538d7fdaff1ccb38ea54a5f24b2e56a9f00288315f2afd2fe66999f3d3",
+        "new_root_key":  "f7a14f289c7f17fa73858aa9df6328945500f41bfa0195e72062fee6d93968cf",
+        "new_chain_key": "799828538d7fdaff1ccb38ea54a5f24b2e56a9f00288315f2afd2fe66999f3d3"
+      }
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "description": "notify family KAT: push and drain; rate limit on 61st push",
+  "expected_output": {
+    "cases": [
+      {
+        "ok": true
+      },
+      {
+        "count": 3
+      },
+      {
+        "count": 0
+      },
+      {
+        "error_code": "RATE_LIMITED"
+      }
+    ]
+  },
+  "inputs": {
+    "cases": [
+      {
+        "advertised_caps": [
+          "cap.notify"
+        ],
+        "count": 3,
+        "label": "push 3 notifications for alice",
+        "operation": "notify.push",
+        "payload": {
+          "payload": {},
+          "recipient_id": "alice",
+          "sender_id": "system",
+          "type": "mention"
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.notify"
+        ],
+        "label": "drain alice notifications (expect count=3)",
+        "operation": "notify.drain",
+        "payload": {
+          "recipient_id": "alice"
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.notify"
+        ],
+        "label": "drain alice again (expect count=0)",
+        "operation": "notify.drain",
+        "payload": {
+          "recipient_id": "alice"
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.notify"
+        ],
+        "count": 61,
+        "description": "push 61 notifications rapidly from sender; 61st is rejected",
+        "label": "rate limit: 61st push from same sender returns RATE_LIMITED",
+        "operation": "notify.push",
+        "payload": {
+          "payload": {},
+          "recipient_id": "alice",
+          "sender_id": "spammer",
+          "type": "dm"
+        }
+      }
+    ]
+  },
+  "source": "docs/spec/v0.1/49-family-notify.md"
+}

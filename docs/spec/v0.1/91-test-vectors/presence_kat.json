@@ -1,0 +1,59 @@
+{
+  "description": "presence family KAT: announce and query; stale version rejected",
+  "expected_output": {
+    "cases": [
+      {
+        "ok": true
+      },
+      {
+        "presence_count": 1,
+        "status": "online"
+      },
+      {
+        "ok": false,
+        "reason": "stale_status_version"
+      }
+    ]
+  },
+  "inputs": {
+    "cases": [
+      {
+        "advertised_caps": [
+          "cap.presence"
+        ],
+        "label": "announce alice online",
+        "operation": "presence.update",
+        "payload": {
+          "peer_id": "alice",
+          "status": "online",
+          "status_version": 1
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.presence"
+        ],
+        "label": "query alice presence",
+        "operation": "presence.query",
+        "payload": {
+          "peer_ids": [
+            "alice"
+          ]
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.presence"
+        ],
+        "label": "stale version rejected: re-announce with same version",
+        "operation": "presence.update",
+        "payload": {
+          "peer_id": "alice",
+          "status": "away",
+          "status_version": 1
+        }
+      }
+    ]
+  },
+  "source": "docs/spec/v0.1/48-family-presence.md"
+}

@@ -1,3 +1,8 @@
+> **SUPERSEDED BY `docs/spec/v0.1/60-local-control-api.md`** — This document
+> is a historical sketch of the local control API. The normative specification
+> is `docs/spec/v0.1/60-local-control-api.md`. Do not use this document as an
+> implementation reference.
+
 # Xorein local control API v1
 
 The Harmolyn frontend connects to a **local-only** Xorein runtime over a versioned control API.

@@ -1,0 +1,55 @@
+{
+  "description": "moderation.slow_mode: set 2000ms delay; messages too close are rejected; moderator bypasses",
+  "source": "docs/spec/v0.1/50-family-moderation.md §3.6",
+  "inputs": {
+    "governance_setup": [
+      {"server_id": "srv1", "peer_id": "alice", "role": "moderator"},
+      {"server_id": "srv1", "peer_id": "bob", "role": "member"}
+    ],
+    "cases": [
+      {
+        "label": "set slow_mode 2000ms",
+        "operation": "moderation.slow_mode",
+        "advertised_caps": ["cap.moderation", "cap.slow-mode"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "server_id": "srv1",
+          "channel_id": "ch1",
+          "min_delay_ms": 2000,
+          "effective_from": 0
+        }
+      },
+      {
+        "label": "min_delay_ms exceeds 21600000 - invalid",
+        "operation": "moderation.slow_mode",
+        "advertised_caps": ["cap.moderation", "cap.slow-mode"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "server_id": "srv1",
+          "channel_id": "ch1",
+          "min_delay_ms": 21600001,
+          "effective_from": 0
+        }
+      },
+      {
+        "label": "disable slow_mode by setting 0",
+        "operation": "moderation.slow_mode",
+        "advertised_caps": ["cap.moderation", "cap.slow-mode"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "server_id": "srv1",
+          "channel_id": "ch1",
+          "min_delay_ms": 0,
+          "effective_from": 0
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"accepted": true, "channel_id": "ch1", "min_delay_ms": 2000},
+      {"error_code": "SLOW_MODE_INVALID_DURATION"},
+      {"accepted": true, "channel_id": "ch1", "min_delay_ms": 0}
+    ]
+  }
+}

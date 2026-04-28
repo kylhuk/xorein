@@ -1,0 +1,28 @@
+{
+  "description": "sync.coverage: server with no history returns all-zero coverage response",
+  "source": "docs/spec/v0.1/44-family-sync.md §4.1",
+  "inputs": {
+    "server_id": "srv1",
+    "messages": [],
+    "cases": [
+      {
+        "label": "empty coverage query",
+        "operation": "sync.coverage",
+        "advertised_caps": ["cap.sync"],
+        "payload": {"server_id": "srv1", "from_seq": 0, "to_seq": 0}
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {
+        "server_id": "srv1",
+        "available_from": 0,
+        "available_to": 0,
+        "message_hashes": [],
+        "snapshot_root": "",
+        "gap_ranges": null
+      }
+    ]
+  }
+}

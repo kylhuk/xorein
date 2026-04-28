@@ -1,0 +1,29 @@
+{
+  "description": "ResolveRoleState: two concurrent role records for the same peer; higher version wins; equal version picks newer UpdatedAt; equal UpdatedAt picks lower role (conservative)",
+  "source": "docs/spec/v0.1/51-family-governance.md §6",
+  "inputs": {
+    "cases": [
+      {
+        "label": "higher version wins",
+        "a": {"role": "moderator", "version": 5, "updated_at_unix": 1000},
+        "b": {"role": "member",    "version": 3, "updated_at_unix": 2000},
+        "expected_winner": "a"
+      },
+      {
+        "label": "equal version - newer UpdatedAt wins",
+        "a": {"role": "moderator", "version": 3, "updated_at_unix": 2000},
+        "b": {"role": "admin",     "version": 3, "updated_at_unix": 1000},
+        "expected_winner": "a"
+      },
+      {
+        "label": "equal version and UpdatedAt - lower role wins (conservative)",
+        "a": {"role": "moderator", "version": 3, "updated_at_unix": 1000},
+        "b": {"role": "admin",     "version": 3, "updated_at_unix": 1000},
+        "expected_winner": "a"
+      }
+    ]
+  },
+  "expected_output": {
+    "note": "ResolveRoleState is deterministic; all three cases select 'a' as the winner per spec §6"
+  }
+}

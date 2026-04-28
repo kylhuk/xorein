@@ -1,3 +1,8 @@
+> **SUPERSEDED BY `docs/spec/v0.1/31-discovery.md` and `32-nat-traversal.md`** —
+> This addendum is a historical design narrative for discovery and NAT traversal.
+> The normative specifications are in `docs/spec/v0.1/`. Do not use this document
+> as an implementation reference.
+
 # Aether Implementation Plan — Addendum A
 
 This addendum extends **“Aether Protocol & Platform — Revised Implementation Plan v3”** and specifically closes two adoption blockers: (1) “just works” quality (connectivity, calls, background), and (2) public server discovery + serious moderation. fileciteturn0file0

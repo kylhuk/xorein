@@ -1,0 +1,32 @@
+{
+  "description": "moderation.kick with tampered signature field returns MODERATION_INVALID_SIGNATURE",
+  "source": "docs/spec/v0.1/50-family-moderation.md §7",
+  "inputs": {
+    "governance_setup": [
+      {"server_id": "srv1", "peer_id": "alice", "role": "admin"},
+      {"server_id": "srv1", "peer_id": "charlie", "role": "member"}
+    ],
+    "cases": [
+      {
+        "label": "tampered signature on kick request",
+        "operation": "moderation.kick",
+        "advertised_caps": ["cap.moderation", "cap.slow-mode"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "target_peer_id": "charlie",
+          "scope_id": "srv1",
+          "signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        "tampered_signature": true
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {
+        "note": "signature verification is enforced when a non-empty signature is present and verification is wired; this KAT documents the expected error code",
+        "error_code": "MODERATION_INVALID_SIGNATURE"
+      }
+    ]
+  }
+}

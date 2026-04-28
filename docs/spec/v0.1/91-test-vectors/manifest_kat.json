@@ -1,0 +1,43 @@
+{
+  "description": "manifest family KAT: publish and fetch by hash; fetch not found",
+  "expected_output": {
+    "cases": [
+      {
+        "hash_non_empty": true,
+        "ok": true
+      },
+      {
+        "error_code": "MANIFEST_NOT_FOUND"
+      }
+    ]
+  },
+  "inputs": {
+    "cases": [
+      {
+        "advertised_caps": [
+          "cap.manifest"
+        ],
+        "label": "publish and fetch by hash",
+        "operation": "manifest.publish",
+        "payload": {
+          "content": {
+            "key": "value"
+          },
+          "publisher_id": "alice",
+          "scope_id": "sc1"
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.manifest"
+        ],
+        "label": "fetch not found",
+        "operation": "manifest.fetch",
+        "payload": {
+          "hash": "nonexistent-hash"
+        }
+      }
+    ]
+  },
+  "source": "docs/spec/v0.1/42-family-manifest.md"
+}

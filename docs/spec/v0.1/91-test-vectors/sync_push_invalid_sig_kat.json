@@ -1,0 +1,37 @@
+{
+  "description": "sync.push: delivery with empty signature is rejected → SYNC_SIGNATURE_INVALID",
+  "source": "docs/spec/v0.1/44-family-sync.md §4.3",
+  "inputs": {
+    "server_id": "srv1",
+    "is_archivist": true,
+    "cases": [
+      {
+        "label": "push with empty signature → rejected",
+        "operation": "sync.push",
+        "advertised_caps": ["cap.sync", "cap.archivist"],
+        "payload": {
+          "server_id": "srv1",
+          "deliveries": [
+            {
+              "id": "msg-bad",
+              "sequence": 1,
+              "created_at": "2025-03-01T00:00:00Z",
+              "body": "AAAA",
+              "signature": ""
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {
+        "accepted_count": 0,
+        "duplicate_count": 0,
+        "rejected_count": 1,
+        "first_rejection_error": "SYNC_SIGNATURE_INVALID"
+      }
+    ]
+  }
+}

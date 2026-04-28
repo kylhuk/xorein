@@ -1,0 +1,32 @@
+{
+  "description": "SFU opacity: SFU-role handler forwards voice.frame bytes unchanged; SFU cannot decrypt (no PeerKey)",
+  "source": "docs/spec/v0.1/52-family-voice.md §5",
+  "inputs": {
+    "sfu_mode": true,
+    "mediashield_peer_keys": {"s1": {"peer-p1": "AAECBAUGB"}},
+    "session_setup": [
+      {"session_id": "s1", "peer_id": "peer-p1", "codec": "opus"}
+    ],
+    "cases": [
+      {
+        "label": "SFU forwards opaque frame",
+        "operation": "voice.frame",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "sender_peer_id": "peer-p1",
+          "counter": 1,
+          "ciphertext": "c2VjcmV0Ym9keWJ5dGVz"
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {
+        "ok": true,
+        "forwarded_ciphertext": "c2VjcmV0Ym9keWJ5dGVz"
+      }
+    ]
+  }
+}

@@ -5,6 +5,11 @@ import (
 	"io"
 )
 
+var (
+	runRepoSnapshotFn   = runRepoSnapshot
+	runBaselineHealthFn = runBaselineHealth
+)
+
 func runPreflight(w io.Writer, root string) error {
 	_, _ = fmt.Fprintln(w, "Preflight report")
 	_, _ = fmt.Fprintln(w)

@@ -1,0 +1,46 @@
+{
+  "description": "Crowd mode epoch chain derivation (time/message-limit rotation, no membership change)",
+  "source": "Constructed — computed from reference implementation (pkg/v0_1/crypto.DeriveKey). See 13-mode-crowd.md §3.4",
+  "vectors": [
+    {
+      "id": "crowd-epoch-chain-step1",
+      "description": "Derive next_epoch_root from current_epoch_root (first chain step)",
+      "operation": "HKDF-SHA-256",
+      "inputs": {
+        "ikm": "0202020202020202020202020202020202020202020202020202020202020202",
+        "ikm_description": "current_epoch_root_secret",
+        "salt": "",
+        "info_utf8": "xorein/crowd/v1/epoch-root",
+        "info": "786f7265696e2f63726f77642f76312f65706f63682d726f6f74",
+        "length": 32
+      },
+      "expected_output": {
+        "next_epoch_root": "048567c19da8d8ee1a030bfc269b201a85756e8ebd829ad3b5370c8b29a01d0d"
+      }
+    },
+    {
+      "id": "crowd-epoch-chain-step2",
+      "description": "Second chain step: derive epoch+2 root from epoch+1 root",
+      "operation": "HKDF-SHA-256",
+      "inputs": {
+        "ikm_description": "next_epoch_root from step1 (output of crowd-epoch-chain-step1)",
+        "ikm": "048567c19da8d8ee1a030bfc269b201a85756e8ebd829ad3b5370c8b29a01d0d",
+        "salt": "",
+        "info_utf8": "xorein/crowd/v1/epoch-root",
+        "info": "786f7265696e2f63726f77642f76312f65706f63682d726f6f74",
+        "length": 32
+      },
+      "expected_output": {
+        "next_epoch_root": "3a54f1ff0ffe148162ea2039d5cf53767feab309d2d79a862ddba344d0f67a3e"
+      }
+    }
+  ],
+  "negative_vectors": [
+    {
+      "id": "crowd-epoch-chain-membership-change",
+      "description": "On membership change, epoch root MUST be fresh random (NOT chained)",
+      "assertion": "next_epoch_root != HKDF-SHA-256(current_epoch_root, '', 'xorein/crowd/v1/epoch-root', 32)",
+      "note": "Verified by integration test, not KAT: fresh randomness cannot be pre-computed."
+    }
+  ]
+}

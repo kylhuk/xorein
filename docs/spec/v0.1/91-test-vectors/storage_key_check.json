@@ -1,0 +1,10 @@
+{
+  "description": "Key-check derivation: key_check = base64url_no_pad(SHA-256(store_key || \"xorein-state-store-key-check\"))",
+  "source": "docs/spec/v0.1/70-storage-and-key-derivation.md §3.1",
+  "inputs": {
+    "store_key_hex": "f5a5fd42d16a20302798ef6ed309979b43003d2320d9f0e8ea9831a92759fb4b"
+  },
+  "expected_output": {
+    "key_check_b64url": "yvWmhZkQlZ9JAoIZ_CdmLZzLpY35CISkPIYuj_ml2sI"
+  }
+}

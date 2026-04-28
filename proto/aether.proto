@@ -124,10 +124,13 @@ enum VoiceSignalSessionStatus {
 }
 
 // SignatureAlgorithm tracks how the signature bytes should be verified.
+// Spec: docs/spec/v0.1/01-cryptographic-primitives.md
 enum SignatureAlgorithm {
   SIGNATURE_ALGORITHM_UNSPECIFIED = 0;
-  SIGNATURE_ALGORITHM_ED25519 = 1;
-  SIGNATURE_ALGORITHM_P256 = 2;
+  SIGNATURE_ALGORITHM_ED25519 = 1;                    // v0.1 classical-only identity signature
+  SIGNATURE_ALGORITHM_P256 = 2;                       // reserved; not used in v0.1
+  SIGNATURE_ALGORITHM_ML_DSA_65 = 3;                  // standalone ML-DSA-65 (reserved; use HYBRID for v0.1 PQ)
+  SIGNATURE_ALGORITHM_HYBRID_ED25519_ML_DSA_65 = 4;   // v0.1 PQ-hybrid: both Ed25519 and ML-DSA-65 required
 
   reserved 100 to 199;
 }
@@ -148,11 +151,16 @@ enum EnvelopeVerificationError {
 }
 
 // SecurityMode encodes conversation mode negotiation for v0.2 envelopes.
+// Spec: docs/spec/v0.1/04-security-modes.md
 enum SecurityMode {
   SECURITY_MODE_UNSPECIFIED = 0;
-  SECURITY_MODE_SEAL = 1;
-  SECURITY_MODE_TREE = 2;
-  SECURITY_MODE_CLEAR = 3;
+  SECURITY_MODE_SEAL = 1;         // 1:1 E2EE via X3DH + Double Ratchet
+  SECURITY_MODE_TREE = 2;         // small-group E2EE via MLS RFC 9420
+  SECURITY_MODE_CLEAR = 3;        // explicit plaintext; must be UI-labeled
+  SECURITY_MODE_CROWD = 4;        // large-group E2EE via sender-keys + epoch rotation
+  SECURITY_MODE_CHANNEL = 5;      // server-wide E2EE via sender-keys
+  SECURITY_MODE_MEDIA_SHIELD = 6; // E2EE media frames via SFrame
+  SECURITY_MODE_STREAM_SHIELD = 7;// E2EE screen-share / soundboard via SFrame
 
   reserved 100 to 199;
 }
@@ -478,9 +486,10 @@ message IdentityProfile {
 
   string identity_id = 1;
   string display_name = 2;
-  bytes signing_public_key = 3;
+  bytes signing_public_key = 3;       // Ed25519 public key (32 bytes)
   bytes profile_signature = 4;
   CapabilitySet advertised_capabilities = 5;
+  bytes ml_dsa_65_public_key = 6;     // ML-DSA-65 public key; required for PQ-hybrid nodes
 }
 
 // MembershipState records per-member enablement toggles within manifests.
@@ -640,6 +649,8 @@ message VoiceSignalSessionState {
 }
 
 // SignedEnvelope standardizes canonical serialization and signatures.
+// For PQ-hybrid nodes: signature_algorithm = SIGNATURE_ALGORITHM_HYBRID_ED25519_ML_DSA_65;
+// both `signature` (Ed25519) and `ml_dsa_65_signature` (ML-DSA-65) MUST be present and valid.
 message SignedEnvelope {
   reserved 100 to 199;
 
@@ -648,9 +659,10 @@ message SignedEnvelope {
   bytes payload = 3;
   IdentityProfile signer = 4;
   SignatureAlgorithm signature_algorithm = 5;
-  bytes signature = 6;
+  bytes signature = 6;                  // Ed25519 signature over canonical_payload
   bytes canonical_payload = 7;
-  uint64 signed_at = 8; // unix seconds
+  uint64 signed_at = 8;                 // unix milliseconds since epoch
+  bytes ml_dsa_65_signature = 9;        // ML-DSA-65 signature; required when algorithm = HYBRID
 }
 
 // VerificationError contains a taxonomy code plus human-readable detail.
@@ -1071,4 +1083,46 @@ message GovernanceMetadata {
   SecurityMode security_mode = 6;
   string mode_epoch_id = 7;
   uint64 policy_version = 8;
+}
+
+// PeerStreamError is a structured failure from any stream operation or negotiation.
+// Spec: docs/spec/v0.1/02-canonical-envelope.md §3
+message PeerStreamError {
+  reserved 100 to 199;
+
+  string code = 1;                        // machine-readable error code (see spec §3.3)
+  string message = 2;                     // human-readable description
+  repeated string missing_capabilities = 3; // populated for MISSING_REQUIRED_CAPABILITY
+  string unsupported_version = 4;         // populated for UNSUPPORTED_VERSION
+}
+
+// PeerStreamRequest is the native-protobuf request envelope sent over a libp2p stream.
+// Wire framing: [4-byte big-endian uint32 payload length][proto.Marshal(PeerStreamRequest)]
+// Replaces the legacy JSON requestEnvelope.
+// Spec: docs/spec/v0.1/02-canonical-envelope.md §3
+message PeerStreamRequest {
+  reserved 100 to 199;
+
+  string operation = 1;               // e.g. "peer.info", "chat.send", "dm.send"
+  bytes payload = 2;                  // operation-specific protobuf-encoded bytes
+  repeated string advertised_caps = 3; // capability flags this initiator supports
+  repeated string required_caps = 4;  // capability flags required from the responder
+  string protocol_id = 5;             // /aether/<family>/<major>.<minor>.<patch>
+  SecurityMode security_mode = 6;     // active security mode for this operation
+  string request_id = 7;              // UUID v4; idempotency nonce for at-least-once delivery
+}
+
+// PeerStreamResponse is the native-protobuf reply envelope sent over a libp2p stream.
+// Wire framing: [4-byte big-endian uint32 payload length][proto.Marshal(PeerStreamResponse)]
+// Replaces the legacy JSON responseEnvelope.
+// Spec: docs/spec/v0.1/02-canonical-envelope.md §3
+message PeerStreamResponse {
+  reserved 100 to 199;
+
+  string negotiated_protocol = 1;    // /aether/<family>/<version> agreed upon
+  repeated string accepted_caps = 2; // intersection of both sides' advertised capabilities
+  repeated string ignored_caps = 3;  // remote caps the responder does not support
+  bytes payload = 4;                 // operation-specific protobuf-encoded bytes
+  PeerStreamError error = 5;         // populated if negotiation or operation failed
+  string request_id = 6;             // mirrors PeerStreamRequest.request_id
 }

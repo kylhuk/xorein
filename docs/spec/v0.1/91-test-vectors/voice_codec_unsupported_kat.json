@@ -1,0 +1,29 @@
+{
+  "description": "voice.offer: SDP advertising only G.711 PCMU (no Opus) is rejected with VOICE_CODEC_UNSUPPORTED",
+  "source": "docs/spec/v0.1/52-family-voice.md §3.3",
+  "inputs": {
+    "mediashield_peer_keys": {"s2": {"peer-p1": "AAECBAUGB", "peer-p2": "AQIDBA=="}},
+    "session_setup": [
+      {"session_id": "s2", "peer_id": "peer-p1", "codec": "opus"},
+      {"session_id": "s2", "peer_id": "peer-p2", "codec": "opus"}
+    ],
+    "cases": [
+      {
+        "label": "SDP with only PCMU → VOICE_CODEC_UNSUPPORTED",
+        "operation": "voice.offer",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s2",
+          "peer_id": "peer-p1",
+          "sequence": 1,
+          "sdp": "v=0\r\no=- 0 0 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 0 8\r\na=rtpmap:0 PCMU/8000\r\na=rtpmap:8 PCMA/8000\r\n"
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"error_code": "VOICE_CODEC_UNSUPPORTED"}
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "description": "voice.join then voice.leave: peer joins a session and leaves; session participant list empties",
+  "source": "docs/spec/v0.1/52-family-voice.md §3.1",
+  "inputs": {
+    "mediashield_peer_keys": {"s1": {"peer-p1": "AAECBAUGB"}},
+    "cases": [
+      {
+        "label": "join session s1",
+        "operation": "voice.join",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "peer_id": "peer-p1",
+          "codec": "opus"
+        }
+      },
+      {
+        "label": "leave session s1",
+        "operation": "voice.leave",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "peer_id": "peer-p1"
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"ok": true, "participants_count": 1},
+      {"ok": true, "participants_count": 0}
+    ]
+  }
+}

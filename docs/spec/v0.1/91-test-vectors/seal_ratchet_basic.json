@@ -1,0 +1,23 @@
+{
+  "description": "Double Ratchet basic encrypt/decrypt KAT",
+  "source": "Constructed: pkg/v0_1/mode/seal with fixed root_key=HKDF(0x01, nil, root-key, 64)",
+  "inputs": {
+    "root_key":       "03e7ed4512b6b61499c4142d82fe40551ba323e87d2701b4e73ede7af0b57262",
+    "recv_chain_key": "24c5c4ff328945af75991d3ab939619d20747517c92da45e9a105e489d709e7d",
+    "remote_ratchet_pub": "d392a4ac73e35e1ea6b4b859df87dd6ffab65569b3f860e8d8802e6436247608",
+    "header":     "010000000000000000d392a4ac73e35e1ea6b4b859df87dd6ffab65569b3f860e8d8802e6436247608579cb2de9bc3afa676821107",
+    "ciphertext": "a7789d5af7294e0de4e8b4c5be976bf8a635a949c0f620dfe14a6643e6",
+    "plaintext":  "68656c6c6f2072617463686574"
+  },
+  "expected_output": {
+    "plaintext": "68656c6c6f2072617463686574",
+    "plaintext_utf8": "hello ratchet"
+  },
+  "notes": [
+    "recv_chain_key = chain_key from seal-root-key vector above.",
+    "remote_ratchet_pub: the sender's ratchet public key (embedded in header bytes 9-40).",
+    "header: 53-byte fixed-layout: [version=0x01][counter_be4][prev_chain_len_be4][ratchet_pub_32][nonce_12]",
+    "ciphertext: ChaCha20-Poly1305 output (plaintext + 16-byte tag = 29 bytes = 58 hex chars).",
+    "Test: Decrypt(root_key, recv_chain_key, header, ciphertext) == plaintext."
+  ]
+}

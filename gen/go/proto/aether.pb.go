@@ -537,9 +537,11 @@ func (VoiceSignalSessionStatus) EnumDescriptor() ([]byte, []int) {
 type SignatureAlgorithm int32
 
 const (
-	SignatureAlgorithm_SIGNATURE_ALGORITHM_UNSPECIFIED SignatureAlgorithm = 0
-	SignatureAlgorithm_SIGNATURE_ALGORITHM_ED25519     SignatureAlgorithm = 1
-	SignatureAlgorithm_SIGNATURE_ALGORITHM_P256        SignatureAlgorithm = 2
+	SignatureAlgorithm_SIGNATURE_ALGORITHM_UNSPECIFIED            SignatureAlgorithm = 0
+	SignatureAlgorithm_SIGNATURE_ALGORITHM_ED25519                SignatureAlgorithm = 1
+	SignatureAlgorithm_SIGNATURE_ALGORITHM_P256                   SignatureAlgorithm = 2
+	SignatureAlgorithm_SIGNATURE_ALGORITHM_ML_DSA_65              SignatureAlgorithm = 3 // standalone ML-DSA-65
+	SignatureAlgorithm_SIGNATURE_ALGORITHM_HYBRID_ED25519_ML_DSA_65 SignatureAlgorithm = 4 // v0.1 PQ-hybrid (required)
 )
 
 // Enum value maps for SignatureAlgorithm.
@@ -548,11 +550,15 @@ var (
 		0: "SIGNATURE_ALGORITHM_UNSPECIFIED",
 		1: "SIGNATURE_ALGORITHM_ED25519",
 		2: "SIGNATURE_ALGORITHM_P256",
+		3: "SIGNATURE_ALGORITHM_ML_DSA_65",
+		4: "SIGNATURE_ALGORITHM_HYBRID_ED25519_ML_DSA_65",
 	}
 	SignatureAlgorithm_value = map[string]int32{
-		"SIGNATURE_ALGORITHM_UNSPECIFIED": 0,
-		"SIGNATURE_ALGORITHM_ED25519":     1,
-		"SIGNATURE_ALGORITHM_P256":        2,
+		"SIGNATURE_ALGORITHM_UNSPECIFIED":              0,
+		"SIGNATURE_ALGORITHM_ED25519":                  1,
+		"SIGNATURE_ALGORITHM_P256":                     2,
+		"SIGNATURE_ALGORITHM_ML_DSA_65":                3,
+		"SIGNATURE_ALGORITHM_HYBRID_ED25519_ML_DSA_65": 4,
 	}
 )
 
@@ -2298,9 +2304,10 @@ type IdentityProfile struct {
 	state                  protoimpl.MessageState `protogen:"open.v1"`
 	IdentityId             string                 `protobuf:"bytes,1,opt,name=identity_id,json=identityId,proto3" json:"identity_id,omitempty"`
 	DisplayName            string                 `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
-	SigningPublicKey       []byte                 `protobuf:"bytes,3,opt,name=signing_public_key,json=signingPublicKey,proto3" json:"signing_public_key,omitempty"`
-	ProfileSignature       []byte                 `protobuf:"bytes,4,opt,name=profile_signature,json=profileSignature,proto3" json:"profile_signature,omitempty"`
+	SigningPublicKey        []byte                 `protobuf:"bytes,3,opt,name=signing_public_key,json=signingPublicKey,proto3" json:"signing_public_key,omitempty"`
+	ProfileSignature        []byte                 `protobuf:"bytes,4,opt,name=profile_signature,json=profileSignature,proto3" json:"profile_signature,omitempty"`
 	AdvertisedCapabilities *CapabilitySet         `protobuf:"bytes,5,opt,name=advertised_capabilities,json=advertisedCapabilities,proto3" json:"advertised_capabilities,omitempty"`
+	MlDsa65PublicKey        []byte                 `protobuf:"bytes,6,opt,name=ml_dsa_65_public_key,json=mlDsa65PublicKey,proto3" json:"ml_dsa_65_public_key,omitempty"` // ML-DSA-65 public key; required for PQ-hybrid nodes
 	unknownFields          protoimpl.UnknownFields
 	sizeCache              protoimpl.SizeCache
 }
@@ -2366,6 +2373,13 @@ func (x *IdentityProfile) GetProfileSignature() []byte {
 func (x *IdentityProfile) GetAdvertisedCapabilities() *CapabilitySet {
 	if x != nil {
 		return x.AdvertisedCapabilities
+	}
+	return nil
+}
+
+func (x *IdentityProfile) GetMlDsa65PublicKey() []byte {
+	if x != nil {
+		return x.MlDsa65PublicKey
 	}
 	return nil
 }
@@ -3444,6 +3458,7 @@ type SignedEnvelope struct {
 	Signature          []byte                 `protobuf:"bytes,6,opt,name=signature,proto3" json:"signature,omitempty"`
 	CanonicalPayload   []byte                 `protobuf:"bytes,7,opt,name=canonical_payload,json=canonicalPayload,proto3" json:"canonical_payload,omitempty"`
 	SignedAt           uint64                 `protobuf:"varint,8,opt,name=signed_at,json=signedAt,proto3" json:"signed_at,omitempty"` // unix seconds
+	MlDsa65Signature   []byte                 `protobuf:"bytes,9,opt,name=ml_dsa_65_signature,json=mlDsa65Signature,proto3" json:"ml_dsa_65_signature,omitempty"` // ML-DSA-65 sig; required when algorithm=HYBRID
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -3532,6 +3547,13 @@ func (x *SignedEnvelope) GetSignedAt() uint64 {
 		return x.SignedAt
 	}
 	return 0
+}
+
+func (x *SignedEnvelope) GetMlDsa65Signature() []byte {
+	if x != nil {
+		return x.MlDsa65Signature
+	}
+	return nil
 }
 
 // VerificationError contains a taxonomy code plus human-readable detail.

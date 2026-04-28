@@ -1,0 +1,28 @@
+{
+  "description": "MediaShield SFrame AES-128-GCM encrypt/decrypt with Xorein-specific header construction",
+  "source": "Constructed — computed from reference implementation (pkg/v0_1/mode/mediashield). See 15-mode-mediashield.md §3.1 and §3.3",
+  "vectors": [
+    {
+      "id": "mediashield-sframe-encrypt",
+      "description": "Full SFrame encryption: mediashield_key → AES-128 key + HKDF nonce → AES-128-GCM",
+      "inputs": {
+        "mediashield_key": "0303030303030303030303030303030303030303030303030303030303030303",
+        "aes128_key": "03030303030303030303030303030303",
+        "frame_counter": 0,
+        "frame_counter_bytes": "0000000000000000",
+        "nonce": "100591afedc65516ea8fab4f",
+        "peer_id": "alice@xorein",
+        "peer_kid": "176cd6a27cee7df1",
+        "sframe_header": "176cd6a27cee7df10000000000000000",
+        "rtp_header_bytes": "80000001000000010000000100000000",
+        "aad": "176cd6a27cee7df1000000000000000080000001000000010000000100000000",
+        "media_frame_plaintext": "48656c6c6f2c20576f726c6421",
+        "media_frame_plaintext_utf8": "Hello, World!"
+      },
+      "expected_output": {
+        "ciphertext_with_tag": "6fdbe5a2203f6c7721f21482ac75d1bb157bbf392e85a8cc7531f5c0a1",
+        "sframe_payload": "176cd6a27cee7df100000000000000006fdbe5a2203f6c7721f21482ac75d1bb157bbf392e85a8cc7531f5c0a1"
+      }
+    }
+  ]
+}

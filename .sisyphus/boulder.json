@@ -1,125 +1,41 @@
 {
-  "active_plan": "/home/hal9000/docker/xorein/.sisyphus/plans/backend-server.md",
-  "started_at": "2026-04-21T12:58:52.918Z",
+  "active_plan": "/home/hal9000/docker/xorein/.sisyphus/plans/protocol-reachability.md",
+  "started_at": "2026-04-21T21:02:20.460Z",
   "session_ids": [
-    "ses_250532853ffe26IeKR4525QTjo",
-    "ses_24f4ac935ffeemM6WBUz7U6Jcv",
-    "ses_24f4ac24affeb4fUCc5btDS5nd",
-    "ses_24f4ac23cffeKXWZUcaV0VAVrV",
-    "ses_24f4ac22fffeBhaEsOQD5hfOGq",
-    "ses_24f4ac225ffeP2KC0k3ZZFch5n",
-    "ses_24f0ada3affeFXCK4dfjRP4icd",
-    "ses_24f0ad7a4ffeWmT43tHG4I2kYY",
-    "ses_24f0ad2f7ffewyqnz1MrCvd41j",
-    "ses_24f0ad2f4ffedcUafFE8oxSH7r",
-    "ses_24f072927ffeR0XEOw4qoOGF5k",
-    "ses_24f072723ffekqO9moLr6I015A",
-    "ses_24edd346fffeVdYE4ifBVJUFkS",
-    "ses_24edd2218ffeYadu0qbwR1rFN9",
-    "ses_24edd2207ffebOEDMARiDZkoMG",
-    "ses_24edd2208ffeKMv634X8CMHi6w"
+    "ses_24e3a4484ffe8kWssv2DGUsYmz"
   ],
   "session_origins": {
-    "ses_250532853ffe26IeKR4525QTjo": "direct",
-    "ses_24f4ac935ffeemM6WBUz7U6Jcv": "appended",
-    "ses_24f4ac24affeb4fUCc5btDS5nd": "appended",
-    "ses_24f4ac23cffeKXWZUcaV0VAVrV": "appended",
-    "ses_24f4ac22fffeBhaEsOQD5hfOGq": "appended",
-    "ses_24f4ac225ffeP2KC0k3ZZFch5n": "appended",
-    "ses_24f0ada3affeFXCK4dfjRP4icd": "appended",
-    "ses_24f0ad7a4ffeWmT43tHG4I2kYY": "appended",
-    "ses_24f0ad2f7ffewyqnz1MrCvd41j": "appended",
-    "ses_24f0ad2f4ffedcUafFE8oxSH7r": "appended",
-    "ses_24f072927ffeR0XEOw4qoOGF5k": "appended",
-    "ses_24f072723ffekqO9moLr6I015A": "appended",
-    "ses_24edd346fffeVdYE4ifBVJUFkS": "appended",
-    "ses_24edd2218ffeYadu0qbwR1rFN9": "appended",
-    "ses_24edd2207ffebOEDMARiDZkoMG": "appended",
-    "ses_24edd2208ffeKMv634X8CMHi6w": "appended"
+    "ses_24e3a4484ffe8kWssv2DGUsYmz": "direct"
   },
-  "plan_name": "backend-server",
+  "plan_name": "protocol-reachability",
   "agent": "atlas",
   "task_sessions": {
     "todo:1": {
       "task_key": "todo:1",
       "task_label": "1",
-      "task_title": "Replace runtime bootstrap and mode wiring",
-      "session_id": "ses_24fd4cb16ffepKXDCG9rK7L2bX",
+      "task_title": "Static protocol and client-surface audit",
+      "session_id": "ses_24e241073ffe7eQYvHxSxD5S01",
       "agent": "Sisyphus-Junior",
-      "category": "quick",
-      "updated_at": "2026-04-21T13:12:49.560Z"
-    },
-    "todo:2": {
-      "task_key": "todo:2",
-      "task_label": "2",
-      "task_title": "Implement p2p transport and protocol negotiation",
-      "session_id": "ses_24fd17490ffeZBFTm2qDjVSpDb",
-      "agent": "Sisyphus-Junior",
-      "category": "ultrabrain",
-      "updated_at": "2026-04-21T13:28:36.124Z"
+      "category": "deep",
+      "updated_at": "2026-04-21T21:12:20.174Z"
     },
     "todo:3": {
       "task_key": "todo:3",
       "task_label": "3",
-      "task_title": "Replace single-file persistence with durable storage",
-      "session_id": "ses_24fc319f9ffeVthC4C9ZwvPVCN",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-04-21T13:39:28.131Z"
-    },
-    "todo:4": {
-      "task_key": "todo:4",
-      "task_label": "4",
-      "task_title": "Implement discovery, bootstrap, and peer exchange",
-      "session_id": "ses_24fba55e0ffeQ3CAGXuGvsfIOv",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-04-21T13:48:06.500Z"
-    },
-    "todo:5": {
-      "task_key": "todo:5",
-      "task_label": "5",
-      "task_title": "Move manifest, join, and delivery flows onto the p2p transport",
-      "session_id": "ses_24fa7e0a9ffeYSSNvlhnxgs3Ur",
-      "agent": "Sisyphus-Junior",
-      "category": "ultrabrain",
-      "updated_at": "2026-04-21T14:08:15.268Z"
-    },
-    "todo:6": {
-      "task_key": "todo:6",
-      "task_label": "6",
-      "task_title": "Implement relay, archive, and history semantics",
-      "session_id": "ses_24fa0373bffesrxuJuc6UMF0Wd",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-04-21T14:13:53.766Z"
-    },
-    "todo:7": {
-      "task_key": "todo:7",
-      "task_label": "7",
-      "task_title": "Preserve and align the local control API",
-      "session_id": "ses_24f99d21bffejjLbnjQzYslTYP",
-      "agent": "Sisyphus-Junior",
-      "category": "deep",
-      "updated_at": "2026-04-21T14:24:12.598Z"
-    },
-    "todo:8": {
-      "task_key": "todo:8",
-      "task_label": "8",
-      "task_title": "Realign verification, build, and regression gates",
-      "session_id": "ses_24f900025ffeXJlTo1xH9r870M",
+      "task_title": "Run live smoke and package the verdict",
+      "session_id": "ses_24e187fceffeP35UdvP1SS3LDU",
       "agent": "Sisyphus-Junior",
       "category": "unspecified-high",
-      "updated_at": "2026-04-21T14:44:58.842Z"
+      "updated_at": "2026-04-21T21:25:41.175Z"
     },
     "final-wave:f1": {
       "task_key": "final-wave:f1",
       "task_label": "F1",
       "task_title": "Plan Compliance Audit — oracle",
-      "session_id": "ses_24e405815ffegZRIBOLxMnZukT",
+      "session_id": "ses_24e0edbc6ffesp39jl2j3EI6Sh",
       "agent": "Sisyphus-Junior",
       "category": "unspecified-high",
-      "updated_at": "2026-04-21T20:35:36.974Z"
+      "updated_at": "2026-04-21T21:28:17.491Z"
     }
   }
 }

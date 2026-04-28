@@ -1,0 +1,51 @@
+{
+  "description": "sync.coverage: 10 messages with fixed IDs and timestamps; expected hashes and snapshot_root precomputed",
+  "source": "docs/spec/v0.1/44-family-sync.md §4.1",
+  "inputs": {
+    "server_id": "srv1",
+    "messages": [
+      {"id": "msg-001", "sequence": 1, "created_at": "2025-01-01T00:00:00Z", "body": "AAAA", "signature": "c2lnMQ=="},
+      {"id": "msg-002", "sequence": 2, "created_at": "2025-01-01T00:01:00Z", "body": "AAAA", "signature": "c2lnMQ=="},
+      {"id": "msg-003", "sequence": 3, "created_at": "2025-01-01T00:02:00Z", "body": "AAAA", "signature": "c2lnMQ=="},
+      {"id": "msg-004", "sequence": 4, "created_at": "2025-01-01T00:03:00Z", "body": "AAAA", "signature": "c2lnMQ=="},
+      {"id": "msg-005", "sequence": 5, "created_at": "2025-01-01T00:04:00Z", "body": "AAAA", "signature": "c2lnMQ=="},
+      {"id": "msg-006", "sequence": 6, "created_at": "2025-01-01T00:05:00Z", "body": "AAAA", "signature": "c2lnMQ=="},
+      {"id": "msg-007", "sequence": 7, "created_at": "2025-01-01T00:06:00Z", "body": "AAAA", "signature": "c2lnMQ=="},
+      {"id": "msg-008", "sequence": 8, "created_at": "2025-01-01T00:07:00Z", "body": "AAAA", "signature": "c2lnMQ=="},
+      {"id": "msg-009", "sequence": 9, "created_at": "2025-01-01T00:08:00Z", "body": "AAAA", "signature": "c2lnMQ=="},
+      {"id": "msg-010", "sequence": 10, "created_at": "2025-01-01T00:09:00Z", "body": "AAAA", "signature": "c2lnMQ=="}
+    ],
+    "members": ["peer-a"],
+    "cases": [
+      {
+        "label": "full coverage query",
+        "operation": "sync.coverage",
+        "advertised_caps": ["cap.sync"],
+        "payload": {"server_id": "srv1", "from_seq": 0, "to_seq": 0}
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {
+        "server_id": "srv1",
+        "available_from": 1,
+        "available_to": 10,
+        "message_hashes": [
+          "sLd83Q5q7YPB-AgP0LI9nsBlQuKNiccQrh9IhodWrKo",
+          "prdc6RU17JYZnBUTuTTA4CFh6p5jlOW6nZq5DvODbJU",
+          "9GHU6p3cku9bx-eUArjP9hBb2dQHM28OGoze5L4Uwxc",
+          "wHbLh8EMiqQMSABYrTh_GfopI3z_yxkz8rIiqtsPtuo",
+          "7bkT5CRWfc9WXYiScxfY-CL6fgS-zbY6Tm0S5E2onqo",
+          "W_OmzUFTTzrbcvSZNqqedyJBdxfw5l3k3B6mDpAQ1lY",
+          "TTvg7a9prOlC0zevQi2sqiRNjzzfy_pboeA2fi6q500",
+          "4mztQGnaBO3_j96feBGBS4_LNIz8WYLQoG3v8DRGdEA",
+          "6tpOU8L20JZvaG202JLvwJloHQQan7g4dd-q97Cbcw4",
+          "p3Aq09wTmUkdtkgTbfNNsqg6J5yCBqMZsn1ipvC1a9M"
+        ],
+        "snapshot_root": "XLdkI6MY0unP6tLAhDhwotIaXl0Tb2zRB39jAuuwecU",
+        "gap_ranges": null
+      }
+    ]
+  }
+}

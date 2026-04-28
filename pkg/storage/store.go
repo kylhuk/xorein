@@ -18,10 +18,11 @@ import (
 	"time"
 
 	sqlcipher "github.com/mutecomm/go-sqlcipher/v4"
+	"golang.org/x/crypto/argon2"
 )
 
 const (
-	FormatVersion      = 2
+	FormatVersion      = 3
 	StoreFileName      = "state.db"
 	StoreDirName       = "state.store"
 	StoreMetaFileName  = "state.db.meta.json"
@@ -53,11 +54,15 @@ type metadata struct {
 }
 
 type storeKeyMetadata struct {
-	FormatVersion int       `json:"format_version"`
-	Salt          string    `json:"salt"`
-	KeyCheck      string    `json:"key_check"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
+	FormatVersion    int       `json:"format_version"`
+	Salt             string    `json:"salt"`
+	KeyCheck         string    `json:"key_check"`
+	KDF              string    `json:"kdf,omitempty"`
+	Argon2idMemory   uint32    `json:"argon2id_memory,omitempty"`
+	Argon2idTime     uint32    `json:"argon2id_time,omitempty"`
+	Argon2idThreads  uint8     `json:"argon2id_threads,omitempty"`
+	CreatedAt        time.Time `json:"created_at"`
+	UpdatedAt        time.Time `json:"updated_at"`
 }
 
 func Load(dataDir string) (Snapshot, error) {
@@ -158,9 +163,22 @@ func openStore(dataDir string, create bool) (*sql.DB, metadata, error) {
 	if err != nil {
 		return nil, metadata{}, err
 	}
+	// Spec 70 §1.1: all files MUST be 0600. SQLite creates the DB before we can chmod;
+	// do so immediately after opening (before configureDB writes WAL files).
+	if chErr := os.Chmod(path, 0o600); chErr != nil && !os.IsNotExist(chErr) {
+		_ = db.Close()
+		return nil, metadata{}, fmt.Errorf("chmod state.db: %w", chErr)
+	}
 	if err := configureDB(db); err != nil {
 		_ = db.Close()
 		return nil, metadata{}, err
+	}
+	// WAL companion files may have been created by configureDB.
+	for _, companion := range []string{path + "-wal", path + "-shm"} {
+		if chErr := os.Chmod(companion, 0o600); chErr != nil && !os.IsNotExist(chErr) {
+			_ = db.Close()
+			return nil, metadata{}, fmt.Errorf("chmod %s: %w", companion, chErr)
+		}
 	}
 	meta, ok, err := readMetadata(db)
 	if err != nil {
@@ -270,12 +288,27 @@ func resolveStoreKeyMetadata(dataDir string, hasDB, create bool) (storeKeyMetada
 		}
 		return storeKeyMetadata{}, nil, err
 	}
-	key, err := deriveStoreKey(dataDir, decodeBase64(keyMeta.Salt), create)
-	if err != nil {
-		if errors.Is(err, fs.ErrNotExist) {
-			return storeKeyMetadata{}, nil, ErrWrongKey
+	salt := decodeBase64(keyMeta.Salt)
+	var key []byte
+	if keyMeta.FormatVersion >= 3 {
+		// §4: Argon2id KDF for format_version 3+.
+		// Spec §11: derive key → verify key_check → THEN sql.Open (enforced by caller).
+		secret, sErr := resolveSecret(dataDir, create)
+		if sErr != nil {
+			if errors.Is(sErr, fs.ErrNotExist) {
+				return storeKeyMetadata{}, nil, ErrWrongKey
+			}
+			return storeKeyMetadata{}, nil, sErr
 		}
-		return storeKeyMetadata{}, nil, err
+		key = deriveStoreKeyArgon2id(salt, secret)
+	} else {
+		key, err = deriveStoreKey(dataDir, salt, create)
+		if err != nil {
+			if errors.Is(err, fs.ErrNotExist) {
+				return storeKeyMetadata{}, nil, ErrWrongKey
+			}
+			return storeKeyMetadata{}, nil, err
+		}
 	}
 	if !matchesKeyCheck(key, keyMeta.KeyCheck) {
 		return storeKeyMetadata{}, nil, ErrWrongKey
@@ -306,17 +339,23 @@ func createStoreKeyMetadata(dataDir string) (storeKeyMetadata, []byte, error) {
 	if _, err := rand.Read(salt); err != nil {
 		return storeKeyMetadata{}, nil, fmt.Errorf("generate store salt: %w", err)
 	}
-	key, err := deriveStoreKey(dataDir, salt, true)
+	secret, err := resolveSecret(dataDir, true)
 	if err != nil {
 		return storeKeyMetadata{}, nil, err
 	}
+	// §4: new stores use Argon2id (format_version 3).
+	key := deriveStoreKeyArgon2id(salt, secret)
 	now := time.Now().UTC()
 	keyMeta := storeKeyMetadata{
-		FormatVersion: FormatVersion,
-		Salt:          base64.RawURLEncoding.EncodeToString(salt),
-		KeyCheck:      keyCheck(key),
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		FormatVersion:   FormatVersion,
+		Salt:            base64.RawURLEncoding.EncodeToString(salt),
+		KeyCheck:        keyCheck(key),
+		KDF:             "argon2id",
+		Argon2idMemory:  64 * 1024,
+		Argon2idTime:    3,
+		Argon2idThreads: 2,
+		CreatedAt:       now,
+		UpdatedAt:       now,
 	}
 	if err := writeStoreKeyMetadata(dataDir, keyMeta); err != nil {
 		return storeKeyMetadata{}, nil, err
@@ -429,6 +468,12 @@ func mapSQLError(err error) error {
 	return err
 }
 
+// deriveStoreKeyArgon2id derives a 32-byte store key using Argon2id per spec §4.
+// Parameters: m=65536 KiB, t=3, p=2.
+func deriveStoreKeyArgon2id(salt, secret []byte) []byte {
+	return argon2.IDKey(secret, salt, 3, 64*1024, 2, 32)
+}
+
 func deriveStoreKey(dataDir string, salt []byte, create bool) ([]byte, error) {
 	secret, err := resolveSecret(dataDir, create)
 	if err != nil {
@@ -487,13 +532,27 @@ func decodeBase64(raw string) []byte {
 	return decoded
 }
 
+// resolveStoreKeyFromMeta derives the store key from the meta file, dispatching
+// to Argon2id for format_version 3+ and SHA-256 for older formats.
+func resolveStoreKeyFromMeta(dataDir string, keyMeta storeKeyMetadata) ([]byte, error) {
+	salt := decodeBase64(keyMeta.Salt)
+	if keyMeta.FormatVersion >= 3 {
+		secret, err := resolveSecret(dataDir, false)
+		if err != nil {
+			return nil, err
+		}
+		return deriveStoreKeyArgon2id(salt, secret), nil
+	}
+	return deriveStoreKey(dataDir, salt, false)
+}
+
 // SealPayload encrypts an opaque payload using the store secret material.
 func SealPayload(dataDir string, plaintext []byte) ([]byte, error) {
 	keyMeta, err := readStoreKeyMetadata(dataDir)
 	if err != nil {
 		return nil, err
 	}
-	key, err := deriveStoreKey(dataDir, decodeBase64(keyMeta.Salt), false)
+	key, err := resolveStoreKeyFromMeta(dataDir, keyMeta)
 	if err != nil {
 		return nil, err
 	}
@@ -506,7 +565,7 @@ func OpenPayload(dataDir string, ciphertext []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	key, err := deriveStoreKey(dataDir, decodeBase64(keyMeta.Salt), false)
+	key, err := resolveStoreKeyFromMeta(dataDir, keyMeta)
 	if err != nil {
 		return nil, err
 	}

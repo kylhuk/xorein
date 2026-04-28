@@ -1,0 +1,54 @@
+{
+  "description": "governance.delete_role: admin deletes custom role; base roles are protected; missing role returns error",
+  "source": "docs/spec/v0.1/51-family-governance.md §3.5",
+  "inputs": {
+    "governance_setup": [
+      {"server_id": "srv1", "peer_id": "alice", "role": "admin"}
+    ],
+    "preexisting_custom_roles": [
+      {"server_id": "srv1", "role_name": "vip", "permissions_bitfield": 26}
+    ],
+    "cases": [
+      {
+        "label": "delete existing custom role",
+        "operation": "governance.delete_role",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "server_id": "srv1",
+          "role_name": "vip",
+          "policy_version": 0
+        }
+      },
+      {
+        "label": "delete non-existent role",
+        "operation": "governance.delete_role",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "server_id": "srv1",
+          "role_name": "nonexistent",
+          "policy_version": 0
+        }
+      },
+      {
+        "label": "delete base role - protected",
+        "operation": "governance.delete_role",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "server_id": "srv1",
+          "role_name": "moderator",
+          "policy_version": 0
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"accepted": true},
+      {"error_code": "GOVERNANCE_ROLE_NOT_FOUND"},
+      {"error_code": "GOVERNANCE_BASE_ROLE_PROTECTED"}
+    ]
+  }
+}

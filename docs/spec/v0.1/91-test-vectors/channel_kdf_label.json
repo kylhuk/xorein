@@ -1,0 +1,23 @@
+{
+  "description": "Channel mode sender key derivation (xorein/channel/v1/sender-key label)",
+  "source": "Constructed — computed from reference implementation (pkg/v0_1/crypto.DeriveKey). See 14-mode-channel.md §4",
+  "vectors": [
+    {
+      "id": "channel-sender-key",
+      "description": "Channel sender key for writer 'alice@xorein' from epoch root secret",
+      "operation": "HKDF-SHA-256",
+      "inputs": {
+        "ikm": "0404040404040404040404040404040404040404040404040404040404040404",
+        "ikm_description": "epoch_root_secret for channel scope",
+        "salt": "",
+        "info_utf8": "xorein/channel/v1/sender-keyalice@xorein",
+        "info": "786f7265696e2f6368616e6e656c2f76312f73656e6465722d6b6579616c6963654078706f7265696e",
+        "length": 32
+      },
+      "expected_output": {
+        "sender_key": "5b4325311872b9083478fb823a3c673749a8cfba4ca69c73718cfc3f2f96fed6",
+        "note": "This label differs from crowd/v1/sender-key; output must differ for same inputs."
+      }
+    }
+  ]
+}

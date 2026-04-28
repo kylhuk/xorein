@@ -1,0 +1,77 @@
+{
+  "description": "chat family KAT: join and send and history; send without join",
+  "expected_output": {
+    "cases": [
+      {
+        "ok": true
+      },
+      {
+        "ok": true
+      },
+      {
+        "count": 1
+      },
+      {
+        "error_code": "CHANNEL_NOT_FOUND"
+      }
+    ]
+  },
+  "inputs": {
+    "cases": [
+      {
+        "advertised_caps": [
+          "cap.chat"
+        ],
+        "label": "join channel ch1 as alice",
+        "operation": "chat.join",
+        "payload": {
+          "peer_id": "alice",
+          "scope_id": "ch1",
+          "scope_type": "channel"
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.chat"
+        ],
+        "label": "send message to ch1",
+        "operation": "chat.send",
+        "payload": {
+          "body": "aGVsbG8=",
+          "scope_id": "ch1",
+          "scope_type": "channel",
+          "sender_id": "alice"
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.chat"
+        ],
+        "label": "fetch history for ch1",
+        "operation": "chat.history",
+        "payload": {
+          "limit": 10,
+          "scope_id": "ch1"
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.chat"
+        ],
+        "label": "send to unknown channel without join",
+        "operation": "chat.join",
+        "payload": {
+          "peer_id": "alice",
+          "scope_id": "unknown-ch",
+          "scope_type": "channel"
+        }
+      }
+    ],
+    "setup": {
+      "registered_channels": [
+        "ch1"
+      ]
+    }
+  },
+  "source": "docs/spec/v0.1/41-family-chat.md"
+}

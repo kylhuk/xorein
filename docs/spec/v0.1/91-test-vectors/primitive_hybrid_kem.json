@@ -1,0 +1,15 @@
+{
+  "description": "Hybrid KEM combiner (X3DH + ML-KEM-768)",
+  "expected_output": {
+    "hybrid_master": "586126fa9e3542238476df218fb554ee535f4c84616185636ab4bc6e36860d3a"
+  },
+  "inputs": {
+    "mlkem_ss": "6162636465666768696a6b6c6d6e6f706162636465666768696a6b6c6d6e6f70",
+    "x3dh_secret": "6162636465666768696a6b6c6d6e6f706162636465666768696a6b6c6d6e6f706162636465666768696a6b6c6d6e6f706162636465666768696a6b6c6d6e6f70"
+  },
+  "notes": [
+    "hybrid_master = HKDF-SHA-256(ikm=x3dh_secret||mlkem_ss, salt=nil, info=xorein/seal/v1/hybrid-master, len=32)",
+    "CombineKEM must be deterministic: same inputs → same hybrid_master."
+  ],
+  "source": "Constructed: fixed inputs for CombineKEM per spec 01 §5.1"
+}

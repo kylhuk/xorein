@@ -1,0 +1,57 @@
+{
+  "description": "sync archivist isolation: archivist stores ciphertext body opaquely without inspecting plaintext; fetched body equals pushed body byte-for-byte",
+  "source": "docs/spec/v0.1/44-family-sync.md §4.3",
+  "inputs": {
+    "server_id": "srv1",
+    "is_archivist": true,
+    "members": ["peer-a"],
+    "cases": [
+      {
+        "label": "push opaque ciphertext",
+        "operation": "sync.push",
+        "advertised_caps": ["cap.sync", "cap.archivist"],
+        "payload": {
+          "server_id": "srv1",
+          "deliveries": [
+            {
+              "id": "opaque-001",
+              "sequence": 1,
+              "created_at": "2025-04-01T00:00:00Z",
+              "body": "c2VjcmV0LWtleS1zaGFwZWQtcGF5bG9hZA==",
+              "signature": "c2lnMQ=="
+            }
+          ]
+        }
+      },
+      {
+        "label": "fetch opaque ciphertext back",
+        "operation": "sync.fetch",
+        "advertised_caps": ["cap.sync"],
+        "payload": {
+          "server_id": "srv1",
+          "requester_peer_id": "peer-a",
+          "message_ids": ["opaque-001"]
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {
+        "accepted_count": 1,
+        "duplicate_count": 0,
+        "rejected_count": 0
+      },
+      {
+        "messages_count": 1,
+        "not_found_ids": [],
+        "messages": [
+          {
+            "id": "opaque-001",
+            "body": "c2VjcmV0LWtleS1zaGFwZWQtcGF5bG9hZA=="
+          }
+        ]
+      }
+    ]
+  }
+}

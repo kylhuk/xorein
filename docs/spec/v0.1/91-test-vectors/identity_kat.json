@@ -1,0 +1,25 @@
+{
+  "description": "identity family KAT: fetch unknown identity",
+  "expected_output": {
+    "cases": [
+      {
+        "error_code": "OPERATION_FAILED"
+      }
+    ]
+  },
+  "inputs": {
+    "cases": [
+      {
+        "advertised_caps": [
+          "cap.identity"
+        ],
+        "label": "fetch unknown identity",
+        "operation": "identity.fetch",
+        "payload": {
+          "peer_id": "ghost"
+        }
+      }
+    ]
+  },
+  "source": "docs/spec/v0.1/43-family-identity.md"
+}

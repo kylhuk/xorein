@@ -1,0 +1,29 @@
+{
+  "description": "governance.revoke_role: admin attempting to revoke another admin returns GOVERNANCE_FORBIDDEN_TARGET",
+  "source": "docs/spec/v0.1/51-family-governance.md §3.1 rule 2",
+  "inputs": {
+    "governance_setup": [
+      {"server_id": "srv1", "peer_id": "alice", "role": "admin"},
+      {"server_id": "srv1", "peer_id": "diana", "role": "admin"}
+    ],
+    "cases": [
+      {
+        "label": "admin revokes another admin",
+        "operation": "governance.revoke_role",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "target_peer_id": "diana",
+          "server_id": "srv1",
+          "role": "admin",
+          "policy_version": 0
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"error_code": "GOVERNANCE_FORBIDDEN_TARGET"}
+    ]
+  }
+}

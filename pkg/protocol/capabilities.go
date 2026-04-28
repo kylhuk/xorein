@@ -104,14 +104,21 @@ func DefaultPeerTransportFeatureFlags() []FeatureFlag {
 }
 
 // ValidFeatureFlagName validates v0.1 feature naming conventions.
+// Accepts "cap.*" and "mode.*" prefixes (spec 03 §3.1 + §3.3).
 func ValidFeatureFlagName(flag string) bool {
-	if !strings.HasPrefix(flag, featureFlagPrefix) {
+	var prefix string
+	switch {
+	case strings.HasPrefix(flag, "cap."):
+		prefix = "cap."
+	case strings.HasPrefix(flag, "mode."):
+		prefix = "mode."
+	default:
 		return false
 	}
 	if flag != strings.ToLower(flag) {
 		return false
 	}
-	tail := strings.TrimPrefix(flag, featureFlagPrefix)
+	tail := strings.TrimPrefix(flag, prefix)
 	if tail == "" {
 		return false
 	}

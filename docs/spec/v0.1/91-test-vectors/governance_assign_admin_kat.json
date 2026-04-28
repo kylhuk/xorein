@@ -1,0 +1,42 @@
+{
+  "description": "governance.assign_role: owner assigns admin role; policy_version increments",
+  "source": "docs/spec/v0.1/51-family-governance.md §3.1 rule 3",
+  "inputs": {
+    "governance_setup": [
+      {"server_id": "srv1", "peer_id": "owner1", "role": "owner"},
+      {"server_id": "srv1", "peer_id": "bob", "role": "member"}
+    ],
+    "cases": [
+      {
+        "label": "owner assigns admin",
+        "operation": "governance.assign_role",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "actor_peer_id": "owner1",
+          "target_peer_id": "bob",
+          "server_id": "srv1",
+          "role": "admin",
+          "policy_version": 0
+        }
+      },
+      {
+        "label": "admin cannot assign admin (insufficient)",
+        "operation": "governance.assign_role",
+        "advertised_caps": ["cap.rbac"],
+        "payload": {
+          "actor_peer_id": "bob",
+          "target_peer_id": "owner1",
+          "server_id": "srv1",
+          "role": "admin",
+          "policy_version": 0
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"accepted": true},
+      {"error_code": "GOVERNANCE_FORBIDDEN_TARGET"}
+    ]
+  }
+}

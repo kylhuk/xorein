@@ -1,0 +1,38 @@
+{
+  "description": "Crowd mode sender key derivation from epoch root secret",
+  "source": "Constructed — computed from reference implementation (pkg/v0_1/crypto.DeriveKey). See 13-mode-crowd.md §3.2",
+  "vectors": [
+    {
+      "id": "crowd-sender-key-alice",
+      "description": "Sender key for member 'alice@xorein' from epoch root secret",
+      "operation": "HKDF-SHA-256",
+      "inputs": {
+        "ikm": "0101010101010101010101010101010101010101010101010101010101010101",
+        "ikm_description": "epoch_root_secret (32 random bytes; this is a test fixture)",
+        "salt": "",
+        "info_utf8": "xorein/crowd/v1/sender-keyalice@xorein",
+        "info": "786f7265696e2f63726f77642f76312f73656e6465722d6b6579616c6963654078706f7265696e",
+        "length": 32
+      },
+      "expected_output": {
+        "sender_key": "5c1036110aafc14c2bb013292d3e442d60eeef260894ee085da54637486f4761"
+      }
+    },
+    {
+      "id": "crowd-sender-key-bob",
+      "description": "Sender key for member 'bob@xorein' from same epoch root secret",
+      "operation": "HKDF-SHA-256",
+      "inputs": {
+        "ikm": "0101010101010101010101010101010101010101010101010101010101010101",
+        "salt": "",
+        "info_utf8": "xorein/crowd/v1/sender-keybob@xorein",
+        "info": "786f7265696e2f63726f77642f76312f73656e6465722d6b657962624078706f7265696e",
+        "length": 32
+      },
+      "expected_output": {
+        "sender_key": "f6db0df0c04e2b57e49e6d1853c759e2453837ed1b2cefcf9fd3a7fd79a9d800",
+        "note": "Must differ from alice sender_key despite same epoch_root_secret"
+      }
+    }
+  ]
+}

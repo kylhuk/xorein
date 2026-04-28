@@ -1,0 +1,8 @@
+=== RUN   TestAetherRuntimeSmokeHarness
+=== RUN   TestAetherRuntimeSmokeHarness/positive_peer_info
+=== RUN   TestAetherRuntimeSmokeHarness/negative_capability_negotiation
+--- PASS: TestAetherRuntimeSmokeHarness (4.06s)
+    --- PASS: TestAetherRuntimeSmokeHarness/positive_peer_info (0.04s)
+    --- PASS: TestAetherRuntimeSmokeHarness/negative_capability_negotiation (0.04s)
+PASS
+ok  	github.com/aether/code_aether/cmd/aether	4.074s

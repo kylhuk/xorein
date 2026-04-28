@@ -1,0 +1,41 @@
+{
+  "description": "voice signal replay: sending voice.offer with the same sequence number a second time is rejected with VOICE_SIGNAL_REPLAY",
+  "source": "docs/spec/v0.1/52-family-voice.md §3.6",
+  "inputs": {
+    "mediashield_peer_keys": {"s1": {"peer-p1": "AAECBAUGB", "peer-p2": "AQIDBA=="}},
+    "session_setup": [
+      {"session_id": "s1", "peer_id": "peer-p1", "codec": "opus"},
+      {"session_id": "s1", "peer_id": "peer-p2", "codec": "opus"}
+    ],
+    "cases": [
+      {
+        "label": "offer sequence=3 → accepted",
+        "operation": "voice.offer",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "peer_id": "peer-p1",
+          "sequence": 3,
+          "sdp": "v=0\r\no=- 3 3 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=rtpmap:111 opus/48000/2\r\n"
+        }
+      },
+      {
+        "label": "replay offer sequence=3 → VOICE_SIGNAL_REPLAY",
+        "operation": "voice.offer",
+        "advertised_caps": ["cap.voice"],
+        "payload": {
+          "session_id": "s1",
+          "peer_id": "peer-p1",
+          "sequence": 3,
+          "sdp": "v=0\r\no=- 3 3 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=rtpmap:111 opus/48000/2\r\n"
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"ok": true},
+      {"error_code": "VOICE_SIGNAL_REPLAY"}
+    ]
+  }
+}

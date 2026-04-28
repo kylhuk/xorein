@@ -1,0 +1,66 @@
+{
+  "description": "moderation.mute: muted member's chat.send is rejected; after expiry it succeeds",
+  "source": "docs/spec/v0.1/50-family-moderation.md §3.5",
+  "inputs": {
+    "governance_setup": [
+      {"server_id": "srv1", "peer_id": "alice", "role": "moderator"},
+      {"server_id": "srv1", "peer_id": "bob", "role": "member"}
+    ],
+    "cases": [
+      {
+        "label": "mute bob for 5000ms",
+        "operation": "moderation.mute",
+        "advertised_caps": ["cap.moderation", "cap.slow-mode"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "target_peer_id": "bob",
+          "scope_id": "srv1",
+          "duration_ms": 5000
+        }
+      },
+      {
+        "label": "bob sends chat during mute - rejected",
+        "operation": "chat.send",
+        "advertised_caps": ["cap.chat"],
+        "server_id": "srv1",
+        "payload": {
+          "scope_id": "srv1",
+          "scope_type": "channel",
+          "sender_id": "bob",
+          "body": "aGVsbG8="
+        },
+        "time_offset_ms": 100
+      },
+      {
+        "label": "duration_ms=0 is invalid",
+        "operation": "moderation.mute",
+        "advertised_caps": ["cap.moderation", "cap.slow-mode"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "target_peer_id": "bob",
+          "scope_id": "srv1",
+          "duration_ms": 0
+        }
+      },
+      {
+        "label": "duration_ms over limit is invalid",
+        "operation": "moderation.mute",
+        "advertised_caps": ["cap.moderation", "cap.slow-mode"],
+        "payload": {
+          "actor_peer_id": "alice",
+          "target_peer_id": "bob",
+          "scope_id": "srv1",
+          "duration_ms": 2592000001
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"accepted": true, "reason": "TIMEOUT"},
+      {"error_code": "MISSING_REQUIRED_CAPABILITY"},
+      {"error_code": "SLOW_MODE_INVALID_DURATION"},
+      {"error_code": "SLOW_MODE_INVALID_DURATION"}
+    ]
+  }
+}

@@ -1,3 +1,7 @@
+> **SUPERSEDED BY `docs/spec/v0.1/`** — This document is a historical design
+> narrative. The normative Xorein v0.1 protocol specification lives in
+> `docs/spec/v0.1/`. Do not use this document as a reference for implementation.
+
 # Aether Protocol & Platform — Revised Implementation Plan v3
 
 > **Mission:** A fully peer-to-peer, end-to-end encrypted communication platform. If two nodes exist anywhere on Earth, the network exists. No central authority, no single point of failure, no compromise on speed or quality.

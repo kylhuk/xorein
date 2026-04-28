@@ -1,0 +1,58 @@
+{
+  "description": "groupdm family KAT: create group and send; non-member send rejected",
+  "expected_output": {
+    "cases": [
+      {
+        "ok": true
+      },
+      {
+        "error_code": "OPERATION_FAILED"
+      }
+    ]
+  },
+  "inputs": {
+    "cases": [
+      {
+        "advertised_caps": [
+          "cap.group-dm",
+          "mode.tree"
+        ],
+        "label": "create group g1",
+        "operation": "groupdm.create",
+        "payload": {
+          "creator": {
+            "peer_id": "alice"
+          },
+          "group_id": "g1"
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.group-dm",
+          "mode.tree"
+        ],
+        "description": "carol is not in g1; send must fail with OPERATION_FAILED",
+        "label": "non-member carol cannot send to g1",
+        "operation": "groupdm.send",
+        "payload": {
+          "ciphertext": "aW52YWxpZA",
+          "group_id": "g1",
+          "sender_id": "carol"
+        }
+      }
+    ],
+    "setup": {
+      "groups": [
+        {
+          "creator_id": "alice",
+          "group_id": "g1",
+          "members": [
+            "alice",
+            "bob"
+          ]
+        }
+      ]
+    }
+  },
+  "source": "docs/spec/v0.1/46-family-groupdm.md"
+}

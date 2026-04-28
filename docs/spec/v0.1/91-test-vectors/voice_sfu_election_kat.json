@@ -1,0 +1,40 @@
+{
+  "description": "SFU coordinator election: among peers [pZ, pA, pM] the lex-smallest peer_id (pA) is elected coordinator",
+  "source": "docs/spec/v0.1/52-family-voice.md §5",
+  "inputs": {
+    "mediashield_peer_keys": {
+      "s1": {
+        "pZ": "AAECBAUGB",
+        "pA": "AQIDBA==",
+        "pM": "BQYHCA=="
+      }
+    },
+    "cases": [
+      {
+        "label": "pZ joins",
+        "operation": "voice.join",
+        "advertised_caps": ["cap.voice"],
+        "payload": {"session_id": "s1", "peer_id": "pZ", "codec": "opus"}
+      },
+      {
+        "label": "pA joins",
+        "operation": "voice.join",
+        "advertised_caps": ["cap.voice"],
+        "payload": {"session_id": "s1", "peer_id": "pA", "codec": "opus"}
+      },
+      {
+        "label": "pM joins",
+        "operation": "voice.join",
+        "advertised_caps": ["cap.voice"],
+        "payload": {"session_id": "s1", "peer_id": "pM", "codec": "opus"}
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {"ok": true, "coordinator": "pZ"},
+      {"ok": true, "coordinator": "pA"},
+      {"ok": true, "coordinator": "pA"}
+    ]
+  }
+}

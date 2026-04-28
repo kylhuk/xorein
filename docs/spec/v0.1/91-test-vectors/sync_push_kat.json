@@ -1,0 +1,50 @@
+{
+  "description": "sync.push: push 3 deliveries where second is a duplicate → accepted_count=2, duplicate_count=1, rejected_count=0",
+  "source": "docs/spec/v0.1/44-family-sync.md §4.3",
+  "inputs": {
+    "server_id": "srv1",
+    "is_archivist": true,
+    "cases": [
+      {
+        "label": "push with one duplicate",
+        "operation": "sync.push",
+        "advertised_caps": ["cap.sync", "cap.archivist"],
+        "payload": {
+          "server_id": "srv1",
+          "deliveries": [
+            {
+              "id": "msg-001",
+              "sequence": 1,
+              "created_at": "2025-03-01T00:00:00Z",
+              "body": "AAAA",
+              "signature": "c2lnMQ=="
+            },
+            {
+              "id": "msg-001",
+              "sequence": 1,
+              "created_at": "2025-03-01T00:00:00Z",
+              "body": "AAAA",
+              "signature": "c2lnMQ=="
+            },
+            {
+              "id": "msg-002",
+              "sequence": 2,
+              "created_at": "2025-03-01T00:01:00Z",
+              "body": "BBBB",
+              "signature": "c2lnMg=="
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "expected_output": {
+    "cases": [
+      {
+        "accepted_count": 2,
+        "duplicate_count": 1,
+        "rejected_count": 0
+      }
+    ]
+  }
+}

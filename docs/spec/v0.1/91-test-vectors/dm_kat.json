@@ -1,0 +1,23 @@
+{
+  "description": "dm family KAT: rate limiting (61st DM rejected)",
+  "expected_output": {
+    "cases": [
+      {
+        "error_code": "DM_RATE_LIMITED"
+      }
+    ]
+  },
+  "inputs": {
+    "cases": [
+      {
+        "count": 61,
+        "description": "send 61 DMs from same sender in rapid succession; 61st returns DM_RATE_LIMITED",
+        "expect_rate_limited_at": 61,
+        "label": "rate limit: 61st DM must be rejected",
+        "recipient_id": "bob",
+        "sender_id": "alice"
+      }
+    ]
+  },
+  "source": "docs/spec/v0.1/45-family-dm.md"
+}

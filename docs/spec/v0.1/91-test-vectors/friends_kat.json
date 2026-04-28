@@ -1,0 +1,112 @@
+{
+  "description": "friends family KAT: request-accept-list flow; rate limit on 11th request",
+  "expected_output": {
+    "cases": [
+      {
+        "ok": true,
+        "status": "pending"
+      },
+      {
+        "ok": true,
+        "status": "accepted"
+      },
+      {
+        "contains_bob": true
+      },
+      {
+        "error_code": "RATE_LIMITED"
+      }
+    ]
+  },
+  "inputs": {
+    "cases": [
+      {
+        "advertised_caps": [
+          "cap.friends"
+        ],
+        "label": "alice requests bob",
+        "operation": "friends.request",
+        "payload": {
+          "from_peer_id": "alice",
+          "to_peer_id": "bob"
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.friends"
+        ],
+        "label": "bob accepts alice",
+        "operation": "friends.accept",
+        "payload": {
+          "from_peer_id": "alice",
+          "to_peer_id": "bob"
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.friends"
+        ],
+        "label": "alice lists friends (expects bob)",
+        "operation": "friends.list",
+        "payload": {
+          "peer_id": "alice"
+        }
+      },
+      {
+        "advertised_caps": [
+          "cap.friends"
+        ],
+        "description": "send 10 requests from spammer to different targets, then 11th must fail",
+        "label": "rate limit: 11th request from spammer",
+        "operation": "friends.request",
+        "payload": {
+          "from_peer_id": "spammer",
+          "to_peer_id": "victim11"
+        },
+        "pre_requests": [
+          {
+            "from_peer_id": "spammer",
+            "to_peer_id": "t1"
+          },
+          {
+            "from_peer_id": "spammer",
+            "to_peer_id": "t2"
+          },
+          {
+            "from_peer_id": "spammer",
+            "to_peer_id": "t3"
+          },
+          {
+            "from_peer_id": "spammer",
+            "to_peer_id": "t4"
+          },
+          {
+            "from_peer_id": "spammer",
+            "to_peer_id": "t5"
+          },
+          {
+            "from_peer_id": "spammer",
+            "to_peer_id": "t6"
+          },
+          {
+            "from_peer_id": "spammer",
+            "to_peer_id": "t7"
+          },
+          {
+            "from_peer_id": "spammer",
+            "to_peer_id": "t8"
+          },
+          {
+            "from_peer_id": "spammer",
+            "to_peer_id": "t9"
+          },
+          {
+            "from_peer_id": "spammer",
+            "to_peer_id": "t10"
+          }
+        ]
+      }
+    ]
+  },
+  "source": "docs/spec/v0.1/47-family-friends.md"
+}

@@ -1,0 +1,52 @@
+{
+  "description": "MediaShield per-frame nonce derivation from mediashield_key and frame counter",
+  "source": "Constructed — computed from reference implementation (pkg/v0_1/mode/mediashield). See 15-mode-mediashield.md §3.1",
+  "vectors": [
+    {
+      "id": "mediashield-nonce-frame0",
+      "description": "Nonce for frame counter 0",
+      "operation": "HKDF-SHA-256",
+      "inputs": {
+        "ikm_description": "mediashield_key (32 bytes)",
+        "ikm": "0303030303030303030303030303030303030303030303030303030303030303",
+        "salt_description": "frame_counter_bytes (8 bytes, big-endian)",
+        "salt": "0000000000000000",
+        "info_utf8": "xorein/mediashield/v1/nonce",
+        "info": "786f7265696e2f6d65646961736869656c642f76312f6e6f6e6365",
+        "length": 12
+      },
+      "expected_output": {
+        "nonce": "100591afedc65516ea8fab4f"
+      }
+    },
+    {
+      "id": "mediashield-nonce-frame1",
+      "description": "Nonce for frame counter 1 (must differ from frame 0)",
+      "operation": "HKDF-SHA-256",
+      "inputs": {
+        "ikm": "0303030303030303030303030303030303030303030303030303030303030303",
+        "salt": "0000000000000001",
+        "info": "786f7265696e2f6d65646961736869656c642f76312f6e6f6e6365",
+        "length": 12
+      },
+      "expected_output": {
+        "nonce": "9d4904229994c628889c32f8",
+        "note": "Must differ from frame-0 nonce"
+      }
+    },
+    {
+      "id": "mediashield-nonce-frame-max",
+      "description": "Nonce for frame counter 2^48 - 1 (maximum allowed before rotation)",
+      "operation": "HKDF-SHA-256",
+      "inputs": {
+        "ikm": "0303030303030303030303030303030303030303030303030303030303030303",
+        "salt": "0000ffffffffffff",
+        "info": "786f7265696e2f6d65646961736869656c642f76312f6e6f6e6365",
+        "length": 12
+      },
+      "expected_output": {
+        "nonce": "a92963c47c5818c5435f352f"
+      }
+    }
+  ]
+}

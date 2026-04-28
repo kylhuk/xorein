@@ -1,0 +1,3 @@
+4:- Positive path: the live smoke harness starts `cmd/aether` and passes `TestAetherRuntimeSmokeHarness/positive_peer_info`, negotiating `/aether/peer/0.1.0` and returning populated `node.PeerInfo` (`.sisyphus/evidence/task-3-smoke-harness.log`).
+6:- Static audit: `pkg/protocol` and `pkg/network` pass the protocol/capability tests, including canonical `/aether/peer/0.1.0` surface and unsupported protocol/capability rejection (`.sisyphus/evidence/task-3-static-audit.log`).
+7:- Final scope: repo Go client reachability verified; external interoperability is not claimed.

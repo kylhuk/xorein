@@ -14,7 +14,7 @@ RELEASE_PACK_SIGN_DIR := $(RELEASE_PACK_DIR)/signing
 RELEASE_SIGNING_IMAGE ?= docker.io/library/golang:1.24.8
 export PATH := $(CURDIR)/scripts:$(CURDIR)/$(TOOLS_BIN_DIR):$(PATH)
 
-.PHONY: all pipeline check-fast check-full generate compile lint test race scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify
+.PHONY: all pipeline conformance check-fast check-full generate compile lint spec-lint test race scan build clean relay-container-workflow relay-container-build relay-container-sign relay-container-sbom relay-container-publish-check release-pack-verify interop
 
 STAGE_ORDER := generate compile lint test race scan build
 
@@ -22,8 +22,19 @@ all: check-full build
 
 pipeline: generate compile lint test race scan build
 
-check-fast: generate compile lint
+# conformance: full pipeline + Seal-DM interop check (spec 90)
+conformance: pipeline interop
+
+interop:
+	@echo "[interop] running Seal-DM interop harness"
+	@bash scripts/interop.sh
+
+check-fast: generate compile lint spec-lint
 check-full: generate compile lint test race scan
+
+spec-lint:
+	@echo "[spec-lint] running spec self-consistency check"
+	@bash scripts/spec-lint.sh
 
 generate:
 	@echo "[generate] running protobuf compatibility checks"
@@ -47,6 +58,8 @@ lint:
 	@golangci-lint run ./...
 
 test:
+	@echo "[test] verifying test vector pins"
+	@bash scripts/verify-vector-pins.sh
 	@echo "[test] running Go test suite"
 	@set -euo pipefail
 	@go test ./...
