@@ -115,16 +115,15 @@ func ValidFeatureFlagName(flag string) bool {
 	default:
 		return false
 	}
-	if flag != strings.ToLower(flag) {
-		return false
-	}
-	tail := strings.TrimPrefix(flag, prefix)
+	tail := flag[len(prefix):]
 	if tail == "" {
 		return false
 	}
 
+	// Validate on bytes because accepted grammar is ASCII-only.
 	lastWasSeparator := true
-	for _, r := range tail {
+	for i := 0; i < len(tail); i++ {
+		r := tail[i]
 		switch {
 		case r >= 'a' && r <= 'z':
 			lastWasSeparator = false
